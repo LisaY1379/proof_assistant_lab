@@ -1,0 +1,205 @@
+{
+  "atlas_commit": "34ffed396f376454c1a9b297f3fd74c5c801fb50",
+  "comment": "Continuity of `f` at a point `c ∈ S` (relative to `S`) is equivalent to the classical\n`ε`-`δ` formulation: for every `ε > 0` there is `δ > 0` such that for all `x ∈ S`,\n`|x - c| < δ` implies `|f x - f c| < ε`.",
+  "end_line": 32,
+  "formal_statement": "theorem continuous_at_iff_eps_delta (f : ℝ → ℝ) (S : Set ℝ) (c : ℝ) (_hc : c ∈ S) :\n    ContinuousWithinAt f S c ↔ ∀ ε > 0, ∃ δ > 0, ∀ x ∈ S, |x - c| < δ → |f x - f c| < ε",
+  "has_detected_proof": true,
+  "imports": [
+    "Mathlib"
+  ],
+  "kind": "theorem",
+  "lean_name": "continuous_at_iff_eps_delta",
+  "proof_code": ":= by\n  rw [Metric.continuousWithinAt_iff]\n  simp only [Real.dist_eq]\n\n/-- `IsBoundedOn f S` states that `f` is bounded on `S`: there exists a nonnegative real\nnumber `B` such that `|f x| ≤ B` for every `x ∈ S`. -/",
+  "proof_id": "atlas.real_analysis.256351aca4f3",
+  "raw_declaration": "theorem continuous_at_iff_eps_delta (f : ℝ → ℝ) (S : Set ℝ) (c : ℝ) (_hc : c ∈ S) :\n    ContinuousWithinAt f S c ↔ ∀ ε > 0, ∃ δ > 0, ∀ x ∈ S, |x - c| < δ → |f x - f c| < ε := by\n  rw [Metric.continuousWithinAt_iff]\n  simp only [Real.dist_eq]\n\n/-- `IsBoundedOn f S` states that `f` is bounded on `S`: there exists a nonnegative real\nnumber `B` such that `|f x| ≤ B` for every `x ∈ S`. -/",
+  "source": "atlas-lean",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/Continuity.lean",
+  "source_subset": "Atlas/RealAnalysis",
+  "start_line": 26
+}
+
+{
+  "atlas_commit": "34ffed396f376454c1a9b297f3fd74c5c801fb50",
+  "comment": "A real-valued function that is continuous on a closed bounded interval `[a, b]` is bounded:\nthere exists `B ∈ ℝ` such that `|f x| ≤ B` for all `x ∈ [a, b]`.",
+  "end_line": 46,
+  "formal_statement": "theorem continuous_on_Icc_bounded (f : ℝ → ℝ) (a b : ℝ) (_hab : a ≤ b)\n    (hf : ContinuousOn f (Set.Icc a b)) :\n    ∃ B : ℝ, ∀ x ∈ Set.Icc a b, |f x| ≤ B",
+  "has_detected_proof": true,
+  "imports": [
+    "Mathlib"
+  ],
+  "kind": "theorem",
+  "lean_name": "continuous_on_Icc_bounded",
+  "proof_code": ":= by\n  obtain ⟨C, hC⟩ := isCompact_Icc.exists_bound_of_continuousOn hf\n  exact ⟨C, fun x hx => by rw [← Real.norm_eq_abs]; exact hC x hx⟩\n\n/-- Extreme Value (Min-Max) Theorem: a continuous function on a closed bounded interval `[a, b]`\nattains both an absolute minimum at some point `c ∈ [a, b]` and an absolute maximum at some\npoint `d ∈ [a, b]`. -/",
+  "proof_id": "atlas.real_analysis.40a706b8d34b",
+  "raw_declaration": "theorem continuous_on_Icc_bounded (f : ℝ → ℝ) (a b : ℝ) (_hab : a ≤ b)\n    (hf : ContinuousOn f (Set.Icc a b)) :\n    ∃ B : ℝ, ∀ x ∈ Set.Icc a b, |f x| ≤ B := by\n  obtain ⟨C, hC⟩ := isCompact_Icc.exists_bound_of_continuousOn hf\n  exact ⟨C, fun x hx => by rw [← Real.norm_eq_abs]; exact hC x hx⟩\n\n/-- Extreme Value (Min-Max) Theorem: a continuous function on a closed bounded interval `[a, b]`\nattains both an absolute minimum at some point `c ∈ [a, b]` and an absolute maximum at some\npoint `d ∈ [a, b]`. -/",
+  "source": "atlas-lean",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/Continuity.lean",
+  "source_subset": "Atlas/RealAnalysis",
+  "start_line": 38
+}
+
+{
+  "atlas_commit": "34ffed396f376454c1a9b297f3fd74c5c801fb50",
+  "comment": "Extreme Value (Min-Max) Theorem: a continuous function on a closed bounded interval `[a, b]`\nattains both an absolute minimum at some point `c ∈ [a, b]` and an absolute maximum at some\npoint `d ∈ [a, b]`.",
+  "end_line": 54,
+  "formal_statement": "theorem extreme_value_theorem (f : ℝ → ℝ) (a b : ℝ) (hab : a < b)\n    (hf : ContinuousOn f (Set.Icc a b)) :\n    (∃ c ∈ Set.Icc a b, ∀ x ∈ Set.Icc a b, f c ≤ f x) ∧\n    (∃ d ∈ Set.Icc a b, ∀ x ∈ Set.Icc a b, f x ≤ f d)",
+  "has_detected_proof": true,
+  "imports": [
+    "Mathlib"
+  ],
+  "kind": "theorem",
+  "lean_name": "extreme_value_theorem",
+  "proof_code": ":= by\n  have hne : (Set.Icc a b).Nonempty := Set.nonempty_Icc.mpr (le_of_lt hab)\n  exact ⟨isCompact_Icc.exists_isMinOn hne hf, isCompact_Icc.exists_isMaxOn hne hf⟩\n\nend ContinuousFunctions",
+  "proof_id": "atlas.real_analysis.2b19d4ad0017",
+  "raw_declaration": "theorem extreme_value_theorem (f : ℝ → ℝ) (a b : ℝ) (hab : a < b)\n    (hf : ContinuousOn f (Set.Icc a b)) :\n    (∃ c ∈ Set.Icc a b, ∀ x ∈ Set.Icc a b, f c ≤ f x) ∧\n    (∃ d ∈ Set.Icc a b, ∀ x ∈ Set.Icc a b, f x ≤ f d) := by\n  have hne : (Set.Icc a b).Nonempty := Set.nonempty_Icc.mpr (le_of_lt hab)\n  exact ⟨isCompact_Icc.exists_isMinOn hne hf, isCompact_Icc.exists_isMaxOn hne hf⟩\n\nend ContinuousFunctions",
+  "source": "atlas-lean",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/Continuity.lean",
+  "source_subset": "Atlas/RealAnalysis",
+  "start_line": 47
+}
+
+{
+  "atlas_commit": "34ffed396f376454c1a9b297f3fd74c5c801fb50",
+  "comment": "Bolzano's Intermediate Value Theorem.\n\nLet `f : ℝ → ℝ` be continuous on `[a, b]` with `a < b`. Then:\nif `f a < y < f b`, there exists `c ∈ (a, b)` with `f c = y`;\nif `f b < y < f a`, there exists `c ∈ (a, b)` with `f c = y`.\n\nIn either case, `f` attains every value strictly between `f a` and `f b` at some\ninterior point of the interval.",
+  "end_line": 56,
+  "formal_statement": "theorem intermediate_value_theorem (f : ℝ → ℝ) (a b : ℝ) (hab : a < b)\n    (hf : ContinuousOn f (Set.Icc a b)) :\n    (∀ y, f a < y → y < f b → ∃ c ∈ Set.Ioo a b, f c = y) ∧\n    (∀ y, f b < y → y < f a → ∃ c ∈ Set.Ioo a b, f c = y)",
+  "has_detected_proof": true,
+  "imports": [
+    "Mathlib"
+  ],
+  "kind": "theorem",
+  "lean_name": "intermediate_value_theorem",
+  "proof_code": ":= by\n  have hab' : a ≤ b := le_of_lt hab\n  constructor\n  · intro y hy1 hy2\n    have hy_mem : y ∈ Icc (f a) (f b) := ⟨le_of_lt hy1, le_of_lt hy2⟩\n    obtain ⟨c, hc_mem, hfc⟩ := intermediate_value_Icc hab' hf hy_mem\n    refine ⟨c, ?_, hfc⟩\n    constructor\n    · rcases eq_or_lt_of_le hc_mem.1 with h | h\n      · exfalso; linarith [hfc ▸ h ▸ hy1]\n      · exact h\n    · rcases eq_or_lt_of_le hc_mem.2 with h | h\n      · exfalso; linarith [hfc ▸ h ▸ hy2]\n      · exact h\n  · intro y hy1 hy2\n    have hy_mem : y ∈ Icc (f b) (f a) := ⟨le_of_lt hy1, le_of_lt hy2⟩\n    obtain ⟨c, hc_mem, hfc⟩ := intermediate_value_Icc' hab' hf hy_mem\n    refine ⟨c, ?_, hfc⟩\n    constructor\n    · rcases eq_or_lt_of_le hc_mem.1 with h | h\n      · exfalso; linarith [hfc ▸ h ▸ hy2]\n      · exact h\n    · rcases eq_or_lt_of_le hc_mem.2 with h | h\n      · exfalso; linarith [hfc ▸ h ▸ hy1]\n      · exact h\n\n/-- The polynomial `f(x) = x^2021 + x^2020 + 9.03 x + 1` has at least one real\nroot.\n\nProved via the Intermediate Value Theorem: `f(-1) < 0` and `f(0) > 0`, so by\ncontinuity there exists `c ∈ [-1, 0]` with `f(c) = 0`. -/",
+  "proof_id": "atlas.real_analysis.0981157bc4ef",
+  "raw_declaration": "theorem intermediate_value_theorem (f : ℝ → ℝ) (a b : ℝ) (hab : a < b)\n    (hf : ContinuousOn f (Set.Icc a b)) :\n    (∀ y, f a < y → y < f b → ∃ c ∈ Set.Ioo a b, f c = y) ∧\n    (∀ y, f b < y → y < f a → ∃ c ∈ Set.Ioo a b, f c = y) := by\n  have hab' : a ≤ b := le_of_lt hab\n  constructor\n  · intro y hy1 hy2\n    have hy_mem : y ∈ Icc (f a) (f b) := ⟨le_of_lt hy1, le_of_lt hy2⟩\n    obtain ⟨c, hc_mem, hfc⟩ := intermediate_value_Icc hab' hf hy_mem\n    refine ⟨c, ?_, hfc⟩\n    constructor\n    · rcases eq_or_lt_of_le hc_mem.1 with h | h\n      · exfalso; linarith [hfc ▸ h ▸ hy1]\n      · exact h\n    · rcases eq_or_lt_of_le hc_mem.2 with h | h\n      · exfalso; linarith [hfc ▸ h ▸ hy2]\n      · exact h\n  · intro y hy1 hy2\n    have hy_mem : y ∈ Icc (f b) (f a) := ⟨le_of_lt hy1, le_of_lt hy2⟩\n    obtain ⟨c, hc_mem, hfc⟩ := intermediate_value_Icc' hab' hf hy_mem\n    refine ⟨c, ?_, hfc⟩\n    constructor\n    · rcases eq_or_lt_of_le hc_mem.1 with h | h\n      · exfalso; linarith [hfc ▸ h ▸ hy2]\n      · exact h\n    · rcases eq_or_lt_of_le hc_mem.2 with h | h\n      · exfalso; linarith [hfc ▸ h ▸ hy1]\n      · exact h\n\n/-- The polynomial `f(x) = x^2021 + x^2020 + 9.03 x + 1` has at least one real\nroot.\n\nProved via the Intermediate Value Theorem: `f(-1) < 0` and `f(0) > 0`, so by\ncontinuity there exists `c ∈ [-1, 0]` with `f(c) = 0`. -/",
+  "source": "atlas-lean",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/IVT.lean",
+  "source_subset": "Atlas/RealAnalysis",
+  "start_line": 23
+}
+
+{
+  "atlas_commit": "34ffed396f376454c1a9b297f3fd74c5c801fb50",
+  "comment": "The polynomial `f(x) = x^2021 + x^2020 + 9.03 x + 1` has at least one real\nroot.\n\nProved via the Intermediate Value Theorem: `f(-1) < 0` and `f(0) > 0`, so by\ncontinuity there exists `c ∈ [-1, 0]` with `f(c) = 0`.",
+  "end_line": 74,
+  "formal_statement": "theorem polynomial_has_real_root : ∃ x : ℝ, x^2021 + x^2020 + 9.03*x + 1 = 0",
+  "has_detected_proof": true,
+  "imports": [
+    "Mathlib"
+  ],
+  "kind": "theorem",
+  "lean_name": "polynomial_has_real_root",
+  "proof_code": ":= by\n\n  let f : ℝ → ℝ := fun x => x^2021 + x^2020 + 9.03*x + 1\n\n  have hf_cont : Continuous f := by fun_prop\n\n  have hf_neg : f (-1) < 0 := by norm_num [f]\n\n  have hf_pos : (0 : ℝ) < f 0 := by norm_num [f]\n\n  have hab : (-1 : ℝ) ≤ 0 := by norm_num\n  have h0_mem : (0 : ℝ) ∈ Icc (f (-1)) (f 0) :=\n    ⟨le_of_lt hf_neg, le_of_lt hf_pos⟩\n  have h_ivt := intermediate_value_Icc hab hf_cont.continuousOn h0_mem\n  obtain ⟨c, _, hfc⟩ := h_ivt\n  exact ⟨c, hfc⟩\n\nend ContinuousFunctions",
+  "proof_id": "atlas.real_analysis.84d958addbb6",
+  "raw_declaration": "theorem polynomial_has_real_root : ∃ x : ℝ, x^2021 + x^2020 + 9.03*x + 1 = 0 := by\n\n  let f : ℝ → ℝ := fun x => x^2021 + x^2020 + 9.03*x + 1\n\n  have hf_cont : Continuous f := by fun_prop\n\n  have hf_neg : f (-1) < 0 := by norm_num [f]\n\n  have hf_pos : (0 : ℝ) < f 0 := by norm_num [f]\n\n  have hab : (-1 : ℝ) ≤ 0 := by norm_num\n  have h0_mem : (0 : ℝ) ∈ Icc (f (-1)) (f 0) :=\n    ⟨le_of_lt hf_neg, le_of_lt hf_pos⟩\n  have h_ivt := intermediate_value_Icc hab hf_cont.continuousOn h0_mem\n  obtain ⟨c, _, hfc⟩ := h_ivt\n  exact ⟨c, hfc⟩\n\nend ContinuousFunctions",
+  "source": "atlas-lean",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/IVT.lean",
+  "source_subset": "Atlas/RealAnalysis",
+  "start_line": 57
+}
+
+{
+  "atlas_commit": "34ffed396f376454c1a9b297f3fd74c5c801fb50",
+  "comment": "The elementary `ε`-`δ` notion `IsClusterPoint S x` agrees with Mathlib's\ntopological accumulation point `AccPt x (𝓟 S)`.",
+  "end_line": 45,
+  "formal_statement": "theorem cluster_point_iff_acc_point (S : Set ℝ) (x : ℝ) :\n    IsClusterPoint S x ↔ AccPt x (𝓟 S)",
+  "has_detected_proof": true,
+  "imports": [
+    "Mathlib.Topology.MetricSpace.Basic",
+    "Mathlib.Topology.ClusterPt",
+    "Mathlib.Topology.Separation.Hausdorff"
+  ],
+  "kind": "theorem",
+  "lean_name": "cluster_point_iff_acc_point",
+  "proof_code": ":= by\n  rw [accPt_iff_nhds]\n  constructor\n  · intro h U hU\n    obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp hU\n    obtain ⟨y, hyS, hyx, habs⟩ := h ε hε\n    refine ⟨y, ⟨?_, hyS⟩, hyx⟩\n    apply hball\n    rw [Metric.mem_ball, Real.dist_eq]\n    linarith [abs_sub_comm y x]\n  · intro h δ hδ\n    obtain ⟨y, ⟨hyU, hyS⟩, hyx⟩ := h _ (Metric.ball_mem_nhds x hδ)\n    refine ⟨y, hyS, hyx, ?_⟩\n    have := Metric.mem_ball.mp hyU\n    rw [Real.dist_eq] at this\n    linarith [abs_sub_comm y x]\n\n/-- `f` converges to `L` at `c` along `S`, written informally `f(x) → L` as `x → c`,\nif for every `ε > 0` there exists `δ > 0` such that for all `x ∈ S` with\n`0 < |x - c| < δ` one has `|f x - L| < ε`. -/",
+  "proof_id": "atlas.real_analysis.67ce5a8edceb",
+  "raw_declaration": "theorem cluster_point_iff_acc_point (S : Set ℝ) (x : ℝ) :\n    IsClusterPoint S x ↔ AccPt x (𝓟 S) := by\n  rw [accPt_iff_nhds]\n  constructor\n  · intro h U hU\n    obtain ⟨ε, hε, hball⟩ := Metric.mem_nhds_iff.mp hU\n    obtain ⟨y, hyS, hyx, habs⟩ := h ε hε\n    refine ⟨y, ⟨?_, hyS⟩, hyx⟩\n    apply hball\n    rw [Metric.mem_ball, Real.dist_eq]\n    linarith [abs_sub_comm y x]\n  · intro h δ hδ\n    obtain ⟨y, ⟨hyU, hyS⟩, hyx⟩ := h _ (Metric.ball_mem_nhds x hδ)\n    refine ⟨y, hyS, hyx, ?_⟩\n    have := Metric.mem_ball.mp hyU\n    rw [Real.dist_eq] at this\n    linarith [abs_sub_comm y x]\n\n/-- `f` converges to `L` at `c` along `S`, written informally `f(x) → L` as `x → c`,\nif for every `ε > 0` there exists `δ > 0` such that for all `x ∈ S` with\n`0 < |x - c| < δ` one has `|f x - L| < ε`. -/",
+  "source": "atlas-lean",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/Limits.lean",
+  "source_subset": "Atlas/RealAnalysis",
+  "start_line": 25
+}
+
+{
+  "atlas_commit": "34ffed396f376454c1a9b297f3fd74c5c801fb50",
+  "comment": "The elementary `ε`-`δ` definition `FunctionConvergesAt f S c L` is equivalent\nto the Mathlib filter statement that `f` tends to `L` along the neighborhood\nfilter of `c` restricted to `S \\ {c}`.",
+  "end_line": 75,
+  "formal_statement": "theorem function_limit_iff_tendsto (f : ℝ → ℝ) (S : Set ℝ) (c L : ℝ) :\n    FunctionConvergesAt f S c L ↔\n    Filter.Tendsto f (nhdsWithin c (S \\ {c})) (nhds L)",
+  "has_detected_proof": true,
+  "imports": [
+    "Mathlib.Topology.MetricSpace.Basic",
+    "Mathlib.Topology.ClusterPt",
+    "Mathlib.Topology.Separation.Hausdorff"
+  ],
+  "kind": "theorem",
+  "lean_name": "function_limit_iff_tendsto",
+  "proof_code": ":= by\n  rw [Metric.tendsto_nhdsWithin_nhds]\n  constructor\n  · intro h ε hε\n    obtain ⟨δ, hδ, hfx⟩ := h ε hε\n    refine ⟨δ, hδ, fun {x} hxmem hdist => ?_⟩\n    rw [Real.dist_eq] at hdist ⊢\n    exact hfx x hxmem.1 (abs_pos.mpr (sub_ne_zero.mpr hxmem.2)) hdist\n  · intro h ε hε\n    obtain ⟨δ, hδ, hfx⟩ := h ε hε\n    refine ⟨δ, hδ, fun x hxS hpos hdist => ?_⟩\n    have hxc : x ≠ c := by\n      intro heq\n      simp [heq] at hpos\n    have hxmem : x ∈ S \\ {c} := ⟨hxS, hxc⟩\n    have hdist' : dist x c < δ := by rwa [Real.dist_eq]\n    have := hfx hxmem hdist'\n    rwa [Real.dist_eq] at this\n\n/-- The right-hand limit `f(x) → L` as `x → c⁺` along `S`: for every `ε > 0`\nthere exists `δ > 0` such that for all `x ∈ S` with `c < x < c + δ` one has\n`|f x - L| < ε`. -/",
+  "proof_id": "atlas.real_analysis.bb1610265d4d",
+  "raw_declaration": "theorem function_limit_iff_tendsto (f : ℝ → ℝ) (S : Set ℝ) (c L : ℝ) :\n    FunctionConvergesAt f S c L ↔\n    Filter.Tendsto f (nhdsWithin c (S \\ {c})) (nhds L) := by\n  rw [Metric.tendsto_nhdsWithin_nhds]\n  constructor\n  · intro h ε hε\n    obtain ⟨δ, hδ, hfx⟩ := h ε hε\n    refine ⟨δ, hδ, fun {x} hxmem hdist => ?_⟩\n    rw [Real.dist_eq] at hdist ⊢\n    exact hfx x hxmem.1 (abs_pos.mpr (sub_ne_zero.mpr hxmem.2)) hdist\n  · intro h ε hε\n    obtain ⟨δ, hδ, hfx⟩ := h ε hε\n    refine ⟨δ, hδ, fun x hxS hpos hdist => ?_⟩\n    have hxc : x ≠ c := by\n      intro heq\n      simp [heq] at hpos\n    have hxmem : x ∈ S \\ {c} := ⟨hxS, hxc⟩\n    have hdist' : dist x c < δ := by rwa [Real.dist_eq]\n    have := hfx hxmem hdist'\n    rwa [Real.dist_eq] at this\n\n/-- The right-hand limit `f(x) → L` as `x → c⁺` along `S`: for every `ε > 0`\nthere exists `δ > 0` such that for all `x ∈ S` with `c < x < c + δ` one has\n`|f x - L| < ε`. -/",
+  "source": "atlas-lean",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/Limits.lean",
+  "source_subset": "Atlas/RealAnalysis",
+  "start_line": 52
+}
+
+{
+  "atlas_commit": "34ffed396f376454c1a9b297f3fd74c5c801fb50",
+  "comment": "Uniqueness of the function limit: if `c` is a cluster point of `S` and `f`\nconverges both to `L₁` and to `L₂` at `c` along `S`, then `L₁ = L₂`.",
+  "end_line": 91,
+  "formal_statement": "theorem function_limit_unique (f : ℝ → ℝ) (S : Set ℝ) (c L₁ L₂ : ℝ)\n    (hc : IsClusterPoint S c)\n    (hL₁ : FunctionConvergesAt f S c L₁)\n    (hL₂ : FunctionConvergesAt f S c L₂) : L₁ = L₂",
+  "has_detected_proof": true,
+  "imports": [
+    "Mathlib.Topology.MetricSpace.Basic",
+    "Mathlib.Topology.ClusterPt",
+    "Mathlib.Topology.Separation.Hausdorff"
+  ],
+  "kind": "theorem",
+  "lean_name": "function_limit_unique",
+  "proof_code": ":= by\n  have hne : (nhdsWithin c (S \\ {c})).NeBot := by\n    rwa [← accPt_principal_iff_nhdsWithin, ← cluster_point_iff_acc_point]\n  exact tendsto_nhds_unique\n    ((function_limit_iff_tendsto f S c L₁).mp hL₁)\n    ((function_limit_iff_tendsto f S c L₂).mp hL₂)\n\nend ContinuousFunctions",
+  "proof_id": "atlas.real_analysis.6587f64283a7",
+  "raw_declaration": "theorem function_limit_unique (f : ℝ → ℝ) (S : Set ℝ) (c L₁ L₂ : ℝ)\n    (hc : IsClusterPoint S c)\n    (hL₁ : FunctionConvergesAt f S c L₁)\n    (hL₂ : FunctionConvergesAt f S c L₂) : L₁ = L₂ := by\n  have hne : (nhdsWithin c (S \\ {c})).NeBot := by\n    rwa [← accPt_principal_iff_nhdsWithin, ← cluster_point_iff_acc_point]\n  exact tendsto_nhds_unique\n    ((function_limit_iff_tendsto f S c L₁).mp hL₁)\n    ((function_limit_iff_tendsto f S c L₂).mp hL₂)\n\nend ContinuousFunctions",
+  "source": "atlas-lean",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/Limits.lean",
+  "source_subset": "Atlas/RealAnalysis",
+  "start_line": 81
+}
+
+{
+  "atlas_commit": "34ffed396f376454c1a9b297f3fd74c5c801fb50",
+  "comment": "A real function `f` is uniformly continuous on a set `S ⊆ ℝ` if and only if it\nsatisfies the textbook ε–δ criterion: for every `ε > 0` there exists `δ > 0` such\nthat `|f x - f y| < ε` for all `x, y ∈ S` with `|x - y| < δ`.",
+  "end_line": 23,
+  "formal_statement": "theorem uniform_continuous_on_iff (f : ℝ → ℝ) (S : Set ℝ) :\n    UniformContinuousOn f S ↔\n    ∀ ε > 0, ∃ δ > 0, ∀ x ∈ S, ∀ y ∈ S, |x - y| < δ → |f x - f y| < ε",
+  "has_detected_proof": true,
+  "imports": [
+    "Mathlib"
+  ],
+  "kind": "theorem",
+  "lean_name": "uniform_continuous_on_iff",
+  "proof_code": ":= by\n  simp only [Metric.uniformContinuousOn_iff, Real.dist_eq]\n\nend Real_Analysis",
+  "proof_id": "atlas.real_analysis.5b5917979e9d",
+  "raw_declaration": "theorem uniform_continuous_on_iff (f : ℝ → ℝ) (S : Set ℝ) :\n    UniformContinuousOn f S ↔\n    ∀ ε > 0, ∃ δ > 0, ∀ x ∈ S, ∀ y ∈ S, |x - y| < δ → |f x - f y| < ε := by\n  simp only [Metric.uniformContinuousOn_iff, Real.dist_eq]\n\nend Real_Analysis",
+  "source": "atlas-lean",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/UniformContinuity.lean",
+  "source_subset": "Atlas/RealAnalysis",
+  "start_line": 18
+}
+
+{
+  "atlas_commit": "34ffed396f376454c1a9b297f3fd74c5c801fb50",
+  "comment": "A real function `f` is differentiable at `c` if and only if the difference quotient\n`(f x - f c) / (x - c)` has a limit as `x → c` with `x ≠ c`.",
+  "end_line": 30,
+  "formal_statement": "theorem differentiable_at_iff_limit_exists (f : ℝ → ℝ) (c : ℝ) :\n    DifferentiableAt ℝ f c ↔\n    ∃ L : ℝ, Filter.Tendsto (fun x => (f x - f c) / (x - c)) (nhdsWithin c {c}ᶜ) (nhds L)",
+  "has_detected_proof": true,
+  "imports": [
+    "Mathlib"
+  ],
+  "kind": "theorem",
+  "lean_name": "differentiable_at_iff_limit_exists",
+  "proof_code": ":= by\n  constructor\n  · intro hd\n    exact ⟨deriv f c, by rw [show (fun x => (f x - f c) / (x - c)) = slope f c from\n      (slope_fun_def_field f c).symm]; exact hasDerivAt_iff_tendsto_slope.mp hd.hasDerivAt⟩\n  · rintro ⟨L, hL⟩\n    have hslope : Filter.Tendsto (slope f c) (nhdsWithin c {c}ᶜ) (nhds L) := by\n      rwa [show (fun x => (f x - f c) / (x - c)) = slope f c from\n        (slope_fun_def_field f c).symm] at hL\n    exact (hasDerivAt_iff_tendsto_slope.mpr hslope).differentiableAt\n\n/-- Chain rule: if `g` is differentiable at `c` and `f` is differentiable at `g c`,\nthen the composition `f ∘ g` is differentiable at `c` and\n`(f ∘ g)'(c) = f'(g c) * g'(c)`. -/",
+  "proof_id": "atlas.real_analysis.9f333d74ac85",
+  "raw_declaration": "theorem differentiable_at_iff_limit_exists (f : ℝ → ℝ) (c : ℝ) :\n    DifferentiableAt ℝ f c ↔\n    ∃ L : ℝ, Filter.Tendsto (fun x => (f x - f c) / (x - c)) (nhdsWithin c {c}ᶜ) (nhds L) := by\n  constructor\n  · intro hd\n    exact ⟨deriv f c, by rw [show (fun x => (f x - f c) / (x - c)) = slope f c from\n      (slope_fun_def_field f c).symm]; exact hasDerivAt_iff_tendsto_slope.mp hd.hasDerivAt⟩\n  · rintro ⟨L, hL⟩\n    have hslope : Filter.Tendsto (slope f c) (nhdsWithin c {c}ᶜ) (nhds L) := by\n      rwa [show (fun x => (f x - f c) / (x - c)) = slope f c from\n        (slope_fun_def_field f c).symm] at hL\n    exact (hasDerivAt_iff_tendsto_slope.mpr hslope).differentiableAt\n\n/-- Chain rule: if `g` is differentiable at `c` and `f` is differentiable at `g c`,\nthen the composition `f ∘ g` is differentiable at `c` and\n`(f ∘ g)'(c) = f'(g c) * g'(c)`. -/",
+  "source": "atlas-lean",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/Basic.lean",
+  "source_subset": "Atlas/RealAnalysis",
+  "start_line": 15
+}

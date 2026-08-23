@@ -13,5 +13,10 @@ __pycache__/
 # OS files
 .DS_Store
 
+# Local secrets / API keys
+.env
+
 # External cloned repositories / raw third-party data
 external/atlas-lean/
+
+doc.md

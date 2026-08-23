@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Proof Strategy Public Viewer</title>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)'], ['$', '$']],
+        displayMath: [['\\[', '\\]'], ['$$', '$$']],
+        processEscapes: true
+      },
+      svg: { fontCache: 'global' },
+      startup: { typeset: false }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --panel: #ffffff;
+      --text: #202124;
+      --muted: #5f6368;
+      --border: #dfe3ea;
+      --accent: #3157d5;
+      --accent-dark: #2443a8;
+      --success: #137333;
+      --code-bg: #f1f3f4;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 310px 1fr;
+      min-height: 100vh;
+    }
+
+    aside {
+      background: #111827;
+      color: white;
+      padding: 20px;
+      border-right: 1px solid #0b1220;
+    }
+
+    aside h1 {
+      font-size: 18px;
+      margin: 0 0 22px;
+      line-height: 1.3;
+    }
+
+    .nav-section {
+      margin-bottom: 22px;
+      padding: 14px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 12px;
+    }
+
+    .nav-section h2 {
+      font-size: 14px;
+      margin: 0 0 12px;
+      color: #dbeafe;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px 11px;
+      border-radius: 8px;
+      border: 1px solid #374151;
+      background: #0f172a;
+      color: white;
+      outline: none;
+      font-size: 14px;
+    }
+
+    button {
+      cursor: pointer;
+      border: 0;
+      border-radius: 9px;
+      padding: 10px 12px;
+      font-weight: 650;
+      font-size: 14px;
+    }
+
+    .primary {
+      width: 100%;
+      margin-top: 8px;
+      background: var(--accent);
+      color: white;
+    }
+
+    .primary:hover { background: var(--accent-dark); }
+    .secondary { background: #e8eefc; color: #183a99; }
+    .secondary:hover { background: #dbe6ff; }
+
+    .small-note {
+      color: #9ca3af;
+      font-size: 12px;
+      line-height: 1.45;
+      margin-top: 10px;
+    }
+
+    .view-buttons {
+      display: grid;
+      gap: 8px;
+    }
+
+    .view-button.active {
+      outline: 2px solid rgba(255,255,255,0.55);
+      background: #4f6ff0;
+    }
+
+    .overview-grid {
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .overview-item {
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.35;
+      color: var(--text);
+      background: white;
+    }
+
+    .overview-item.processed {
+      background: #ecfdf3;
+      border-color: #86efac;
+      border-left: 6px solid #22c55e;
+    }
+    .overview-item.pending {
+      border-left: 6px solid #cbd5e1;
+    }
+
+    .overview-name { font-weight: 700; color: #1d4ed8; }
+    .overview-meta { color: var(--muted); margin-top: 3px; }
+    .overview-status {
+      display: inline-block;
+      margin-left: 6px;
+      color: var(--success);
+      font-weight: 800;
+    }
+
+    .hidden { display: none !important; }
+
+    main {
+      padding: 22px;
+      overflow-x: hidden;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .status-card, .table-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .status-card {
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .controls input { color: var(--text); background: white; border-color: var(--border); }
+
+    .table-card { overflow: hidden; }
+
+    .table-meta {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      max-height: calc(100vh - 210px);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      min-width: 1100px;
+    }
+
+    th, td {
+      vertical-align: top;
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      padding: 12px;
+    }
+
+    th:last-child, td:last-child { border-right: 0; }
+
+    th {
+      position: sticky;
+      top: 0;
+      background: #f8fafc;
+      z-index: 2;
+      font-size: 13px;
+      text-align: left;
+      color: #374151;
+    }
+
+    td { font-size: 13px; line-height: 1.45; }
+
+    .proof-title {
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #1d4ed8;
+    }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      background: var(--code-bg);
+      border-radius: 8px;
+      padding: 10px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+    }
+
+    .english, .keys {
+      white-space: pre-wrap;
+      background: #ffffff;
+      border: 1px solid #eef0f4;
+      border-radius: 8px;
+      padding: 10px;
+      min-height: 48px;
+    }
+
+    .english mjx-container, .keys mjx-container {
+      overflow-x: auto;
+      overflow-y: hidden;
+      max-width: 100%;
+    }
+
+    .empty {
+      padding: 30px;
+      text-align: center;
+      color: var(--muted);
+    }
+
+    .bad { color: #b3261e; font-weight: 700; }
+
+    @media (max-width: 900px) {
+      .app { grid-template-columns: 1fr; }
+      aside { position: static; }
+      .table-wrap { max-height: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside>
+      <h1>Proof Strategy Public Viewer</h1>
+
+      <section class="nav-section">
+        <h2>Views</h2>
+        <div class="view-buttons">
+          <button class="primary view-button active" id="showOverviewButton">Load theorem/lemma overview</button>
+          <button class="primary view-button" id="loadButton">Load processed proofs</button>
+        </div>
+        <p class="small-note">
+          This is a read-only public viewer. It cannot run the workflow or call any API.
+        </p>
+      </section>
+
+      <section class="nav-section">
+        <h2>Notes</h2>
+        <p class="small-note">
+          Overview enumerates theorem/lemma items. Processed items are green.
+        </p>
+        <p class="small-note">
+          Data is loaded from static JSON files under <code>data/</code>.
+        </p>
+      </section>
+    </aside>
+
+    <main>
+      <div class="topbar">
+        <h1>Proof Strategy Inspection</h1>
+      </div>
+
+      <section class="status-card">
+        This public version is read-only. The private workflow controller, OpenAI API key, Python server, and raw ATLAS checkout are not included.
+      </section>
+
+      <section class="table-card" id="overviewView">
+        <div class="table-meta">
+          <div id="overviewSummary">Overview not loaded yet.</div>
+          <div class="controls">
+            <input id="overviewSearchInput" type="text" placeholder="Search theorem/lemma names, files, comments..." />
+            <button class="secondary" id="clearOverviewSearchButton">Clear</button>
+          </div>
+        </div>
+        <div class="table-wrap" id="overviewWrap">
+          <div class="empty">Click “Load theorem/lemma overview” to inspect all RealAnalysis theorem/lemma items.</div>
+        </div>
+      </section>
+
+      <section class="table-card hidden" id="proofsView">
+        <div class="table-meta">
+          <div id="tableInfo">No proof file loaded yet.</div>
+          <div class="controls">
+            <input id="searchInput" type="text" placeholder="Search lean name, code, English, strategies..." />
+            <button class="secondary" id="clearSearchButton">Clear</button>
+          </div>
+        </div>
+        <div class="table-wrap" id="tableWrap">
+          <div class="empty">Click “Load processed proofs” to inspect generated proofs.</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    let allProofs = [];
+    let overviewItems = [];
+
+    const $ = (id) => document.getElementById(id);
+
+    async function fetchJSON(path) {
+      const response = await fetch(path, { cache: 'no-store' });
+      if (!response.ok) {
+        throw new Error(`${path} returned ${response.status} ${response.statusText}`);
+      }
+      return await response.json();
+    }
+
+    function showView(viewName) {
+      const overview = $('overviewView');
+      const proofs = $('proofsView');
+      const overviewButton = $('showOverviewButton');
+      const proofsButton = $('loadButton');
+      if (viewName === 'overview') {
+        overview.classList.remove('hidden');
+        proofs.classList.add('hidden');
+        overviewButton.classList.add('active');
+        proofsButton.classList.remove('active');
+      } else {
+        overview.classList.add('hidden');
+        proofs.classList.remove('hidden');
+        overviewButton.classList.remove('active');
+        proofsButton.classList.add('active');
+      }
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function overviewMatches(item, query) {
+      if (!query) return true;
+      const haystack = [
+        item.index,
+        item.lean_name,
+        item.kind,
+        item.source_file,
+        item.comment_excerpt,
+        item.comment,
+        item.processed ? 'processed green done' : 'pending unprocessed'
+      ].join('\n').toLowerCase();
+      return haystack.includes(query.toLowerCase());
+    }
+
+    function renderOverview() {
+      const query = $('overviewSearchInput').value.trim();
+      const items = overviewItems.filter((item) => overviewMatches(item, query));
+      if (!overviewItems.length) {
+        $('overviewWrap').innerHTML = '<div class="empty">No theorem/lemma items loaded.</div>';
+        return;
+      }
+      if (!items.length) {
+        $('overviewWrap').innerHTML = '<div class="empty">No theorem/lemma items match the current search.</div>';
+        return;
+      }
+      $('overviewWrap').innerHTML = `
+        <div class="overview-grid">
+          ${items.map((item) => {
+            const cls = item.processed ? 'processed' : 'pending';
+            const status = item.processed ? '<span class="overview-status">processed</span>' : '';
+            const file = item.source_file ? escapeHTML(item.source_file.split('/').slice(-3).join('/')) : '';
+            const comment = item.comment_excerpt || item.comment ? `<div class="overview-meta">${escapeHTML(item.comment_excerpt || item.comment)}</div>` : '';
+            return `
+              <div class="overview-item ${cls}" data-index="${item.index}">
+                <div><span class="overview-name">${item.index}. ${escapeHTML(item.lean_name || '(unnamed)')}</span> ${status}</div>
+                <div class="overview-meta">${escapeHTML(item.kind || '')} · line ${escapeHTML(item.start_line || '')} · ${file}</div>
+                ${comment}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    async function loadOverview() {
+      showView('overview');
+      $('overviewSummary').textContent = 'Loading theorem/lemma overview...';
+      try {
+        const data = await fetchJSON('data/theorem_overview.json');
+        overviewItems = Array.isArray(data) ? data : (data.items || []);
+        const processedCount = overviewItems.filter((item) => item.processed).length;
+        const next = overviewItems.find((item) => !item.processed);
+        $('overviewSummary').textContent = `${processedCount}/${overviewItems.length} processed.${next ? ` Next unprocessed: #${next.index}.` : ' All listed items are processed.'}`;
+        renderOverview();
+      } catch (err) {
+        $('overviewSummary').textContent = 'Overview load failed: ' + err.message;
+        $('overviewWrap').innerHTML = `<div class="empty bad">${escapeHTML(err.message)}<br><br>Run the public-data export script first.</div>`;
+      }
+    }
+
+    function proofMatches(proof, query) {
+      if (!query) return true;
+      const haystack = [
+        proof.lean_name,
+        proof.lean_original_code,
+        proof.plain_english,
+        proof.textbook_explanation,
+        proof.key_strategies,
+        proof.source_file,
+        proof.proof_id
+      ].join('\n').toLowerCase();
+      return haystack.includes(query.toLowerCase());
+    }
+
+    function renderMathIfAvailable() {
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([$('tableWrap')]).catch((err) => {
+          console.warn('MathJax render failed:', err);
+        });
+      }
+    }
+
+    function renderProofTable() {
+      const query = $('searchInput').value.trim();
+      const proofs = allProofs.filter((p) => proofMatches(p, query));
+      $('tableInfo').textContent = `${proofs.length} shown / ${allProofs.length} total proofs`;
+
+      if (!proofs.length) {
+        $('tableWrap').innerHTML = '<div class="empty">No proofs match the current search.</div>';
+        return;
+      }
+
+      const rows = proofs.map((proof, idx) => {
+        const title = `${idx + 1}. ${proof.lean_name || '(unnamed proof)'}`;
+        const subtitle = proof.source_file ? `<div style="font-size:12px;color:#6b7280;margin-bottom:8px;">${escapeHTML(proof.source_file)}</div>` : '';
+        const english = proof.textbook_explanation || proof.plain_english || '';
+        return `
+          <tr>
+            <td>
+              <div class="proof-title">${escapeHTML(title)}</div>
+              ${subtitle}
+              <pre>${escapeHTML(proof.lean_original_code || '')}</pre>
+            </td>
+            <td><div class="english">${escapeHTML(english)}</div></td>
+            <td><div class="keys">${escapeHTML(proof.key_strategies || '')}</div></td>
+          </tr>
+        `;
+      }).join('');
+
+      $('tableWrap').innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Lean original code</th>
+              <th>Textbook-style English proof</th>
+              <th>Key strategies</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+      renderMathIfAvailable();
+    }
+
+    async function loadProofs() {
+      showView('proofs');
+      $('tableInfo').textContent = 'Loading proof file...';
+      try {
+        const data = await fetchJSON('data/proofs_with_key_strategies.json');
+        allProofs = Array.isArray(data) ? data : (data.proofs || []);
+        renderProofTable();
+      } catch (err) {
+        $('tableWrap').innerHTML = `<div class="empty bad">Could not load proofs: ${escapeHTML(err.message)}<br><br>Run the public-data export script first.</div>`;
+        $('tableInfo').textContent = 'Load failed.';
+      }
+    }
+
+    $('showOverviewButton').addEventListener('click', loadOverview);
+    $('loadButton').addEventListener('click', loadProofs);
+    $('searchInput').addEventListener('input', renderProofTable);
+    $('clearSearchButton').addEventListener('click', () => {
+      $('searchInput').value = '';
+      renderProofTable();
+    });
+    $('overviewSearchInput').addEventListener('input', renderOverview);
+    $('clearOverviewSearchButton').addEventListener('click', () => {
+      $('overviewSearchInput').value = '';
+      renderOverview();
+    });
+
+    loadOverview();
+  </script>
+</body>
+</html>

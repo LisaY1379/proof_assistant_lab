@@ -1,0 +1,109 @@
+{
+  "comment": "Continuity of `f` at a point `c ∈ S` (relative to `S`) is equivalent to the classical\n`ε`-`δ` formulation: for every `ε > 0` there is `δ > 0` such that for all `x ∈ S`,\n`|x - c| < δ` implies `|f x - f c| < ε`.",
+  "created_at": "2026-08-23T19:57:59.216677+00:00",
+  "formal_statement": "theorem continuous_at_iff_eps_delta (f : ℝ → ℝ) (S : Set ℝ) (c : ℝ) (_hc : c ∈ S) :\n    ContinuousWithinAt f S c ↔ ∀ ε > 0, ∃ δ > 0, ∀ x ∈ S, |x - c| < δ → |f x - f c| < ε",
+  "key_strategies": "1. Apply the standard metric-space ε–δ characterization `Metric.continuousWithinAt_iff` to express relative continuity on \\(S\\) in terms of distances.\n\n2. Specialize the metric on \\(\\mathbb{R}\\) using `Real.dist_eq`, which rewrites each distance as an absolute difference and yields exactly the desired formulation.",
+  "lean_name": "continuous_at_iff_eps_delta",
+  "proof_id": "atlas.real_analysis.256351aca4f3",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/Continuity.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "A real-valued function that is continuous on a closed bounded interval `[a, b]` is bounded:\nthere exists `B ∈ ℝ` such that `|f x| ≤ B` for all `x ∈ [a, b]`.",
+  "created_at": "2026-08-23T19:58:05.138772+00:00",
+  "formal_statement": "theorem continuous_on_Icc_bounded (f : ℝ → ℝ) (a b : ℝ) (_hab : a ≤ b)\n    (hf : ContinuousOn f (Set.Icc a b)) :\n    ∃ B : ℝ, ∀ x ∈ Set.Icc a b, |f x| ≤ B",
+  "key_strategies": "1. Recognize that the closed interval \\([a,b]\\) is compact and apply the theorem that a continuous real-valued function on a compact set admits a uniform norm bound.\n\n2. Convert the resulting inequality \\(\\|f(x)\\|\\le C\\) into the required inequality \\(|f(x)|\\le C\\) using the identity between the real norm and absolute value.",
+  "lean_name": "continuous_on_Icc_bounded",
+  "proof_id": "atlas.real_analysis.40a706b8d34b",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/Continuity.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Extreme Value (Min-Max) Theorem: a continuous function on a closed bounded interval `[a, b]`\nattains both an absolute minimum at some point `c ∈ [a, b]` and an absolute maximum at some\npoint `d ∈ [a, b]`.",
+  "created_at": "2026-08-23T19:58:10.823033+00:00",
+  "formal_statement": "theorem extreme_value_theorem (f : ℝ → ℝ) (a b : ℝ) (hab : a < b)\n    (hf : ContinuousOn f (Set.Icc a b)) :\n    (∃ c ∈ Set.Icc a b, ∀ x ∈ Set.Icc a b, f c ≤ f x) ∧\n    (∃ d ∈ Set.Icc a b, ∀ x ∈ Set.Icc a b, f x ≤ f d)",
+  "key_strategies": "1. The strict inequality \\(a<b\\) implies \\(a\\le b\\), ensuring that the closed interval \\([a,b]\\) is nonempty.\n\n2. The interval \\([a,b]\\) is compact, so continuity of \\(f\\) on this nonempty compact set guarantees that \\(f\\) attains both a minimum and a maximum there.\n\n3. Applying the compact-set minimum and maximum existence results separately produces \\(c,d\\in[a,b]\\) with \\(f(c)\\le f(x)\\le f(d)\\) for every \\(x\\in[a,b]\\).",
+  "lean_name": "extreme_value_theorem",
+  "proof_id": "atlas.real_analysis.2b19d4ad0017",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/Continuity.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Bolzano's Intermediate Value Theorem.\n\nLet `f : ℝ → ℝ` be continuous on `[a, b]` with `a < b`. Then:\nif `f a < y < f b`, there exists `c ∈ (a, b)` with `f c = y`;\nif `f b < y < f a`, there exists `c ∈ (a, b)` with `f c = y`.\n\nIn either case, `f` attains every value strictly between `f a` and `f b` at some\ninterior point of the interval.",
+  "created_at": "2026-08-23T22:06:40.882662+00:00",
+  "formal_statement": "theorem intermediate_value_theorem (f : ℝ → ℝ) (a b : ℝ) (hab : a < b)\n    (hf : ContinuousOn f (Set.Icc a b)) :\n    (∀ y, f a < y → y < f b → ∃ c ∈ Set.Ioo a b, f c = y) ∧\n    (∀ y, f b < y → y < f a → ∃ c ∈ Set.Ioo a b, f c = y)",
+  "key_strategies": "1. Strengthen \\(a<b\\) to \\(a\\le b\\) so the closed-interval intermediate value theorem applies on \\([a,b]\\).\n\n2. Convert the strict inequalities placing \\(y\\) between \\(f(a)\\) and \\(f(b)\\) into membership in the appropriate closed interval of endpoint values, using \\([f(a),f(b)]\\) in the increasing case and \\([f(b),f(a)]\\) in the decreasing case.\n\n3. Apply the corresponding closed-interval intermediate value theorem to obtain \\(c\\in[a,b]\\) satisfying \\(f(c)=y\\).\n\n4. Upgrade \\(c\\in[a,b]\\) to \\(c\\in(a,b)\\) by ruling out \\(c=a\\) and \\(c=b\\), since either endpoint equality together with \\(f(c)=y\\) would contradict the strict inequalities on \\(y\\).",
+  "lean_name": "intermediate_value_theorem",
+  "proof_id": "atlas.real_analysis.0981157bc4ef",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/IVT.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "The polynomial `f(x) = x^2021 + x^2020 + 9.03 x + 1` has at least one real\nroot.\n\nProved via the Intermediate Value Theorem: `f(-1) < 0` and `f(0) > 0`, so by\ncontinuity there exists `c ∈ [-1, 0]` with `f(c) = 0`.",
+  "created_at": "2026-08-23T22:06:50.884406+00:00",
+  "formal_statement": "theorem polynomial_has_real_root : ∃ x : ℝ, x^2021 + x^2020 + 9.03*x + 1 = 0",
+  "key_strategies": "1. Define the polynomial as a continuous real-valued function \\(f(x)=x^{2021}+x^{2020}+9.03x+1\\).\n\n2. Evaluate the endpoints \\(-1\\) and \\(0\\) to obtain the crucial sign change \\(f(-1)=-8.03<0<f(0)=1\\).\n\n3. Apply the Intermediate Value Theorem on \\([-1,0]\\) to conclude that some \\(c\\in[-1,0]\\) satisfies \\(f(c)=0\\).",
+  "lean_name": "polynomial_has_real_root",
+  "proof_id": "atlas.real_analysis.84d958addbb6",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/IVT.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "The elementary `ε`-`δ` notion `IsClusterPoint S x` agrees with Mathlib's\ntopological accumulation point `AccPt x (𝓟 S)`.",
+  "created_at": "2026-08-23T22:07:07.150579+00:00",
+  "formal_statement": "theorem cluster_point_iff_acc_point (S : Set ℝ) (x : ℝ) :\n    IsClusterPoint S x ↔ AccPt x (𝓟 S)",
+  "key_strategies": "1. Rewrite `AccPt x (𝓟 S)` using `accPt_iff_nhds`, turning the topological claim into the statement that every neighborhood of \\(x\\) contains a point of \\(S\\) distinct from \\(x\\).\n\n2. In the forward direction, use the metric neighborhood basis to find an open ball around \\(x\\) contained in an arbitrary neighborhood, then apply the elementary cluster-point hypothesis inside that ball.\n\n3. In the reverse direction, test the accumulation-point hypothesis on the open ball \\(B(x,\\delta)\\), which is a neighborhood whenever \\(\\delta>0\\).\n\n4. Translate ball membership into the required absolute-value inequality using \\(\\operatorname{dist}(x,y)=|x-y|\\) on \\(\\mathbb R\\) and the symmetry of absolute differences.",
+  "lean_name": "cluster_point_iff_acc_point",
+  "proof_id": "atlas.real_analysis.67ce5a8edceb",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/Limits.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "The elementary `ε`-`δ` definition `FunctionConvergesAt f S c L` is equivalent\nto the Mathlib filter statement that `f` tends to `L` along the neighborhood\nfilter of `c` restricted to `S \\ {c}`.",
+  "created_at": "2026-08-23T22:07:22.281575+00:00",
+  "formal_statement": "theorem function_limit_iff_tendsto (f : ℝ → ℝ) (S : Set ℝ) (c L : ℝ) :\n    FunctionConvergesAt f S c L ↔\n    Filter.Tendsto f (nhdsWithin c (S \\ {c})) (nhds L)",
+  "key_strategies": "1. Rewrite the filter statement using `Metric.tendsto_nhdsWithin_nhds`, turning `Tendsto` into the same ε–δ form as the elementary definition.\n\n2. Recognize that membership in \\(S \\setminus \\{c\\}\\) is exactly the conjunction \\(x \\in S\\) and \\(x \\ne c\\), so the restricted filter encodes the punctured-domain condition.\n\n3. Use \\(x \\ne c \\iff 0<|x-c|\\) to translate between exclusion of the point \\(c\\) and the elementary definition’s strict positivity hypothesis.\n\n4. Rewrite real distances via `Real.dist_eq`, identifying \\(d(x,c)\\) and \\(d(f(x),L)\\) with the corresponding absolute differences.",
+  "lean_name": "function_limit_iff_tendsto",
+  "proof_id": "atlas.real_analysis.bb1610265d4d",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/Limits.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Uniqueness of the function limit: if `c` is a cluster point of `S` and `f`\nconverges both to `L₁` and to `L₂` at `c` along `S`, then `L₁ = L₂`.",
+  "created_at": "2026-08-23T22:07:31.684850+00:00",
+  "formal_statement": "theorem function_limit_unique (f : ℝ → ℝ) (S : Set ℝ) (c L₁ L₂ : ℝ)\n    (hc : IsClusterPoint S c)\n    (hL₁ : FunctionConvergesAt f S c L₁)\n    (hL₂ : FunctionConvergesAt f S c L₂) : L₁ = L₂",
+  "key_strategies": "1. Reinterpret the cluster-point hypothesis as saying that the punctured neighborhood filter \\(\\operatorname{nhdsWithin}(c, S \\setminus \\{c\\})\\) is nontrivial (`NeBot`).\n\n2. Convert both function-limit hypotheses into filter convergence of \\(f\\) to \\(L_1\\) and \\(L_2\\) along that same punctured neighborhood filter.\n\n3. Apply uniqueness of limits in the Hausdorff space \\(\\mathbb R\\) for a nontrivial filter to conclude \\(L_1=L_2\\).",
+  "lean_name": "function_limit_unique",
+  "proof_id": "atlas.real_analysis.6587f64283a7",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/Limits.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "A real function `f` is uniformly continuous on a set `S ⊆ ℝ` if and only if it\nsatisfies the textbook ε–δ criterion: for every `ε > 0` there exists `δ > 0` such\nthat `|f x - f y| < ε` for all `x, y ∈ S` with `|x - y| < δ`.",
+  "created_at": "2026-08-23T22:07:42.014105+00:00",
+  "formal_statement": "theorem uniform_continuous_on_iff (f : ℝ → ℝ) (S : Set ℝ) :\n    UniformContinuousOn f S ↔\n    ∀ ε > 0, ∃ δ > 0, ∀ x ∈ S, ∀ y ∈ S, |x - y| < δ → |f x - f y| < ε",
+  "key_strategies": "1. Invoke the general metric-space characterization `Metric.uniformContinuousOn_iff`, which already expresses uniform continuity on a set through a single \\(\\delta\\) working for every pair of points in that set.\n\n2. Rewrite the real metric using `Real.dist_eq`, namely \\(d(x,y)=|x-y|\\), both in the domain and codomain, so the abstract metric criterion becomes exactly the stated absolute-value \\(\\varepsilon\\)–\\(\\delta\\) condition.\n\n3. Use `simp only` to perform these unfoldings and rewrites, after which the two propositions are syntactically identical.",
+  "lean_name": "uniform_continuous_on_iff",
+  "proof_id": "atlas.real_analysis.5b5917979e9d",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/UniformContinuity.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "A real function `f` is differentiable at `c` if and only if the difference quotient\n`(f x - f c) / (x - c)` has a limit as `x → c` with `x ≠ c`.",
+  "created_at": "2026-08-23T22:07:51.230138+00:00",
+  "formal_statement": "theorem differentiable_at_iff_limit_exists (f : ℝ → ℝ) (c : ℝ) :\n    DifferentiableAt ℝ f c ↔\n    ∃ L : ℝ, Filter.Tendsto (fun x => (f x - f c) / (x - c)) (nhdsWithin c {c}ᶜ) (nhds L)",
+  "key_strategies": "1. Rewrite the difference quotient \\(x \\mapsto (f(x)-f(c))/(x-c)\\) as the standard slope function `slope f c`, with the punctured neighborhood \\(x \\ne c\\) avoiding division by zero.\n\n2. In the forward direction, convert differentiability at \\(c\\) into `HasDerivAt f (deriv f c) c` and apply `hasDerivAt_iff_tendsto_slope` to obtain the required limit.\n\n3. In the reverse direction, apply the converse of `hasDerivAt_iff_tendsto_slope` to the assumed slope limit, producing `HasDerivAt f L c`, and then conclude differentiability.",
+  "lean_name": "differentiable_at_iff_limit_exists",
+  "proof_id": "atlas.real_analysis.9f333d74ac85",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/Basic.lean",
+  "strategy_model": "gpt-5.6-sol"
+}

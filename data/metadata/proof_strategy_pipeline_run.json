@@ -1,0 +1,44 @@
+{
+  "api_base": "https://api.openai.com/v1",
+  "atlas_commit": "34ffed396f376454c1a9b297f3fd74c5c801fb50",
+  "atlas_dir": "external/atlas-lean/Atlas/RealAnalysis",
+  "atlas_repo_root": "external/atlas-lean",
+  "counts": {
+    "final_records": 10,
+    "key_strategy_records": 10,
+    "proof_records": 10,
+    "total_steps": 101,
+    "translated_records": 10
+  },
+  "created_at": "2026-08-23T22:07:51.231969+00:00",
+  "dry_run": false,
+  "limit": 10,
+  "model": "gpt-5.6-sol",
+  "notes": [
+    "Step splitting is currently line-based and should be reviewed.",
+    "The plain_english field now stores a whole-proof textbook-style explanation, not per-step literal translations.",
+    "LLM translations and key strategies are generated annotations, not verified facts.",
+    "Raw ATLAS files are read from external/ and are not modified."
+  ],
+  "outputs": {
+    "extracted_proofs": "data/processed/real_analysis_extracted_proofs.jsonl",
+    "key_strategy_labels": "data/annotations/key_strategy_labels.jsonl",
+    "proofs_with_key_strategies": "data/processed/proofs_with_key_strategies.jsonl",
+    "translated_proofs": "data/processed/translated_proofs.jsonl"
+  },
+  "pipeline_script": "workflows/proof_strategy_extraction/run_pipeline.py",
+  "prompts": {
+    "key_strategy_prompt": "THINK HARD and identify THE KEYS to this proof (hint: what is THE GENIUS IDEAS where the proof could not work without it?) Summarize EACH KEY in one sentence. ENUMERATE EACH sentence and put a number before it.",
+    "textbook_proof_prompt": "You are translating a Lean proof into a textbook-style mathematical proof explanation. Do NOT merely translate symbols literally. Explain the mathematical role of the Lean proof as a human real-analysis textbook would. Use the theorem comment and formal statement as context. Mention the core theorems, reductions, rewrites, constructions, or compactness/continuity ideas being used. Avoid Lean-specific phrasing unless it is essential. Return a coherent textbook-style proof explanation, not a line-by-line syntax gloss."
+  },
+  "reasoning_effort": "high",
+  "resume": true,
+  "temperature": 1.0,
+  "workflow_description": [
+    "Extract Lean proofs from ATLAS RealAnalysis.",
+    "Split each proof into enumerated Lean steps.",
+    "Call OpenAI-compatible API once per proof to generate a textbook-style English proof explanation.",
+    "Call API once per proof to identify enumerated key strategies.",
+    "Attach key_strategies to the final proof record."
+  ]
+}
