@@ -4,15 +4,15 @@
   "atlas_dir": "external/atlas-lean/Atlas/RealAnalysis",
   "atlas_repo_root": "external/atlas-lean",
   "counts": {
-    "final_records": 10,
-    "key_strategy_records": 10,
-    "proof_records": 10,
-    "total_steps": 101,
-    "translated_records": 10
+    "final_records": 94,
+    "key_strategy_records": 94,
+    "proof_records": 94,
+    "total_steps": 1792,
+    "translated_records": 94
   },
-  "created_at": "2026-08-23T22:07:51.231969+00:00",
+  "created_at": "2026-08-23T23:03:52.565098+00:00",
   "dry_run": false,
-  "limit": 10,
+  "limit": 94,
   "model": "gpt-5.6-sol",
   "notes": [
     "Step splitting is currently line-based and should be reviewed.",

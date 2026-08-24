@@ -1,0 +1,47 @@
+1. Abstract-to-concrete reformulation: Unfold or invoke characterization theorems to translate filters, metrics, norms, set restrictions, and formal objects into explicit real-variable statements. Typical rewrites include \(\operatorname{dist}(x,y)=|x-y|\), \(\|x\|=|x|\), punctured-set membership, and filter convergence as an \(\varepsilon\)–\(\delta\) or \(\varepsilon\)–\(N\) condition.
+
+2. Neighborhood-basis and punctured-filter reasoning: Pass between arbitrary neighborhoods and sufficiently small metric balls, or test a neighborhood statement on a ball. Deleted neighborhoods are encoded by `nhdsWithin` on \(S\setminus\{c\}\), enabling cluster-point arguments and Hausdorff uniqueness of limits when the filter is nontrivial.
+
+3. Compactness consequences for continuous functions: Recognize closed bounded intervals as compact and, when needed, prove they are nonempty. Continuity on such sets then yields uniform boundedness, attained extrema, compact images, uniform continuity, and integrability.
+
+4. Intermediate-value and sign-crossing arguments: Establish endpoint order and show the target value lies between the endpoint values, then apply the Intermediate Value Theorem. For root existence, exhibit a sign change; for an interior conclusion, exclude the endpoints using strict inequalities.
+
+5. Supremum and infimum bounding: Prove the relevant value set is nonempty and bounded, then use that every member lies below its supremum and above its infimum. This controls moduli of continuity, bounded images, integral bounds, meshes, and other extremal constructions.
+
+6. Derivatives as limits and compositional rules: Replace differentiability by convergence of the punctured slope function and use the equivalence with `HasDerivAt` in both directions. For composite functions, first establish differentiability of the composition and then apply the derivative chain rule.
+
+7. Mean-value and derivative-sign methods: Use Fermat, Rolle, or the Mean Value Theorem to convert function-value information into derivative information or conversely. Derivative inequalities on an interval yield monotonicity, while opposing inequalities or a zero derivative yield constancy.
+
+8. Higher-order expansion and local-extremum analysis: Obtain Taylor identities from a remainder theorem, unfold the finite Taylor sum, and normalize coefficients algebraically. For second-derivative tests, turn \(f''(x_0)>0\) and \(f'(x_0)=0\) into a local sign pattern for \(f'\), then prove strict decrease on one side and strict increase on the other.
+
+9. Inequality assembly from standard estimates: Decompose an expression, apply triangle or reverse-triangle inequalities, bound simpler pieces, and chain the resulting inequalities. This also includes direct use of standard Lipschitz, trigonometric, order, and squeeze estimates when they exactly match the goal.
+
+10. Uniform majorants, comparison, and radius methods: Bound function-series terms by an \(x\)-independent summable sequence, usually geometric, and apply comparison or the Weierstrass \(M\)-test for absolute or uniform convergence. For power series, translate scalar coefficients to formal multilinear coefficients, identify their norms, and invoke general radius-of-convergence theorems.
+
+11. Dominant-scale versus error decomposition: Isolate one oscillatory or otherwise dominant term and split the remaining expression into lower-frequency and tail errors. Show the dominant contribution exceeds the total error, then use the resulting growing difference quotients to contradict the bounded slope behavior forced by differentiability.
+
+12. Uniform convergence and stable passage to limits: Express uniform convergence with one threshold independent of the spatial variable and transfer uniform bounds through sums, integrals, or sup norms. Uniform convergence of derivatives is handled by integrating the derivatives, passing the limit through the integral, and differentiating the resulting integral representation; approximation sequences are built with errors tending uniformly to zero.
+
+13. Fundamental-theorem and routine integral pipelines: Convert continuity into interval integrability, restrict or extend functions as needed, and apply the Fundamental Theorem of Calculus. Standard consequences—comparison, triangle bounds, additivity over adjacent intervals, linearity, and evaluation of constant integrals—then reduce integral goals to pointwise inequalities or algebra.
+
+14. Integration by parts, substitution, and oscillatory decay: Establish the continuity, differentiability, absolute-continuity, and derivative-integrability hypotheses required by transformation theorems, treating degenerate intervals separately. For oscillatory integrals, integrate against a scaled antiderivative of size \(O(1/n)\), bound endpoint and derivative terms, and squeeze the result to zero.
+
+15. Finite-partition mechanics and telescoping: Use monotonicity of partition points to prove nonnegative or positive subinterval lengths, compare each length with the mesh, and locate tags inside the ambient interval. Rewrite finite-indexed sums as ordinary telescoping sums so all internal partition points cancel and only \(b-a\) remains.
+
+16. Refinement, fiber reindexing, and common subdivisions: Express each coarse interval as the sum of the fine intervals assigned to it, distribute coarse data over fibers, and reindex the resulting double sum. To compare unrelated partitions, construct a sorted union of breakpoints and prove it refines both original partitions.
+
+17. Modulus-of-continuity error control: Use uniform continuity to show the modulus of continuity tends to zero and compact boundedness to ensure its defining supremum is legitimate. When comparing a partition with a refinement, bound every tag-value difference by the modulus at the coarse mesh and sum the interval lengths to obtain an error of the form \((b-a)\omega_f(\text{mesh})\).
+
+18. Riemann-sum convergence through Cauchy estimates: Compare two fine Riemann sums through a common refinement and allocate half of the desired error to each modulus term. Mesh convergence then makes the sums Cauchy; completeness supplies a limit, and cross-comparison proves that the limit is independent of the chosen partition sequence.
+
+19. Sequence convergence, completeness, and subsequences: Use explicit \(\varepsilon\)–\(N\) forms, squeeze arguments, or the equivalence between convergence and the Cauchy property in \(\mathbb R\). Monotone bounded sequences converge to an extremum, bounded sequences admit convergent subsequences, and convergence is preserved under strictly increasing subsequence maps.
+
+20. Limsup and liminf via tail extrema: Represent limsup as the infimum of tail suprema and prove the two inequalities using eventual upper bounds and boundedness of all tails. Under global bounds, equality of limsup and liminf characterizes convergence, while an already convergent sequence has both equal to its limit.
+
+21. Numerical-series tests and rearrangements: Apply nonnegative comparison, root, ratio, or alternating-series criteria after converting hypotheses into eventual geometric bounds or monotone coefficients tending to zero. Absolute convergence permits transport of summability and sums through bijective rearrangements, while divergence often follows because the terms fail to tend to zero.
+
+22. Ordered-field, completeness, and canonical-structure arguments: Invoke algebraic and order laws through existing field and ordered-ring structure, using canonical witnesses such as \(0\), \(-x\), \(1\), and \(x^{-1}\). Completeness supplies suprema and Archimedeanness; rational density and lower cuts can then construct the ordered-field equivalence with \(\mathbb R\), while canonical functions such as \(\sqrt{\cdot}\) give existence and uniqueness witnesses.
+
+23. Cardinality, diagonalization, and equivalence principles: Translate countability into cardinal inequalities, use Cantor’s theorem or a diagonal encoding to establish uncountability, and identify interval cardinality with the continuum. Mutual injections are packaged as embeddings and converted into an equivalence by Cantor–Schröder–Bernstein.
+
+24. Foundational set and natural-number proof patterns: Unfold inclusion, proper inclusion, complements, bounds, and set equality into elementwise logical statements, then use extensionality or antisymmetry. For natural numbers, use least-witness operators, strengthened induction, successor chaining, arithmetic estimates, and finite/empty-index case analysis.

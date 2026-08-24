@@ -107,3 +107,927 @@
   "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/Basic.lean",
   "strategy_model": "gpt-5.6-sol"
 }
+
+{
+  "comment": "Chain rule: if `g` is differentiable at `c` and `f` is differentiable at `g c`,\nthen the composition `f ∘ g` is differentiable at `c` and\n`(f ∘ g)'(c) = f'(g c) * g'(c)`.",
+  "created_at": "2026-08-23T22:45:43.936743+00:00",
+  "formal_statement": "theorem chain_rule (f g : ℝ → ℝ) (c : ℝ)\n    (hg : DifferentiableAt ℝ g c) (hf : DifferentiableAt ℝ f (g c)) :\n    DifferentiableAt ℝ (f ∘ g) c ∧ deriv (f ∘ g) c = deriv f (g c) * deriv g c",
+  "key_strategies": "1. Use `hf.comp c hg` to obtain differentiability of \\(f \\circ g\\) at \\(c\\) from the differentiability of \\(g\\) at \\(c\\) and \\(f\\) at \\(g(c)\\).\n2. Apply `deriv_comp c hf hg`, the derivative chain rule, to derive \\(\\operatorname{deriv}(f \\circ g)(c)=\\operatorname{deriv}f(g(c))\\operatorname{deriv}g(c)\\).\n3. Combine these two results as a conjunction using `⟨…, …⟩`.",
+  "lean_name": "chain_rule",
+  "proof_id": "atlas.real_analysis.dec4c1aa763f",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/Basic.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Characterization of relative extrema in terms of an explicit `δ`-neighborhood.\nFor `f : ℝ → ℝ`, `S ⊆ ℝ`, and `c ∈ S`:\n`f` has a relative maximum at `c` on `S` (`IsLocalMaxOn f S c`) iff there exists `δ > 0`\nsuch that for all `x ∈ S` with `|x - c| < δ`, `f x ≤ f c`; and analogously, `f` has a\nrelative minimum at `c` on `S` iff there exists `δ > 0` such that for all `x ∈ S` with\n`|x - c| < δ`, `f c ≤ f x`.",
+  "created_at": "2026-08-23T22:45:54.788824+00:00",
+  "formal_statement": "theorem relative_extremum_def (f : ℝ → ℝ) (S : Set ℝ) (c : ℝ) (_hc : c ∈ S) :\n    (IsLocalMaxOn f S c ↔ ∃ δ > 0, ∀ x ∈ S, |x - c| < δ → f x ≤ f c) ∧\n    (IsLocalMinOn f S c ↔ ∃ δ > 0, ∀ x ∈ S, |x - c| < δ → f c ≤ f x)",
+  "key_strategies": "1. Introduce a general equivalence translating an eventual property on the relative neighborhood filter `nhdsWithin c S` into an explicit positive-radius condition on points of \\(S\\).\n\n2. Use `eventually_nhdsWithin_iff` and `Metric.eventually_nhds_iff`, together with `Real.dist_eq`, to rewrite “sufficiently close to \\(c\\) within \\(S\\)” as \\(|x-c|<\\delta\\) for some \\(\\delta>0\\).\n\n3. Resolve the only mismatch between the filter formulation and the desired statement by swapping the order of the assumptions \\(x\\in S\\) and \\(|x-c|<\\delta\\).\n\n4. Instantiate the general equivalence with \\(q(x)\\equiv f(x)\\le f(c)\\) and \\(q(x)\\equiv f(c)\\le f(x)\\) to obtain the relative maximum and minimum characterizations simultaneously.",
+  "lean_name": "relative_extremum_def",
+  "proof_id": "atlas.real_analysis.d4ac68a30456",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/MVT.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Fermat's interior extremum theorem: if `f : ℝ → ℝ` attains a (global) local maximum or\nlocal minimum at an interior point `c`, and `f` is differentiable at `c`, then the derivative\nof `f` at `c` vanishes, i.e. `deriv f c = 0`.",
+  "created_at": "2026-08-23T22:46:01.445245+00:00",
+  "formal_statement": "theorem fermats_theorem (f : ℝ → ℝ) (c : ℝ)\n    (hext : IsLocalMax f c ∨ IsLocalMin f c) (_hd : DifferentiableAt ℝ f c) :\n    deriv f c = 0",
+  "key_strategies": "1. Split the disjunctive extremum hypothesis into the two cases that \\(f\\) has either a local maximum or a local minimum at \\(c\\).\n\n2. In each case, apply the corresponding library theorem `IsLocalMax.deriv_eq_zero` or `IsLocalMin.deriv_eq_zero`, which directly yields `deriv f c = 0` (so the explicit differentiability hypothesis is not needed in the Lean proof).",
+  "lean_name": "fermats_theorem",
+  "proof_id": "atlas.real_analysis.ee251a7c0ecb",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/MVT.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Rolle's theorem: if `f : ℝ → ℝ` is continuous on the closed interval `[a, b]`,\ndifferentiable at every point of the open interval `(a, b)`, and satisfies `f a = f b`,\nthen there exists some `c ∈ (a, b)` at which the derivative vanishes, i.e. `deriv f c = 0`.",
+  "created_at": "2026-08-23T22:46:21.659607+00:00",
+  "formal_statement": "theorem rolle (f : ℝ → ℝ) (a b : ℝ) (hab : a < b)\n    (hfc : ContinuousOn f (Set.Icc a b))\n    (_hfd : ∀ x ∈ Set.Ioo a b, DifferentiableAt ℝ f x)\n    (heq : f a = f b) :\n    ∃ c ∈ Set.Ioo a b, deriv f c = 0",
+  "key_strategies": "1. Apply the existing theorem `exists_deriv_eq_zero` directly to `hab`, `hfc`, and `heq`, which already yields a point `c ∈ (a, b)` with `deriv f c = 0`, making the explicit differentiability hypothesis unnecessary.",
+  "lean_name": "rolle",
+  "proof_id": "atlas.real_analysis.8d98dc2e7b63",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/MVT.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "The Mean Value Theorem: if `f : ℝ → ℝ` is continuous on `[a, b]` and differentiable at\nevery point of `(a, b)`, then there exists some `c ∈ (a, b)` such that\n`f b - f a = deriv f c * (b - a)`.",
+  "created_at": "2026-08-23T22:46:31.857448+00:00",
+  "formal_statement": "theorem mean_value_theorem (f : ℝ → ℝ) (a b : ℝ) (hab : a < b)\n    (hfc : ContinuousOn f (Set.Icc a b))\n    (hfd : ∀ x ∈ Set.Ioo a b, DifferentiableAt ℝ f x) :\n    ∃ c ∈ Set.Ioo a b, f b - f a = deriv f c * (b - a)",
+  "key_strategies": "1. Convert pointwise differentiability on \\((a,b)\\) into `DifferentiableOn` by observing that differentiability at a point implies differentiability within the interval.\n\n2. Apply the slope form of the Mean Value Theorem to obtain \\(c\\in(a,b)\\) satisfying \\(\\operatorname{deriv} f(c)=\\frac{f(b)-f(a)}{b-a}\\).\n\n3. Use \\(a<b\\) to prove \\(b-a\\neq 0\\), allowing cancellation of the denominator and rearrangement into \\(f(b)-f(a)=\\operatorname{deriv} f(c)(b-a)\\).",
+  "lean_name": "mean_value_theorem",
+  "proof_id": "atlas.real_analysis.27206fc373ae",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/MVT.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Zero derivative implies constant: if `f : ℝ → ℝ` is differentiable on a convex set\n`I ⊆ ℝ` (i.e. an interval) and `deriv f x = 0` for every `x ∈ I`, then `f` is constant on\n`I`, i.e. `f x = f y` for all `x, y ∈ I`.",
+  "created_at": "2026-08-23T22:46:41.174446+00:00",
+  "formal_statement": "theorem zero_deriv_imp_constant (f : ℝ → ℝ) (I : Set ℝ)\n    (hI : Convex ℝ I)\n    (hfd : DifferentiableOn ℝ f I)\n    (hf' : ∀ x ∈ I, deriv f x = 0) :\n    ∀ x ∈ I, ∀ y ∈ I, f x = f y",
+  "key_strategies": "1. Restrict differentiability to the interior of the convex set while retaining continuity on the whole set, exactly matching the hypotheses of the derivative-based monotonicity criteria.\n\n2. Use the zero-derivative hypothesis twice—both as \\(0 \\le \\operatorname{deriv} f\\) and as \\(\\operatorname{deriv} f \\le 0\\)—to prove that \\(f\\) is simultaneously nondecreasing and nonincreasing on \\(I\\).\n\n3. Compare any \\(x,y\\in I\\) using the total order on \\(\\mathbb{R}\\), then combine the opposing monotonicity inequalities by antisymmetry to conclude \\(f(x)=f(y)\\).",
+  "lean_name": "zero_deriv_imp_constant",
+  "proof_id": "atlas.real_analysis.d10748554758",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/MVT.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Monotonicity characterized by the sign of the derivative on an interval.\nIf `f : ℝ → ℝ` is continuous on `[a, b]` and differentiable at every point of `(a, b)`, then:\n(1) `f` is monotonically increasing on `[a, b]` iff `0 ≤ deriv f x` for all `x ∈ (a, b)`;\n(2) `f` is monotonically decreasing on `[a, b]` iff `deriv f x ≤ 0` for all `x ∈ (a, b)`.",
+  "created_at": "2026-08-23T22:47:06.263941+00:00",
+  "formal_statement": "theorem monotonicity_and_derivatives (f : ℝ → ℝ) (a b : ℝ) (_hab : a < b)\n    (hfc : ContinuousOn f (Set.Icc a b))\n    (hfd : ∀ x ∈ Set.Ioo a b, DifferentiableAt ℝ f x) :\n    (MonotoneOn f (Set.Icc a b) ↔ ∀ x ∈ Set.Ioo a b, 0 ≤ deriv f x) ∧\n    (AntitoneOn f (Set.Icc a b) ↔ ∀ x ∈ Set.Ioo a b, deriv f x ≤ 0)",
+  "key_strategies": "1. Identify `interior (Set.Icc a b)` with `Set.Ioo a b`, so the pointwise differentiability hypothesis yields `DifferentiableOn ℝ f` on the interval’s interior.\n\n2. To derive a nonnegative derivative from monotonicity, approach each interior point from the right and choose sufficiently small `t > 0` so that `x + t ∈ [a,b]`, making the difference quotient `t⁻¹ (f (x+t) - f x)` nonnegative.\n\n3. Use convergence of the right-hand difference quotients to `deriv f x` and preservation of inequalities under limits to conclude `0 ≤ deriv f x`.\n\n4. For the converse, apply the derivative monotonicity theorem `monotoneOn_of_deriv_nonneg`, using convexity of `[a,b]`, continuity on the closed interval, and differentiability on its interior.\n\n5. Repeat the same right-difference-quotient argument for antitonicity, where `f (x+t) ≤ f x` makes every quotient nonpositive, and use `antitoneOn_of_deriv_nonpos` for the converse.",
+  "lean_name": "monotonicity_and_derivatives",
+  "proof_id": "atlas.real_analysis.ea64a8de8ee8",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/MVT.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Taylor's theorem** (Lagrange form of the remainder). Suppose `f : ℝ → ℝ` is `n` times\ncontinuously differentiable on `[x₀, x]` and its `n`-th derivative is differentiable on the open\ninterval `(x₀, x)`. Then there exists `c ∈ (x₀, x)` such that\n`f(x) = ∑_{k=0}^{n} f^{(k)}(x₀)/k! · (x - x₀)^k + f^{(n+1)}(c)/(n+1)! · (x - x₀)^{n+1}`.\nThat is, `f(x)` equals the `n`-th order Taylor polynomial at `x₀` plus the Lagrange remainder\nterm evaluated at some intermediate point `c`.",
+  "created_at": "2026-08-23T22:47:25.107138+00:00",
+  "formal_statement": "theorem taylor_theorem (f : ℝ → ℝ) (n : ℕ) (x₀ x : ℝ) (hx : x₀ < x)\n    (hf : ContDiffOn ℝ (↑n) f (Set.Icc x₀ x))\n    (hf' : DifferentiableOn ℝ (iteratedDerivWithin n f (Set.Icc x₀ x)) (Set.Ioo x₀ x)) :\n    ∃ c ∈ Set.Ioo x₀ x,\n      f x = (∑ k ∈ Finset.range (n + 1),\n          iteratedDerivWithin k f (Set.Icc x₀ x) x₀ / k.factorial * (x - x₀) ^ k) +\n        iteratedDerivWithin (n + 1) f (Set.Icc x₀ x) c / (n + 1).factorial *\n          (x - x₀) ^ (n + 1)",
+  "key_strategies": "1. Apply the previously established Lagrange mean-remainder theorem to obtain an intermediate point \\(c\\in(x₀,x)\\) together with the Taylor remainder identity.\n\n2. Unfold the Taylor polynomial in that identity using `taylor_within_apply`, exposing the finite sum in terms of iterated derivatives within \\([x₀,x]\\).\n\n3. Rewrite each scalar-multiplication summand into the target form \\(\\frac{f^{(k)}(x₀)}{k!}(x-x₀)^k\\) using real scalar multiplication and elementary ring identities.\n\n4. Rearrange the remainder coefficient so division by \\((n+1)!\\) applies to the derivative before multiplication by \\((x-x₀)^{n+1}\\), then conclude from the original remainder identity.",
+  "lean_name": "taylor_theorem",
+  "proof_id": "atlas.real_analysis.8c1166f65e44",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/Taylor.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Second derivative test for a strict local minimum.** If `f : ℝ → ℝ` is twice continuously\ndifferentiable at `x₀`, with `f'(x₀) = 0` and `f''(x₀) > 0`, then `f` has a strict relative\nminimum at `x₀`.",
+  "created_at": "2026-08-23T22:47:50.398196+00:00",
+  "formal_statement": "theorem second_derivative_test_min (f : ℝ → ℝ) (x₀ : ℝ)\n    (hf : ContDiffAt ℝ 2 f x₀)\n    (hf1 : deriv f x₀ = 0) (hf2 : 0 < iteratedDeriv 2 f x₀) :\n    IsStrictLocalMin f x₀",
+  "key_strategies": "1. Rewrite the positive second derivative hypothesis as `deriv (deriv f) x₀ > 0`, and combine it with `deriv f x₀ = 0` to show that near `x₀` the sign of `deriv f x` equals the sign of `x - x₀`.\n\n2. Use twice continuous differentiability to obtain a neighborhood on which `f` is differentiable, then intersect its radius with the radius where the derivative-sign relation holds.\n\n3. Observe that every point of the interval joining `x₀` to a point inside this common ball also remains inside the ball, so both differentiability and the derivative-sign information apply throughout that interval.\n\n4. For a point `y < x₀`, the derivative is negative on the interior of `[y, x₀]`, making `f` strictly decreasing there and hence giving `f x₀ < f y`.\n\n5. For a point `y > x₀`, the derivative is positive on the interior of `[x₀, y]`, making `f` strictly increasing there and hence again giving `f x₀ < f y`.\n\n6. Combining the two sides proves that every sufficiently close point distinct from `x₀` has strictly larger function value, which is exactly `IsStrictLocalMin f x₀`.",
+  "lean_name": "second_derivative_test_min",
+  "proof_id": "atlas.real_analysis.854142c00e14",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/Taylor.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Theorem II (reverse triangle inequality, three terms).** For all real numbers `a`, `b`, `c`,\nthe absolute value of their sum is at least `|a| - |b| - |c|`.",
+  "created_at": "2026-08-23T22:47:57.872730+00:00",
+  "formal_statement": "theorem reverse_triangle_three (a b c : ℝ) : |a + b + c| ≥ |a| - |b| - |c|",
+  "key_strategies": "1. Group \\(b+c\\) as a single term and apply the two-term reverse triangle inequality to obtain \\(|a|-|b+c|\\le |a+(b+c)|\\).\n\n2. Use the ordinary triangle inequality \\(|b+c|\\le |b|+|c|\\), which implies \\(|a|-|b|-|c|\\le |a|-|b+c|\\).\n\n3. Chain these inequalities and rewrite \\(a+(b+c)=a+b+c\\) by associativity to reach \\(|a|-|b|-|c|\\le |a+b+c|\\).",
+  "lean_name": "reverse_triangle_three",
+  "proof_id": "atlas.real_analysis.7adb6045ae9e",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/Weierstrass.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Theorem I (cosine oscillation lemma).** Two statements about the cosine function:\n(1) `cos` is 1-Lipschitz, i.e. `|cos x - cos y| ≤ |x - y|` for all real `x, y`.\n(2) For every real `c` and every positive natural number `K`, there exists a point\n`y` in the open interval `(c + π/K, c + 3π/K)` such that `|cos (K c) - cos (K y)| ≥ 1`.",
+  "created_at": "2026-08-23T22:48:15.993997+00:00",
+  "formal_statement": "theorem weierstrass_theorem_I :\n    (∀ x y : ℝ, |cos x - cos y| ≤ |x - y|) ∧\n    (∀ c : ℝ, ∀ K : ℕ, 0 < K →\n      ∃ y, c + π / K < y ∧ y < c + 3 * π / K ∧\n        |cos (K * c) - cos (K * y)| ≥ 1)",
+  "key_strategies": "1. The 1-Lipschitz assertion is obtained directly from the standard estimate \\(\\lvert \\cos x-\\cos y\\rvert\\le \\lvert x-y\\rvert\\).\n\n2. Choose \\(y_1=c+\\frac{3\\pi}{2K}\\) and \\(y_2=c+\\frac{5\\pi}{2K}\\), whose phase shifts make \\(\\cos(Ky_1)=\\sin(Kc)\\) and \\(\\cos(Ky_2)=-\\sin(Kc)\\).\n\n3. Positivity of \\(K\\) and \\(\\pi\\) shows that both \\(y_1\\) and \\(y_2\\) lie strictly inside \\(\\left(c+\\frac{\\pi}{K},\\,c+\\frac{3\\pi}{K}\\right)\\).\n\n4. At least one candidate works because \\((\\cos t-\\sin t)^2+(\\cos t+\\sin t)^2=2\\), so \\(\\lvert\\cos t-\\sin t\\rvert\\) and \\(\\lvert\\cos t+\\sin t\\rvert\\) cannot both be less than \\(1\\).",
+  "lean_name": "weierstrass_theorem_I",
+  "proof_id": "atlas.real_analysis.48866535c0ff",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/Weierstrass.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Theorem III.** The defining series of the Weierstrass function is well-behaved:\n(1) for every `x ∈ ℝ`, the series `∑ k, cos(160^k x) / 4^k` is absolutely convergent;\n(2) the function `weierstrass_fun` is continuous and bounded on `ℝ`.",
+  "created_at": "2026-08-23T22:48:28.591231+00:00",
+  "formal_statement": "theorem weierstrass_theorem_III :\n    (∀ x : ℝ, Summable (fun k : ℕ => |cos (160 ^ k * x) / 4 ^ k|)) ∧\n    (Continuous weierstrass_fun ∧ ∃ B, ∀ x, |weierstrass_fun x| ≤ B)",
+  "key_strategies": "1. Uniformly dominate every summand using \\(\\left|\\cos(160^k x)/4^k\\right|\\le (1/4)^k\\), relying on \\(|\\cos t|\\le 1\\) and \\(4^k>0\\).\n\n2. Use convergence of the geometric series \\(\\sum_k(1/4)^k\\) to obtain absolute convergence for every \\(x\\) by comparison.\n\n3. Apply the Weierstrass \\(M\\)-test to the continuous summands, using the same \\(x\\)-independent geometric bound, to deduce continuity of the infinite sum.\n\n4. Combine the infinite-series triangle inequality with the geometric-series sum \\(\\sum_k(1/4)^k=4/3\\) to obtain the global bound \\(|\\operatorname{weierstrass\\_fun}(x)|\\le 4/3\\).",
+  "lean_name": "weierstrass_theorem_III",
+  "proof_id": "atlas.real_analysis.154d27ad6b0e",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/Weierstrass.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "For every real `x`, the series `∑ k, cos(160^k x) / 4^k` defining the Weierstrass function\nis summable, by comparison with the geometric series `∑ (1/4)^k`.",
+  "created_at": "2026-08-23T22:48:34.234628+00:00",
+  "formal_statement": "lemma weierstrass_summable (x : ℝ) :\n    Summable (fun k : ℕ => cos (160 ^ k * x) / (4:ℝ) ^ k)",
+  "key_strategies": "1. Bound the oscillatory numerator uniformly using \\(\\lvert\\cos t\\rvert \\le 1\\), obtaining \\(\\left|\\cos(160^k x)/4^k\\right| \\le 1/4^k\\).\n\n2. Recognize \\(1/4^k=(1/4)^k\\) and use that the geometric series with ratio \\(1/4<1\\) is summable.\n\n3. Apply the norm comparison test to conclude that the original series is absolutely summable.",
+  "lean_name": "weierstrass_summable",
+  "proof_id": "atlas.real_analysis.de15dd292228",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/Weierstrass.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Slope blow-up lemma.** For every real `c` and every natural number `n`, there exists a\npoint `y ≠ c` with `|y - c| < 3π / 160^n` such that the difference quotient of the\nWeierstrass function between `y` and `c` has absolute value at least `40^n / (117 π)`.\nSince `40^n / (117 π) → ∞`, this witnesses that the function cannot have a finite derivative\nat `c`.",
+  "created_at": "2026-08-23T22:48:54.966132+00:00",
+  "formal_statement": "lemma weierstrass_slope_lower_bound (c : ℝ) (n : ℕ) :\n    ∃ y : ℝ, y ≠ c ∧ |y - c| < 3 * π / (160:ℝ)^n ∧\n    |(weierstrass_fun y - weierstrass_fun c) / (y - c)| ≥ (40:ℝ)^n / (117 * π)",
+  "key_strategies": "1. Choose \\(y>c\\) within \\(3\\pi/160^n\\) using the oscillation theorem so that the \\(n\\)-th cosine mode changes by at least \\(1\\).\n\n2. Rewrite \\(W(y)-W(c)\\) as the summable series of termwise differences and split it into the modes below \\(n\\), the dominant \\(n\\)-th mode, and the tail above \\(n\\).\n\n3. The oscillation condition makes the \\(n\\)-th mode contribute at least \\(1/4^n\\) in absolute value.\n\n4. Bound the lower-frequency modes using the Lipschitz estimate \\(|\\cos u-\\cos v|\\le |u-v|\\), the proximity of \\(y\\) to \\(c\\), and a geometric-series estimate to obtain \\(4/(13\\cdot4^n)\\).\n\n5. Bound the higher-frequency tail using \\(|\\cos u-\\cos v|\\le2\\) and the geometric decay \\(4^{-k}\\), yielding \\(2/(3\\cdot4^n)\\).\n\n6. Apply the reverse triangle inequality to retain the positive remainder \\(1-4/13-2/3=1/39\\), then combine this increment bound with \\(y-c<3\\pi/160^n\\) and \\(160^n=40^n4^n\\) to obtain the required slope lower bound.",
+  "lean_name": "weierstrass_slope_lower_bound",
+  "proof_id": "atlas.real_analysis.cf338ff3842e",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/Weierstrass.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Weierstrass's theorem.** The function `weierstrass_fun x = ∑ k, cos(160^k x) / 4^k`\nis nowhere differentiable on `ℝ`: for every `c`, `weierstrass_fun` fails to be differentiable\nat `c`. The proof uses `weierstrass_slope_lower_bound` to exhibit a sequence of points\napproaching `c` along which the difference quotients diverge to infinity, contradicting the\nconvergence of the slope to a finite derivative.",
+  "created_at": "2026-08-23T22:49:13.925564+00:00",
+  "formal_statement": "theorem weierstrass_nowhere_differentiable :\n    ∀ c : ℝ, ¬ DifferentiableAt ℝ weierstrass_fun c",
+  "key_strategies": "1. Assume differentiability at \\(c\\), which forces the slope \\(x \\mapsto \\operatorname{slope}(f,c,x)\\) to converge to the finite derivative as \\(x \\to c\\) through \\(x \\ne c\\).\n\n2. Apply `weierstrass_slope_lower_bound` for each \\(n\\) to choose \\(x_n \\ne c\\) such that \\(|x_n-c|<3\\pi/160^n\\) while the corresponding difference quotient has magnitude at least \\(40^n/(117\\pi)\\).\n\n3. Since \\(3\\pi/160^n \\to 0\\), the chosen points satisfy \\(x_n \\to c\\), and their non-equality to \\(c\\) allows the punctured slope limit to be composed with this sequence.\n\n4. Thus the norms of the slopes along \\(x_n\\) must converge to the finite value \\(\\lVert\\operatorname{deriv} f(c)\\rVert\\), but their exponentially growing lower bound tends to \\(+\\infty\\), yielding the contradiction.",
+  "lean_name": "weierstrass_nowhere_differentiable",
+  "proof_id": "atlas.real_analysis.0bd46e3d6dbf",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/Weierstrass.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Uniform convergence of `f n` to `g` on `S` is equivalent to the classical `ε`-`M`\nformulation: for every `ε > 0`, there exists `M ∈ ℕ` such that for all `n ≥ M` and all\n`x ∈ S`, `|f n x - g x| < ε`.",
+  "created_at": "2026-08-23T22:49:26.961025+00:00",
+  "formal_statement": "theorem uniform_convergence_iff (f : ℕ → ℝ → ℝ) (g : ℝ → ℝ) (S : Set ℝ) :\n    TendstoUniformlyOn f g atTop S ↔\n    ∀ ε > 0, ∃ M : ℕ, ∀ n ≥ M, ∀ x ∈ S, |f n x - g x| < ε",
+  "key_strategies": "1. Rewrite uniform convergence using `Metric.tendstoUniformlyOn_iff`, reducing the goal to an eventual uniform distance bound for every positive \\(\\varepsilon\\).\n\n2. Use the characterization of eventual truth along `atTop` on \\(\\mathbb N\\): a property holds eventually exactly when it holds for all \\(n \\ge M\\) for some \\(M\\).\n\n3. Translate between the metric bound and the desired absolute-value bound via \\(\\operatorname{dist}(a,b)=|a-b|\\), using symmetry of distance or absolute differences to correct the order of \\(f_n(x)\\) and \\(g(x)\\).",
+  "lean_name": "uniform_convergence_iff",
+  "proof_id": "atlas.real_analysis.7a37ac7d42a3",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/FunctionSequences/Basic.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Weierstrass M-test: if `|f j x| ≤ M j` for all `j` and all `x ∈ S`, and `∑ M j` converges,\nthen for every `x ∈ S` the series `∑ f j x` converges (absolutely), and the partial sums\n`∑_{j < n} f j x` converge uniformly on `S` to `∑' j, f j x`.",
+  "created_at": "2026-08-23T22:49:36.486411+00:00",
+  "formal_statement": "theorem weierstrass_m_test (f : ℕ → ℝ → ℝ) (M : ℕ → ℝ) (S : Set ℝ)\n    (hM : ∀ j, ∀ x ∈ S, |f j x| ≤ M j) (hMsum : Summable M) :\n    (∀ x ∈ S, Summable (fun j => f j x)) ∧\n    TendstoUniformlyOn (fun n x => ∑ j ∈ Finset.range n, f j x)\n      (fun x => ∑' j, f j x) Filter.atTop S",
+  "key_strategies": "1. Convert the absolute-value bound \\(|f_j(x)| \\le M_j\\) into the norm bound \\(\\|f_j(x)\\| \\le M_j\\) using \\(\\|r\\|=|r|\\) for real numbers.\n\n2. For each fixed \\(x\\in S\\), apply the norm-comparison test with the summable majorant \\(M\\) to deduce that \\(\\sum_j f_j(x)\\) is summable.\n\n3. Use the same bound uniformly for every \\(x\\in S\\), together with the summability of \\(M\\), to apply the uniform-series M-test and obtain uniform convergence of the partial sums to \\(x\\mapsto\\sum'_j f_j(x)\\).",
+  "lean_name": "weierstrass_m_test",
+  "proof_id": "atlas.real_analysis.22245b9d4d96",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/FunctionSequences/Basic.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Interchange of limits and derivatives.** Let `f n : ℝ → ℝ` be a sequence of functions on\n`[a, b]` such that each `f n` is differentiable on `[a, b]` with derivative `f' n` continuous on\n`[a, b]`. If `f' n → g` uniformly on `[a, b]` and `f n x → lim x` pointwise on `[a, b]`, then the\nlimit function `lim` is differentiable on `[a, b]` with derivative `g`, and `g` is continuous on\n`[a, b]`. In particular, this shows that the pointwise limit of a sequence of continuously\ndifferentiable functions whose derivatives converge uniformly is itself continuously differentiable,\nand that differentiation may be interchanged with the limit.",
+  "created_at": "2026-08-23T22:49:58.501481+00:00",
+  "formal_statement": "theorem uniform_limit_derivative {f : ℕ → ℝ → ℝ} {g : ℝ → ℝ} {f' : ℕ → ℝ → ℝ}\n    {lim : ℝ → ℝ} {a b : ℝ} (hab : a < b)\n    (hderiv : ∀ n, ∀ x ∈ Icc a b, HasDerivAt (f n) (f' n x) x)\n    (hf'_cont : ∀ n, ContinuousOn (f' n) (Icc a b))\n    (hf'_unif : TendstoUniformlyOn f' g atTop (Icc a b))\n    (hfg : ∀ x ∈ Icc a b, Tendsto (fun n => f n x) atTop (nhds (lim x))) :\n    (∀ x ∈ Icc a b, HasDerivWithinAt lim (g x) (Icc a b) x) ∧ ContinuousOn g (Icc a b)",
+  "key_strategies": "1. The uniform limit \\(g\\) of the continuous derivatives \\(f'_n\\) is continuous on \\([a,b]\\), hence interval integrable on every subinterval \\([a,x]\\).\n\n2. The fundamental theorem of calculus converts each derivative identity into the increment formula \\(f_n(x)-f_n(a)=\\int_a^x f'_n(t)\\,dt\\).\n\n3. Uniform convergence \\(f'_n\\to g\\) allows passage of the limit through the integral, using the estimate \\(\\left\\|\\int_a^x(f'_n-g)\\right\\|\\le (x-a)\\sup_{[a,b]}|f'_n-g|\\).\n\n4. Pointwise convergence of \\(f_n(x)\\) and \\(f_n(a)\\), together with uniqueness of limits, yields \\(\\lim(x)-\\lim(a)=\\int_a^x g(t)\\,dt\\) for every \\(x\\in[a,b]\\).\n\n5. Rewriting \\(\\lim(u)=\\lim(a)+\\int_a^u g(t)\\,dt\\) on \\([a,b]\\) and applying the fundamental theorem of calculus to the continuous function \\(g\\) proves that \\(\\lim\\) has within-derivative \\(g(x)\\) at every \\(x\\in[a,b]\\).",
+  "lean_name": "uniform_limit_derivative",
+  "proof_id": "atlas.real_analysis.432e8639d4c7",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/FunctionSequences/InterchangeLimits.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "The Cauchy–Hadamard radius of convergence of a scalar power series with coefficients `a`\nagrees with the radius of the associated formal multilinear series\n`FormalMultilinearSeries.ofScalars ℝ a` from Mathlib.",
+  "created_at": "2026-08-23T22:50:15.397320+00:00",
+  "formal_statement": "theorem radiusOfConvergence_eq_formalRadius (a : ℕ → ℝ) :\n    radiusOfConvergence a = (FormalMultilinearSeries.ofScalars ℝ a).radius",
+  "key_strategies": "1. Unfold the Cauchy–Hadamard definition so the desired equality reduces to comparing the limsups of the \\(n\\)-th-root norm sequences.\n\n2. Show termwise that the associated formal coefficient has the same norm as \\(a_n\\), using that it is \\(a_n\\) times the canonical multilinear multiplication map and that this map has norm \\(1\\).\n\n3. Replace the scalar norm sequence by the identical formal-series norm sequence and apply the theorem identifying its limsup with the inverse of the formal radius.\n\n4. Conclude by using involutivity of inversion in the extended nonnegative reals, which remains valid at \\(0\\) and \\(+\\infty\\).",
+  "lean_name": "radiusOfConvergence_eq_formalRadius",
+  "proof_id": "atlas.real_analysis.428609544e94",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/FunctionSequences/PowerSeries.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "The absolute values of the terms of a summable real sequence are uniformly bounded:\nif `f : ℕ → ℝ` is summable, then there exists a constant `C` with `|f n| ≤ C` for all `n`.",
+  "created_at": "2026-08-23T22:50:23.896714+00:00",
+  "formal_statement": "lemma summable_abs_bounded (f : ℕ → ℝ) (hf : Summable f) : ∃ C, ∀ n, |f n| ≤ C",
+  "key_strategies": "1. Summability implies \\(f(n)\\to 0\\), so with \\(\\varepsilon=1\\) there is an \\(N\\) such that \\(|f(n)|<1\\) for every \\(n\\ge N\\).\n\n2. Choose \\(C=\\sum_{i<N}|f(i)|+1\\), which simultaneously dominates the finitely many initial terms and the uniformly small tail.\n\n3. Split into \\(n\\ge N\\), where \\(|f(n)|<1\\le C\\), and \\(n<N\\), where \\(|f(n)|\\) is a nonnegative summand of the finite sum defining \\(C\\).",
+  "lean_name": "summable_abs_bounded",
+  "proof_id": "atlas.real_analysis.b2be3ed6ab4f",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/FunctionSequences/PowerSeries.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Comparison criterion for the radius of convergence: if the sequence\n`|aₙ| · rⁿ` is uniformly bounded by some constant `C`, then `r` lies inside the\ndisk of convergence, i.e. `r ≤ radiusOfConvergence a`.",
+  "created_at": "2026-08-23T22:50:35.765385+00:00",
+  "formal_statement": "theorem le_radiusOfConvergence_of_bound (a : ℕ → ℝ) (r : NNReal) (C : ℝ)\n    (h : ∀ n, |a n| * (r : ℝ) ^ n ≤ C) :\n    (r : ENNReal) ≤ radiusOfConvergence a",
+  "key_strategies": "1. Rewrite `radiusOfConvergence a` as the formal radius of the multilinear series obtained from the scalar coefficients \\(a_n\\).\n\n2. Apply the general comparison theorem `FormalMultilinearSeries.le_radius_of_bound`, which turns a uniform bound on the weighted coefficient norms into the desired lower bound on the radius.\n\n3. Reduce the multilinear-series norm condition to the scalar inequality \\(|a_n|\\,r^n \\le C\\) by identifying the norm of scalar multiplication by \\(a_n\\) with \\(|a_n|\\), exactly matching the hypothesis.",
+  "lean_name": "le_radiusOfConvergence_of_bound",
+  "proof_id": "atlas.real_analysis.9ed4bfbab8c0",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/FunctionSequences/PowerSeries.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Absolute convergence inside the radius of convergence: for any `r < radiusOfConvergence a`,\nthe series `∑ₙ |aₙ| · rⁿ` is summable.",
+  "created_at": "2026-08-23T22:50:45.506061+00:00",
+  "formal_statement": "lemma summable_abs_mul_pow_of_lt_radius (a : ℕ → ℝ) (r : NNReal)\n    (hr : (r : ENNReal) < radiusOfConvergence a) :\n    Summable (fun n => |a n| * (r : ℝ) ^ n)",
+  "key_strategies": "1. Rewrite the scalar radius of convergence as the formal radius of the associated formal multilinear series, turning the hypothesis into the form required by the general convergence theorem.\n\n2. Apply `FormalMultilinearSeries.summable_norm_mul_pow` to deduce summability of the norm-weighted terms at every radius strictly inside the formal radius.\n\n3. Compute that the norm of the \\(n\\)-th multilinear coefficient obtained from \\(a_n\\) is exactly \\(|a_n|\\), since the canonical multiplication map has norm \\(1\\), thereby identifying the general summable series with \\(\\sum_n |a_n|r^n\\).",
+  "lean_name": "summable_abs_mul_pow_of_lt_radius",
+  "proof_id": "atlas.real_analysis.595aa10aa1dd",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/FunctionSequences/PowerSeries.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Uniform convergence of a power series on closed sub-intervals of its disk of convergence:\nif `∑ aⱼ (x - x₀)^j` has radius of convergence `ρ ∈ (0, ∞]`, then for every `r ∈ (0, ρ)` the\npartial sums converge uniformly on `[x₀ - r, x₀ + r]` to the sum `∑' j, aⱼ (x - x₀)^j`.",
+  "created_at": "2026-08-23T22:50:56.917903+00:00",
+  "formal_statement": "theorem power_series_uniform_convergence (a : ℕ → ℝ) (x₀ : ℝ) (r : ℝ) (hr : 0 < r)\n    (hr_lt : ENNReal.ofReal r < radiusOfConvergence a) :\n    TendstoUniformlyOn (fun n x => ∑ j ∈ Finset.range n, a j * (x - x₀) ^ j)\n      (fun x => ∑' j, a j * (x - x₀) ^ j) Filter.atTop (Set.Icc (x₀ - r) (x₀ + r))",
+  "key_strategies": "1. Convert the positive real radius \\(r\\) to a nonnegative real and use \\(r<\\operatorname{radiusOfConvergence}(a)\\) to obtain summability of the majorant series \\(\\sum_j |a_j|r^j\\).\n\n2. For every \\(x\\in[x_0-r,x_0+r]\\), derive the crucial uniform bound \\(|x-x_0|\\le r\\), hence \\(\\lVert a_j(x-x_0)^j\\rVert\\le |a_j|r^j\\) for every \\(j\\).\n\n3. Apply the Weierstrass \\(M\\)-test (`tendstoUniformlyOn_tsum_nat`) with this summable, \\(x\\)-independent majorant to conclude uniform convergence of the partial sums to the pointwise infinite sum on the closed interval.",
+  "lean_name": "power_series_uniform_convergence",
+  "proof_id": "atlas.real_analysis.aa965d6636bc",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/FunctionSequences/PowerSeries.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Weierstrass Approximation Theorem.** Every continuous real-valued function\n`f` on a closed interval `[a, b]` is the uniform limit of a sequence of\npolynomials: there exists `P : ℕ → ℝ[X]` such that `Polynomial.eval x (P n)`\nconverges to `f x` uniformly in `x ∈ [a, b]` as `n → ∞`.",
+  "created_at": "2026-08-23T22:51:17.453161+00:00",
+  "formal_statement": "theorem weierstrass_approximation {a b : ℝ} (f : C(Set.Icc a b, ℝ)) :\n    ∃ P : ℕ → ℝ[X],\n      TendstoUniformly (fun n (x : Set.Icc a b) => Polynomial.eval (x : ℝ) (P n)) f atTop",
+  "key_strategies": "1. Apply polynomial density on \\([a,b]\\) with error \\(1/(n+1)\\) and choose a polynomial \\(P_n\\) for each \\(n\\), producing a sequence whose sup-norm errors tend to zero.\n\n2. Convert each sup-norm estimate into the simultaneous pointwise bound \\(|P_n(x)-f(x)|\\le \\|P_n-f\\|_\\infty\\) for every \\(x\\in[a,b]\\).\n\n3. Given \\(\\varepsilon>0\\), use the Archimedean property to choose \\(N>1/\\varepsilon\\), then use monotonicity of reciprocals to obtain \\(1/(n+1)\\le 1/(N+1)<\\varepsilon\\) for all \\(n\\ge N\\), with \\(N\\) independent of \\(x\\).",
+  "lean_name": "weierstrass_approximation",
+  "proof_id": "atlas.real_analysis.142948376c58",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/FunctionSequences/WeierstrassApprox.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "If `a < b`, then any partition of `[a,b]` has at least one subinterval, i.e.\n`0 < P.n`.",
+  "created_at": "2026-08-23T22:51:24.825102+00:00",
+  "formal_statement": "lemma Partition.n_pos_of_lt (hab : a < b) (P : Partition a b) : 0 < P.n",
+  "key_strategies": "1. Negating \\(0<P.n\\) and using that \\(P.n\\) is a natural number forces \\(P.n=0\\).\n\n2. When \\(P.n=0\\), the index type \\(\\mathrm{Fin}(P.n+1)\\) has only one element, so its first and last indices coincide.\n\n3. The partition endpoint identities then assign both \\(a\\) and \\(b\\) to that same indexed point, yielding \\(a=b\\), which contradicts \\(a<b\\).",
+  "lean_name": "Partition.n_pos_of_lt",
+  "proof_id": "atlas.real_analysis.c597391f0971",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/Basic.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "If `a < b`, then the mesh of any partition of `[a,b]` is strictly positive.",
+  "created_at": "2026-08-23T22:51:34.553778+00:00",
+  "formal_statement": "lemma Partition.mesh_pos_of_lt (hab : a < b) (P : Partition a b) :\n    0 < P.mesh",
+  "key_strategies": "1. Use \\(a<b\\) to show that the partition has at least one subinterval, so its index type is nonempty and the first subinterval can be selected.\n\n2. Apply the strict ordering of partition points to prove that the first subinterval has positive length, \\(0<x_1-x_0\\).\n\n3. Since the mesh is the supremum of all consecutive subinterval lengths, bound it below by the first subinterval’s positive length to conclude \\(0<\\operatorname{mesh}(P)\\).",
+  "lean_name": "Partition.mesh_pos_of_lt",
+  "proof_id": "atlas.real_analysis.894a66d13edc",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/Basic.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "The Riemann sum over a trivial tagged partition (with `n = 0` subintervals)\nis `0`, since it is an empty sum.",
+  "created_at": "2026-08-23T22:51:40.288180+00:00",
+  "formal_statement": "lemma riemannSum_eq_zero_of_n_eq_zero (f : ℝ → ℝ) (T : TaggedPartition a b)\n    (h : T.n = 0) : riemannSum f T = 0",
+  "key_strategies": "1. Unfold `riemannSum` to expose it as a finite sum indexed by `Fin T.n`.\n2. Rewrite `T.n` using `h : T.n = 0` to show that the index type `Fin T.n` is empty.\n3. Apply `Fintype.sum_empty` to conclude that the sum over this empty index type equals `0`.",
+  "lean_name": "riemannSum_eq_zero_of_n_eq_zero",
+  "proof_id": "atlas.real_analysis.da9205c07916",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/Basic.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Fundamental Theorem of Calculus.** Let `f ∈ C([a,b])`. Then:\n(1) (Evaluation form) For every differentiable `F : ℝ → ℝ` with `F' = f` on `[a,b]`,\n`∫_a^b f = F(b) - F(a)`.\n(2) (Antiderivative form) The function `G(x) := ∫_a^x f` is differentiable on `[a,b]`\nwith derivative `G'(x) = f(x)` at every point `x ∈ [a,b]`.",
+  "created_at": "2026-08-23T22:52:05.992201+00:00",
+  "formal_statement": "theorem fundamental_theorem_of_calculus (f : ℝ → ℝ) (a b : ℝ) (hab : a ≤ b)\n    (hf : ContinuousOn f (Set.Icc a b)) :\n    (∀ F : ℝ → ℝ, (∀ x ∈ Set.Icc a b, HasDerivAt F (f x) x) →\n      ∫ x in a..b, f x = F b - F a) ∧\n    (∀ x ∈ Set.Icc a b, HasDerivWithinAt (fun t => ∫ u in a..t, f u) (f x) (Set.Icc a b) x)",
+  "key_strategies": "1. Extend the continuous function \\(f\\) from the closed interval \\([a,b]\\) to a globally continuous function \\(g:\\mathbb R\\to\\mathbb R\\), allowing the use of the global differentiation theorem for parameterized integrals.\n\n2. For the evaluation form, rewrite the unordered interval as \\([a,b]\\) using \\(a\\le b\\), obtain interval integrability from continuity, and apply the integral-equals-endpoint-difference theorem to the assumed derivative of \\(F\\).\n\n3. Apply the fundamental derivative theorem to \\(t\\mapsto\\int_a^t g(u)\\,du\\), then replace \\(g(x)\\) by \\(f(x)\\) at each \\(x\\in[a,b]\\).\n\n4. Show that \\(\\int_a^t f=\\int_a^t g\\) for every \\(t\\in[a,b]\\), since the whole integration interval lies in \\([a,b]\\), and transfer the derivative to the original integral function via equality on the within-domain.",
+  "lean_name": "fundamental_theorem_of_calculus",
+  "proof_id": "atlas.real_analysis.00c3d0e4b511",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/FTC.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Integration by Parts.** If `f, g : ℝ → ℝ` are continuously differentiable on `[a,b]`\n(i.e. `f, g ∈ C¹([a,b])`), then\n`∫_a^b f'(x) g(x) dx = f(b) g(b) - f(a) g(a) - ∫_a^b f(x) g'(x) dx`.",
+  "created_at": "2026-08-23T22:52:24.360803+00:00",
+  "formal_statement": "theorem integration_by_parts (f g : ℝ → ℝ) (a b : ℝ) (hab : a ≤ b)\n    (hf : ContDiffOn ℝ 1 f (Set.Icc a b))\n    (hg : ContDiffOn ℝ 1 g (Set.Icc a b)) :\n    ∫ x in a..b, deriv f x * g x =\n      f b * g b - f a * g a - ∫ x in a..b, f x * deriv g x",
+  "key_strategies": "1. Split off the degenerate case \\(a=b\\), where both interval integrals vanish and the boundary terms cancel.\n\n2. Use the \\(C^{1}\\) hypotheses to obtain continuity on \\([a,b]\\) and ordinary differentiability at every interior point.\n\n3. Prove integrability of the ordinary derivatives by first using continuity of the relative derivatives on \\([a,b]\\), then transferring integrability via their almost-everywhere agreement on the interior, since endpoint discrepancies are negligible.\n\n4. Apply the library integration-by-parts theorem with the factors ordered as \\(g\\) and \\(f\\), using the established continuity, derivative, and integrability conditions.\n\n5. Use commutativity of multiplication to rewrite the resulting identity into the exact order of factors required by the goal.",
+  "lean_name": "integration_by_parts",
+  "proof_id": "atlas.real_analysis.642513f3f600",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/FTC.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Change of Variables.** Let `φ : ℝ → ℝ` be continuously differentiable on `[a,b]` with\n`φ' > 0` everywhere on `[a,b]`, and let `f` be continuous on `[φ(a), φ(b)]`. Then\n`∫_{φ(a)}^{φ(b)} f(u) du = ∫_a^b f(φ(x)) · φ'(x) dx`.",
+  "created_at": "2026-08-23T22:52:47.772703+00:00",
+  "formal_statement": "theorem change_of_variables (f : ℝ → ℝ) (φ : ℝ → ℝ) (a b : ℝ) (hab : a ≤ b)\n    (hφ : ContDiffOn ℝ 1 φ (Set.Icc a b))\n    (hφ_pos : ∀ x ∈ Set.Icc a b, 0 < deriv φ x)\n    (hf : ContinuousOn f (Set.Icc (φ a) (φ b))) :\n    ∫ u in (φ a)..(φ b), f u = ∫ x in a..b, f (φ x) * deriv φ x",
+  "key_strategies": "1. Split off the degenerate case \\(a=b\\), where both interval integrals vanish, so that the main argument may assume \\(a<b\\).\n\n2. Use the positivity of \\(\\operatorname{deriv}\\phi\\) to obtain nonvanishing derivatives and hence pointwise differentiability of \\(\\phi\\) on \\([a,b]\\).\n\n3. Convert the \\(C^1\\) continuity of the relative derivative into continuity of the ordinary derivative on \\([a,b]\\), using the unique-differentiability property of a nondegenerate closed interval.\n\n4. Apply the positive-derivative criterion to prove that \\(\\phi\\) is strictly increasing on \\([a,b]\\), and therefore that \\(\\phi([a,b])\\subseteq[\\phi(a),\\phi(b)]\\).\n\n5. Restrict the assumed continuity of \\(f\\) to the image \\(\\phi([a,b])\\), thereby satisfying the continuity hypothesis of the substitution theorem.\n\n6. Invoke the standard integral composition-with-derivative theorem and reverse its equality to obtain the desired change-of-variables formula.",
+  "lean_name": "change_of_variables",
+  "proof_id": "atlas.real_analysis.adcfa67f5b78",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/FTC.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Riemann–Lebesgue lemma** (for continuously differentiable functions on `[-π, π]`).\n\nIf `f : ℝ → ℝ` is continuously differentiable on `[-π, π]`, then both Fourier-coefficient\nintegrals tend to zero as `n → ∞`:\n- `(1/π) ∫_{-π}^{π} f(x) · sin(n·x) dx → 0`, and\n- `(1/π) ∫_{-π}^{π} f(x) · cos(n·x) dx → 0`.\n\nThe proof uses integration by parts to express each integral in terms of a bounded\nantiderivative of `sin(n·x)` (resp. `cos(n·x)`) of size `O(1/n)`, then squeezes to zero.",
+  "created_at": "2026-08-23T22:53:13.736416+00:00",
+  "formal_statement": "theorem riemann_lebesgue (f : ℝ → ℝ)\n    (hf : ContDiffOn ℝ 1 f (Set.Icc (-Real.pi) Real.pi)) :\n    Filter.Tendsto (fun n : ℕ => (1/Real.pi) * ∫ x in (-Real.pi)..Real.pi, f x * Real.sin (n * x))\n      Filter.atTop (nhds 0) ∧\n    Filter.Tendsto (fun n : ℕ => (1/Real.pi) * ∫ x in (-Real.pi)..Real.pi, f x * Real.cos (n * x))\n      Filter.atTop (nhds 0)",
+  "key_strategies": "1. Convert the continuous differentiability of \\(f\\) on \\([-\\pi,\\pi]\\) into absolute continuity and interval integrability of \\(f'\\), enabling integration by parts.\n\n2. For each \\(n>0\\), choose the scaled antiderivatives \\(g_n(x)=-\\cos(nx)/n\\) for \\(\\sin(nx)\\) and \\(g_n(x)=\\sin(nx)/n\\) for \\(\\cos(nx)\\).\n\n3. Use \\(|\\sin|\\le 1\\) and \\(|\\cos|\\le 1\\) to obtain the crucial uniform estimate \\(\\|g_n(x)\\|\\le 1/n\\).\n\n4. Apply integration by parts to replace each oscillatory integral by endpoint terms and an integral of \\(f'(x)g_n(x)\\).\n\n5. Bound the resulting expression by \\(C/n\\), where \\(C=\\lVert f(\\pi)\\rVert+\\lVert f(-\\pi)\\rVert+\\int_{-\\pi}^{\\pi}\\lVert f'(x)\\rVert\\,dx\\); in the cosine case the endpoint terms vanish because \\(\\sin(\\pm n\\pi)=0\\).\n\n6. Since \\(C/n\\to 0\\), squeeze the norms of both integrals to zero and then multiply by the fixed normalization factor \\(1/\\pi\\).",
+  "lean_name": "riemann_lebesgue",
+  "proof_id": "atlas.real_analysis.873ed155bc40",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/Fourier.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Theorem I (Modulus of continuity vanishes).** For `f ∈ C([a,b])`,\n`lim_{η → 0⁺} w_f(η) = 0`. That is, `∀ ε > 0, ∃ δ > 0, ∀ η < δ : w_f(η) < ε`.",
+  "created_at": "2026-08-23T22:53:29.653738+00:00",
+  "formal_statement": "theorem modulusOfContinuity_tendsto_zero (f : ℝ → ℝ) (a b : ℝ) (hab : a ≤ b)\n    (hf : ContinuousOn f (Icc a b)) :\n    Filter.Tendsto (modulusOfContinuity f a b) (𝓝[>] 0) (𝓝 0)",
+  "key_strategies": "1. Use Heine–Cantor: continuity of \\(f\\) on the compact interval \\([a,b]\\) implies uniform continuity there.\n\n2. Apply uniform continuity with tolerance \\(\\varepsilon/2\\), so that whenever \\(0<\\eta<\\delta\\) and \\(|x-y|\\le \\eta\\), one gets \\(|f(x)-f(y)|<\\varepsilon/2\\).\n\n3. Transfer this pointwise bound to the supremum defining \\(w_f(\\eta)\\) by proving every admissible value is at most \\(\\varepsilon/2\\).\n\n4. Use \\(x=y=a\\), justified by \\(a\\le b\\), to show the defining set is nonempty and contains \\(0\\), which both legitimizes the supremum estimates and proves \\(w_f(\\eta)\\ge 0\\).\n\n5. Conclude \\(0\\le w_f(\\eta)\\le\\varepsilon/2<\\varepsilon\\), hence \\(|w_f(\\eta)|<\\varepsilon\\) for all sufficiently small positive \\(\\eta\\), exactly establishing the right-hand limit at \\(0\\).",
+  "lean_name": "modulusOfContinuity_tendsto_zero",
+  "proof_id": "atlas.real_analysis.ddf4500c6302",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "The set of values `|f x - f y|` for `x, y ∈ [a,b]` with `|x - y| ≤ η` is\nbounded above when `f` is continuous on `[a,b]`.",
+  "created_at": "2026-08-23T22:53:38.359650+00:00",
+  "formal_statement": "lemma modulusOfContinuity_bddAbove (f : ℝ → ℝ) (a b η : ℝ)\n    (hf : ContinuousOn f (Icc a b)) :\n    BddAbove {|f x - f y| | (x ∈ Icc a b) (y ∈ Icc a b) (_ : |x - y| ≤ η)}",
+  "key_strategies": "1. Compactness of \\([a,b]\\) and continuity of \\(f\\) provide a uniform constant \\(C\\) such that \\(|f(t)| \\le C\\) for every \\(t \\in [a,b]\\).\n\n2. The triangle inequality gives \\(|f(x)-f(y)| \\le |f(x)|+|f(y)| \\le 2C\\), so \\(2C\\) is a common upper bound for all values in the set.\n\n3. The condition \\(|x-y|\\le\\eta\\) is irrelevant for boundedness, since the uniform bound applies to every pair \\(x,y\\in[a,b]\\).",
+  "lean_name": "modulusOfContinuity_bddAbove",
+  "proof_id": "atlas.real_analysis.8ad5bc02848c",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "For `x, y ∈ [a,b]` with `|x - y| ≤ η`, the absolute difference `|f x - f y|`\nis bounded by the modulus of continuity `w_f(η)`.",
+  "created_at": "2026-08-23T22:53:46.718284+00:00",
+  "formal_statement": "lemma le_modulusOfContinuity (f : ℝ → ℝ) {a b : ℝ} (η : ℝ)\n    (hf : ContinuousOn f (Icc a b))\n    {x : ℝ} (hx : x ∈ Icc a b) {y : ℝ} (hy : y ∈ Icc a b) (hxy : |x - y| ≤ η) :\n    |f x - f y| ≤ modulusOfContinuity f a b η",
+  "key_strategies": "1. Continuity of \\(f\\) on the compact interval \\([a,b]\\) ensures that the set defining the modulus of continuity is bounded above, allowing the supremum bound theorem `le_csSup` to be applied.\n\n2. The hypotheses \\(x,y\\in[a,b]\\) and \\(|x-y|\\le\\eta\\) show that \\(|f(x)-f(y)|\\) is itself a member of the set whose supremum defines \\(\\operatorname{modulusOfContinuity}(f,a,b,\\eta)\\).\n\n3. Since every element of a bounded-above set is at most its supremum, `le_csSup` immediately yields \\(|f(x)-f(y)|\\le\\operatorname{modulusOfContinuity}(f,a,b,\\eta)\\).",
+  "lean_name": "le_modulusOfContinuity",
+  "proof_id": "atlas.real_analysis.d46bccc7fe78",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Each subinterval `[x_i, x_{i+1}]` of a partition has nonnegative length.",
+  "created_at": "2026-08-23T22:53:51.567661+00:00",
+  "formal_statement": "lemma Partition.succ_sub_castSucc_nonneg (P : Partition a b) (i : Fin P.n) :\n    0 ≤ P.points i.succ - P.points i.castSucc",
+  "key_strategies": "1. Use the partition’s ordering property to deduce \\(P(\\mathrm{castSucc}\\,i)\\le P(\\mathrm{succ}\\,i)\\) from the canonical index inequality \\(\\mathrm{castSucc}\\,i\\le \\mathrm{succ}\\,i\\).\n\n2. Convert this comparison into \\(0\\le P(\\mathrm{succ}\\,i)-P(\\mathrm{castSucc}\\,i)\\) using the equivalence \\(0\\le y-x\\iff x\\le y\\).",
+  "lean_name": "Partition.succ_sub_castSucc_nonneg",
+  "proof_id": "atlas.real_analysis.b0db2bedcea6",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Each subinterval length `x_{i+1} - x_i` of a partition is bounded above by\nthe partition's mesh (i.e., the maximum subinterval length).",
+  "created_at": "2026-08-23T22:53:57.917538+00:00",
+  "formal_statement": "lemma Partition.le_mesh (P : Partition a b) (i : Fin P.n) :\n    P.points i.succ - P.points i.castSucc ≤ P.mesh",
+  "key_strategies": "1. The existence of \\(i : \\mathrm{Fin}\\,P.n\\) forces \\(P.n \\ne 0\\), allowing the degenerate zero branch in the definition of `P.mesh` to be eliminated.\n\n2. After unfolding the nondegenerate branch, `P.mesh` is the finite supremum of all subinterval lengths indexed by `Fin P.n`.\n\n3. Since \\(i\\) belongs to the universal finite index set, `Finset.le_sup'` shows that its subinterval length is bounded above by this supremum.",
+  "lean_name": "Partition.le_mesh",
+  "proof_id": "atlas.real_analysis.b636badc9189",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "The subinterval lengths of a partition of `[a,b]` telescope to `b - a`:\n`∑ᵢ (x_{i+1} - x_i) = b - a`.",
+  "created_at": "2026-08-23T22:54:08.975916+00:00",
+  "formal_statement": "lemma Partition.sum_sub_eq (P : Partition a b) :\n    ∑ i : Fin P.n, (P.points i.succ - P.points i.castSucc) = b - a",
+  "key_strategies": "1. Extend the finitely indexed partition points to a natural-number sequence \\(g\\), so the sum can be rewritten in the standard telescoping form \\(\\sum_{i=0}^{n-1}(g(i+1)-g(i))\\).\n\n2. Identify the finite-index expressions \\(P.\\mathrm{points}(i.\\mathrm{succ})\\) and \\(P.\\mathrm{points}(i.\\mathrm{castSucc})\\) with \\(g(i+1)\\) and \\(g(i)\\), respectively.\n\n3. Apply the telescoping identity \\(\\sum_{i=0}^{n-1}(g(i+1)-g(i))=g(n)-g(0)\\), which cancels all intermediate partition points.\n\n4. Use the partition endpoint properties \\(P.\\mathrm{points}(0)=a\\) and \\(P.\\mathrm{points}(\\mathrm{last})=b\\) to conclude that the remaining difference is \\(b-a\\).",
+  "lean_name": "Partition.sum_sub_eq",
+  "proof_id": "atlas.real_analysis.026b397b162b",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Every tag `ξ_i` of a tagged partition of `[a,b]` lies in `[a,b]`.",
+  "created_at": "2026-08-23T22:54:14.709855+00:00",
+  "formal_statement": "lemma TaggedPartition.tag_mem_Icc (T : TaggedPartition a b) (hab : a ≤ b) (i : Fin T.n) :\n    T.tags i ∈ Icc a b",
+  "key_strategies": "1. Use the tagged-partition property \\(x_i \\le \\xi_i \\le x_{i+1}\\) to bound each tag by the endpoints of its own subinterval.\n\n2. Use monotonicity of the ordered partition points, together with \\(0 \\le i\\) and \\(i+1 \\le n\\), to obtain \\(x_0 \\le x_i\\) and \\(x_{i+1} \\le x_n\\).\n\n3. Substitute the endpoint identities \\(x_0=a\\) and \\(x_n=b\\), then combine the inequalities to conclude \\(a \\le \\xi_i \\le b\\).",
+  "lean_name": "TaggedPartition.tag_mem_Icc",
+  "proof_id": "atlas.real_analysis.afa51cb2adbc",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "The Riemann sum `S_f(T)` can be rewritten by summing over the refinement `T'`:\neach summand uses the tag of `T` at the parent subinterval and the length of the\nfiner `T'`-subinterval.",
+  "created_at": "2026-08-23T22:54:29.456400+00:00",
+  "formal_statement": "lemma riemannSum_eq_fiber (f : ℝ → ℝ) (T T' : TaggedPartition a b)\n    (href : T.IsTaggedRefinement T') :\n    riemannSum f T = ∑ j : Fin T'.n,\n      f (T.tags (href.assign j)) * (T'.points j.succ - T'.points j.castSucc)",
+  "key_strategies": "1. Use the refinement telescoping identity to express each coarse interval length as the sum of the lengths of all fine intervals assigned to it.\n\n2. Distribute the constant factor \\(f(T.\\mathrm{tags}_k)\\) across each fiber sum, turning every fine interval in that fiber into a Riemann-sum term with the parent tag.\n\n3. Reindex the resulting double sum fiberwise along `href.assign`, since its fibers partition all fine interval indices.\n\n4. On each fiber, use the defining equality `href.assign j = k` to replace the coarse index \\(k\\) by the actual parent index of \\(j\\).",
+  "lean_name": "riemannSum_eq_fiber",
+  "proof_id": "atlas.real_analysis.db176b4da708",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Theorem II.** If `T'` is a tagged refinement of `T` (i.e. `x ⊂ x'`), then\nfor `f ∈ C([a,b])`,\n`|S_f(T) - S_f(T')| ≤ w_f(‖T‖) · (b - a)`.",
+  "created_at": "2026-08-23T22:54:46.968287+00:00",
+  "formal_statement": "theorem riemannSum_sub_le_modulusOfContinuity_mul\n    (f : ℝ → ℝ) (T T' : TaggedPartition a b) (hab : a ≤ b)\n    (hf : ContinuousOn f (Icc a b))\n    (href : T.IsTaggedRefinement T') :\n    |riemannSum f T - riemannSum f T'| ≤\n      modulusOfContinuity f a b T.toPartition.mesh * (b - a)",
+  "key_strategies": "1. Regroup the coarse Riemann sum over the fine intervals using the refinement assignment, so both sums are indexed by the intervals of \\(T'\\).\n\n2. Rewrite the difference as a sum of pointwise tag-value differences multiplied by fine interval lengths, then apply the triangle inequality and nonnegativity of those lengths.\n\n3. Observe that each fine tag and its assigned coarse tag lie in the same coarse interval, hence their distance is at most that interval’s length and therefore at most the mesh of \\(T\\).\n\n4. Apply the modulus-of-continuity bound on \\([a,b]\\) to uniformly control every difference \\(\\lvert f(\\xi_{k(j)})-f(\\eta_j)\\rvert\\) by \\(\\omega_f(\\|T\\|)\\).\n\n5. Factor out this uniform bound and use the telescoping identity for the fine partition lengths, whose sum is \\(b-a\\).",
+  "lean_name": "riemannSum_sub_le_modulusOfContinuity_mul",
+  "proof_id": "atlas.real_analysis.bea0ff585f27",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Theorem III (given a common refinement).** For tagged partitions `T₁, T₂`\nthat share a common tagged refinement `T''`, and `f ∈ C([a,b])`,\n`|S_f(T₁) - S_f(T₂)| ≤ (w_f(‖T₁‖) + w_f(‖T₂‖)) · (b - a)`.",
+  "created_at": "2026-08-23T22:54:56.898603+00:00",
+  "formal_statement": "theorem riemannSum_sub_le_modulusOfContinuity_add_mul_of_commonRefinement\n    (f : ℝ → ℝ) (T₁ T₂ : TaggedPartition a b) (hab : a ≤ b)\n    (hf : ContinuousOn f (Icc a b))\n    (T'' : TaggedPartition a b)\n    (href₁ : T₁.IsTaggedRefinement T'')\n    (href₂ : T₂.IsTaggedRefinement T'') :\n    |riemannSum f T₁ - riemannSum f T₂| ≤\n      (modulusOfContinuity f a b T₁.toPartition.mesh +\n       modulusOfContinuity f a b T₂.toPartition.mesh) * (b - a)",
+  "key_strategies": "1. Insert the Riemann sum over the common tagged refinement \\(T''\\) to decompose \\(S_f(T_1)-S_f(T_2)\\) into the two refinement differences \\(S_f(T_1)-S_f(T'')\\) and \\(S_f(T'')-S_f(T_2)\\).\n\n2. Apply the triangle inequality, using symmetry of absolute value to rewrite \\(\\lvert S_f(T'')-S_f(T_2)\\rvert\\) as \\(\\lvert S_f(T_2)-S_f(T'')\\rvert\\).\n\n3. Bound each resulting difference by the previously proved modulus-of-continuity estimate for a tagged refinement, once for \\(T_1\\preceq T''\\) and once for \\(T_2\\preceq T''\\).\n\n4. Add the two bounds and factor out the common interval length \\(b-a\\) to obtain the desired sum of moduli of continuity.",
+  "lean_name": "riemannSum_sub_le_modulusOfContinuity_add_mul_of_commonRefinement",
+  "proof_id": "atlas.real_analysis.8bf505ec59b9",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Telescoping identity: given a strictly monotone embedding `φ` of a coarse\nindex set into a fine index set, the lengths of the fine subintervals whose\nindices are assigned to a coarse index `k` sum to the length of the `k`-th\ncoarse subinterval.",
+  "created_at": "2026-08-23T22:55:20.216021+00:00",
+  "formal_statement": "lemma telescope_sum_of_embedding {n'' m : ℕ} (pts : Fin (n'' + 1) → ℝ)\n    (φ : Fin (m + 1) → Fin (n'' + 1)) (hφ_strict : StrictMono φ)\n    (assign : Fin n'' → Fin m)\n    (hassign_spec : ∀ j : Fin n'', (φ (assign j).castSucc).val ≤ j.val ∧\n      j.val < (φ (assign j).succ).val)\n    (k : Fin m) :\n    ∑ j ∈ Finset.univ.filter (fun j => assign j = k),\n      (pts j.succ - pts j.castSucc) = pts (φ k.succ) - pts (φ k.castSucc)",
+  "key_strategies": "1. Prove that `assign j = k` exactly when `j` lies between `φ k.castSucc` and `φ k.succ`, using the assignment bounds and strict monotonicity of `φ` to rule out assignments below or above `k`.\n\n2. Replace dependent `Fin` indexing by the total auxiliary function `g : ℕ → ℝ`, so each fine-interval length becomes the ordinary difference `g (j.val + 1) - g j.val`.\n\n3. Reindex the filtered sum bijectively via `j ↦ j.val`, identifying its index set with the natural-number interval `Finset.Ico a' b'`.\n\n4. Apply the standard telescoping identity `Finset.sum_Ico_sub` and simplify `g` at the endpoints to obtain `pts (φ k.succ) - pts (φ k.castSucc)`.",
+  "lean_name": "telescope_sum_of_embedding",
+  "proof_id": "atlas.real_analysis.6d9a30ae0d65",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Any two tagged partitions of `[a,b]` admit a common tagged refinement:\nthe partition whose points are the union of both partitions' points.",
+  "created_at": "2026-08-23T22:55:50.633254+00:00",
+  "formal_statement": "theorem TaggedPartition.exists_commonRefinement (T₁ T₂ : TaggedPartition a b) (hab : a ≤ b) :\n    ∃ T'' : TaggedPartition a b,\n      Nonempty (T₁.IsTaggedRefinement T'') ∧ Nonempty (T₂.IsTaggedRefinement T'')",
+  "key_strategies": "1. Form the finite union of the two partitions’ point sets and enumerate it in strictly increasing order, thereby retaining every breakpoint while removing duplicates.\n\n2. Prove that the minimum and maximum of this union are respectively \\(a\\) and \\(b\\), so the sorted enumeration defines a new partition of exactly \\([a,b]\\).\n\n3. Choose each tag of the common partition to be its subinterval’s left endpoint, which immediately satisfies the required tag-membership condition.\n\n4. Embed each original partition’s indices strictly into the sorted union by sending every original point to its unique position in the new enumeration, with the embeddings preserving both endpoints.\n\n5. For each new subinterval, assign it to the original subinterval whose left endpoint has the greatest embedded index not exceeding the new subinterval’s left index; maximality forces the new interval to lie before that original interval’s right endpoint.\n\n6. Use these index inequalities and monotonicity of the sorted points to prove that every new subinterval is contained in its assigned subinterval of each original partition.\n\n7. Apply the telescoping-sum lemma for a strictly monotone embedding to show that the lengths of all new subintervals assigned to an original subinterval sum exactly to that original subinterval’s length.",
+  "lean_name": "TaggedPartition.exists_commonRefinement",
+  "proof_id": "atlas.real_analysis.33393fbd4780",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Theorem III.** For any two tagged partitions `T₁, T₂` of `[a,b]` and\n`f ∈ C([a,b])`,\n`|S_f(T₁) - S_f(T₂)| ≤ (w_f(‖T₁‖) + w_f(‖T₂‖)) · (b - a)`.",
+  "created_at": "2026-08-23T22:55:58.229847+00:00",
+  "formal_statement": "theorem riemannSum_sub_le_modulusOfContinuity_add_mul\n    (f : ℝ → ℝ) (T₁ T₂ : TaggedPartition a b) (hab : a ≤ b)\n    (hf : ContinuousOn f (Icc a b)) :\n    |riemannSum f T₁ - riemannSum f T₂| ≤\n      (modulusOfContinuity f a b T₁.toPartition.mesh +\n       modulusOfContinuity f a b T₂.toPartition.mesh) * (b - a)",
+  "key_strategies": "1. Introduce a tagged partition \\(T''\\) that simultaneously refines \\(T_1\\) and \\(T_2\\), whose existence follows from \\(a \\le b\\), so both Riemann sums can be compared through one common subdivision.\n\n2. Apply the previously proved common-refinement estimate, which uses continuity to bound the two comparison errors by the respective moduli of continuity times the total interval length \\(b-a\\).",
+  "lean_name": "riemannSum_sub_le_modulusOfContinuity_add_mul",
+  "proof_id": "atlas.real_analysis.051c1452e321",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "For `f ∈ C([a,b])` with `a < b`, if a sequence of tagged partitions has mesh\ntending to `0`, then the corresponding sequence of Riemann sums is Cauchy.",
+  "created_at": "2026-08-23T22:56:20.668718+00:00",
+  "formal_statement": "lemma riemannSum_cauchySeq_of_mesh_tendsto (f : ℝ → ℝ) (a b : ℝ) (hab_lt : a < b)\n    (hf : ContinuousOn f (Icc a b))\n    (T : ℕ → TaggedPartition a b)\n    (hmesh : Filter.Tendsto (fun r => (T r).toPartition.mesh) Filter.atTop (𝓝 0)) :\n    CauchySeq (fun r => riemannSum f (T r))",
+  "key_strategies": "1. Rewrite the Cauchy criterion in ε–\\(N\\) form and use continuity on the compact interval to obtain that the modulus of continuity tends to \\(0\\) as its positive argument tends to \\(0\\).\n\n2. Choose \\(\\delta>0\\) so that every \\(0<t<\\delta\\) satisfies \\(\\lvert\\operatorname{modulusOfContinuity}(f,a,b,t)\\rvert<\\varepsilon/(2(b-a))\\), using \\(a<b\\) to ensure the denominator is positive.\n\n3. Use convergence of the partition meshes to \\(0\\) to find one index \\(N\\) after which both meshes are smaller than \\(\\delta\\), while mesh positivity allows the modulus estimate to apply.\n\n4. Bound the difference of any two later Riemann sums by the sum of their two modulus-of-continuity errors multiplied by the interval length \\(b-a\\).\n\n5. Apply the chosen modulus bounds to both error terms and simplify \\(2\\cdot\\varepsilon/(2(b-a))\\cdot(b-a)=\\varepsilon\\), proving the required Cauchy estimate.",
+  "lean_name": "riemannSum_cauchySeq_of_mesh_tendsto",
+  "proof_id": "atlas.real_analysis.d1f34bb9cb26",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "For `f ∈ C([a,b])` with `a < b`, if two sequences of tagged partitions both\nhave meshes tending to `0`, then the difference of their Riemann sums tends to\n`0`.",
+  "created_at": "2026-08-23T22:56:42.034302+00:00",
+  "formal_statement": "lemma riemannSum_sub_tendsto_zero (f : ℝ → ℝ) (a b : ℝ) (hab_lt : a < b)\n    (hf : ContinuousOn f (Icc a b))\n    (T₁ T₂ : ℕ → TaggedPartition a b)\n    (hmesh₁ : Filter.Tendsto (fun r => (T₁ r).toPartition.mesh) Filter.atTop (𝓝 0))\n    (hmesh₂ : Filter.Tendsto (fun r => (T₂ r).toPartition.mesh) Filter.atTop (𝓝 0)) :\n    Filter.Tendsto (fun r => riemannSum f (T₁ r) - riemannSum f (T₂ r))\n      Filter.atTop (𝓝 0)",
+  "key_strategies": "1. Use continuity on the compact interval \\([a,b]\\) to obtain that the modulus of continuity tends to \\(0\\) as its positive argument tends to \\(0\\).\n\n2. Set \\(L=b-a>0\\) and choose the modulus threshold \\(\\varepsilon/(2L)\\), which allocates half of the final error to each Riemann sum.\n\n3. Use convergence of both meshes to \\(0\\), together with positivity of meshes when \\(a<b\\), to ensure that after one common index both meshes lie in the interval \\((0,\\delta)\\).\n\n4. Apply the comparison estimate bounding the difference of two Riemann sums by the sum of their modulus-of-continuity errors multiplied by \\(L\\).\n\n5. Bound each modulus term by \\(\\varepsilon/(2L)\\), so the comparison estimate simplifies exactly to a total error less than \\(\\varepsilon\\), proving convergence to \\(0\\).",
+  "lean_name": "riemannSum_sub_tendsto_zero",
+  "proof_id": "atlas.real_analysis.3f6cae6ff8ee",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Convergence of the Riemann integral.** For `f ∈ C([a,b])`, there exists a\nreal number `I` such that for every sequence of tagged partitions whose mesh\ntends to `0`, the Riemann sums converge to `I`.",
+  "created_at": "2026-08-23T22:57:03.568156+00:00",
+  "formal_statement": "theorem riemann_integral_convergence (f : ℝ → ℝ) (a b : ℝ) (hab : a ≤ b)\n    (hf : ContinuousOn f (Icc a b)) :\n    ∃ I : ℝ, ∀ (T : ℕ → TaggedPartition a b),\n      Filter.Tendsto (fun r => (T r).toPartition.mesh) Filter.atTop (𝓝 0) →\n      Filter.Tendsto (fun r => riemannSum f (T r)) Filter.atTop (𝓝 I)",
+  "key_strategies": "1. In the degenerate case \\(a=b\\), strict ordering forces every tagged partition to have no subintervals, so every Riemann sum is \\(0\\) and hence converges to \\(0\\).\n\n2. When \\(a<b\\), any sequence of tagged partitions whose mesh tends to \\(0\\) has Cauchy Riemann sums, which converge to some real limit by completeness of \\(\\mathbb R\\).\n\n3. The limits arising from any two such partition sequences are equal because the difference of their Riemann sums tends both to \\(0\\) and to the difference of the two limits.\n\n4. Choosing one admissible partition sequence therefore supplies a common limit for all admissible sequences, while if no admissible sequence exists the universal convergence assertion holds vacuously.",
+  "lean_name": "riemann_integral_convergence",
+  "proof_id": "atlas.real_analysis.2302d57b832e",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Comparison and triangle inequalities for the Riemann integral.\n\nFor continuous functions `f, g : ℝ → ℝ` on `[a, b]` with `a ≤ b`:\n1. (Comparison) If `f x ≤ g x` for all `x ∈ [a, b]`, then `∫ x in a..b, f x ≤ ∫ x in a..b, g x`.\n2. (Triangle inequality) `|∫ x in a..b, f x| ≤ ∫ x in a..b, |f x|`.",
+  "created_at": "2026-08-23T22:57:12.347326+00:00",
+  "formal_statement": "theorem integral_comparison_and_triangle (f g : ℝ → ℝ) (a b : ℝ) (hab : a ≤ b)\n    (hf : ContinuousOn f (Set.Icc a b)) (hg : ContinuousOn g (Set.Icc a b)) :\n    ((∀ x ∈ Set.Icc a b, f x ≤ g x) → ∫ x in a..b, f x ≤ ∫ x in a..b, g x) ∧\n    (|∫ x in a..b, f x| ≤ ∫ x in a..b, |f x|)",
+  "key_strategies": "1. Continuity of \\(f\\) and \\(g\\) on \\([a,b]\\), together with \\(a\\le b\\), supplies the interval integrability needed to apply the integral comparison theorem.\n\n2. The pointwise inequality \\(f(x)\\le g(x)\\) on \\([a,b]\\) lifts directly to \\(\\int_a^b f\\le\\int_a^b g\\) via monotonicity of the interval integral.\n\n3. The triangle inequality follows from the standard estimate \\(\\left\\|\\int_a^b f\\right\\|\\le\\int_a^b\\|f(x)\\|\\,dx\\), whose orientation relies on \\(a\\le b\\).\n\n4. Since the norm on \\(\\mathbb{R}\\) equals absolute value, rewriting \\(\\|r\\|=|r|\\) converts the norm estimate exactly into the desired real-valued inequality.",
+  "lean_name": "integral_comparison_and_triangle",
+  "proof_id": "atlas.real_analysis.c0ef6ab1afa2",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/Properties.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Lower and upper bounds for the Riemann integral via the infimum and supremum.\n\nIf `f : ℝ → ℝ` is continuous on `[a, b]` with `a ≤ b`, then setting\n`m_f = sInf (f '' [a, b])` and `M_f = sSup (f '' [a, b])`, we have\n`m_f * (b - a) ≤ ∫ x in a..b, f x ≤ M_f * (b - a)`.",
+  "created_at": "2026-08-23T22:57:21.082637+00:00",
+  "formal_statement": "theorem integral_bounds (f : ℝ → ℝ) (a b : ℝ) (hab : a ≤ b)\n    (hf : ContinuousOn f (Set.Icc a b)) :\n    (sInf (f '' Set.Icc a b)) * (b - a) ≤ ∫ x in a..b, f x ∧\n    ∫ x in a..b, f x ≤ (sSup (f '' Set.Icc a b)) * (b - a)",
+  "key_strategies": "1. Continuity on the compact interval \\([a,b]\\) makes \\(f\\) interval-integrable and its image \\(f([a,b])\\) compact, hence bounded above and below.\n\n2. Boundedness of the image allows the infimum and supremum properties to give \\(sInf(f([a,b])) \\le f(x) \\le sSup(f([a,b]))\\) for every \\(x \\in [a,b]\\).\n\n3. Since \\(a \\le b\\), monotonicity of the interval integral transfers these pointwise bounds to inequalities between the integrals of \\(f\\) and the corresponding constant functions.\n\n4. Evaluating each constant integral as \\(c(b-a)\\) converts those integral comparisons into the desired lower and upper bounds.",
+  "lean_name": "integral_bounds",
+  "proof_id": "atlas.real_analysis.99f216a3381c",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/Properties.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Additivity of the Riemann integral over adjacent intervals.\n\nIf `f : ℝ → ℝ` is continuous on `[a, b]` and `a < c < b`, then\n`∫ x in a..b, f x = (∫ x in a..c, f x) + ∫ x in c..b, f x`.",
+  "created_at": "2026-08-23T22:57:26.315849+00:00",
+  "formal_statement": "theorem integral_additivity (f : ℝ → ℝ) (a b c : ℝ) (hac : a < c) (hcb : c < b)\n    (hf : ContinuousOn f (Set.Icc a b)) :\n    ∫ x in a..b, f x = (∫ x in a..c, f x) + ∫ x in c..b, f x",
+  "key_strategies": "1. Use \\(a<c<b\\) to obtain \\(a\\le c\\le b\\), ensuring that \\([a,c]\\) and \\([c,b]\\) are contained in \\([a,b]\\).\n\n2. Restrict the continuity of \\(f\\) on \\([a,b]\\) to continuity on each adjacent subinterval \\([a,c]\\) and \\([c,b]\\).\n\n3. Convert continuity on each closed subinterval into interval integrability, which supplies the hypotheses needed for integral additivity.\n\n4. Apply the adjacent-interval additivity theorem and reverse its equality to match the desired orientation.",
+  "lean_name": "integral_additivity",
+  "proof_id": "atlas.real_analysis.cf7ce31aca28",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/Properties.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Linearity of the Riemann integral.\n\nIf `f, g : ℝ → ℝ` are continuous on `[a, b]` with `a ≤ b` and `α : ℝ`, then\n`∫ x in a..b, (α * f x + g x) = α * (∫ x in a..b, f x) + ∫ x in a..b, g x`.",
+  "created_at": "2026-08-23T22:57:32.716255+00:00",
+  "formal_statement": "theorem integral_linearity (f g : ℝ → ℝ) (a b α : ℝ)\n    (hf : ContinuousOn f (Set.Icc a b))\n    (hg : ContinuousOn g (Set.Icc a b))\n    (hab : a ≤ b) :\n    ∫ x in a..b, (α * f x + g x) = α * (∫ x in a..b, f x) + ∫ x in a..b, g x",
+  "key_strategies": "1. Continuity of \\(f\\) and \\(g\\) on \\([a,b]\\), together with \\(a\\le b\\), is converted into interval integrability for both functions.\n\n2. Interval integrability is preserved under multiplication by the constant \\(\\alpha\\), so \\(x\\mapsto \\alpha f(x)\\) is interval integrable.\n\n3. Additivity of the interval integral splits the integral of \\(\\alpha f+g\\), and the constant-multiple rule then pulls \\(\\alpha\\) outside the integral to obtain the desired identity.",
+  "lean_name": "integral_linearity",
+  "proof_id": "atlas.real_analysis.bac56be2b008",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/Properties.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Triangle inequality for the absolute value on `ℝ`: `|x + y| ≤ |x| + |y|`\nfor all real numbers `x` and `y`.",
+  "created_at": "2026-08-23T22:57:36.269465+00:00",
+  "formal_statement": "theorem triangle_inequality (x y : ℝ) : |x + y| ≤ |x| + |y|",
+  "key_strategies": "1. Recognize that the goal is exactly the standard absolute-value triangle inequality already provided in Lean as `abs_add_le`.\n2. Apply `abs_add_le` directly to the real numbers `x` and `y`, yielding `|x + y| ≤ |x| + |y|` with no further argument.",
+  "lean_name": "triangle_inequality",
+  "proof_id": "atlas.real_analysis.fa564bc5f335",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/RealNumbers/AbsoluteValue.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "The real numbers `ℝ` form a strict ordered ring, contain `ℚ` via an injective ring\nhomomorphism, and satisfy the least upper bound property: every nonempty set bounded above\nadmits a least upper bound.",
+  "created_at": "2026-08-23T22:57:43.916589+00:00",
+  "formal_statement": "theorem real_numbers_theorem :\n    IsStrictOrderedRing ℝ ∧\n    Function.Injective (Rat.cast : ℚ → ℝ) ∧\n    (∀ S : Set ℝ, S.Nonempty → BddAbove S → ∃ x, IsLUB S x)",
+  "key_strategies": "1. The standard algebraic and order structures on \\(\\mathbb{R}\\) supply the strict ordered ring property via the existing typeclass instance.\n\n2. The canonical cast \\(\\mathbb{Q}\\to\\mathbb{R}\\) is injective, ensuring that rational numbers embed faithfully into the reals.\n\n3. For any nonempty set \\(S\\subseteq\\mathbb{R}\\) bounded above, choosing \\(x=\\sup S\\) and invoking completeness of \\(\\mathbb{R}\\) proves that \\(x\\) is the least upper bound of \\(S\\).",
+  "lean_name": "real_numbers_theorem",
+  "proof_id": "atlas.real_analysis.1b9f1b5bf00f",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/RealNumbers/Basic.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Uniqueness (up to ordered ring isomorphism) of the real numbers: any conditionally complete\nlinear strict ordered field `F` is isomorphic to `ℝ` as an ordered ring.",
+  "created_at": "2026-08-23T22:58:16.682367+00:00",
+  "formal_statement": "theorem real_uniqueness_up_to_iso\n    (F : Type*) [Field F] [LinearOrder F] [IsStrictOrderedRing F]\n    [ConditionallyCompleteLinearOrder F] :\n    Nonempty (F ≃+*o ℝ)",
+  "key_strategies": "1. Conditional completeness forces \\(F\\) to be Archimedean, since a hypothetical upper bound for the natural numbers would yield a supremum contradicted by translation by \\(1\\).\n\n2. Archimedeanness makes the embedded rationals order-dense in both \\(F\\) and \\(\\mathbb R\\), so every element is uniquely determined by its rational lower cut.\n\n3. Associate \\(x\\in F\\) with the real number whose rational lower cut is \\(\\{q\\in\\mathbb Q:q<x\\}\\), using conditional completeness to realize this cut and prove that the correspondence preserves order, addition, multiplication, and units.\n\n4. Construct the reverse correspondence from the same rational cuts in \\(F\\), and use uniqueness from rational density to show the two maps are inverse, producing an ordered ring isomorphism \\(F\\simeq_{+,\\times,\\le}\\mathbb R\\).",
+  "lean_name": "real_uniqueness_up_to_iso",
+  "proof_id": "atlas.real_analysis.98296013f8c5",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/RealNumbers/Basic.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "There exists a unique positive real number `r` with `r ^ 2 = 2`, namely `√2`; in particular\n`√2 ∈ ℝ \\ ℚ`.",
+  "created_at": "2026-08-23T22:58:24.771504+00:00",
+  "formal_statement": "theorem sqrt2_exists_unique : ∃! r : ℝ, 0 < r ∧ r ^ 2 = 2",
+  "key_strategies": "1. Choose the principal square root \\(r=\\sqrt2\\), whose positivity and identity \\((\\sqrt2)^2=2\\) follow from the standard square-root properties for positive and nonnegative inputs.\n\n2. For uniqueness, use the positivity of any candidate \\(y\\) to recover it from its square via \\(y=\\sqrt{y^2}\\), then substitute \\(y^2=2\\) to conclude \\(y=\\sqrt2\\).",
+  "lean_name": "sqrt2_exists_unique",
+  "proof_id": "atlas.real_analysis.acc655918d16",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/RealNumbers/Basic.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Bounded above and bounded below.** In a preorder, a set `E` is bounded above\niff there exists an upper bound `b` with `x ≤ b` for all `x ∈ E`, and bounded\nbelow iff there exists a lower bound `c` with `c ≤ x` for all `x ∈ E`.",
+  "created_at": "2026-08-23T22:58:31.328485+00:00",
+  "formal_statement": "theorem bounded_above_below_iff {α : Type*} [Preorder α] (E : Set α) :\n    (BddAbove E ↔ ∃ b, ∀ x ∈ E, x ≤ b) ∧ (BddBelow E ↔ ∃ c, ∀ x ∈ E, c ≤ x)",
+  "key_strategies": "1. Unfold `BddAbove` as nonemptiness of `upperBounds E`, and unfold membership in `upperBounds E` as the condition that every \\(x \\in E\\) satisfies \\(x \\le b\\).\n\n2. Dually, unfold `BddBelow` as nonemptiness of `lowerBounds E`, and unfold membership in `lowerBounds E` as the condition that every \\(x \\in E\\) satisfies \\(c \\le x\\).\n\n3. After these definitional expansions, `simp` converts each nonemptiness statement into the required existential form, and the two equivalences are paired to prove the conjunction.",
+  "lean_name": "bounded_above_below_iff",
+  "proof_id": "atlas.real_analysis.2c04040b19d7",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/RealNumbers/OrderedSetsFields.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Ordered field axioms.** In an ordered field `F`, the order is compatible\nwith addition (`x < y` implies `x + z < y + z`) and with multiplication\n(if `0 < x` and `0 < y`, then `0 < x * y`).",
+  "created_at": "2026-08-23T22:58:37.471329+00:00",
+  "formal_statement": "theorem ordered_field_axioms (F : Type*) [Field F] [LinearOrder F] [IsStrictOrderedRing F] :\n    (∀ x y z : F, x < y → x + z < y + z) ∧\n    (∀ x y : F, 0 < x → 0 < y → 0 < x * y)",
+  "key_strategies": "1. Use the strictly ordered ring structure to invoke translation invariance of strict inequalities, yielding \\(x+z<y+z\\) from \\(x<y\\).\n\n2. Use positivity preservation under multiplication in a strictly ordered ring to conclude \\(0<xy\\) from \\(0<x\\) and \\(0<y\\).\n\n3. Prove the conjunction by supplying these two standard order-compatibility results as its respective components.",
+  "lean_name": "ordered_field_axioms",
+  "proof_id": "atlas.real_analysis.3ea7ba1b0f4b",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/RealNumbers/OrderedSetsFields.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Field axioms.** A field `F` satisfies the addition axioms (A1-A5:\ncommutativity, associativity, existence of `0`, additive inverses), the\nmultiplication axioms (M1-M5: commutativity, associativity, existence of `1`,\nmultiplicative inverses for nonzero elements), and the distributive law (D).",
+  "created_at": "2026-08-23T22:58:44.535185+00:00",
+  "formal_statement": "theorem field_axioms (F : Type*) [Field F] :\n    (∀ x y : F, x + y = y + x) ∧\n    (∀ x y z : F, (x + y) + z = x + (y + z)) ∧\n    (∃ zero : F, ∀ x, zero + x = x) ∧\n    (∀ x : F, ∃ y, x + y = 0) ∧\n    (∀ x y : F, x * y = y * x) ∧\n    (∀ x y z : F, (x * y) * z = x * (y * z)) ∧\n    (∃ one : F, ∀ x, one * x = x) ∧\n    (∀ x : F, x ≠ 0 → ∃ y, x * y = 1) ∧\n    (∀ x y z : F, (x + y) * z = x * z + y * z)",
+  "key_strategies": "1. Use the `Field F` typeclass to invoke the standard commutativity, associativity, identity, inverse, and distributivity lemmas directly.\n\n2. Satisfy the existential additive axioms with the canonical witnesses \\(0\\) for the identity and \\(-x\\) for the inverse, justified by `zero_add` and `add_neg_cancel`.\n\n3. Satisfy the existential multiplicative axioms with the canonical witnesses \\(1\\) for the identity and \\(x^{-1}\\) for the inverse, using the hypothesis \\(x \\ne 0\\) in `mul_inv_cancel₀`.\n\n4. Assemble all nine axioms in the exact nested-conjunction order of the goal via a single tuple constructed with `refine ⟨\\ldots⟩`.",
+  "lean_name": "field_axioms",
+  "proof_id": "atlas.real_analysis.d98ecaeef19d",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/RealNumbers/OrderedSetsFields.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Cantor's theorem: the half-open interval `(0, 1]` of real numbers is uncountable.",
+  "created_at": "2026-08-23T22:58:51.194282+00:00",
+  "formal_statement": "theorem Ioc_zero_one_uncountable : ¬ Set.Countable (Set.Ioc (0:ℝ) 1)",
+  "key_strategies": "1. Translate countability of \\((0,1]\\) into the cardinal inequality \\(\\lvert(0,1]\\rvert \\le \\aleph_0\\), so uncountability becomes the strict reverse inequality.\n\n2. Use \\(0<1\\) and the fact that every nondegenerate real interval has cardinality continuum to identify \\(\\lvert(0,1]\\rvert=\\mathfrak c\\).\n\n3. Apply Cantor’s theorem \\(\\aleph_0<\\mathfrak c\\) to rule out \\(\\lvert(0,1]\\rvert\\le\\aleph_0\\).",
+  "lean_name": "Ioc_zero_one_uncountable",
+  "proof_id": "atlas.real_analysis.e8c8f6ce6b7f",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/RealNumbers/Uncountability.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Corollary of Cantor's theorem: the set of real numbers `ℝ` is uncountable.",
+  "created_at": "2026-08-23T22:59:01.918171+00:00",
+  "formal_statement": "theorem real_uncountable : ¬ Set.Countable (Set.univ : Set ℝ)",
+  "key_strategies": "1. Cantor’s diagonal argument shows that the power set \\(\\mathcal P(\\mathbb N)\\) is uncountable because every proposed enumeration omits a diagonally constructed subset.\n\n2. An injection from \\(\\mathcal P(\\mathbb N)\\) into \\(\\mathbb R\\), such as encoding subsets by ternary expansions using only \\(0\\) and \\(2\\), transfers this uncountability to the real numbers.\n\n3. The Lean proof invokes `Cardinal.not_countable_real`, a packaged cardinality result that directly establishes that the universal set of real numbers is not countable.",
+  "lean_name": "real_uncountable",
+  "proof_id": "atlas.real_analysis.79478ee913cd",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/RealNumbers/Uncountability.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "ε–N characterization of convergence: `x n → L` if and only if for every `ε > 0`\nthere exists `M : ℕ` such that `|x n - L| < ε` for all `n ≥ M`.",
+  "created_at": "2026-08-23T22:59:13.104304+00:00",
+  "formal_statement": "theorem seq_converges_iff (x : ℕ → ℝ) (L : ℝ) :\n    Filter.Tendsto x Filter.atTop (nhds L) ↔\n    ∀ ε > 0, ∃ M : ℕ, ∀ n ≥ M, |x n - L| < ε",
+  "key_strategies": "1. Rewrite convergence along `Filter.atTop` using `Metric.tendsto_atTop`, which turns the filter statement into the explicit \\(\\varepsilon\\)–\\(N\\) condition \\(\\forall \\varepsilon>0,\\exists M,\\forall n\\ge M\\).\n\n2. Replace the real-valued metric distance with absolute difference via `Real.dist_eq`, yielding \\(d(x_n,L)=|x_n-L|\\) and exactly the desired statement.",
+  "lean_name": "seq_converges_iff",
+  "proof_id": "atlas.real_analysis.b994f1398d46",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Sequences/Basic.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Squeeze (sandwich) theorem for real sequences: if `a n ≤ x n ≤ b n` for all `n`\nand both `a` and `b` converge to the same limit `L`, then `x` also converges to `L`.",
+  "created_at": "2026-08-23T22:59:23.113737+00:00",
+  "formal_statement": "theorem squeeze_theorem (a x b : ℕ → ℝ) (L : ℝ)\n    (hab : ∀ n, a n ≤ x n) (hxb : ∀ n, x n ≤ b n)\n    (ha : Filter.Tendsto a Filter.atTop (nhds L))\n    (hb : Filter.Tendsto b Filter.atTop (nhds L)) :\n    Filter.Tendsto x Filter.atTop (nhds L)",
+  "key_strategies": "1. Recognize that convergence in \\(\\mathbb{R}\\) is order-squeezable: a function bounded between two functions tending to the same limit must tend to that limit.\n\n2. Apply `tendsto_of_tendsto_of_tendsto_of_le_of_le` directly with the convergences `ha`, `hb` and pointwise bounds `hab`, `hxb`.",
+  "lean_name": "squeeze_theorem",
+  "proof_id": "atlas.real_analysis.8aaf9bffdfc5",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Sequences/Basic.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "A real sequence `x` is Cauchy (in the Mathlib sense, `CauchySeq x`) if and only if it\nsatisfies the textbook Cauchy criterion: for every `ε > 0` there exists `M : ℕ` such\nthat `|x n - x k| < ε` whenever `n, k ≥ M`.",
+  "created_at": "2026-08-23T22:59:29.694576+00:00",
+  "formal_statement": "theorem cauchy_seq_iff (x : ℕ → ℝ) :\n    CauchySeq x ↔ ∀ ε > 0, ∃ M : ℕ, ∀ n k, n ≥ M → k ≥ M → |x n - x k| < ε",
+  "key_strategies": "1. Rewrite `CauchySeq x` using `Metric.cauchySeq_iff` to expose the explicit ε–index characterization of a Cauchy sequence.\n\n2. Use the real-number identity `Real.dist_eq`, namely `dist a b = |a - b|`, to convert the metric inequality into the textbook absolute-difference inequality and conversely.\n\n3. In each implication, reuse the same threshold index and hypotheses, since only the notation for the distance changes.",
+  "lean_name": "cauchy_seq_iff",
+  "proof_id": "atlas.real_analysis.96a9359e4c81",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Sequences/Cauchy.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Cauchy completeness of the reals: a real sequence is Cauchy if and only if it\nconverges to some limit `L : ℝ`.",
+  "created_at": "2026-08-23T22:59:34.715486+00:00",
+  "formal_statement": "theorem cauchy_iff_convergent (x : ℕ → ℝ) :\n    CauchySeq x ↔ ∃ L : ℝ, Filter.Tendsto x Filter.atTop (nhds L)",
+  "key_strategies": "1. The forward implication relies on the completeness of \\(\\mathbb{R}\\), which ensures that every Cauchy sequence has a real limit.\n\n2. The reverse implication uses the general principle that every convergent sequence is Cauchy, obtained by comparing two late terms through their common limit via the triangle inequality.",
+  "lean_name": "cauchy_iff_convergent",
+  "proof_id": "atlas.real_analysis.0b0070d60c5c",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Sequences/Cauchy.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "For a bounded real sequence `x : ℕ → ℝ`, the filter-theoretic `limsup` along\n`atTop` agrees with the textbook definition\n`limsup x = inf_{n} sup_{k ≥ n} x k`, here written as\n`⨅ n, ⨆ i, x (i + n)`.\n\nThis realizes the informal definition: for bounded `{xₙ}`,\n`limsup xₙ := lim_{n→∞} sup{xₖ : k ≥ n}`.",
+  "created_at": "2026-08-23T23:00:04.818007+00:00",
+  "formal_statement": "theorem limsup_eq_lim_sup_tail (x : ℕ → ℝ) (hb : BddAbove (Set.range x))\n    (hb' : BddBelow (Set.range x)) :\n    Filter.limsup x Filter.atTop = ⨅ n : ℕ, ⨆ i : ℕ, x (i + n)",
+  "key_strategies": "1. Convert the global upper and lower bounds on `Set.range x` into the filter-theoretic boundedness and coboundedness hypotheses required by the `limsup` comparison lemmas.\n\n2. Use the same bounds to show that every tail has a bounded-above supremum and that the sequence of tail suprema is bounded below, ensuring all `ciSup` and `ciInf` inequalities are applicable.\n\n3. For each fixed `n`, observe that eventually `m ≥ n`, so `m = (m - n) + n` and hence `x m ≤ ⨆ i, x (i + n)`, proving `limsup x ≤` every tail supremum and therefore their infimum.\n\n4. For the reverse inequality, use the characterization that it suffices to show the infimum of tail suprema lies below every eventual upper bound of `x`.\n\n5. Given an eventual upper bound `b`, choose a threshold `N`; then every term of the `N`-th tail is at most `b`, so its supremum is at most `b`, while the infimum over all tails is at most that particular tail supremum.",
+  "lean_name": "limsup_eq_lim_sup_tail",
+  "proof_id": "atlas.real_analysis.acf6d7b27bc7",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Sequences/LimSupInf.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "A bounded real sequence `x : ℕ → ℝ` converges to some limit `L` if and only\nif its `limsup` and `liminf` (along `atTop`) coincide.\n\nThis is the standard characterization: a bounded sequence `{xₙ}` converges iff\n`liminf xₙ = limsup xₙ`.",
+  "created_at": "2026-08-23T23:00:18.233920+00:00",
+  "formal_statement": "theorem convergent_iff_limsup_eq_liminf (x : ℕ → ℝ)\n    (hbdd : BddAbove (Set.range x) ∧ BddBelow (Set.range x)) :\n    (∃ L, Filter.Tendsto x Filter.atTop (nhds L)) ↔\n    Filter.limsup x Filter.atTop = Filter.liminf x Filter.atTop",
+  "key_strategies": "1. If \\(x_n \\to L\\), the standard identities `hL.limsup_eq` and `hL.liminf_eq` show that both limsup and liminf equal \\(L\\), hence they equal each other.\n\n2. Global upper and lower bounds on `Set.range x` are converted into the corresponding boundedness conditions along `Filter.atTop`.\n\n3. Conversely, after reversing the assumed equality to obtain \\(\\liminf x=\\limsup x\\), the criterion `tendsto_of_liminf_eq_limsup` yields convergence to the common value, chosen as `Filter.limsup x Filter.atTop`.",
+  "lean_name": "convergent_iff_limsup_eq_liminf",
+  "proof_id": "atlas.real_analysis.cc07284d82b7",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Sequences/LimSupInf.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "A sequence `x : ℕ → ℝ` is monotone increasing (i.e. `Monotone x`) if and only if\neach term is bounded above by its immediate successor: `x n ≤ x (n + 1)` for all `n`.",
+  "created_at": "2026-08-23T23:00:24.355331+00:00",
+  "formal_statement": "theorem monotone_increasing_iff (x : ℕ → ℝ) :\n    Monotone x ↔ ∀ n : ℕ, x n ≤ x (n + 1)",
+  "key_strategies": "1. Monotonicity gives each adjacent inequality by applying it to the basic natural-number relation \\(n \\le n+1\\).\n\n2. Conversely, inequalities between successive terms imply full monotonicity because any relation \\(m \\le n\\) can be traversed through finitely many successor steps, chaining the adjacent inequalities by transitivity.",
+  "lean_name": "monotone_increasing_iff",
+  "proof_id": "atlas.real_analysis.558ee9832c8c",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Sequences/Monotone.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "A monotone decreasing real sequence converges if and only if it is bounded below,\nand in that case its limit equals the infimum of its range: a monotone decreasing\nsequence `x` converges iff `BddBelow (Set.range x)`, and when bounded below, the\nsequence converges to `⨅ n, x n`.",
+  "created_at": "2026-08-23T23:00:40.835110+00:00",
+  "formal_statement": "theorem monotone_decreasing_convergence (x : ℕ → ℝ) (hm : Antitone x) :\n    ((∃ L, Filter.Tendsto x Filter.atTop (nhds L)) ↔ BddBelow (Set.range x)) ∧\n    (BddBelow (Set.range x) → Filter.Tendsto x Filter.atTop (nhds (⨅ n, x n)))",
+  "key_strategies": "1. A convergent real sequence has a bounded range, so convergence immediately implies that the range of \\(x\\) is bounded below.\n\n2. For an antitone sequence whose range is bounded below, the monotone convergence theorem `tendsto_atTop_ciInf` shows that \\(x_n\\) converges to \\(\\inf_n x_n=\\bigwedge_n x_n\\).\n\n3. Using this explicit infimum limit both supplies the witness for the existential convergence claim and proves the stronger assertion identifying the limit.",
+  "lean_name": "monotone_decreasing_convergence",
+  "proof_id": "atlas.real_analysis.9125c31f969d",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Sequences/Monotone.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Some special sequences:\n1. If `p > 0`, then `n^(-p) → 0` as `n → ∞`.\n2. If `p > 0`, then `p^(1/n) → 1` as `n → ∞`.\n3. `n^(1/n) → 1` as `n → ∞`.",
+  "created_at": "2026-08-23T23:01:00.316175+00:00",
+  "formal_statement": "theorem special_sequences :\n    (∀ p : ℝ, 0 < p → Filter.Tendsto (fun n : ℕ => (n : ℝ) ^ (-p)) Filter.atTop (nhds 0)) ∧\n    (∀ p : ℝ, 0 < p → Filter.Tendsto (fun n : ℕ => p ^ ((1 : ℝ) / n)) Filter.atTop (nhds 1)) ∧\n    Filter.Tendsto (fun n : ℕ => (n : ℝ) ^ ((1 : ℝ) / n)) Filter.atTop (nhds 1)",
+  "key_strategies": "1. View \\(n\\) as a real variable tending to \\(+\\infty\\), so real-variable limit theorems can be transferred to sequences by composition with `tendsto_natCast_atTop_atTop`.\n\n2. For \\(p>0\\), apply the standard limit \\(x^{-p}\\to 0\\) as \\(x\\to+\\infty\\) to obtain \\(n^{-p}\\to 0\\).\n\n3. For \\(p>0\\), combine \\(n^{-1}\\to 0\\) with continuity of \\(x\\mapsto p^x\\), using \\(p^0=1\\) and \\(1/n=n^{-1}\\), to prove \\(p^{1/n}\\to 1\\).\n\n4. Apply the standard real limit \\(x^{1/x}\\to 1\\) as \\(x\\to+\\infty\\) and compose it with the natural-number embedding to conclude \\(n^{1/n}\\to 1\\).",
+  "lean_name": "special_sequences",
+  "proof_id": "atlas.real_analysis.0c1af56ba22b",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Sequences/SpecialSequences.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Bolzano–Weierstrass theorem for real sequences: every bounded real sequence has a\nconvergent subsequence, i.e. a strictly increasing `φ : ℕ → ℕ` and a limit `L : ℝ`\nwith `x ∘ φ → L`.",
+  "created_at": "2026-08-23T23:01:06.465230+00:00",
+  "formal_statement": "theorem bolzano_weierstrass (x : ℕ → ℝ) (hb : Bornology.IsBounded (Set.range x)) :\n    ∃ φ : ℕ → ℕ, StrictMono φ ∧ ∃ L, Filter.Tendsto (x ∘ φ) Filter.atTop (nhds L)",
+  "key_strategies": "1. Apply `tendsto_subseq_of_bounded` to the bounded range of \\(x\\), using that every term \\(x_n\\) belongs to `Set.range x`, to obtain a strictly increasing subsequence converging to some \\(a\\in\\mathbb R\\).\n\n2. Repackage the resulting witnesses \\(\\varphi\\), its strict monotonicity, the limit \\(a\\), and the convergence proof in exactly the existential form required by the theorem.",
+  "lean_name": "bolzano_weierstrass",
+  "proof_id": "atlas.real_analysis.c3ff234fb77c",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Sequences/Subsequences.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "If a real sequence `x` converges to `L`, then every subsequence `x ∘ φ` (with\n`φ : ℕ → ℕ` strictly increasing) also converges to `L`.",
+  "created_at": "2026-08-23T23:01:10.941683+00:00",
+  "formal_statement": "theorem subseq_tendsto (x : ℕ → ℝ) (L : ℝ) (φ : ℕ → ℕ) (hφ : StrictMono φ)\n    (hx : Filter.Tendsto x Filter.atTop (nhds L)) :\n    Filter.Tendsto (x ∘ φ) Filter.atTop (nhds L)",
+  "key_strategies": "1. Strict monotonicity of \\(\\varphi:\\mathbb N\\to\\mathbb N\\) guarantees that \\(\\varphi(n)\\to\\infty\\), formalized by `hφ.tendsto_atTop`.\n\n2. The convergence \\(x\\to L\\) can then be composed with \\(\\varphi\\to\\infty\\), so `hx.comp hφ.tendsto_atTop` proves \\(x\\circ\\varphi\\to L\\).",
+  "lean_name": "subseq_tendsto",
+  "proof_id": "atlas.real_analysis.085ddc47fe28",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Sequences/Subsequences.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Rearrangement theorem for absolutely convergent series: if `∑ |x n|` is summable\nand `∑ x n` has sum `s`, then for any permutation `σ : ℕ ≃ ℕ` the rearranged series\n`∑ x (σ n)` is also absolutely convergent and has the same sum `s`.",
+  "created_at": "2026-08-23T23:01:29.015246+00:00",
+  "formal_statement": "theorem abs_convergent_rearrangement (x : ℕ → ℝ) (σ : ℕ ≃ ℕ)\n    (habs : Summable (fun n => |x n|)) (hsum : HasSum x s) :\n    Summable (fun n => |x (σ n)|) ∧ HasSum (x ∘ σ) s",
+  "key_strategies": "1. The bijection \\(\\sigma : \\mathbb N \\simeq \\mathbb N\\) allows summability and sums to be transported unchanged via `Equiv.summable_iff` and `Equiv.hasSum_iff`.\n\n2. Applying summability invariance to \\(n \\mapsto |x_n|\\) proves that the rearranged absolute-value series \\(n \\mapsto |x_{\\sigma(n)}|\\) is summable.\n\n3. Applying sum invariance to \\(x\\) proves that the rearranged family \\(x \\circ \\sigma\\) still has sum \\(s\\).",
+  "lean_name": "abs_convergent_rearrangement",
+  "proof_id": "atlas.real_analysis.4e6181963bde",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Series/Basic.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Comparison Test for series of real numbers.**\nIf `0 ≤ x n ≤ y n` for every `n`, then:\n1. summability of `y` implies summability of `x`, and\n2. non-summability of `x` implies non-summability of `y`\n(the latter being the contrapositive of the former).",
+  "created_at": "2026-08-23T23:01:36.265465+00:00",
+  "formal_statement": "theorem comparison_test (x y : ℕ → ℝ) (hx : ∀ n, 0 ≤ x n) (hxy : ∀ n, x n ≤ y n) :\n    (Summable y → Summable x) ∧ (¬ Summable x → ¬ Summable y)",
+  "key_strategies": "1. Apply `Summable.of_nonneg_of_le` to the pointwise bounds \\(0 \\le x_n \\le y_n\\), obtaining `Summable y → Summable x`.\n\n2. Derive `¬ Summable x → ¬ Summable y` as the contrapositive: if \\(y\\) were summable, the first implication would make \\(x\\) summable, contradicting the hypothesis.",
+  "lean_name": "comparison_test",
+  "proof_id": "atlas.real_analysis.81befce4dbe1",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Series/ConvergenceTests.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Root Test (Cauchy's root test).**\nSuppose `L = lim |x n| ^ (1/n)` exists. Then:\n1. if `L < 1`, the series `∑ |x n|` converges (so `∑ x n` converges absolutely);\n2. if `L > 1`, the series `∑ x n` diverges.",
+  "created_at": "2026-08-23T23:01:54.182238+00:00",
+  "formal_statement": "theorem root_test (x : ℕ → ℝ) (L : ℝ)\n    (hL : Tendsto (fun n => |x n| ^ ((1 : ℝ) / n)) atTop (nhds L)) :\n    (L < 1 → Summable (fun n => |x n|)) ∧ (1 < L → ¬ Summable x)",
+  "key_strategies": "1. Since every root term \\(|x_n|^{1/n}\\) is nonnegative, its limit \\(L\\) is nonnegative, allowing a geometric ratio \\(r\\) with \\(0\\le L<r<1\\) when \\(L<1\\).\n\n2. Convergence of the root sequence turns the strict limit bounds into eventual inequalities: \\(|x_n|^{1/n}<r\\) if \\(L<1\\), and \\(|x_n|^{1/n}>1\\) if \\(L>1\\).\n\n3. Restricting to \\(n\\ge1\\) permits raising these inequalities to the \\(n\\)-th power and using \\(\\bigl(|x_n|^{1/n}\\bigr)^n=|x_n|\\).\n\n4. In the case \\(L<1\\), the resulting eventual bound \\(|x_n|\\le r^n\\) proves summability by comparison with the convergent geometric series \\(\\sum r^n\\).\n\n5. In the case \\(L>1\\), the resulting eventual bound \\(|x_n|>1\\) contradicts the necessary condition \\(x_n\\to0\\) for convergence of \\(\\sum x_n\\), proving divergence.",
+  "lean_name": "root_test",
+  "proof_id": "atlas.real_analysis.f074c78bc249",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Series/ConvergenceTests.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Ratio Test (d'Alembert's ratio test).**\nSuppose `x n ≠ 0` for every `n` and `L = lim |x (n+1)| / |x n|` exists. Then:\n1. if `L < 1`, the series `∑ |x n|` converges (so `∑ x n` converges absolutely);\n2. if `L > 1`, the series `∑ x n` diverges.",
+  "created_at": "2026-08-23T23:02:09.040647+00:00",
+  "formal_statement": "theorem ratio_test (x : ℕ → ℝ) (L : ℝ) (hx : ∀ n, x n ≠ 0)\n    (hL : Filter.Tendsto (fun n => |x (n+1)| / |x n|) Filter.atTop (nhds L)) :\n    (L < 1 → Summable (fun n => |x n|)) ∧ (1 < L → ¬ Summable x)",
+  "key_strategies": "1. Split the theorem into the two cases \\(L<1\\) and \\(L>1\\), corresponding to the convergent and divergent forms of the ratio test.\n\n2. For \\(L<1\\), apply the ratio test to \\(a_n=|x_n|\\), using \\(x_n\\neq0\\) to establish that \\(a_n\\) is eventually nonzero.\n\n3. Rewrite real norms as absolute values (and use \\(||x_n||=|x_n|\\)) so that the ratio limits required by the library lemmas coincide exactly with the given limit hypothesis.\n\n4. Invoke `summable_of_ratio_test_tendsto_lt_one` when \\(L<1\\) and `not_summable_of_ratio_test_tendsto_gt_one` when \\(L>1\\) to conclude absolute convergence and divergence, respectively.",
+  "lean_name": "ratio_test",
+  "proof_id": "atlas.real_analysis.c86b2578bcc4",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Series/ConvergenceTests.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Alternating Series Test (Leibniz's test).**\nIf `x : ℕ → ℝ` is nonnegative, monotone decreasing (`Antitone`), and tends to `0`,\nthen the alternating series `∑ (-1)^i * x i` converges, i.e. its partial sums\nconverge to some real limit `l`.",
+  "created_at": "2026-08-23T23:02:36.264312+00:00",
+  "formal_statement": "theorem alternating_series_test (x : ℕ → ℝ)\n    (hpos : ∀ n, 0 ≤ x n)\n    (hdec : Antitone x)\n    (hlim : Filter.Tendsto x Filter.atTop (nhds 0)) :\n    ∃ l, Filter.Tendsto (fun n => ∑ i ∈ Finset.range n, (-1) ^ i * x i)\n      Filter.atTop (nhds l)",
+  "key_strategies": "1. Recognize that the library theorem `Antitone.tendsto_alternating_series_of_tendsto_zero` directly gives convergence of the alternating partial sums from `hdec` and `hlim`.\n\n2. Observe that the explicit nonnegativity hypothesis `hpos` is mathematically redundant here, since an antitone real sequence converging to `0` must already be nonnegative; the proof merely registers it with `have _ := hpos`.",
+  "lean_name": "alternating_series_test",
+  "proof_id": "atlas.real_analysis.66c62cefcfe4",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Series/ConvergenceTests.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Convergence of the alternating harmonic series.**\nThe series `∑ (-1)^i / (i + 1)` converges, i.e. its partial sums converge to some\nreal limit `l`. This is a direct corollary of the alternating series test, applied\nto the decreasing positive sequence `1 / (n + 1)`. Note that the corresponding\nseries of absolute values (the harmonic series) diverges, so this is an example\nof a conditionally convergent series.",
+  "created_at": "2026-08-23T23:02:49.379445+00:00",
+  "formal_statement": "theorem alternating_harmonic_converges :\n    ∃ l, Filter.Tendsto (fun n => ∑ i ∈ Finset.range n, ((-1 : ℝ) ^ i / (↑i + 1)))\n      Filter.atTop (nhds l)",
+  "key_strategies": "1. Rewrite \\(\\frac{(-1)^i}{i+1}\\) as \\((-1)^i\\frac{1}{i+1}\\), exposing the partial sums as an alternating series with coefficients \\(a_i=\\frac{1}{i+1}\\).\n\n2. Prove \\(a_n=\\frac{1}{n+1}\\) is antitone by observing that \\(a\\le b\\) implies \\(a+1\\le b+1\\), so positivity of the denominators reverses the inequality under reciprocation.\n\n3. Show \\(a_n\\to 0\\) because \\(n+1\\to+\\infty\\) and reciprocals of quantities tending to \\(+\\infty\\) tend to zero.\n\n4. Apply the alternating series convergence theorem to the antitone coefficient sequence tending to zero, obtaining the existence of a real limit for the partial sums.",
+  "lean_name": "alternating_harmonic_converges",
+  "proof_id": "atlas.real_analysis.c533a5d899aa",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Series/ConvergenceTests.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*De Morgan's Laws.** For sets `A`, `B`, `C`:\nthe complement of a union is the intersection of complements,\nthe complement of an intersection is the union of complements,\nand the analogous identities for set differences:\n`A \\ (B ∪ C) = (A \\ B) ∩ (A \\ C)` and `A \\ (B ∩ C) = (A \\ B) ∪ (A \\ C)`.",
+  "created_at": "2026-08-23T23:03:06.988992+00:00",
+  "formal_statement": "theorem de_morgan_laws :\n    (B ∪ C)ᶜ = Bᶜ ∩ Cᶜ ∧\n    (B ∩ C)ᶜ = Bᶜ ∪ Cᶜ ∧\n    A \\ (B ∪ C) = (A \\ B) ∩ (A \\ C) ∧\n    A \\ (B ∩ C) = (A \\ B) ∪ (A \\ C)",
+  "key_strategies": "1. Recognize the four desired equalities as existing library lemmas: `compl_union`, `compl_inter`, `diff_inter_diff`, and `Set.diff_inter`.\n\n2. Reverse `diff_inter_diff` with `.symm` because the library states the third set-difference identity in the opposite direction.\n\n3. Use the tuple notation `⟨p₁, p₂, p₃, p₄⟩` to assemble the four equality proofs into the nested conjunction.",
+  "lean_name": "de_morgan_laws",
+  "proof_id": "atlas.real_analysis.fb589e7ff9f9",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/SetTheory/Basic.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Well-ordering of `ℕ`.** Every nonempty subset `S ⊆ ℕ` contains a least element,\nthat is, there exists `x ∈ S` such that `x ≤ y` for all `y ∈ S`.",
+  "created_at": "2026-08-23T23:03:12.723384+00:00",
+  "formal_statement": "theorem well_ordering_nat (S : Set ℕ) (hS : S.Nonempty) : ∃ x ∈ S, ∀ y ∈ S, x ≤ y",
+  "key_strategies": "1. Use the nonemptiness of \\(S\\) to obtain a witness \\(n\\in S\\), establishing that the predicate \\(k\\in S\\) is satisfiable.\n\n2. Apply the natural-number least-witness operator `Nat.find` to obtain the least \\(x\\) such that \\(x\\in S\\).\n\n3. Use `Nat.find_spec` to prove that this least witness \\(x\\) belongs to \\(S\\), and `Nat.find_min'` to show that \\(x\\le y\\) for every \\(y\\in S\\).",
+  "lean_name": "well_ordering_nat",
+  "proof_id": "atlas.real_analysis.531882971c9f",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/SetTheory/Basic.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Principle of mathematical induction (starting at 1).** If `P 1` holds and\n`P m → P (m + 1)` for all `m`, then `P n` holds for every natural number `n ≥ 1`.",
+  "created_at": "2026-08-23T23:03:28.448816+00:00",
+  "formal_statement": "theorem induction_principle (P : ℕ → Prop) (base : P 1)\n    (step : ∀ m : ℕ, P m → P (m + 1)) : ∀ n : ℕ, n ≥ 1 → P n",
+  "key_strategies": "1. Induct on \\(n\\) using the strengthened statement \\(n \\ge 1 \\to P(n)\\), so the induction hypothesis remains applicable despite starting at \\(1\\) rather than \\(0\\).\n\n2. Eliminate the \\(n=0\\) case by contradiction, since the assumption \\(n \\ge 1\\) is impossible there.\n\n3. Split the successor case \\(n=k+1\\) according to whether \\(k=0\\), using the base hypothesis when \\(n=1\\) and otherwise using \\(k\\ge 1\\) to obtain \\(P(k)\\) from the induction hypothesis and then \\(P(k+1)\\) from the step hypothesis.",
+  "lean_name": "induction_principle",
+  "proof_id": "atlas.real_analysis.5a7152753a83",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/SetTheory/Basic.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "*Basic set relations.** `A ⊆ B` means every element of `A` lies in `B`;\n`A = B` is equivalent to mutual inclusion `A ⊆ B` and `B ⊆ A`; and\n`A ⊂ B` (proper subset) is equivalent to `A ⊆ B` together with `A ≠ B`.",
+  "created_at": "2026-08-23T23:03:34.536302+00:00",
+  "formal_statement": "theorem set_relations :\n    (A ⊆ B ↔ ∀ a, a ∈ A → a ∈ B) ∧\n    (A = B ↔ A ⊆ B ∧ B ⊆ A) ∧\n    (A ⊂ B ↔ A ⊆ B ∧ A ≠ B)",
+  "key_strategies": "1. Recognize that set inclusion \\(A \\subseteq B\\) is definitionally the statement \\(\\forall a,\\; a \\in A \\to a \\in B\\).\n\n2. Use antisymmetry of inclusion to characterize set equality by mutual inclusion: \\(A = B \\iff A \\subseteq B \\land B \\subseteq A\\).\n\n3. Unfold proper subset as inclusion together with strict inequality: \\(A \\subsetneq B \\iff A \\subseteq B \\land A \\ne B\\).",
+  "lean_name": "set_relations",
+  "proof_id": "atlas.real_analysis.8fb5049d0922",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/SetTheory/Basic.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Corollary to Cantor's theorem: for every natural number `n`, `n < 2 ^ n`.",
+  "created_at": "2026-08-23T23:03:40.066438+00:00",
+  "formal_statement": "theorem n_lt_two_pow_n (n : ℕ) : n < 2 ^ n",
+  "key_strategies": "1. Use induction on \\(n\\), reducing the successor case to the hypothesis \\(n<2^n\\).\n\n2. Strengthen the induction hypothesis by adding \\(1\\), obtaining \\(n+1<2^n+1\\).\n\n3. Use the positivity \\(1\\le 2^n\\) to bound \\(2^n+1\\le 2^n+2^n\\).\n\n4. Recognize \\(2^n+2^n=2^{n+1}\\), which converts the arithmetic bound into the required exponential one.",
+  "lean_name": "n_lt_two_pow_n",
+  "proof_id": "atlas.real_analysis.cf5e7b1b2725",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/SetTheory/Cardinality.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Cantor's theorem: for every type `α`, the cardinality of `α` is strictly less than the\ncardinality of its power set `Set α`.",
+  "created_at": "2026-08-23T23:03:45.954698+00:00",
+  "formal_statement": "theorem cantor_cardinal (α : Type*) : Cardinal.mk α < Cardinal.mk (Set α)",
+  "key_strategies": "1. Identify the cardinality of the power set \\(\\operatorname{Set}(\\alpha)\\) with the cardinal exponent \\(2^{|\\alpha|}\\) via `Cardinal.mk_set`.\n\n2. Apply Cantor’s cardinal theorem `Cardinal.cantor` to \\(|\\alpha|\\), obtaining \\(|\\alpha|<2^{|\\alpha|}\\), and rewrite the right-hand side as \\(|\\operatorname{Set}(\\alpha)|\\).",
+  "lean_name": "cantor_cardinal",
+  "proof_id": "atlas.real_analysis.a4598f93a8f7",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/SetTheory/Cardinality.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
+
+{
+  "comment": "Cantor-Schröder-Bernstein theorem: if there are injections `f : α → β` and `g : β → α`,\nthen there exists a bijection between `α` and `β`; equivalently, `|α| ≤ |β|` and `|β| ≤ |α|`\nimply `|α| = |β|`.",
+  "created_at": "2026-08-23T23:03:52.563383+00:00",
+  "formal_statement": "theorem cantor_schroeder_bernstein {α β : Type*} (f : α → β) (g : β → α)\n    (hf : Function.Injective f) (hg : Function.Injective g) :\n    Nonempty (α ≃ β)",
+  "key_strategies": "1. Package each injective function together with its injectivity proof as an embedding, obtaining embeddings \\(\\alpha \\hookrightarrow \\beta\\) and \\(\\beta \\hookrightarrow \\alpha\\).\n\n2. Apply antisymmetry for embeddings—the Cantor–Schröder–Bernstein principle—to the two mutual embeddings to obtain a nonempty equivalence \\(\\alpha \\simeq \\beta\\).",
+  "lean_name": "cantor_schroeder_bernstein",
+  "proof_id": "atlas.real_analysis.aaa1490bf333",
+  "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/SetTheory/Cardinality.lean",
+  "strategy_model": "gpt-5.6-sol"
+}
