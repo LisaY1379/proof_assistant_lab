@@ -36,6 +36,7 @@ PORT = 8765
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 UI_DIR = Path(__file__).resolve().parent
 PIPELINE_SCRIPT = PROJECT_ROOT / "workflows" / "proof_strategy_extraction" / "run_pipeline.py"
+CLASSIFY_SCRIPT = PROJECT_ROOT / "workflows" / "proof_strategy_extraction" / "classify_strategy_categories.py"
 RESULTS_FILE = PROJECT_ROOT / "data" / "processed" / "proofs_with_key_strategies.jsonl"
 ATLAS_DIR = PROJECT_ROOT / "external" / "atlas-lean" / "Atlas" / "RealAnalysis"
 ATLAS_REPO_ROOT = PROJECT_ROOT / "external" / "atlas-lean"
@@ -47,6 +48,7 @@ current_job: Dict[str, Any] = {
     "running": False,
     "started_at": None,
     "finished_at": None,
+    "workflow": None,
     "limit": None,
     "returncode": None,
     "stdout": "",
@@ -111,12 +113,24 @@ def make_overview() -> Dict[str, Any]:
     ]
 
     processed_records = parse_pretty_json_records(RESULTS_FILE)
-    processed_ids = {r.get("proof_id") for r in processed_records if r.get("proof_id")}
+    processed_by_id = {r.get("proof_id"): r for r in processed_records if r.get("proof_id")}
+    processed_ids = set(processed_by_id)
 
     items: List[Dict[str, Any]] = []
     next_unprocessed_index: Optional[int] = None
     for i, proof in enumerate(proofs, start=1):
         processed = proof.get("proof_id") in processed_ids
+        processed_record = processed_by_id.get(proof.get("proof_id"), {})
+        strategy_items = processed_record.get("key_strategies") if isinstance(processed_record, dict) else None
+        strategy_count = 0
+        categorized_count = 0
+        if isinstance(strategy_items, list):
+            for strategy_item in strategy_items:
+                if isinstance(strategy_item, dict):
+                    strategy_count += 1
+                    if str(strategy_item.get("category", "")).strip():
+                        categorized_count += 1
+        category_processed = bool(strategy_count and categorized_count == strategy_count)
         if not processed and next_unprocessed_index is None:
             next_unprocessed_index = i
         comment = proof.get("comment", "") or ""
@@ -133,12 +147,16 @@ def make_overview() -> Dict[str, Any]:
             "end_line": proof.get("end_line"),
             "comment_excerpt": comment_excerpt,
             "processed": processed,
+            "strategy_count": strategy_count,
+            "categorized_strategy_count": categorized_count,
+            "category_processed": category_processed,
         })
 
     return {
         "items": items,
         "total": len(items),
         "processed_count": sum(1 for item in items if item["processed"]),
+        "category_processed_count": sum(1 for item in items if item.get("category_processed")),
         "next_unprocessed_index": next_unprocessed_index,
         "results_file": str(RESULTS_FILE.relative_to(PROJECT_ROOT)),
         "atlas_dir": str(ATLAS_DIR.relative_to(PROJECT_ROOT)),
@@ -205,23 +223,28 @@ def parse_pretty_json_records(path: Path) -> List[Dict[str, Any]]:
     return rows
 
 
-def start_pipeline_job(limit: int) -> None:
-    """Start pipeline in a background thread.
+def append_job_stdout(text: str, max_chars: int = 200_000) -> None:
+    """Append streaming output to current_job while keeping memory bounded."""
+    with job_lock:
+        current = str(current_job.get("stdout") or "") + text
+        if len(current) > max_chars:
+            current = "...[older logs truncated]...\n" + current[-max_chars:]
+        current_job["stdout"] = current
 
-    `limit` means: process/resume all proof items from the beginning through this
-    enumerated item number. Existing final records are reused by the pipeline, so
-    this effectively continues from where previous work stopped.
-    """
+
+def start_streaming_job(*, workflow: str, limit: int, cmd: List[str]) -> None:
+    """Start a subprocess and stream combined stdout/stderr into /api/status."""
     def worker() -> None:
         with job_lock:
             current_job.update(
                 {
                     "running": True,
+                    "workflow": workflow,
                     "started_at": now_iso(),
                     "finished_at": None,
                     "limit": limit,
                     "returncode": None,
-                    "stdout": "",
+                    "stdout": f"Running command: {' '.join(cmd)}\n\n",
                     "stderr": "",
                     "error": None,
                 }
@@ -231,25 +254,29 @@ def start_pipeline_job(limit: int) -> None:
             env = os.environ.copy()
             # .env should override stale shell variables for the server process.
             env.update(load_dotenv())
+            env["PYTHONUNBUFFERED"] = "1"
 
-            cmd = [sys.executable, str(PIPELINE_SCRIPT), "--limit", str(limit)]
-            proc = subprocess.run(
+            proc = subprocess.Popen(
                 cmd,
                 cwd=str(PROJECT_ROOT),
                 env=env,
                 text=True,
-                capture_output=True,
-                check=False,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                bufsize=1,
             )
+
+            assert proc.stdout is not None
+            for line in proc.stdout:
+                append_job_stdout(line)
+            returncode = proc.wait()
 
             with job_lock:
                 current_job.update(
                     {
                         "running": False,
                         "finished_at": now_iso(),
-                        "returncode": proc.returncode,
-                        "stdout": proc.stdout,
-                        "stderr": proc.stderr,
+                        "returncode": returncode,
                     }
                 )
         except Exception as exc:  # noqa: BLE001 - local UI should report full errors.
@@ -265,6 +292,23 @@ def start_pipeline_job(limit: int) -> None:
 
     thread = threading.Thread(target=worker, daemon=True)
     thread.start()
+
+
+def start_pipeline_job(limit: int) -> None:
+    """Start pipeline in a background thread.
+
+    `limit` means: process/resume all proof items from the beginning through this
+    enumerated item number. Existing final records are reused by the pipeline, so
+    this effectively continues from where previous work stopped.
+    """
+    cmd = [sys.executable, "-u", str(PIPELINE_SCRIPT), "--limit", str(limit)]
+    start_streaming_job(workflow="textbook_key_strategy", limit=limit, cmd=cmd)
+
+
+def start_classification_job(until_proof: int) -> None:
+    """Classify strategy-object categories through proof item number N."""
+    cmd = [sys.executable, "-u", str(CLASSIFY_SCRIPT), "--until-proof", str(until_proof)]
+    start_streaming_job(workflow="strategy_category_classification", limit=until_proof, cmd=cmd)
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -342,10 +386,10 @@ class Handler(BaseHTTPRequestHandler):
             self.send_json({"error": "Invalid JSON request body."}, status=400)
             return
 
-        if path == "/api/run":
+        if path in {"/api/run", "/api/classify-strategies"}:
             with job_lock:
                 if current_job.get("running"):
-                    self.send_json({"error": "A pipeline job is already running.", "job": dict(current_job)}, status=409)
+                    self.send_json({"error": "A workflow job is already running.", "job": dict(current_job)}, status=409)
                     return
 
             raw_limit = payload.get("limit")
@@ -361,12 +405,20 @@ class Handler(BaseHTTPRequestHandler):
             if limit > 10000:
                 self.send_json({"error": "limit is too large for the local UI safety check."}, status=400)
                 return
-            if not PIPELINE_SCRIPT.exists():
-                self.send_json({"error": f"Pipeline script not found: {PIPELINE_SCRIPT}"}, status=500)
+
+            if path == "/api/run":
+                if not PIPELINE_SCRIPT.exists():
+                    self.send_json({"error": f"Pipeline script not found: {PIPELINE_SCRIPT}"}, status=500)
+                    return
+                start_pipeline_job(limit)
+                self.send_json({"ok": True, "message": f"Started pipeline to process through item #{limit} (--limit {limit})"})
                 return
 
-            start_pipeline_job(limit)
-            self.send_json({"ok": True, "message": f"Started pipeline to process through item #{limit} (--limit {limit})"})
+            if not CLASSIFY_SCRIPT.exists():
+                self.send_json({"error": f"Classification script not found: {CLASSIFY_SCRIPT}"}, status=500)
+                return
+            start_classification_job(limit)
+            self.send_json({"ok": True, "message": f"Started strategy-category classification through proof item #{limit}"})
             return
 
         self.send_json({"error": f"Not found: {path}"}, status=404)
@@ -375,6 +427,7 @@ class Handler(BaseHTTPRequestHandler):
 def main() -> None:
     print(f"Project root: {PROJECT_ROOT}")
     print(f"Pipeline:     {PIPELINE_SCRIPT.relative_to(PROJECT_ROOT)}")
+    print(f"Classifier:   {CLASSIFY_SCRIPT.relative_to(PROJECT_ROOT)}")
     print(f"Results:      {RESULTS_FILE.relative_to(PROJECT_ROOT)}")
     print(f"Atlas:        {ATLAS_DIR.relative_to(PROJECT_ROOT)}")
     print(f"Open:         http://{HOST}:{PORT}")

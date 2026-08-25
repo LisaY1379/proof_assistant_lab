@@ -137,11 +137,26 @@ def main() -> int:
     processed = read_jsonl_like(PROCESSED_PROOFS)
     extracted = load_all_theorem_lemma_records()
 
-    processed_ids = {row.get("proof_id") for row in processed if row.get("proof_id")}
+    processed_by_id = {row.get("proof_id"): row for row in processed if row.get("proof_id")}
+    processed_ids = set(processed_by_id)
 
     overview: List[Dict[str, Any]] = []
     for idx, row in enumerate(extracted, start=1):
         proof_id = row.get("proof_id")
+        processed_row = processed_by_id.get(proof_id, {})
+        strategies = processed_row.get("key_strategies", []) if isinstance(processed_row, dict) else []
+        if isinstance(strategies, list):
+            strategy_count = len(strategies)
+            categorized_strategy_count = sum(
+                1
+                for item in strategies
+                if isinstance(item, dict) and str(item.get("category", "")).strip()
+            )
+        else:
+            strategy_count = 0
+            categorized_strategy_count = 0
+        refined = processed_row.get("strategies_refined", []) if isinstance(processed_row, dict) else []
+        refined_processed = isinstance(refined, list) and len(refined) > 0
         overview.append(
             {
                 "index": idx,
@@ -155,6 +170,10 @@ def main() -> int:
                 "comment_excerpt": make_excerpt(row.get("comment", "")),
                 "formal_statement": row.get("formal_statement", ""),
                 "processed": proof_id in processed_ids,
+                "strategy_count": strategy_count,
+                "categorized_strategy_count": categorized_strategy_count,
+                "category_processed": strategy_count > 0 and categorized_strategy_count == strategy_count,
+                "refined_processed": refined_processed,
             }
         )
 
@@ -174,6 +193,7 @@ def main() -> int:
                 "textbook_explanation": row.get("textbook_explanation") or row.get("plain_english", ""),
                 "plain_english": row.get("plain_english") or row.get("textbook_explanation", ""),
                 "key_strategies": row.get("key_strategies", ""),
+                "strategies_refined": row.get("strategies_refined", []),
                 "model": row.get("model", ""),
                 "annotation_status": row.get("annotation_status", ""),
             }

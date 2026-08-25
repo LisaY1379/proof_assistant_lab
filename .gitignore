@@ -20,3 +20,8 @@ __pycache__/
 external/atlas-lean/
 
 doc.md
+
+# Workflow backup files
+*.bak
+*.bak_*
+*.bak-*

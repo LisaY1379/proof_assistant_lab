@@ -259,7 +259,7 @@
       width: 100%;
       border-collapse: collapse;
       table-layout: fixed;
-      min-width: 1100px;
+      min-width: 1900px;
     }
 
     th, td {
@@ -303,13 +303,67 @@
       font-size: 12px;
     }
 
-    .english, .keys {
+    .english, .keys, .category-cell, .refined-strategies {
       white-space: pre-wrap;
       background: #ffffff;
       border: 1px solid #eef0f4;
       border-radius: 8px;
       padding: 10px;
       min-height: 48px;
+    }
+
+    .refined-item {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 9px 0;
+    }
+    .refined-item:last-child { border-bottom: 0; }
+    .refined-category {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #ecfeff;
+      color: #155e75;
+      font-weight: 800;
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
+    .refined-meta {
+      color: #6b7280;
+      font-size: 11px;
+      margin-top: 5px;
+    }
+    .refined-label {
+      font-weight: 750;
+      color: #374151;
+    }
+
+    .strategy-table {
+      min-width: 0;
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+    }
+    .strategy-table th, .strategy-table td {
+      padding: 8px;
+      border-bottom: 1px solid #e5e7eb;
+      border-right: 1px solid #e5e7eb;
+      font-size: 12px;
+    }
+    .strategy-table tr:last-child td { border-bottom: 0; }
+    .strategy-table th:nth-child(1), .strategy-table td:nth-child(1) { width: 62%; }
+    .strategy-table th:nth-child(2), .strategy-table td:nth-child(2) { width: 38%; }
+    .category-badge {
+      display: inline-block;
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-weight: 700;
+      font-size: 11px;
+    }
+    .category-empty {
+      color: #9ca3af;
+      font-style: italic;
     }
 
     .english mjx-container, .keys mjx-container {
@@ -357,9 +411,10 @@
         <h2>2. Workflow control</h2>
         <label for="limitInput">Process through item number</label>
         <input id="limitInput" type="number" min="1" value="5" />
-        <button class="primary" id="startButton">Continue / Start Workflow</button>
+        <button class="primary" id="startButton">Run textbook/key-strategy workflow</button>
+        <button class="primary" id="classifyButton">Classify strategy categories</button>
         <p class="small-note">
-          If you enter <code>10</code>, the workflow runs <code>--limit 10</code>. Existing processed records are reused, so it continues from where you left off and processes everything through item #10.
+          If you enter <code>10</code>, the first button runs <code>--limit 10</code>. The classification button classifies all uncategorized strategy objects in proofs #1–#10 and writes each result into that strategy's <code>category</code> field.
         </p>
       </section>
 
@@ -382,7 +437,8 @@
 
       <section class="status-card">
         <div class="status-row"><div class="status-label">Job status</div><div id="jobStatus">Not checked yet</div></div>
-        <div class="status-row"><div class="status-label">Limit</div><div id="jobLimit">—</div></div>
+        <div class="status-row"><div class="status-label">Workflow</div><div id="jobWorkflow">—</div></div>
+        <div class="status-row"><div class="status-label">Limit / Until proof</div><div id="jobLimit">—</div></div>
         <div class="status-row"><div class="status-label">Started</div><div id="jobStarted">—</div></div>
         <div class="status-row"><div class="status-label">Finished</div><div id="jobFinished">—</div></div>
         <div class="status-row"><div class="status-label">Return code</div><div id="jobReturnCode">—</div></div>
@@ -463,6 +519,7 @@
         statusEl.textContent = 'Idle';
         statusEl.className = '';
       }
+      setText('jobWorkflow', status.workflow);
       setText('jobLimit', status.limit);
       setText('jobStarted', status.started_at);
       setText('jobFinished', status.finished_at);
@@ -473,7 +530,12 @@
         status.stderr ? 'STDERR:\n' + status.stderr : '',
         status.error ? 'ERROR:\n' + status.error : ''
       ].filter(Boolean).join('\n\n');
-      $('logBox').textContent = logs || 'No logs yet.';
+      const logBox = $('logBox');
+      const wasNearBottom = (logBox.scrollTop + logBox.clientHeight + 40) >= logBox.scrollHeight;
+      logBox.textContent = logs || 'No logs yet.';
+      if (logBox.style.display === 'block' && wasNearBottom) {
+        logBox.scrollTop = logBox.scrollHeight;
+      }
     }
 
     async function refreshStatus() {
@@ -513,7 +575,8 @@
         item.kind,
         item.source_file,
         item.comment_excerpt,
-        item.processed ? 'processed green done' : 'pending unprocessed'
+        item.processed ? 'processed green done' : 'pending unprocessed',
+        item.category_processed ? 'categorized classified category' : 'uncategorized pending category'
       ].join('\n').toLowerCase();
       return haystack.includes(query.toLowerCase());
     }
@@ -533,7 +596,11 @@
         <div class="overview-grid">
           ${items.map((item) => {
             const cls = item.processed ? 'processed' : 'pending';
-            const status = item.processed ? '<span class="overview-status">processed</span>' : '';
+            const processedStatus = item.processed ? '<span class="overview-status">processed</span>' : '';
+            const categoryStatus = item.category_processed
+              ? '<span class="overview-status" style="color:#3730a3;">categorized</span>'
+              : (item.strategy_count ? `<span class="overview-status" style="color:#b06000;">${item.categorized_strategy_count || 0}/${item.strategy_count} categorized</span>` : '');
+            const status = processedStatus + categoryStatus;
             const file = item.source_file ? escapeHTML(item.source_file.split('/').slice(-3).join('/')) : '';
             const comment = item.comment_excerpt ? `<div class="overview-meta">${escapeHTML(item.comment_excerpt)}</div>` : '';
             return `
@@ -587,6 +654,27 @@
       }
     }
 
+    async function startClassificationWorkflow() {
+      const limit = Number($('limitInput').value);
+      if (!Number.isInteger(limit) || limit <= 0) {
+        alert('Please enter a positive integer proof item number.');
+        return;
+      }
+      if (overviewItems.length && limit > overviewItems.length) {
+        alert(`There are only ${overviewItems.length} theorem/lemma items in the overview.`);
+        return;
+      }
+      $('classifyButton').disabled = true;
+      try {
+        await apiPost('/api/classify-strategies', { limit });
+        await refreshStatus();
+      } catch (err) {
+        alert('Could not start classification workflow: ' + err.message);
+      } finally {
+        $('classifyButton').disabled = false;
+      }
+    }
+
     function escapeHTML(value) {
       return String(value ?? '')
         .replaceAll('&', '&amp;')
@@ -602,7 +690,8 @@
         proof.lean_name,
         proof.lean_original_code,
         proof.plain_english,
-        proof.key_strategies,
+        Array.isArray(proof.key_strategies) ? proof.key_strategies.map(s => `${s.strategy || ''} ${s.category || ''}`).join('\n') : proof.key_strategies,
+        Array.isArray(proof.strategies_refined) ? proof.strategies_refined.map(s => `${s.category || ''} ${s.evidence || ''} ${s.explanation || ''}`).join('\n') : proof.strategies_refined,
         proof.source_file,
         proof.proof_id
       ].join('\n').toLowerCase();
@@ -615,6 +704,56 @@
           console.warn('MathJax render failed:', err);
         });
       }
+    }
+
+    function renderStrategyTable(proof) {
+      const strategies = proof.key_strategies;
+      if (!Array.isArray(strategies)) {
+        return `<div class="keys">${escapeHTML(strategies || '')}</div>`;
+      }
+      if (!strategies.length) {
+        return '<div class="keys category-empty">No structured strategies.</div>';
+      }
+      const rows = strategies.map((item, idx) => {
+        const text = item && typeof item === 'object' ? item.strategy : String(item || '');
+        const category = item && typeof item === 'object' ? String(item.category || '').trim() : '';
+        const reason = item && typeof item === 'object' && item.category_reason ? `<div style="color:#6b7280;margin-top:6px;font-size:11px;">${escapeHTML(item.category_reason)}</div>` : '';
+        return `
+          <tr>
+            <td><strong>${idx + 1}.</strong> ${escapeHTML(text)}</td>
+            <td>${category ? `<span class="category-badge">${escapeHTML(category)}</span>${reason}` : '<span class="category-empty">Unclassified</span>'}</td>
+          </tr>
+        `;
+      }).join('');
+      return `
+        <table class="strategy-table">
+          <thead><tr><th>Strategy</th><th>Category</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+    }
+
+    function renderRefinedStrategies(proof) {
+      const refined = proof.strategies_refined;
+      if (!Array.isArray(refined) || !refined.length) {
+        return '<div class="refined-strategies category-empty">No reverse-engineered strategies yet.</div>';
+      }
+      const items = refined.map((item, idx) => {
+        const category = item && typeof item === 'object' ? String(item.category || '').trim() : '';
+        const evidence = item && typeof item === 'object' ? String(item.evidence || '').trim() : '';
+        const explanation = item && typeof item === 'object' ? String(item.explanation || '').trim() : '';
+        const confidence = item && typeof item === 'object' ? String(item.confidence || '').trim() : '';
+        const match = item && typeof item === 'object' && item.category_name_match === false ? ' · category name not exact' : '';
+        return `
+          <div class="refined-item">
+            <div><span class="refined-category">${escapeHTML(category || 'Uncategorized')}</span></div>
+            ${evidence ? `<div><span class="refined-label">Evidence:</span> ${escapeHTML(evidence)}</div>` : ''}
+            ${explanation ? `<div><span class="refined-label">Explanation:</span> ${escapeHTML(explanation)}</div>` : ''}
+            ${(confidence || match) ? `<div class="refined-meta">Confidence: ${escapeHTML(confidence || '—')}${escapeHTML(match)}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+      return `<div class="refined-strategies">${items}</div>`;
     }
 
     function renderProofTable() {
@@ -638,7 +777,8 @@
               <pre>${escapeHTML(proof.lean_original_code || '')}</pre>
             </td>
             <td><div class="english">${escapeHTML(proof.plain_english || '')}</div></td>
-            <td><div class="keys">${escapeHTML(proof.key_strategies || '')}</div></td>
+            <td>${renderStrategyTable(proof)}</td>
+            <td>${renderRefinedStrategies(proof)}</td>
           </tr>
         `;
       }).join('');
@@ -649,7 +789,8 @@
             <tr>
               <th>Lean original code</th>
               <th>Textbook-style English proof</th>
-              <th>Key strategies</th>
+              <th>Key strategies + category</th>
+              <th>Reverse-engineered strategies</th>
             </tr>
           </thead>
           <tbody>${rows}</tbody>
@@ -672,6 +813,7 @@
     }
 
     $('startButton').addEventListener('click', startWorkflow);
+    $('classifyButton').addEventListener('click', startClassificationWorkflow);
     $('showOverviewButton').addEventListener('click', loadOverview);
     $('loadButton').addEventListener('click', loadProofs);
     $('refreshStatusButton').addEventListener('click', refreshStatus);
@@ -690,14 +832,15 @@
       renderOverview();
     });
 
-    // Poll status while a job is running.
+    // Poll status frequently so logs update while a job is running.
     setInterval(async () => {
+      const wasRunning = lastStatus && lastStatus.running;
       const status = await refreshStatus();
-      if (status && !status.running && lastStatus && lastStatus.running) {
+      if (status && !status.running && wasRunning) {
         await loadProofs();
         await loadOverview();
       }
-    }, 3000);
+    }, 1000);
 
     refreshStatus();
     loadOverview();

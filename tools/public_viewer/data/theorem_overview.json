@@ -1,5 +1,7 @@
 [
   {
+    "categorized_strategy_count": 2,
+    "category_processed": true,
     "comment": "Continuity of `f` at a point `c ∈ S` (relative to `S`) is equivalent to the classical\n`ε`-`δ` formulation: for every `ε > 0` there is `δ > 0` such that for all `x ∈ S`,\n`|x - c| < δ` implies `|f x - f c| < ε`.",
     "comment_excerpt": "Continuity of `f` at a point `c ∈ S` (relative to `S`) is equivalent to the classical `ε`-`δ` formulation: for every `ε > 0` there is `δ > 0` such that for all `x ∈ S`, `|x - c| < δ` implies `|f x - f c| < ε`.",
     "end_line": 32,
@@ -9,10 +11,14 @@
     "lean_name": "continuous_at_iff_eps_delta",
     "processed": true,
     "proof_id": "atlas.real_analysis.256351aca4f3",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/Continuity.lean",
-    "start_line": 26
+    "start_line": 26,
+    "strategy_count": 2
   },
   {
+    "categorized_strategy_count": 2,
+    "category_processed": true,
     "comment": "A real-valued function that is continuous on a closed bounded interval `[a, b]` is bounded:\nthere exists `B ∈ ℝ` such that `|f x| ≤ B` for all `x ∈ [a, b]`.",
     "comment_excerpt": "A real-valued function that is continuous on a closed bounded interval `[a, b]` is bounded: there exists `B ∈ ℝ` such that `|f x| ≤ B` for all `x ∈ [a, b]`.",
     "end_line": 46,
@@ -22,10 +28,14 @@
     "lean_name": "continuous_on_Icc_bounded",
     "processed": true,
     "proof_id": "atlas.real_analysis.40a706b8d34b",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/Continuity.lean",
-    "start_line": 38
+    "start_line": 38,
+    "strategy_count": 2
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "Extreme Value (Min-Max) Theorem: a continuous function on a closed bounded interval `[a, b]`\nattains both an absolute minimum at some point `c ∈ [a, b]` and an absolute maximum at some\npoint `d ∈ [a, b]`.",
     "comment_excerpt": "Extreme Value (Min-Max) Theorem: a continuous function on a closed bounded interval `[a, b]` attains both an absolute minimum at some point `c ∈ [a, b]` and an absolute maximum at some point `d ∈ [a, b]`.",
     "end_line": 54,
@@ -35,10 +45,14 @@
     "lean_name": "extreme_value_theorem",
     "processed": true,
     "proof_id": "atlas.real_analysis.2b19d4ad0017",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/Continuity.lean",
-    "start_line": 47
+    "start_line": 47,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "Bolzano's Intermediate Value Theorem.\n\nLet `f : ℝ → ℝ` be continuous on `[a, b]` with `a < b`. Then:\nif `f a < y < f b`, there exists `c ∈ (a, b)` with `f c = y`;\nif `f b < y < f a`, there exists `c ∈ (a, b)` with `f c = y`.\n\nIn either case, `f` attains every value strictly between `f a` and `f b` at some\ninterior point of the interval.",
     "comment_excerpt": "Bolzano's Intermediate Value Theorem. Let `f : ℝ → ℝ` be continuous on `[a, b]` with `a < b`. Then: if `f a < y < f b`, there exists `c ∈ (a, b)` with `f c = y`; if `f b < y < f a`, there exists `c ∈ (a, b)` with `f c =…",
     "end_line": 56,
@@ -48,10 +62,14 @@
     "lean_name": "intermediate_value_theorem",
     "processed": true,
     "proof_id": "atlas.real_analysis.0981157bc4ef",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/IVT.lean",
-    "start_line": 23
+    "start_line": 23,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "The polynomial `f(x) = x^2021 + x^2020 + 9.03 x + 1` has at least one real\nroot.\n\nProved via the Intermediate Value Theorem: `f(-1) < 0` and `f(0) > 0`, so by\ncontinuity there exists `c ∈ [-1, 0]` with `f(c) = 0`.",
     "comment_excerpt": "The polynomial `f(x) = x^2021 + x^2020 + 9.03 x + 1` has at least one real root. Proved via the Intermediate Value Theorem: `f(-1) < 0` and `f(0) > 0`, so by continuity there exists `c ∈ [-1, 0]` with `f(c) = 0`.",
     "end_line": 74,
@@ -61,10 +79,14 @@
     "lean_name": "polynomial_has_real_root",
     "processed": true,
     "proof_id": "atlas.real_analysis.84d958addbb6",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/IVT.lean",
-    "start_line": 57
+    "start_line": 57,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "The elementary `ε`-`δ` notion `IsClusterPoint S x` agrees with Mathlib's\ntopological accumulation point `AccPt x (𝓟 S)`.",
     "comment_excerpt": "The elementary `ε`-`δ` notion `IsClusterPoint S x` agrees with Mathlib's topological accumulation point `AccPt x (𝓟 S)`.",
     "end_line": 45,
@@ -74,10 +96,14 @@
     "lean_name": "cluster_point_iff_acc_point",
     "processed": true,
     "proof_id": "atlas.real_analysis.67ce5a8edceb",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/Limits.lean",
-    "start_line": 25
+    "start_line": 25,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "The elementary `ε`-`δ` definition `FunctionConvergesAt f S c L` is equivalent\nto the Mathlib filter statement that `f` tends to `L` along the neighborhood\nfilter of `c` restricted to `S \\ {c}`.",
     "comment_excerpt": "The elementary `ε`-`δ` definition `FunctionConvergesAt f S c L` is equivalent to the Mathlib filter statement that `f` tends to `L` along the neighborhood filter of `c` restricted to `S \\ {c}`.",
     "end_line": 75,
@@ -87,10 +113,14 @@
     "lean_name": "function_limit_iff_tendsto",
     "processed": true,
     "proof_id": "atlas.real_analysis.bb1610265d4d",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/Limits.lean",
-    "start_line": 52
+    "start_line": 52,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "Uniqueness of the function limit: if `c` is a cluster point of `S` and `f`\nconverges both to `L₁` and to `L₂` at `c` along `S`, then `L₁ = L₂`.",
     "comment_excerpt": "Uniqueness of the function limit: if `c` is a cluster point of `S` and `f` converges both to `L₁` and to `L₂` at `c` along `S`, then `L₁ = L₂`.",
     "end_line": 91,
@@ -100,10 +130,14 @@
     "lean_name": "function_limit_unique",
     "processed": true,
     "proof_id": "atlas.real_analysis.6587f64283a7",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/Limits.lean",
-    "start_line": 81
+    "start_line": 81,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "A real function `f` is uniformly continuous on a set `S ⊆ ℝ` if and only if it\nsatisfies the textbook ε–δ criterion: for every `ε > 0` there exists `δ > 0` such\nthat `|f x - f y| < ε` for all `x, y ∈ S` with `|x - y| < δ`.",
     "comment_excerpt": "A real function `f` is uniformly continuous on a set `S ⊆ ℝ` if and only if it satisfies the textbook ε–δ criterion: for every `ε > 0` there exists `δ > 0` such that `|f x - f y| < ε` for all `x, y ∈ S` with `|x - y| <…",
     "end_line": 23,
@@ -113,10 +147,14 @@
     "lean_name": "uniform_continuous_on_iff",
     "processed": true,
     "proof_id": "atlas.real_analysis.5b5917979e9d",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/ContinuousFunctions/UniformContinuity.lean",
-    "start_line": 18
+    "start_line": 18,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "A real function `f` is differentiable at `c` if and only if the difference quotient\n`(f x - f c) / (x - c)` has a limit as `x → c` with `x ≠ c`.",
     "comment_excerpt": "A real function `f` is differentiable at `c` if and only if the difference quotient `(f x - f c) / (x - c)` has a limit as `x → c` with `x ≠ c`.",
     "end_line": 30,
@@ -126,10 +164,14 @@
     "lean_name": "differentiable_at_iff_limit_exists",
     "processed": true,
     "proof_id": "atlas.real_analysis.9f333d74ac85",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/Basic.lean",
-    "start_line": 15
+    "start_line": 15,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "Chain rule: if `g` is differentiable at `c` and `f` is differentiable at `g c`,\nthen the composition `f ∘ g` is differentiable at `c` and\n`(f ∘ g)'(c) = f'(g c) * g'(c)`.",
     "comment_excerpt": "Chain rule: if `g` is differentiable at `c` and `f` is differentiable at `g c`, then the composition `f ∘ g` is differentiable at `c` and `(f ∘ g)'(c) = f'(g c) * g'(c)`.",
     "end_line": 34,
@@ -139,10 +181,14 @@
     "lean_name": "chain_rule",
     "processed": true,
     "proof_id": "atlas.real_analysis.dec4c1aa763f",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/Basic.lean",
-    "start_line": 31
+    "start_line": 31,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "Characterization of relative extrema in terms of an explicit `δ`-neighborhood.\nFor `f : ℝ → ℝ`, `S ⊆ ℝ`, and `c ∈ S`:\n`f` has a relative maximum at `c` on `S` (`IsLocalMaxOn f S c`) iff there exists `δ > 0`\nsuch that for all `x ∈ S` with `|x - c| < δ`, `f x ≤ f c`; and analogously, `f` has a\nrelative minimum at `c` on `S` iff there exists `δ > 0` such that for all `x ∈ S` with\n`|x - c| < δ`, `f c ≤ f x`.",
     "comment_excerpt": "Characterization of relative extrema in terms of an explicit `δ`-neighborhood. For `f : ℝ → ℝ`, `S ⊆ ℝ`, and `c ∈ S`: `f` has a relative maximum at `c` on `S` (`IsLocalMaxOn f S c`) iff there exists `δ > 0` such that fo…",
     "end_line": 34,
@@ -152,10 +198,14 @@
     "lean_name": "relative_extremum_def",
     "processed": true,
     "proof_id": "atlas.real_analysis.d4ac68a30456",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/MVT.lean",
-    "start_line": 17
+    "start_line": 17,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 2,
+    "category_processed": true,
     "comment": "Fermat's interior extremum theorem: if `f : ℝ → ℝ` attains a (global) local maximum or\nlocal minimum at an interior point `c`, and `f` is differentiable at `c`, then the derivative\nof `f` at `c` vanishes, i.e. `deriv f c = 0`.",
     "comment_excerpt": "Fermat's interior extremum theorem: if `f : ℝ → ℝ` attains a (global) local maximum or local minimum at an interior point `c`, and `f` is differentiable at `c`, then the derivative of `f` at `c` vanishes, i.e. `deriv f…",
     "end_line": 44,
@@ -165,10 +215,14 @@
     "lean_name": "fermats_theorem",
     "processed": true,
     "proof_id": "atlas.real_analysis.ee251a7c0ecb",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/MVT.lean",
-    "start_line": 35
+    "start_line": 35,
+    "strategy_count": 2
   },
   {
+    "categorized_strategy_count": 1,
+    "category_processed": true,
     "comment": "Rolle's theorem: if `f : ℝ → ℝ` is continuous on the closed interval `[a, b]`,\ndifferentiable at every point of the open interval `(a, b)`, and satisfies `f a = f b`,\nthen there exists some `c ∈ (a, b)` at which the derivative vanishes, i.e. `deriv f c = 0`.",
     "comment_excerpt": "Rolle's theorem: if `f : ℝ → ℝ` is continuous on the closed interval `[a, b]`, differentiable at every point of the open interval `(a, b)`, and satisfies `f a = f b`, then there exists some `c ∈ (a, b)` at which the der…",
     "end_line": 54,
@@ -178,10 +232,14 @@
     "lean_name": "rolle",
     "processed": true,
     "proof_id": "atlas.real_analysis.8d98dc2e7b63",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/MVT.lean",
-    "start_line": 45
+    "start_line": 45,
+    "strategy_count": 1
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "The Mean Value Theorem: if `f : ℝ → ℝ` is continuous on `[a, b]` and differentiable at\nevery point of `(a, b)`, then there exists some `c ∈ (a, b)` such that\n`f b - f a = deriv f c * (b - a)`.",
     "comment_excerpt": "The Mean Value Theorem: if `f : ℝ → ℝ` is continuous on `[a, b]` and differentiable at every point of `(a, b)`, then there exists some `c ∈ (a, b)` such that `f b - f a = deriv f c * (b - a)`.",
     "end_line": 67,
@@ -191,10 +249,14 @@
     "lean_name": "mean_value_theorem",
     "processed": true,
     "proof_id": "atlas.real_analysis.27206fc373ae",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/MVT.lean",
-    "start_line": 55
+    "start_line": 55,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "Zero derivative implies constant: if `f : ℝ → ℝ` is differentiable on a convex set\n`I ⊆ ℝ` (i.e. an interval) and `deriv f x = 0` for every `x ∈ I`, then `f` is constant on\n`I`, i.e. `f x = f y` for all `x, y ∈ I`.",
     "comment_excerpt": "Zero derivative implies constant: if `f : ℝ → ℝ` is differentiable on a convex set `I ⊆ ℝ` (i.e. an interval) and `deriv f x = 0` for every `x ∈ I`, then `f` is constant on `I`, i.e. `f x = f y` for all `x, y ∈ I`.",
     "end_line": 91,
@@ -204,10 +266,14 @@
     "lean_name": "zero_deriv_imp_constant",
     "processed": true,
     "proof_id": "atlas.real_analysis.d10748554758",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/MVT.lean",
-    "start_line": 68
+    "start_line": 68,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 5,
+    "category_processed": true,
     "comment": "Monotonicity characterized by the sign of the derivative on an interval.\nIf `f : ℝ → ℝ` is continuous on `[a, b]` and differentiable at every point of `(a, b)`, then:\n(1) `f` is monotonically increasing on `[a, b]` iff `0 ≤ deriv f x` for all `x ∈ (a, b)`;\n(2) `f` is monotonically decreasing on `[a, b]` iff `deriv f x ≤ 0` for all `x ∈ (a, b)`.",
     "comment_excerpt": "Monotonicity characterized by the sign of the derivative on an interval. If `f : ℝ → ℝ` is continuous on `[a, b]` and differentiable at every point of `(a, b)`, then: (1) `f` is monotonically increasing on `[a, b]` iff…",
     "end_line": 147,
@@ -217,10 +283,14 @@
     "lean_name": "monotonicity_and_derivatives",
     "processed": true,
     "proof_id": "atlas.real_analysis.ea64a8de8ee8",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/MVT.lean",
-    "start_line": 92
+    "start_line": 92,
+    "strategy_count": 5
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "*Taylor's theorem** (Lagrange form of the remainder). Suppose `f : ℝ → ℝ` is `n` times\ncontinuously differentiable on `[x₀, x]` and its `n`-th derivative is differentiable on the open\ninterval `(x₀, x)`. Then there exists `c ∈ (x₀, x)` such that\n`f(x) = ∑_{k=0}^{n} f^{(k)}(x₀)/k! · (x - x₀)^k + f^{(n+1)}(c)/(n+1)! · (x - x₀)^{n+1}`.\nThat is, `f(x)` equals the `n`-th order Taylor polynomial at `x₀` plus the Lagrange remainder\nterm evaluated at some intermediate point `c`.",
     "comment_excerpt": "*Taylor's theorem** (Lagrange form of the remainder). Suppose `f : ℝ → ℝ` is `n` times continuously differentiable on `[x₀, x]` and its `n`-th derivative is differentiable on the open interval `(x₀, x)`. Then there exis…",
     "end_line": 52,
@@ -230,10 +300,14 @@
     "lean_name": "taylor_theorem",
     "processed": true,
     "proof_id": "atlas.real_analysis.8c1166f65e44",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/Taylor.lean",
-    "start_line": 31
+    "start_line": 31,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 6,
+    "category_processed": true,
     "comment": "*Second derivative test for a strict local minimum.** If `f : ℝ → ℝ` is twice continuously\ndifferentiable at `x₀`, with `f'(x₀) = 0` and `f''(x₀) > 0`, then `f` has a strict relative\nminimum at `x₀`.",
     "comment_excerpt": "*Second derivative test for a strict local minimum.** If `f : ℝ → ℝ` is twice continuously differentiable at `x₀`, with `f'(x₀) = 0` and `f''(x₀) > 0`, then `f` has a strict relative minimum at `x₀`.",
     "end_line": 125,
@@ -243,10 +317,14 @@
     "lean_name": "second_derivative_test_min",
     "processed": true,
     "proof_id": "atlas.real_analysis.854142c00e14",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/Taylor.lean",
-    "start_line": 59
+    "start_line": 59,
+    "strategy_count": 6
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "*Theorem II (reverse triangle inequality, three terms).** For all real numbers `a`, `b`, `c`,\nthe absolute value of their sum is at least `|a| - |b| - |c|`.",
     "comment_excerpt": "*Theorem II (reverse triangle inequality, three terms).** For all real numbers `a`, `b`, `c`, the absolute value of their sum is at least `|a| - |b| - |c|`.",
     "end_line": 25,
@@ -256,10 +334,14 @@
     "lean_name": "reverse_triangle_three",
     "processed": true,
     "proof_id": "atlas.real_analysis.7adb6045ae9e",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/Weierstrass.lean",
-    "start_line": 13
+    "start_line": 13,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "*Theorem I (cosine oscillation lemma).** Two statements about the cosine function:\n(1) `cos` is 1-Lipschitz, i.e. `|cos x - cos y| ≤ |x - y|` for all real `x, y`.\n(2) For every real `c` and every positive natural number `K`, there exists a point\n`y` in the open interval `(c + π/K, c + 3π/K)` such that `|cos (K c) - cos (K y)| ≥ 1`.",
     "comment_excerpt": "*Theorem I (cosine oscillation lemma).** Two statements about the cosine function: (1) `cos` is 1-Lipschitz, i.e. `|cos x - cos y| ≤ |x - y|` for all real `x, y`. (2) For every real `c` and every positive natural number…",
     "end_line": 99,
@@ -269,10 +351,14 @@
     "lean_name": "weierstrass_theorem_I",
     "processed": true,
     "proof_id": "atlas.real_analysis.48866535c0ff",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/Weierstrass.lean",
-    "start_line": 26
+    "start_line": 26,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "*Theorem III.** The defining series of the Weierstrass function is well-behaved:\n(1) for every `x ∈ ℝ`, the series `∑ k, cos(160^k x) / 4^k` is absolutely convergent;\n(2) the function `weierstrass_fun` is continuous and bounded on `ℝ`.",
     "comment_excerpt": "*Theorem III.** The defining series of the Weierstrass function is well-behaved: (1) for every `x ∈ ℝ`, the series `∑ k, cos(160^k x) / 4^k` is absolutely convergent; (2) the function `weierstrass_fun` is continuous and…",
     "end_line": 145,
@@ -282,10 +368,14 @@
     "lean_name": "weierstrass_theorem_III",
     "processed": true,
     "proof_id": "atlas.real_analysis.154d27ad6b0e",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/Weierstrass.lean",
-    "start_line": 100
+    "start_line": 100,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "For every real `x`, the series `∑ k, cos(160^k x) / 4^k` defining the Weierstrass function\nis summable, by comparison with the geometric series `∑ (1/4)^k`.",
     "comment_excerpt": "For every real `x`, the series `∑ k, cos(160^k x) / 4^k` defining the Weierstrass function is summable, by comparison with the geometric series `∑ (1/4)^k`.",
     "end_line": 161,
@@ -295,10 +385,14 @@
     "lean_name": "weierstrass_summable",
     "processed": true,
     "proof_id": "atlas.real_analysis.de15dd292228",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/Weierstrass.lean",
-    "start_line": 146
+    "start_line": 146,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 6,
+    "category_processed": true,
     "comment": "*Slope blow-up lemma.** For every real `c` and every natural number `n`, there exists a\npoint `y ≠ c` with `|y - c| < 3π / 160^n` such that the difference quotient of the\nWeierstrass function between `y` and `c` has absolute value at least `40^n / (117 π)`.\nSince `40^n / (117 π) → ∞`, this witnesses that the function cannot have a finite derivative\nat `c`.",
     "comment_excerpt": "*Slope blow-up lemma.** For every real `c` and every natural number `n`, there exists a point `y ≠ c` with `|y - c| < 3π / 160^n` such that the difference quotient of the Weierstrass function between `y` and `c` has abs…",
     "end_line": 294,
@@ -308,10 +402,14 @@
     "lean_name": "weierstrass_slope_lower_bound",
     "processed": true,
     "proof_id": "atlas.real_analysis.cf338ff3842e",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/Weierstrass.lean",
-    "start_line": 162
+    "start_line": 162,
+    "strategy_count": 6
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "*Weierstrass's theorem.** The function `weierstrass_fun x = ∑ k, cos(160^k x) / 4^k`\nis nowhere differentiable on `ℝ`: for every `c`, `weierstrass_fun` fails to be differentiable\nat `c`. The proof uses `weierstrass_slope_lower_bound` to exhibit a sequence of points\napproaching `c` along which the difference quotients diverge to infinity, contradicting the\nconvergence of the slope to a finite derivative.",
     "comment_excerpt": "*Weierstrass's theorem.** The function `weierstrass_fun x = ∑ k, cos(160^k x) / 4^k` is nowhere differentiable on `ℝ`: for every `c`, `weierstrass_fun` fails to be differentiable at `c`. The proof uses `weierstrass_slop…",
     "end_line": 345,
@@ -321,10 +419,14 @@
     "lean_name": "weierstrass_nowhere_differentiable",
     "processed": true,
     "proof_id": "atlas.real_analysis.0bd46e3d6dbf",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Derivatives/Weierstrass.lean",
-    "start_line": 295
+    "start_line": 295,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "Uniform convergence of `f n` to `g` on `S` is equivalent to the classical `ε`-`M`\nformulation: for every `ε > 0`, there exists `M ∈ ℕ` such that for all `n ≥ M` and all\n`x ∈ S`, `|f n x - g x| < ε`.",
     "comment_excerpt": "Uniform convergence of `f n` to `g` on `S` is equivalent to the classical `ε`-`M` formulation: for every `ε > 0`, there exists `M ∈ ℕ` such that for all `n ≥ M` and all `x ∈ S`, `|f n x - g x| < ε`.",
     "end_line": 36,
@@ -334,10 +436,14 @@
     "lean_name": "uniform_convergence_iff",
     "processed": true,
     "proof_id": "atlas.real_analysis.7a37ac7d42a3",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/FunctionSequences/Basic.lean",
-    "start_line": 21
+    "start_line": 21,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "Weierstrass M-test: if `|f j x| ≤ M j` for all `j` and all `x ∈ S`, and `∑ M j` converges,\nthen for every `x ∈ S` the series `∑ f j x` converges (absolutely), and the partial sums\n`∑_{j < n} f j x` converge uniformly on `S` to `∑' j, f j x`.",
     "comment_excerpt": "Weierstrass M-test: if `|f j x| ≤ M j` for all `j` and all `x ∈ S`, and `∑ M j` converges, then for every `x ∈ S` the series `∑ f j x` converges (absolutely), and the partial sums `∑_{j < n} f j x` converge uniformly on…",
     "end_line": 47,
@@ -347,10 +453,14 @@
     "lean_name": "weierstrass_m_test",
     "processed": true,
     "proof_id": "atlas.real_analysis.22245b9d4d96",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/FunctionSequences/Basic.lean",
-    "start_line": 37
+    "start_line": 37,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 5,
+    "category_processed": true,
     "comment": "*Interchange of limits and derivatives.** Let `f n : ℝ → ℝ` be a sequence of functions on\n`[a, b]` such that each `f n` is differentiable on `[a, b]` with derivative `f' n` continuous on\n`[a, b]`. If `f' n → g` uniformly on `[a, b]` and `f n x → lim x` pointwise on `[a, b]`, then the\nlimit function `lim` is differentiable on `[a, b]` with derivative `g`, and `g` is continuous on\n`[a, b]`. In particular, this shows that the pointwise limit of a sequence of continuously\ndifferentiable functions whose derivatives converge uniformly is itself continuously differentiable,\nand that differentiation may be interchanged with the limit.",
     "comment_excerpt": "*Interchange of limits and derivatives.** Let `f n : ℝ → ℝ` be a sequence of functions on `[a, b]` such that each `f n` is differentiable on `[a, b]` with derivative `f' n` continuous on `[a, b]`. If `f' n → g` uniforml…",
     "end_line": 95,
@@ -360,10 +470,14 @@
     "lean_name": "uniform_limit_derivative",
     "processed": true,
     "proof_id": "atlas.real_analysis.432e8639d4c7",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/FunctionSequences/InterchangeLimits.lean",
-    "start_line": 20
+    "start_line": 20,
+    "strategy_count": 5
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "The Cauchy–Hadamard radius of convergence of a scalar power series with coefficients `a`\nagrees with the radius of the associated formal multilinear series\n`FormalMultilinearSeries.ofScalars ℝ a` from Mathlib.",
     "comment_excerpt": "The Cauchy–Hadamard radius of convergence of a scalar power series with coefficients `a` agrees with the radius of the associated formal multilinear series `FormalMultilinearSeries.ofScalars ℝ a` from Mathlib.",
     "end_line": 63,
@@ -373,10 +487,14 @@
     "lean_name": "radiusOfConvergence_eq_formalRadius",
     "processed": true,
     "proof_id": "atlas.real_analysis.428609544e94",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/FunctionSequences/PowerSeries.lean",
-    "start_line": 49
+    "start_line": 49,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "The absolute values of the terms of a summable real sequence are uniformly bounded:\nif `f : ℕ → ℝ` is summable, then there exists a constant `C` with `|f n| ≤ C` for all `n`.",
     "comment_excerpt": "The absolute values of the terms of a summable real sequence are uniformly bounded: if `f : ℕ → ℝ` is summable, then there exists a constant `C` with `|f n| ≤ C` for all `n`.",
     "end_line": 80,
@@ -386,10 +504,14 @@
     "lean_name": "summable_abs_bounded",
     "processed": true,
     "proof_id": "atlas.real_analysis.b2be3ed6ab4f",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/FunctionSequences/PowerSeries.lean",
-    "start_line": 64
+    "start_line": 64,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "Comparison criterion for the radius of convergence: if the sequence\n`|aₙ| · rⁿ` is uniformly bounded by some constant `C`, then `r` lies inside the\ndisk of convergence, i.e. `r ≤ radiusOfConvergence a`.",
     "comment_excerpt": "Comparison criterion for the radius of convergence: if the sequence `|aₙ| · rⁿ` is uniformly bounded by some constant `C`, then `r` lies inside the disk of convergence, i.e. `r ≤ radiusOfConvergence a`.",
     "end_line": 92,
@@ -399,10 +521,14 @@
     "lean_name": "le_radiusOfConvergence_of_bound",
     "processed": true,
     "proof_id": "atlas.real_analysis.9ed4bfbab8c0",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/FunctionSequences/PowerSeries.lean",
-    "start_line": 81
+    "start_line": 81,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "Absolute convergence inside the radius of convergence: for any `r < radiusOfConvergence a`,\nthe series `∑ₙ |aₙ| · rⁿ` is summable.",
     "comment_excerpt": "Absolute convergence inside the radius of convergence: for any `r < radiusOfConvergence a`, the series `∑ₙ |aₙ| · rⁿ` is summable.",
     "end_line": 104,
@@ -412,10 +538,14 @@
     "lean_name": "summable_abs_mul_pow_of_lt_radius",
     "processed": true,
     "proof_id": "atlas.real_analysis.595aa10aa1dd",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/FunctionSequences/PowerSeries.lean",
-    "start_line": 93
+    "start_line": 93,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "Uniform convergence of a power series on closed sub-intervals of its disk of convergence:\nif `∑ aⱼ (x - x₀)^j` has radius of convergence `ρ ∈ (0, ∞]`, then for every `r ∈ (0, ρ)` the\npartial sums converge uniformly on `[x₀ - r, x₀ + r]` to the sum `∑' j, aⱼ (x - x₀)^j`.",
     "comment_excerpt": "Uniform convergence of a power series on closed sub-intervals of its disk of convergence: if `∑ aⱼ (x - x₀)^j` has radius of convergence `ρ ∈ (0, ∞]`, then for every `r ∈ (0, ρ)` the partial sums converge uniformly on `…",
     "end_line": 128,
@@ -425,10 +555,14 @@
     "lean_name": "power_series_uniform_convergence",
     "processed": true,
     "proof_id": "atlas.real_analysis.aa965d6636bc",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/FunctionSequences/PowerSeries.lean",
-    "start_line": 105
+    "start_line": 105,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "*Weierstrass Approximation Theorem.** Every continuous real-valued function\n`f` on a closed interval `[a, b]` is the uniform limit of a sequence of\npolynomials: there exists `P : ℕ → ℝ[X]` such that `Polynomial.eval x (P n)`\nconverges to `f x` uniformly in `x ∈ [a, b]` as `n → ∞`.",
     "comment_excerpt": "*Weierstrass Approximation Theorem.** Every continuous real-valued function `f` on a closed interval `[a, b]` is the uniform limit of a sequence of polynomials: there exists `P : ℕ → ℝ[X]` such that `Polynomial.eval x (…",
     "end_line": 47,
@@ -438,10 +572,14 @@
     "lean_name": "weierstrass_approximation",
     "processed": true,
     "proof_id": "atlas.real_analysis.142948376c58",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/FunctionSequences/WeierstrassApprox.lean",
-    "start_line": 17
+    "start_line": 17,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "If `a < b`, then any partition of `[a,b]` has at least one subinterval, i.e.\n`0 < P.n`.",
     "comment_excerpt": "If `a < b`, then any partition of `[a,b]` has at least one subinterval, i.e. `0 < P.n`.",
     "end_line": 71,
@@ -451,10 +589,14 @@
     "lean_name": "Partition.n_pos_of_lt",
     "processed": true,
     "proof_id": "atlas.real_analysis.c597391f0971",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/Basic.lean",
-    "start_line": 64
+    "start_line": 64,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "If `a < b`, then the mesh of any partition of `[a,b]` is strictly positive.",
     "comment_excerpt": "If `a < b`, then the mesh of any partition of `[a,b]` is strictly positive.",
     "end_line": 87,
@@ -464,10 +606,14 @@
     "lean_name": "Partition.mesh_pos_of_lt",
     "processed": true,
     "proof_id": "atlas.real_analysis.894a66d13edc",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/Basic.lean",
-    "start_line": 72
+    "start_line": 72,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "The Riemann sum over a trivial tagged partition (with `n = 0` subintervals)\nis `0`, since it is an empty sum.",
     "comment_excerpt": "The Riemann sum over a trivial tagged partition (with `n = 0` subintervals) is `0`, since it is an empty sum.",
     "end_line": 94,
@@ -477,10 +623,14 @@
     "lean_name": "riemannSum_eq_zero_of_n_eq_zero",
     "processed": true,
     "proof_id": "atlas.real_analysis.da9205c07916",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/Basic.lean",
-    "start_line": 88
+    "start_line": 88,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "*Fundamental Theorem of Calculus.** Let `f ∈ C([a,b])`. Then:\n(1) (Evaluation form) For every differentiable `F : ℝ → ℝ` with `F' = f` on `[a,b]`,\n`∫_a^b f = F(b) - F(a)`.\n(2) (Antiderivative form) The function `G(x) := ∫_a^x f` is differentiable on `[a,b]`\nwith derivative `G'(x) = f(x)` at every point `x ∈ [a,b]`.",
     "comment_excerpt": "*Fundamental Theorem of Calculus.** Let `f ∈ C([a,b])`. Then: (1) (Evaluation form) For every differentiable `F : ℝ → ℝ` with `F' = f` on `[a,b]`, `∫_a^b f = F(b) - F(a)`. (2) (Antiderivative form) The function `G(x) :=…",
     "end_line": 64,
@@ -490,10 +640,14 @@
     "lean_name": "fundamental_theorem_of_calculus",
     "processed": true,
     "proof_id": "atlas.real_analysis.00c3d0e4b511",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/FTC.lean",
-    "start_line": 20
+    "start_line": 20,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 5,
+    "category_processed": true,
     "comment": "*Integration by Parts.** If `f, g : ℝ → ℝ` are continuously differentiable on `[a,b]`\n(i.e. `f, g ∈ C¹([a,b])`), then\n`∫_a^b f'(x) g(x) dx = f(b) g(b) - f(a) g(a) - ∫_a^b f(x) g'(x) dx`.",
     "comment_excerpt": "*Integration by Parts.** If `f, g : ℝ → ℝ` are continuously differentiable on `[a,b]` (i.e. `f, g ∈ C¹([a,b])`), then `∫_a^b f'(x) g(x) dx = f(b) g(b) - f(a) g(a) - ∫_a^b f(x) g'(x) dx`.",
     "end_line": 110,
@@ -503,10 +657,14 @@
     "lean_name": "integration_by_parts",
     "processed": true,
     "proof_id": "atlas.real_analysis.642513f3f600",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/FTC.lean",
-    "start_line": 65
+    "start_line": 65,
+    "strategy_count": 5
   },
   {
+    "categorized_strategy_count": 6,
+    "category_processed": true,
     "comment": "*Change of Variables.** Let `φ : ℝ → ℝ` be continuously differentiable on `[a,b]` with\n`φ' > 0` everywhere on `[a,b]`, and let `f` be continuous on `[φ(a), φ(b)]`. Then\n`∫_{φ(a)}^{φ(b)} f(u) du = ∫_a^b f(φ(x)) · φ'(x) dx`.",
     "comment_excerpt": "*Change of Variables.** Let `φ : ℝ → ℝ` be continuously differentiable on `[a,b]` with `φ' > 0` everywhere on `[a,b]`, and let `f` be continuous on `[φ(a), φ(b)]`. Then `∫_{φ(a)}^{φ(b)} f(u) du = ∫_a^b f(φ(x)) · φ'(x) d…",
     "end_line": 150,
@@ -516,10 +674,14 @@
     "lean_name": "change_of_variables",
     "processed": true,
     "proof_id": "atlas.real_analysis.adcfa67f5b78",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/FTC.lean",
-    "start_line": 111
+    "start_line": 111,
+    "strategy_count": 6
   },
   {
+    "categorized_strategy_count": 6,
+    "category_processed": true,
     "comment": "*Riemann–Lebesgue lemma** (for continuously differentiable functions on `[-π, π]`).\n\nIf `f : ℝ → ℝ` is continuously differentiable on `[-π, π]`, then both Fourier-coefficient\nintegrals tend to zero as `n → ∞`:\n- `(1/π) ∫_{-π}^{π} f(x) · sin(n·x) dx → 0`, and\n- `(1/π) ∫_{-π}^{π} f(x) · cos(n·x) dx → 0`.\n\nThe proof uses integration by parts to express each integral in terms of a bounded\nantiderivative of `sin(n·x)` (resp. `cos(n·x)`) of size `O(1/n)`, then squeezes to zero.",
     "comment_excerpt": "*Riemann–Lebesgue lemma** (for continuously differentiable functions on `[-π, π]`). If `f : ℝ → ℝ` is continuously differentiable on `[-π, π]`, then both Fourier-coefficient integrals tend to zero as `n → ∞`: - `(1/π) ∫…",
     "end_line": 184,
@@ -529,10 +691,14 @@
     "lean_name": "riemann_lebesgue",
     "processed": true,
     "proof_id": "atlas.real_analysis.873ed155bc40",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/Fourier.lean",
-    "start_line": 30
+    "start_line": 30,
+    "strategy_count": 6
   },
   {
+    "categorized_strategy_count": 5,
+    "category_processed": true,
     "comment": "*Theorem I (Modulus of continuity vanishes).** For `f ∈ C([a,b])`,\n`lim_{η → 0⁺} w_f(η) = 0`. That is, `∀ ε > 0, ∃ δ > 0, ∀ η < δ : w_f(η) < ε`.",
     "comment_excerpt": "*Theorem I (Modulus of continuity vanishes).** For `f ∈ C([a,b])`, `lim_{η → 0⁺} w_f(η) = 0`. That is, `∀ ε > 0, ∃ δ > 0, ∀ η < δ : w_f(η) < ε`.",
     "end_line": 76,
@@ -542,10 +708,14 @@
     "lean_name": "modulusOfContinuity_tendsto_zero",
     "processed": true,
     "proof_id": "atlas.real_analysis.ddf4500c6302",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
-    "start_line": 28
+    "start_line": 28,
+    "strategy_count": 5
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "The set of values `|f x - f y|` for `x, y ∈ [a,b]` with `|x - y| ≤ η` is\nbounded above when `f` is continuous on `[a,b]`.",
     "comment_excerpt": "The set of values `|f x - f y|` for `x, y ∈ [a,b]` with `|x - y| ≤ η` is bounded above when `f` is continuous on `[a,b]`.",
     "end_line": 88,
@@ -555,10 +725,14 @@
     "lean_name": "modulusOfContinuity_bddAbove",
     "processed": true,
     "proof_id": "atlas.real_analysis.8ad5bc02848c",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
-    "start_line": 77
+    "start_line": 77,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "For `x, y ∈ [a,b]` with `|x - y| ≤ η`, the absolute difference `|f x - f y|`\nis bounded by the modulus of continuity `w_f(η)`.",
     "comment_excerpt": "For `x, y ∈ [a,b]` with `|x - y| ≤ η`, the absolute difference `|f x - f y|` is bounded by the modulus of continuity `w_f(η)`.",
     "end_line": 95,
@@ -568,10 +742,14 @@
     "lean_name": "le_modulusOfContinuity",
     "processed": true,
     "proof_id": "atlas.real_analysis.d46bccc7fe78",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
-    "start_line": 89
+    "start_line": 89,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 2,
+    "category_processed": true,
     "comment": "Each subinterval `[x_i, x_{i+1}]` of a partition has nonnegative length.",
     "comment_excerpt": "Each subinterval `[x_i, x_{i+1}]` of a partition has nonnegative length.",
     "end_line": 101,
@@ -581,10 +759,14 @@
     "lean_name": "Partition.succ_sub_castSucc_nonneg",
     "processed": true,
     "proof_id": "atlas.real_analysis.b0db2bedcea6",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
-    "start_line": 96
+    "start_line": 96,
+    "strategy_count": 2
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "Each subinterval length `x_{i+1} - x_i` of a partition is bounded above by\nthe partition's mesh (i.e., the maximum subinterval length).",
     "comment_excerpt": "Each subinterval length `x_{i+1} - x_i` of a partition is bounded above by the partition's mesh (i.e., the maximum subinterval length).",
     "end_line": 114,
@@ -594,10 +776,14 @@
     "lean_name": "Partition.le_mesh",
     "processed": true,
     "proof_id": "atlas.real_analysis.b636badc9189",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
-    "start_line": 102
+    "start_line": 102,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "The subinterval lengths of a partition of `[a,b]` telescope to `b - a`:\n`∑ᵢ (x_{i+1} - x_i) = b - a`.",
     "comment_excerpt": "The subinterval lengths of a partition of `[a,b]` telescope to `b - a`: `∑ᵢ (x_{i+1} - x_i) = b - a`.",
     "end_line": 130,
@@ -607,10 +793,14 @@
     "lean_name": "Partition.sum_sub_eq",
     "processed": true,
     "proof_id": "atlas.real_analysis.026b397b162b",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
-    "start_line": 115
+    "start_line": 115,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "Every tag `ξ_i` of a tagged partition of `[a,b]` lies in `[a,b]`.",
     "comment_excerpt": "Every tag `ξ_i` of a tagged partition of `[a,b]` lies in `[a,b]`.",
     "end_line": 144,
@@ -620,10 +810,14 @@
     "lean_name": "TaggedPartition.tag_mem_Icc",
     "processed": true,
     "proof_id": "atlas.real_analysis.afa51cb2adbc",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
-    "start_line": 131
+    "start_line": 131,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "The Riemann sum `S_f(T)` can be rewritten by summing over the refinement `T'`:\neach summand uses the tag of `T` at the parent subinterval and the length of the\nfiner `T'`-subinterval.",
     "comment_excerpt": "The Riemann sum `S_f(T)` can be rewritten by summing over the refinement `T'`: each summand uses the tag of `T` at the parent subinterval and the length of the finer `T'`-subinterval.",
     "end_line": 169,
@@ -633,10 +827,14 @@
     "lean_name": "riemannSum_eq_fiber",
     "processed": true,
     "proof_id": "atlas.real_analysis.db176b4da708",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
-    "start_line": 156
+    "start_line": 156,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 5,
+    "category_processed": true,
     "comment": "*Theorem II.** If `T'` is a tagged refinement of `T` (i.e. `x ⊂ x'`), then\nfor `f ∈ C([a,b])`,\n`|S_f(T) - S_f(T')| ≤ w_f(‖T‖) · (b - a)`.",
     "comment_excerpt": "*Theorem II.** If `T'` is a tagged refinement of `T` (i.e. `x ⊂ x'`), then for `f ∈ C([a,b])`, `|S_f(T) - S_f(T')| ≤ w_f(‖T‖) · (b - a)`.",
     "end_line": 222,
@@ -646,10 +844,14 @@
     "lean_name": "riemannSum_sub_le_modulusOfContinuity_mul",
     "processed": true,
     "proof_id": "atlas.real_analysis.bea0ff585f27",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
-    "start_line": 170
+    "start_line": 170,
+    "strategy_count": 5
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "*Theorem III (given a common refinement).** For tagged partitions `T₁, T₂`\nthat share a common tagged refinement `T''`, and `f ∈ C([a,b])`,\n`|S_f(T₁) - S_f(T₂)| ≤ (w_f(‖T₁‖) + w_f(‖T₂‖)) · (b - a)`.",
     "comment_excerpt": "*Theorem III (given a common refinement).** For tagged partitions `T₁, T₂` that share a common tagged refinement `T''`, and `f ∈ C([a,b])`, `|S_f(T₁) - S_f(T₂)| ≤ (w_f(‖T₁‖) + w_f(‖T₂‖)) · (b - a)`.",
     "end_line": 251,
@@ -659,10 +861,14 @@
     "lean_name": "riemannSum_sub_le_modulusOfContinuity_add_mul_of_commonRefinement",
     "processed": true,
     "proof_id": "atlas.real_analysis.8bf505ec59b9",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
-    "start_line": 223
+    "start_line": 223,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "Telescoping identity: given a strictly monotone embedding `φ` of a coarse\nindex set into a fine index set, the lengths of the fine subintervals whose\nindices are assigned to a coarse index `k` sum to the length of the `k`-th\ncoarse subinterval.",
     "comment_excerpt": "Telescoping identity: given a strictly monotone embedding `φ` of a coarse index set into a fine index set, the lengths of the fine subintervals whose indices are assigned to a coarse index `k` sum to the length of the `…",
     "end_line": 300,
@@ -672,10 +878,14 @@
     "lean_name": "telescope_sum_of_embedding",
     "processed": true,
     "proof_id": "atlas.real_analysis.6d9a30ae0d65",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
-    "start_line": 252
+    "start_line": 252,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 7,
+    "category_processed": true,
     "comment": "Any two tagged partitions of `[a,b]` admit a common tagged refinement:\nthe partition whose points are the union of both partitions' points.",
     "comment_excerpt": "Any two tagged partitions of `[a,b]` admit a common tagged refinement: the partition whose points are the union of both partitions' points.",
     "end_line": 496,
@@ -685,10 +895,14 @@
     "lean_name": "TaggedPartition.exists_commonRefinement",
     "processed": true,
     "proof_id": "atlas.real_analysis.33393fbd4780",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
-    "start_line": 301
+    "start_line": 301,
+    "strategy_count": 7
   },
   {
+    "categorized_strategy_count": 2,
+    "category_processed": true,
     "comment": "*Theorem III.** For any two tagged partitions `T₁, T₂` of `[a,b]` and\n`f ∈ C([a,b])`,\n`|S_f(T₁) - S_f(T₂)| ≤ (w_f(‖T₁‖) + w_f(‖T₂‖)) · (b - a)`.",
     "comment_excerpt": "*Theorem III.** For any two tagged partitions `T₁, T₂` of `[a,b]` and `f ∈ C([a,b])`, `|S_f(T₁) - S_f(T₂)| ≤ (w_f(‖T₁‖) + w_f(‖T₂‖)) · (b - a)`.",
     "end_line": 508,
@@ -698,10 +912,14 @@
     "lean_name": "riemannSum_sub_le_modulusOfContinuity_add_mul",
     "processed": true,
     "proof_id": "atlas.real_analysis.051c1452e321",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
-    "start_line": 497
+    "start_line": 497,
+    "strategy_count": 2
   },
   {
+    "categorized_strategy_count": 5,
+    "category_processed": true,
     "comment": "For `f ∈ C([a,b])` with `a < b`, if a sequence of tagged partitions has mesh\ntending to `0`, then the corresponding sequence of Riemann sums is Cauchy.",
     "comment_excerpt": "For `f ∈ C([a,b])` with `a < b`, if a sequence of tagged partitions has mesh tending to `0`, then the corresponding sequence of Riemann sums is Cauchy.",
     "end_line": 558,
@@ -711,10 +929,14 @@
     "lean_name": "riemannSum_cauchySeq_of_mesh_tendsto",
     "processed": true,
     "proof_id": "atlas.real_analysis.d1f34bb9cb26",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
-    "start_line": 509
+    "start_line": 509,
+    "strategy_count": 5
   },
   {
+    "categorized_strategy_count": 5,
+    "category_processed": true,
     "comment": "For `f ∈ C([a,b])` with `a < b`, if two sequences of tagged partitions both\nhave meshes tending to `0`, then the difference of their Riemann sums tends to\n`0`.",
     "comment_excerpt": "For `f ∈ C([a,b])` with `a < b`, if two sequences of tagged partitions both have meshes tending to `0`, then the difference of their Riemann sums tends to `0`.",
     "end_line": 613,
@@ -724,10 +946,14 @@
     "lean_name": "riemannSum_sub_tendsto_zero",
     "processed": true,
     "proof_id": "atlas.real_analysis.3f6cae6ff8ee",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
-    "start_line": 559
+    "start_line": 559,
+    "strategy_count": 5
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "*Convergence of the Riemann integral.** For `f ∈ C([a,b])`, there exists a\nreal number `I` such that for every sequence of tagged partitions whose mesh\ntends to `0`, the Riemann sums converge to `I`.",
     "comment_excerpt": "*Convergence of the Riemann integral.** For `f ∈ C([a,b])`, there exists a real number `I` such that for every sequence of tagged partitions whose mesh tends to `0`, the Riemann sums converge to `I`.",
     "end_line": 668,
@@ -737,10 +963,14 @@
     "lean_name": "riemann_integral_convergence",
     "processed": true,
     "proof_id": "atlas.real_analysis.2302d57b832e",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/ModulusContinuity.lean",
-    "start_line": 614
+    "start_line": 614,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "Comparison and triangle inequalities for the Riemann integral.\n\nFor continuous functions `f, g : ℝ → ℝ` on `[a, b]` with `a ≤ b`:\n1. (Comparison) If `f x ≤ g x` for all `x ∈ [a, b]`, then `∫ x in a..b, f x ≤ ∫ x in a..b, g x`.\n2. (Triangle inequality) `|∫ x in a..b, f x| ≤ ∫ x in a..b, |f x|`.",
     "comment_excerpt": "Comparison and triangle inequalities for the Riemann integral. For continuous functions `f, g : ℝ → ℝ` on `[a, b]` with `a ≤ b`: 1. (Comparison) If `f x ≤ g x` for all `x ∈ [a, b]`, then `∫ x in a..b, f x ≤ ∫ x in a..b,…",
     "end_line": 37,
@@ -750,10 +980,14 @@
     "lean_name": "integral_comparison_and_triangle",
     "processed": true,
     "proof_id": "atlas.real_analysis.c0ef6ab1afa2",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/Properties.lean",
-    "start_line": 20
+    "start_line": 20,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "Lower and upper bounds for the Riemann integral via the infimum and supremum.\n\nIf `f : ℝ → ℝ` is continuous on `[a, b]` with `a ≤ b`, then setting\n`m_f = sInf (f '' [a, b])` and `M_f = sSup (f '' [a, b])`, we have\n`m_f * (b - a) ≤ ∫ x in a..b, f x ≤ M_f * (b - a)`.",
     "comment_excerpt": "Lower and upper bounds for the Riemann integral via the infimum and supremum. If `f : ℝ → ℝ` is continuous on `[a, b]` with `a ≤ b`, then setting `m_f = sInf (f '' [a, b])` and `M_f = sSup (f '' [a, b])`, we have `m_f *…",
     "end_line": 69,
@@ -763,10 +997,14 @@
     "lean_name": "integral_bounds",
     "processed": true,
     "proof_id": "atlas.real_analysis.99f216a3381c",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/Properties.lean",
-    "start_line": 38
+    "start_line": 38,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "Additivity of the Riemann integral over adjacent intervals.\n\nIf `f : ℝ → ℝ` is continuous on `[a, b]` and `a < c < b`, then\n`∫ x in a..b, f x = (∫ x in a..c, f x) + ∫ x in c..b, f x`.",
     "comment_excerpt": "Additivity of the Riemann integral over adjacent intervals. If `f : ℝ → ℝ` is continuous on `[a, b]` and `a < c < b`, then `∫ x in a..b, f x = (∫ x in a..c, f x) + ∫ x in c..b, f x`.",
     "end_line": 88,
@@ -776,10 +1014,14 @@
     "lean_name": "integral_additivity",
     "processed": true,
     "proof_id": "atlas.real_analysis.cf7ce31aca28",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/Properties.lean",
-    "start_line": 70
+    "start_line": 70,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "Linearity of the Riemann integral.\n\nIf `f, g : ℝ → ℝ` are continuous on `[a, b]` with `a ≤ b` and `α : ℝ`, then\n`∫ x in a..b, (α * f x + g x) = α * (∫ x in a..b, f x) + ∫ x in a..b, g x`.",
     "comment_excerpt": "Linearity of the Riemann integral. If `f, g : ℝ → ℝ` are continuous on `[a, b]` with `a ≤ b` and `α : ℝ`, then `∫ x in a..b, (α * f x + g x) = α * (∫ x in a..b, f x) + ∫ x in a..b, g x`.",
     "end_line": 103,
@@ -789,10 +1031,14 @@
     "lean_name": "integral_linearity",
     "processed": true,
     "proof_id": "atlas.real_analysis.bac56be2b008",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Integration/Properties.lean",
-    "start_line": 89
+    "start_line": 89,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 2,
+    "category_processed": true,
     "comment": "Triangle inequality for the absolute value on `ℝ`: `|x + y| ≤ |x| + |y|`\nfor all real numbers `x` and `y`.",
     "comment_excerpt": "Triangle inequality for the absolute value on `ℝ`: `|x + y| ≤ |x| + |y|` for all real numbers `x` and `y`.",
     "end_line": 18,
@@ -802,10 +1048,14 @@
     "lean_name": "triangle_inequality",
     "processed": true,
     "proof_id": "atlas.real_analysis.fa564bc5f335",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/RealNumbers/AbsoluteValue.lean",
-    "start_line": 15
+    "start_line": 15,
+    "strategy_count": 2
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "The real numbers `ℝ` form a strict ordered ring, contain `ℚ` via an injective ring\nhomomorphism, and satisfy the least upper bound property: every nonempty set bounded above\nadmits a least upper bound.",
     "comment_excerpt": "The real numbers `ℝ` form a strict ordered ring, contain `ℚ` via an injective ring homomorphism, and satisfy the least upper bound property: every nonempty set bounded above admits a least upper bound.",
     "end_line": 23,
@@ -815,10 +1065,14 @@
     "lean_name": "real_numbers_theorem",
     "processed": true,
     "proof_id": "atlas.real_analysis.1b9f1b5bf00f",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/RealNumbers/Basic.lean",
-    "start_line": 16
+    "start_line": 16,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "Uniqueness (up to ordered ring isomorphism) of the real numbers: any conditionally complete\nlinear strict ordered field `F` is isomorphic to `ℝ` as an ordered ring.",
     "comment_excerpt": "Uniqueness (up to ordered ring isomorphism) of the real numbers: any conditionally complete linear strict ordered field `F` is isomorphic to `ℝ` as an ordered ring.",
     "end_line": 30,
@@ -828,10 +1082,14 @@
     "lean_name": "real_uniqueness_up_to_iso",
     "processed": true,
     "proof_id": "atlas.real_analysis.98296013f8c5",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/RealNumbers/Basic.lean",
-    "start_line": 24
+    "start_line": 24,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 2,
+    "category_processed": true,
     "comment": "There exists a unique positive real number `r` with `r ^ 2 = 2`, namely `√2`; in particular\n`√2 ∈ ℝ \\ ℚ`.",
     "comment_excerpt": "There exists a unique positive real number `r` with `r ^ 2 = 2`, namely `√2`; in particular `√2 ∈ ℝ \\ ℚ`.",
     "end_line": 39,
@@ -841,10 +1099,14 @@
     "lean_name": "sqrt2_exists_unique",
     "processed": true,
     "proof_id": "atlas.real_analysis.acc655918d16",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/RealNumbers/Basic.lean",
-    "start_line": 31
+    "start_line": 31,
+    "strategy_count": 2
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "*Bounded above and bounded below.** In a preorder, a set `E` is bounded above\niff there exists an upper bound `b` with `x ≤ b` for all `x ∈ E`, and bounded\nbelow iff there exists a lower bound `c` with `c ≤ x` for all `x ∈ E`.",
     "comment_excerpt": "*Bounded above and bounded below.** In a preorder, a set `E` is bounded above iff there exists an upper bound `b` with `x ≤ b` for all `x ∈ E`, and bounded below iff there exists a lower bound `c` with `c ≤ x` for all `…",
     "end_line": 30,
@@ -854,10 +1116,14 @@
     "lean_name": "bounded_above_below_iff",
     "processed": true,
     "proof_id": "atlas.real_analysis.2c04040b19d7",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/RealNumbers/OrderedSetsFields.lean",
-    "start_line": 23
+    "start_line": 23,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "*Ordered field axioms.** In an ordered field `F`, the order is compatible\nwith addition (`x < y` implies `x + z < y + z`) and with multiplication\n(if `0 < x` and `0 < y`, then `0 < x * y`).",
     "comment_excerpt": "*Ordered field axioms.** In an ordered field `F`, the order is compatible with addition (`x < y` implies `x + z < y + z`) and with multiplication (if `0 < x` and `0 < y`, then `0 < x * y`).",
     "end_line": 49,
@@ -867,10 +1133,14 @@
     "lean_name": "ordered_field_axioms",
     "processed": true,
     "proof_id": "atlas.real_analysis.3ea7ba1b0f4b",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/RealNumbers/OrderedSetsFields.lean",
-    "start_line": 37
+    "start_line": 37,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "*Field axioms.** A field `F` satisfies the addition axioms (A1-A5:\ncommutativity, associativity, existence of `0`, additive inverses), the\nmultiplication axioms (M1-M5: commutativity, associativity, existence of `1`,\nmultiplicative inverses for nonzero elements), and the distributive law (D).",
     "comment_excerpt": "*Field axioms.** A field `F` satisfies the addition axioms (A1-A5: commutativity, associativity, existence of `0`, additive inverses), the multiplication axioms (M1-M5: commutativity, associativity, existence of `1`, mu…",
     "end_line": 63,
@@ -880,10 +1150,14 @@
     "lean_name": "field_axioms",
     "processed": true,
     "proof_id": "atlas.real_analysis.d98ecaeef19d",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/RealNumbers/OrderedSetsFields.lean",
-    "start_line": 50
+    "start_line": 50,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "Cantor's theorem: the half-open interval `(0, 1]` of real numbers is uncountable.",
     "comment_excerpt": "Cantor's theorem: the half-open interval `(0, 1]` of real numbers is uncountable.",
     "end_line": 19,
@@ -893,10 +1167,14 @@
     "lean_name": "Ioc_zero_one_uncountable",
     "processed": true,
     "proof_id": "atlas.real_analysis.e8c8f6ce6b7f",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/RealNumbers/Uncountability.lean",
-    "start_line": 14
+    "start_line": 14,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "Corollary of Cantor's theorem: the set of real numbers `ℝ` is uncountable.",
     "comment_excerpt": "Corollary of Cantor's theorem: the set of real numbers `ℝ` is uncountable.",
     "end_line": 23,
@@ -906,10 +1184,14 @@
     "lean_name": "real_uncountable",
     "processed": true,
     "proof_id": "atlas.real_analysis.79478ee913cd",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/RealNumbers/Uncountability.lean",
-    "start_line": 20
+    "start_line": 20,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 2,
+    "category_processed": true,
     "comment": "ε–N characterization of convergence: `x n → L` if and only if for every `ε > 0`\nthere exists `M : ℕ` such that `|x n - L| < ε` for all `n ≥ M`.",
     "comment_excerpt": "ε–N characterization of convergence: `x n → L` if and only if for every `ε > 0` there exists `M : ℕ` such that `|x n - L| < ε` for all `n ≥ M`.",
     "end_line": 29,
@@ -919,10 +1201,14 @@
     "lean_name": "seq_converges_iff",
     "processed": true,
     "proof_id": "atlas.real_analysis.b994f1398d46",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Sequences/Basic.lean",
-    "start_line": 22
+    "start_line": 22,
+    "strategy_count": 2
   },
   {
+    "categorized_strategy_count": 2,
+    "category_processed": true,
     "comment": "Squeeze (sandwich) theorem for real sequences: if `a n ≤ x n ≤ b n` for all `n`\nand both `a` and `b` converge to the same limit `L`, then `x` also converges to `L`.",
     "comment_excerpt": "Squeeze (sandwich) theorem for real sequences: if `a n ≤ x n ≤ b n` for all `n` and both `a` and `b` converge to the same limit `L`, then `x` also converges to `L`.",
     "end_line": 37,
@@ -932,10 +1218,14 @@
     "lean_name": "squeeze_theorem",
     "processed": true,
     "proof_id": "atlas.real_analysis.8aaf9bffdfc5",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Sequences/Basic.lean",
-    "start_line": 30
+    "start_line": 30,
+    "strategy_count": 2
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "A real sequence `x` is Cauchy (in the Mathlib sense, `CauchySeq x`) if and only if it\nsatisfies the textbook Cauchy criterion: for every `ε > 0` there exists `M : ℕ` such\nthat `|x n - x k| < ε` whenever `n, k ≥ M`.",
     "comment_excerpt": "A real sequence `x` is Cauchy (in the Mathlib sense, `CauchySeq x`) if and only if it satisfies the textbook Cauchy criterion: for every `ε > 0` there exists `M : ℕ` such that `|x n - x k| < ε` whenever `n, k ≥ M`.",
     "end_line": 28,
@@ -945,10 +1235,14 @@
     "lean_name": "cauchy_seq_iff",
     "processed": true,
     "proof_id": "atlas.real_analysis.96a9359e4c81",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Sequences/Cauchy.lean",
-    "start_line": 16
+    "start_line": 16,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 2,
+    "category_processed": true,
     "comment": "Cauchy completeness of the reals: a real sequence is Cauchy if and only if it\nconverges to some limit `L : ℝ`.",
     "comment_excerpt": "Cauchy completeness of the reals: a real sequence is Cauchy if and only if it converges to some limit `L : ℝ`.",
     "end_line": 36,
@@ -958,10 +1252,14 @@
     "lean_name": "cauchy_iff_convergent",
     "processed": true,
     "proof_id": "atlas.real_analysis.0b0070d60c5c",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Sequences/Cauchy.lean",
-    "start_line": 29
+    "start_line": 29,
+    "strategy_count": 2
   },
   {
+    "categorized_strategy_count": 5,
+    "category_processed": true,
     "comment": "For a bounded real sequence `x : ℕ → ℝ`, the filter-theoretic `limsup` along\n`atTop` agrees with the textbook definition\n`limsup x = inf_{n} sup_{k ≥ n} x k`, here written as\n`⨅ n, ⨆ i, x (i + n)`.\n\nThis realizes the informal definition: for bounded `{xₙ}`,\n`limsup xₙ := lim_{n→∞} sup{xₖ : k ≥ n}`.",
     "comment_excerpt": "For a bounded real sequence `x : ℕ → ℝ`, the filter-theoretic `limsup` along `atTop` agrees with the textbook definition `limsup x = inf_{n} sup_{k ≥ n} x k`, here written as `⨅ n, ⨆ i, x (i + n)`. This realizes the inf…",
     "end_line": 64,
@@ -971,10 +1269,14 @@
     "lean_name": "limsup_eq_lim_sup_tail",
     "processed": true,
     "proof_id": "atlas.real_analysis.acf6d7b27bc7",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Sequences/LimSupInf.lean",
-    "start_line": 22
+    "start_line": 22,
+    "strategy_count": 5
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "A bounded real sequence `x : ℕ → ℝ` converges to some limit `L` if and only\nif its `limsup` and `liminf` (along `atTop`) coincide.\n\nThis is the standard characterization: a bounded sequence `{xₙ}` converges iff\n`liminf xₙ = limsup xₙ`.",
     "comment_excerpt": "A bounded real sequence `x : ℕ → ℝ` converges to some limit `L` if and only if its `limsup` and `liminf` (along `atTop`) coincide. This is the standard characterization: a bounded sequence `{xₙ}` converges iff `liminf x…",
     "end_line": 82,
@@ -984,10 +1286,14 @@
     "lean_name": "convergent_iff_limsup_eq_liminf",
     "processed": true,
     "proof_id": "atlas.real_analysis.cc07284d82b7",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Sequences/LimSupInf.lean",
-    "start_line": 65
+    "start_line": 65,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 2,
+    "category_processed": true,
     "comment": "A sequence `x : ℕ → ℝ` is monotone increasing (i.e. `Monotone x`) if and only if\neach term is bounded above by its immediate successor: `x n ≤ x (n + 1)` for all `n`.",
     "comment_excerpt": "A sequence `x : ℕ → ℝ` is monotone increasing (i.e. `Monotone x`) if and only if each term is bounded above by its immediate successor: `x n ≤ x (n + 1)` for all `n`.",
     "end_line": 25,
@@ -997,10 +1303,14 @@
     "lean_name": "monotone_increasing_iff",
     "processed": true,
     "proof_id": "atlas.real_analysis.558ee9832c8c",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Sequences/Monotone.lean",
-    "start_line": 15
+    "start_line": 15,
+    "strategy_count": 2
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "A monotone decreasing real sequence converges if and only if it is bounded below,\nand in that case its limit equals the infimum of its range: a monotone decreasing\nsequence `x` converges iff `BddBelow (Set.range x)`, and when bounded below, the\nsequence converges to `⨅ n, x n`.",
     "comment_excerpt": "A monotone decreasing real sequence converges if and only if it is bounded below, and in that case its limit equals the infimum of its range: a monotone decreasing sequence `x` converges iff `BddBelow (Set.range x)`, an…",
     "end_line": 37,
@@ -1010,10 +1320,14 @@
     "lean_name": "monotone_decreasing_convergence",
     "processed": true,
     "proof_id": "atlas.real_analysis.9125c31f969d",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Sequences/Monotone.lean",
-    "start_line": 26
+    "start_line": 26,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "Some special sequences:\n1. If `p > 0`, then `n^(-p) → 0` as `n → ∞`.\n2. If `p > 0`, then `p^(1/n) → 1` as `n → ∞`.\n3. `n^(1/n) → 1` as `n → ∞`.",
     "comment_excerpt": "Some special sequences: 1. If `p > 0`, then `n^(-p) → 0` as `n → ∞`. 2. If `p > 0`, then `p^(1/n) → 1` as `n → ∞`. 3. `n^(1/n) → 1` as `n → ∞`.",
     "end_line": 40,
@@ -1023,10 +1337,14 @@
     "lean_name": "special_sequences",
     "processed": true,
     "proof_id": "atlas.real_analysis.0c1af56ba22b",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Sequences/SpecialSequences.lean",
-    "start_line": 19
+    "start_line": 19,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 2,
+    "category_processed": true,
     "comment": "Bolzano–Weierstrass theorem for real sequences: every bounded real sequence has a\nconvergent subsequence, i.e. a strictly increasing `φ : ℕ → ℕ` and a limit `L : ℝ`\nwith `x ∘ φ → L`.",
     "comment_excerpt": "Bolzano–Weierstrass theorem for real sequences: every bounded real sequence has a convergent subsequence, i.e. a strictly increasing `φ : ℕ → ℕ` and a limit `L : ℝ` with `x ∘ φ → L`.",
     "end_line": 27,
@@ -1036,10 +1354,14 @@
     "lean_name": "bolzano_weierstrass",
     "processed": true,
     "proof_id": "atlas.real_analysis.c3ff234fb77c",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Sequences/Subsequences.lean",
-    "start_line": 21
+    "start_line": 21,
+    "strategy_count": 2
   },
   {
+    "categorized_strategy_count": 2,
+    "category_processed": true,
     "comment": "If a real sequence `x` converges to `L`, then every subsequence `x ∘ φ` (with\n`φ : ℕ → ℕ` strictly increasing) also converges to `L`.",
     "comment_excerpt": "If a real sequence `x` converges to `L`, then every subsequence `x ∘ φ` (with `φ : ℕ → ℕ` strictly increasing) also converges to `L`.",
     "end_line": 33,
@@ -1049,10 +1371,14 @@
     "lean_name": "subseq_tendsto",
     "processed": true,
     "proof_id": "atlas.real_analysis.085ddc47fe28",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Sequences/Subsequences.lean",
-    "start_line": 28
+    "start_line": 28,
+    "strategy_count": 2
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "Rearrangement theorem for absolutely convergent series: if `∑ |x n|` is summable\nand `∑ x n` has sum `s`, then for any permutation `σ : ℕ ≃ ℕ` the rearranged series\n`∑ x (σ n)` is also absolutely convergent and has the same sum `s`.",
     "comment_excerpt": "Rearrangement theorem for absolutely convergent series: if `∑ |x n|` is summable and `∑ x n` has sum `s`, then for any permutation `σ : ℕ ≃ ℕ` the rearranged series `∑ x (σ n)` is also absolutely convergent and has the…",
     "end_line": 28,
@@ -1062,10 +1388,14 @@
     "lean_name": "abs_convergent_rearrangement",
     "processed": true,
     "proof_id": "atlas.real_analysis.4e6181963bde",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Series/Basic.lean",
-    "start_line": 20
+    "start_line": 20,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 2,
+    "category_processed": true,
     "comment": "*Comparison Test for series of real numbers.**\nIf `0 ≤ x n ≤ y n` for every `n`, then:\n1. summability of `y` implies summability of `x`, and\n2. non-summability of `x` implies non-summability of `y`\n(the latter being the contrapositive of the former).",
     "comment_excerpt": "*Comparison Test for series of real numbers.** If `0 ≤ x n ≤ y n` for every `n`, then: 1. summability of `y` implies summability of `x`, and 2. non-summability of `x` implies non-summability of `y` (the latter being the…",
     "end_line": 29,
@@ -1075,10 +1405,14 @@
     "lean_name": "comparison_test",
     "processed": true,
     "proof_id": "atlas.real_analysis.81befce4dbe1",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Series/ConvergenceTests.lean",
-    "start_line": 20
+    "start_line": 20,
+    "strategy_count": 2
   },
   {
+    "categorized_strategy_count": 5,
+    "category_processed": true,
     "comment": "*Root Test (Cauchy's root test).**\nSuppose `L = lim |x n| ^ (1/n)` exists. Then:\n1. if `L < 1`, the series `∑ |x n|` converges (so `∑ x n` converges absolutely);\n2. if `L > 1`, the series `∑ x n` diverges.",
     "comment_excerpt": "*Root Test (Cauchy's root test).** Suppose `L = lim |x n| ^ (1/n)` exists. Then: 1. if `L < 1`, the series `∑ |x n|` converges (so `∑ x n` converges absolutely); 2. if `L > 1`, the series `∑ x n` diverges.",
     "end_line": 91,
@@ -1088,10 +1422,14 @@
     "lean_name": "root_test",
     "processed": true,
     "proof_id": "atlas.real_analysis.f074c78bc249",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Series/ConvergenceTests.lean",
-    "start_line": 30
+    "start_line": 30,
+    "strategy_count": 5
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "*Ratio Test (d'Alembert's ratio test).**\nSuppose `x n ≠ 0` for every `n` and `L = lim |x (n+1)| / |x n|` exists. Then:\n1. if `L < 1`, the series `∑ |x n|` converges (so `∑ x n` converges absolutely);\n2. if `L > 1`, the series `∑ x n` diverges.",
     "comment_excerpt": "*Ratio Test (d'Alembert's ratio test).** Suppose `x n ≠ 0` for every `n` and `L = lim |x (n+1)| / |x n|` exists. Then: 1. if `L < 1`, the series `∑ |x n|` converges (so `∑ x n` converges absolutely); 2. if `L > 1`, the…",
     "end_line": 112,
@@ -1101,10 +1439,14 @@
     "lean_name": "ratio_test",
     "processed": true,
     "proof_id": "atlas.real_analysis.c86b2578bcc4",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Series/ConvergenceTests.lean",
-    "start_line": 92
+    "start_line": 92,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 2,
+    "category_processed": true,
     "comment": "*Alternating Series Test (Leibniz's test).**\nIf `x : ℕ → ℝ` is nonnegative, monotone decreasing (`Antitone`), and tends to `0`,\nthen the alternating series `∑ (-1)^i * x i` converges, i.e. its partial sums\nconverge to some real limit `l`.",
     "comment_excerpt": "*Alternating Series Test (Leibniz's test).** If `x : ℕ → ℝ` is nonnegative, monotone decreasing (`Antitone`), and tends to `0`, then the alternating series `∑ (-1)^i * x i` converges, i.e. its partial sums converge to s…",
     "end_line": 127,
@@ -1114,10 +1456,14 @@
     "lean_name": "alternating_series_test",
     "processed": true,
     "proof_id": "atlas.real_analysis.66c62cefcfe4",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Series/ConvergenceTests.lean",
-    "start_line": 113
+    "start_line": 113,
+    "strategy_count": 2
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "*Convergence of the alternating harmonic series.**\nThe series `∑ (-1)^i / (i + 1)` converges, i.e. its partial sums converge to some\nreal limit `l`. This is a direct corollary of the alternating series test, applied\nto the decreasing positive sequence `1 / (n + 1)`. Note that the corresponding\nseries of absolute values (the harmonic series) diverges, so this is an example\nof a conditionally convergent series.",
     "comment_excerpt": "*Convergence of the alternating harmonic series.** The series `∑ (-1)^i / (i + 1)` converges, i.e. its partial sums converge to some real limit `l`. This is a direct corollary of the alternating series test, applied to…",
     "end_line": 149,
@@ -1127,10 +1473,14 @@
     "lean_name": "alternating_harmonic_converges",
     "processed": true,
     "proof_id": "atlas.real_analysis.c533a5d899aa",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/Series/ConvergenceTests.lean",
-    "start_line": 128
+    "start_line": 128,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "*De Morgan's Laws.** For sets `A`, `B`, `C`:\nthe complement of a union is the intersection of complements,\nthe complement of an intersection is the union of complements,\nand the analogous identities for set differences:\n`A \\ (B ∪ C) = (A \\ B) ∩ (A \\ C)` and `A \\ (B ∩ C) = (A \\ B) ∪ (A \\ C)`.",
     "comment_excerpt": "*De Morgan's Laws.** For sets `A`, `B`, `C`: the complement of a union is the intersection of complements, the complement of an intersection is the union of complements, and the analogous identities for set differences:…",
     "end_line": 30,
@@ -1140,10 +1490,14 @@
     "lean_name": "de_morgan_laws",
     "processed": true,
     "proof_id": "atlas.real_analysis.fb589e7ff9f9",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/SetTheory/Basic.lean",
-    "start_line": 22
+    "start_line": 22,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "*Well-ordering of `ℕ`.** Every nonempty subset `S ⊆ ℕ` contains a least element,\nthat is, there exists `x ∈ S` such that `x ≤ y` for all `y ∈ S`.",
     "comment_excerpt": "*Well-ordering of `ℕ`.** Every nonempty subset `S ⊆ ℕ` contains a least element, that is, there exists `x ∈ S` such that `x ≤ y` for all `y ∈ S`.",
     "end_line": 37,
@@ -1153,10 +1507,14 @@
     "lean_name": "well_ordering_nat",
     "processed": true,
     "proof_id": "atlas.real_analysis.531882971c9f",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/SetTheory/Basic.lean",
-    "start_line": 31
+    "start_line": 31,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "*Principle of mathematical induction (starting at 1).** If `P 1` holds and\n`P m → P (m + 1)` for all `m`, then `P n` holds for every natural number `n ≥ 1`.",
     "comment_excerpt": "*Principle of mathematical induction (starting at 1).** If `P 1` holds and `P m → P (m + 1)` for all `m`, then `P n` holds for every natural number `n ≥ 1`.",
     "end_line": 56,
@@ -1166,10 +1524,14 @@
     "lean_name": "induction_principle",
     "processed": true,
     "proof_id": "atlas.real_analysis.5a7152753a83",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/SetTheory/Basic.lean",
-    "start_line": 38
+    "start_line": 38,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 3,
+    "category_processed": true,
     "comment": "*Basic set relations.** `A ⊆ B` means every element of `A` lies in `B`;\n`A = B` is equivalent to mutual inclusion `A ⊆ B` and `B ⊆ A`; and\n`A ⊂ B` (proper subset) is equivalent to `A ⊆ B` together with `A ≠ B`.",
     "comment_excerpt": "*Basic set relations.** `A ⊆ B` means every element of `A` lies in `B`; `A = B` is equivalent to mutual inclusion `A ⊆ B` and `B ⊆ A`; and `A ⊂ B` (proper subset) is equivalent to `A ⊆ B` together with `A ≠ B`.",
     "end_line": 63,
@@ -1179,10 +1541,14 @@
     "lean_name": "set_relations",
     "processed": true,
     "proof_id": "atlas.real_analysis.8fb5049d0922",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/SetTheory/Basic.lean",
-    "start_line": 57
+    "start_line": 57,
+    "strategy_count": 3
   },
   {
+    "categorized_strategy_count": 4,
+    "category_processed": true,
     "comment": "Corollary to Cantor's theorem: for every natural number `n`, `n < 2 ^ n`.",
     "comment_excerpt": "Corollary to Cantor's theorem: for every natural number `n`, `n < 2 ^ n`.",
     "end_line": 25,
@@ -1192,10 +1558,14 @@
     "lean_name": "n_lt_two_pow_n",
     "processed": true,
     "proof_id": "atlas.real_analysis.cf5e7b1b2725",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/SetTheory/Cardinality.lean",
-    "start_line": 14
+    "start_line": 14,
+    "strategy_count": 4
   },
   {
+    "categorized_strategy_count": 2,
+    "category_processed": true,
     "comment": "Cantor's theorem: for every type `α`, the cardinality of `α` is strictly less than the\ncardinality of its power set `Set α`.",
     "comment_excerpt": "Cantor's theorem: for every type `α`, the cardinality of `α` is strictly less than the cardinality of its power set `Set α`.",
     "end_line": 36,
@@ -1205,10 +1575,14 @@
     "lean_name": "cantor_cardinal",
     "processed": true,
     "proof_id": "atlas.real_analysis.a4598f93a8f7",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/SetTheory/Cardinality.lean",
-    "start_line": 30
+    "start_line": 30,
+    "strategy_count": 2
   },
   {
+    "categorized_strategy_count": 2,
+    "category_processed": true,
     "comment": "Cantor-Schröder-Bernstein theorem: if there are injections `f : α → β` and `g : β → α`,\nthen there exists a bijection between `α` and `β`; equivalently, `|α| ≤ |β|` and `|β| ≤ |α|`\nimply `|α| = |β|`.",
     "comment_excerpt": "Cantor-Schröder-Bernstein theorem: if there are injections `f : α → β` and `g : β → α`, then there exists a bijection between `α` and `β`; equivalently, `|α| ≤ |β|` and `|β| ≤ |α|` imply `|α| = |β|`.",
     "end_line": 42,
@@ -1218,7 +1592,9 @@
     "lean_name": "cantor_schroeder_bernstein",
     "processed": true,
     "proof_id": "atlas.real_analysis.aaa1490bf333",
+    "refined_processed": true,
     "source_file": "external/atlas-lean/Atlas/RealAnalysis/code/SetTheory/Cardinality.lean",
-    "start_line": 37
+    "start_line": 37,
+    "strategy_count": 2
   }
 ]

@@ -220,7 +220,7 @@
       width: 100%;
       border-collapse: collapse;
       table-layout: fixed;
-      min-width: 1100px;
+      min-width: 1900px;
     }
 
     th, td {
@@ -261,7 +261,7 @@
       font-size: 12px;
     }
 
-    .english, .keys {
+    .english, .keys, .category-cell, .refined-strategies {
       white-space: pre-wrap;
       background: #ffffff;
       border: 1px solid #eef0f4;
@@ -270,7 +270,61 @@
       min-height: 48px;
     }
 
-    .english mjx-container, .keys mjx-container {
+    .strategy-table {
+      min-width: 0;
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+    }
+    .strategy-table th, .strategy-table td {
+      padding: 8px;
+      border-bottom: 1px solid #e5e7eb;
+      border-right: 1px solid #e5e7eb;
+      font-size: 12px;
+    }
+    .strategy-table tr:last-child td { border-bottom: 0; }
+    .strategy-table th:nth-child(1), .strategy-table td:nth-child(1) { width: 62%; }
+    .strategy-table th:nth-child(2), .strategy-table td:nth-child(2) { width: 38%; }
+    .category-badge {
+      display: inline-block;
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-weight: 700;
+      font-size: 11px;
+    }
+    .category-empty {
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    .refined-item {
+      border-bottom: 1px solid #e5e7eb;
+      padding: 9px 0;
+    }
+    .refined-item:last-child { border-bottom: 0; }
+    .refined-category {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #ecfeff;
+      color: #155e75;
+      font-weight: 800;
+      font-size: 11px;
+      margin-bottom: 6px;
+    }
+    .refined-meta {
+      color: #6b7280;
+      font-size: 11px;
+      margin-top: 5px;
+    }
+    .refined-label {
+      font-weight: 750;
+      color: #374151;
+    }
+
+    .english mjx-container, .keys mjx-container, .refined-strategies mjx-container {
       overflow-x: auto;
       overflow-y: hidden;
       max-width: 100%;
@@ -405,7 +459,9 @@
         item.source_file,
         item.comment_excerpt,
         item.comment,
-        item.processed ? 'processed green done' : 'pending unprocessed'
+        item.processed ? 'processed green done' : 'pending unprocessed',
+        item.category_processed ? 'categorized classified category' : 'uncategorized pending category',
+        item.refined_processed ? 'reverse engineered refined strategies' : 'not refined'
       ].join('\n').toLowerCase();
       return haystack.includes(query.toLowerCase());
     }
@@ -425,7 +481,14 @@
         <div class="overview-grid">
           ${items.map((item) => {
             const cls = item.processed ? 'processed' : 'pending';
-            const status = item.processed ? '<span class="overview-status">processed</span>' : '';
+            const processedStatus = item.processed ? '<span class="overview-status">processed</span>' : '';
+            const categoryStatus = item.category_processed
+              ? '<span class="overview-status" style="color:#3730a3;">categorized</span>'
+              : (item.strategy_count ? `<span class="overview-status" style="color:#b06000;">${item.categorized_strategy_count || 0}/${item.strategy_count} categorized</span>` : '');
+            const refinedStatus = item.refined_processed
+              ? '<span class="overview-status" style="color:#155e75;">refined</span>'
+              : '';
+            const status = processedStatus + categoryStatus + refinedStatus;
             const file = item.source_file ? escapeHTML(item.source_file.split('/').slice(-3).join('/')) : '';
             const comment = item.comment_excerpt || item.comment ? `<div class="overview-meta">${escapeHTML(item.comment_excerpt || item.comment)}</div>` : '';
             return `
@@ -463,7 +526,8 @@
         proof.lean_original_code,
         proof.plain_english,
         proof.textbook_explanation,
-        proof.key_strategies,
+        Array.isArray(proof.key_strategies) ? proof.key_strategies.map(strat => `${strat.strategy || ''} ${strat.category || ''} ${strat.category_reason || ''}`).join('\n') : proof.key_strategies,
+        Array.isArray(proof.strategies_refined) ? proof.strategies_refined.map(strat => `${strat.category || ''} ${strat.evidence || ''} ${strat.explanation || ''}`).join('\n') : proof.strategies_refined,
         proof.source_file,
         proof.proof_id
       ].join('\n').toLowerCase();
@@ -476,6 +540,56 @@
           console.warn('MathJax render failed:', err);
         });
       }
+    }
+
+    function renderStrategyTable(proof) {
+      const strategies = proof.key_strategies;
+      if (!Array.isArray(strategies)) {
+        return `<div class="keys">${escapeHTML(strategies || '')}</div>`;
+      }
+      if (!strategies.length) {
+        return '<div class="keys category-empty">No structured strategies.</div>';
+      }
+      const rows = strategies.map((item, idx) => {
+        const text = item && typeof item === 'object' ? item.strategy : String(item || '');
+        const category = item && typeof item === 'object' ? String(item.category || '').trim() : '';
+        const reason = item && typeof item === 'object' && item.category_reason ? `<div style="color:#6b7280;margin-top:6px;font-size:11px;">${escapeHTML(item.category_reason)}</div>` : '';
+        return `
+          <tr>
+            <td><strong>${idx + 1}.</strong> ${escapeHTML(text)}</td>
+            <td>${category ? `<span class="category-badge">${escapeHTML(category)}</span>${reason}` : '<span class="category-empty">Unclassified</span>'}</td>
+          </tr>
+        `;
+      }).join('');
+      return `
+        <table class="strategy-table">
+          <thead><tr><th>Strategy</th><th>Category</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+    }
+
+    function renderRefinedStrategies(proof) {
+      const refined = proof.strategies_refined;
+      if (!Array.isArray(refined) || !refined.length) {
+        return '<div class="refined-strategies category-empty">No reverse-engineered strategies yet.</div>';
+      }
+      const items = refined.map((item) => {
+        const category = item && typeof item === 'object' ? String(item.category || '').trim() : '';
+        const evidence = item && typeof item === 'object' ? String(item.evidence || '').trim() : '';
+        const explanation = item && typeof item === 'object' ? String(item.explanation || '').trim() : '';
+        const confidence = item && typeof item === 'object' ? String(item.confidence || '').trim() : '';
+        const match = item && typeof item === 'object' && item.category_name_match === false ? ' · category name not exact' : '';
+        return `
+          <div class="refined-item">
+            <div><span class="refined-category">${escapeHTML(category || 'Uncategorized')}</span></div>
+            ${evidence ? `<div><span class="refined-label">Evidence:</span> ${escapeHTML(evidence)}</div>` : ''}
+            ${explanation ? `<div><span class="refined-label">Explanation:</span> ${escapeHTML(explanation)}</div>` : ''}
+            ${(confidence || match) ? `<div class="refined-meta">Confidence: ${escapeHTML(confidence || '—')}${escapeHTML(match)}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+      return `<div class="refined-strategies">${items}</div>`;
     }
 
     function renderProofTable() {
@@ -500,7 +614,8 @@
               <pre>${escapeHTML(proof.lean_original_code || '')}</pre>
             </td>
             <td><div class="english">${escapeHTML(english)}</div></td>
-            <td><div class="keys">${escapeHTML(proof.key_strategies || '')}</div></td>
+            <td>${renderStrategyTable(proof)}</td>
+            <td>${renderRefinedStrategies(proof)}</td>
           </tr>
         `;
       }).join('');
@@ -511,7 +626,8 @@
             <tr>
               <th>Lean original code</th>
               <th>Textbook-style English proof</th>
-              <th>Key strategies</th>
+              <th>Key strategies + category</th>
+              <th>Reverse-engineered strategies</th>
             </tr>
           </thead>
           <tbody>${rows}</tbody>

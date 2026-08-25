@@ -1,35 +1,25 @@
 #!/usr/bin/env python3
 """
-Categorize extracted proof strategies with an LLM.
+Stage 1: generate a global category taxonomy for extracted proof strategies.
 
 Input:
     data/processed/strategy_library.json
 
-Stage 1:
-    Give the LLM the full collection of strategies and ask it to summarize them into
-    a finite list of recurring real-analysis proof-strategy categories. The model is
-    allowed to write notes before the final category list.
-
-Stage 2:
-    Iterate over each individual strategy and ask the LLM to assign it to one of the
-    categories from Stage 1, while also giving it the Stage 1 notes as reference.
+This script gives the LLM the full collection of strategies and asks it to summarize
+recurring real-analysis proof-strategy categories.
 
 Default outputs:
-    data/processed/strategy_category_notes.txt
     data/processed/strategy_categories.txt
     data/processed/strategy_categories_raw.txt
-    data/processed/strategy_category_assignments.json
-    data/processed/strategy_category_assignments.csv
-    data/processed/strategy_category_assignments.md
 
 Run from project root:
     python workflows/proof_strategy_extraction/categorize_strategy_library.py
 
-Useful test run:
-    python workflows/proof_strategy_extraction/categorize_strategy_library.py --limit 10
-
-Force regeneration of categories and assignments:
+Force regeneration of the category taxonomy:
     python workflows/proof_strategy_extraction/categorize_strategy_library.py --no-resume
+
+Stage 2 classification has been separated into:
+    python workflows/proof_strategy_extraction/classify_strategy_categories.py
 """
 
 from __future__ import annotations
@@ -169,14 +159,11 @@ def format_strategy_collection(strategies: List[Dict[str, Any]]) -> str:
     return "\n".join(lines)
 
 
-def split_notes_and_categories(raw: str) -> Tuple[str, str]:
-    """Split LLM response into notes and final category list.
+def normalize_categories_text(raw: str) -> str:
+    """Extract the category list from a model response.
 
-    The prompt asks the model to include headings:
-        NOTES:
-        FINAL CATEGORY LIST:
-
-    This function is forgiving if the exact headings differ.
+    The current prompt asks for only the final category list. This function also
+    tolerates older responses containing headings such as FINAL CATEGORY LIST:.
     """
     text = raw.strip()
     upper = text.upper()
@@ -186,22 +173,11 @@ def split_notes_and_categories(raw: str) -> Tuple[str, str]:
         "CATEGORY LIST:",
         "FINAL LIST:",
     ]
-    split_at = -1
-    marker_len = 0
     for marker in marker_candidates:
         idx = upper.find(marker)
         if idx != -1:
-            split_at = idx
-            marker_len = len(marker)
-            break
-    if split_at != -1:
-        notes = text[:split_at].strip()
-        categories = text[split_at + marker_len :].strip()
-        notes = re.sub(r"^NOTES:\s*", "", notes, flags=re.IGNORECASE).strip()
-        return notes, categories
-
-    # Fallback: keep the full text as categories if no marker exists.
-    return "", text
+            return text[idx + len(marker) :].strip()
+    return text
 
 
 def parse_category_names(categories_text: str) -> List[str]:
@@ -240,20 +216,16 @@ def generate_categories(
     user_prompt = f"""
 Here is a collection of proof strategies used in real analysis proofs. You need to go over all the strategies and summarize them into a finite number of categories of strategies.
 
-Pay attention to:
+SUMMARIZE THE CATEGORIES LIKE WHAT A MATHEMATICIAN WOULD DO AND USE THE TERMS WE USUALLY CALL THEM. For example: by definition/by algebra/by some theorem. IMPORTANT: YOU MUST NOT BE LIMITED TO THE EXAMPLES PROVIDED, but your summaries should share a SIMILAR GRANULARITY as the examples.
+
+Also pay attention to:
 - Are there strategies that are similar to each other that appear a lot? If so, they belong to the same category.
 - Summarize the KEY POINT of each category ACCURATELY.
 - Prefer mathematically meaningful categories, not superficial wording categories.
 - Categories should be broad enough to group repeated patterns, but specific enough to be useful for proof search/explanation.
 
-Before giving the final list, you may take notes on your thinking process, recurring motifs, and borderline cases. Keep the notes concise but useful.
+Return only the final category list in exactly this format:
 
-Return your answer in exactly this structure:
-
-NOTES:
-<your concise notes here>
-
-FINAL CATEGORY LIST:
 1. <Category name>: <one or two sentences accurately summarizing the key point of this category>
 2. <Category name>: <one or two sentences accurately summarizing the key point of this category>
 ...
@@ -272,9 +244,9 @@ Collection of strategies:
         max_completion_tokens=max_tokens,
         reasoning_effort=reasoning_effort,
     )
-    notes, categories_text = split_notes_and_categories(raw)
+    categories_text = normalize_categories_text(raw)
     category_names = parse_category_names(categories_text)
-    return raw, notes, categories_text, category_names
+    return raw, "", categories_text, category_names
 
 
 def classify_strategy(
@@ -443,16 +415,15 @@ def write_assignments_md(path: Path, assignments: List[Dict[str, Any]], categori
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Categorize extracted proof strategies with an LLM.")
+    parser = argparse.ArgumentParser(description="Stage 1 only: generate a category taxonomy for extracted proof strategies with an LLM.")
     parser.add_argument("--input", type=Path, default=DEFAULT_INPUT, help=f"Input strategy library JSON. Default: {DEFAULT_INPUT}")
     parser.add_argument("--model", default="gpt-5.6-sol", help="OpenAI model. Default: gpt-5.6-sol")
     parser.add_argument("--api-base", default="https://api.openai.com/v1", help="OpenAI-compatible API base URL.")
     parser.add_argument("--temperature", type=float, default=1.0, help="Sampling temperature. Some models only support 1.0.")
     parser.add_argument("--reasoning-effort", choices=["low", "medium", "high"], default="high", help="Reasoning effort for supported models. Default: high")
     parser.add_argument("--category-max-tokens", type=int, default=8000, help="Max completion tokens for global category generation.")
-    parser.add_argument("--classification-max-tokens", type=int, default=1000, help="Max completion tokens for each classification call.")
-    parser.add_argument("--limit", type=int, default=None, help="For testing: classify only the first N strategies after generating/loading categories.")
-    parser.add_argument("--no-resume", action="store_true", help="Regenerate categories and classifications even if output files already exist.")
+    parser.add_argument("--limit", type=int, default=None, help="For testing Stage 1 only: generate categories from only the first N strategies.")
+    parser.add_argument("--no-resume", action="store_true", help="Regenerate the category taxonomy even if output files already exist.")
     parser.add_argument("--dry-run", action="store_true", help="Load inputs and print what would happen, but do not call the API.")
     parser.add_argument("--notes-output", type=Path, default=DEFAULT_NOTES_OUTPUT)
     parser.add_argument("--categories-output", type=Path, default=DEFAULT_CATEGORIES_OUTPUT)
@@ -467,17 +438,17 @@ def main() -> None:
 
     strategies = read_strategy_library(args.input)
     if args.limit is not None:
-        strategies_to_classify = strategies[: args.limit]
+        strategies_for_categories = strategies[: args.limit]
     else:
-        strategies_to_classify = strategies
+        strategies_for_categories = strategies
 
     print(f"Loaded {len(strategies)} strategies from {args.input}")
-    print(f"Will classify {len(strategies_to_classify)} strategies")
+    print(f"Will generate categories from {len(strategies_for_categories)} strategies")
 
     if args.dry_run:
         print("Dry run: no API calls will be made.")
         print("First few strategies:")
-        for item in strategies[:5]:
+        for item in strategies_for_categories[:5]:
             print(f"  {item.get('strategy_id')}. {item.get('strategy')}")
         return
 
@@ -485,16 +456,16 @@ def main() -> None:
         raise RuntimeError("OPENAI_API_KEY is missing or still set to the placeholder. Put a real key in .env or export it.")
 
     # Stage 1: global categorization.
-    if not args.no_resume and args.categories_output.exists() and args.notes_output.exists() and args.raw_output.exists():
+    if not args.no_resume and args.categories_output.exists() and args.raw_output.exists():
         print(f"Reusing existing categories from {args.categories_output}")
         raw_categories = args.raw_output.read_text(encoding="utf-8")
-        notes = args.notes_output.read_text(encoding="utf-8")
+        notes = ""
         categories_text = args.categories_output.read_text(encoding="utf-8")
         category_names = parse_category_names(categories_text)
     else:
         print("Generating global strategy categories...")
         raw_categories, notes, categories_text, category_names = generate_categories(
-            strategies=strategies,
+            strategies=strategies_for_categories,
             api_key=api_key,
             model=args.model,
             api_base=args.api_base,
@@ -504,58 +475,20 @@ def main() -> None:
         )
         args.raw_output.parent.mkdir(parents=True, exist_ok=True)
         args.raw_output.write_text(raw_categories + "\n", encoding="utf-8")
-        args.notes_output.write_text(notes + "\n", encoding="utf-8")
         args.categories_output.write_text(categories_text + "\n", encoding="utf-8")
-        print(f"Wrote category notes: {args.notes_output}")
         print(f"Wrote category list: {args.categories_output}")
 
     if not category_names:
-        print("Warning: could not parse category names from category list. Classification may not match names exactly.")
+        print("Warning: could not parse category names from category list.")
     else:
         print(f"Parsed {len(category_names)} category names.")
 
-    # Stage 2: classify each strategy.
-    existing = {} if args.no_resume else read_existing_assignments(args.assignments_json)
-    assignments_by_id: Dict[int, Dict[str, Any]] = dict(existing)
-
-    for idx, strategy in enumerate(strategies_to_classify, start=1):
-        sid = int(strategy.get("strategy_id"))
-        if sid in assignments_by_id:
-            print(f"[{idx}/{len(strategies_to_classify)}] Strategy {sid}: already classified as {assignments_by_id[sid].get('category')}")
-            continue
-
-        print(f"[{idx}/{len(strategies_to_classify)}] Classifying strategy {sid}...")
-        assignment = classify_strategy(
-            strategy=strategy,
-            categories_text=categories_text,
-            category_names=category_names,
-            notes=notes,
-            api_key=api_key,
-            model=args.model,
-            api_base=args.api_base,
-            temperature=args.temperature,
-            reasoning_effort=args.reasoning_effort,
-            max_tokens=args.classification_max_tokens,
-        )
-        assignments_by_id[sid] = assignment
-
-        # Save after each classification so the script can resume safely.
-        sorted_assignments = [assignments_by_id[k] for k in sorted(assignments_by_id)]
-        write_assignments_json(args.assignments_json, sorted_assignments, categories_text, notes)
-        write_assignments_csv(args.assignments_csv, sorted_assignments)
-        write_assignments_md(args.assignments_md, sorted_assignments, categories_text, notes)
-
-    final_assignments = [assignments_by_id[k] for k in sorted(assignments_by_id)]
-    write_assignments_json(args.assignments_json, final_assignments, categories_text, notes)
-    write_assignments_csv(args.assignments_csv, final_assignments)
-    write_assignments_md(args.assignments_md, final_assignments, categories_text, notes)
-
-    print("Done.")
-    print(f"Category notes: {args.notes_output}")
+    print("Done with Stage 1 category generation.")
     print(f"Category list: {args.categories_output}")
-    print(f"Assignments JSON: {args.assignments_json}")
-    print(f"Assignments CSV: {args.assignments_csv}")
-    print(f"Assignments Markdown: {args.assignments_md}")
+    print(f"Raw category response: {args.raw_output}")
+    print("")
+    print("To run Stage 2 classification without regenerating this taxonomy, run:")
+    print("  .venv/bin/python workflows/proof_strategy_extraction/classify_strategy_categories.py")
 
 
 if __name__ == "__main__":
