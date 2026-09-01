@@ -36,6 +36,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import shutil
 from datetime import datetime
 from pathlib import Path
@@ -85,6 +86,77 @@ def strategy_needs_category(strategy_obj: Any) -> bool:
     return isinstance(strategy_obj, dict) and not str(strategy_obj.get("category", "")).strip()
 
 
+def split_enumerated_strategy_text(text: str) -> List[Dict[str, Any]]:
+    """Convert numbered strategy text into structured strategy objects.
+
+    Supports lines like:
+      1. Strategy text
+      2) Strategy text
+    and keeps continuation lines attached to the current item.
+    """
+    raw = str(text or "").strip()
+    if not raw:
+        return []
+    items: List[Dict[str, Any]] = []
+    current_number: Optional[int] = None
+    current_lines: List[str] = []
+
+    def flush() -> None:
+        nonlocal current_number, current_lines
+        strategy = "\n".join(line.strip() for line in current_lines).strip()
+        if strategy:
+            n = current_number if current_number is not None else len(items) + 1
+            items.append({
+                "strategy_number": n,
+                "strategy": strategy,
+                "original_number": n,
+                "category": "",
+            })
+        current_number = None
+        current_lines = []
+
+    for line in raw.splitlines():
+        stripped = line.strip()
+        if not stripped:
+            continue
+        m = re.match(r"^(\d+)\s*[\.)]\s+(.*)$", stripped)
+        if m:
+            flush()
+            current_number = int(m.group(1))
+            current_lines = [m.group(2)]
+        else:
+            current_lines.append(stripped)
+    flush()
+
+    if not items:
+        items.append({
+            "strategy_number": 1,
+            "strategy": raw,
+            "original_number": 1,
+            "category": "",
+        })
+    return items
+
+
+def normalize_proof_key_strategy_objects(proofs: List[Dict[str, Any]], until_proof: Optional[int]) -> int:
+    """Ensure selected proofs store key_strategies as list objects.
+
+    Returns number of proof records converted from plain text to list objects.
+    """
+    selected_count = until_proof if until_proof is not None else len(proofs)
+    converted = 0
+    for proof in proofs[:selected_count]:
+        strategies = proof.get("key_strategies")
+        if isinstance(strategies, list):
+            continue
+        if isinstance(strategies, str) and strategies.strip():
+            proof["key_strategies_original_text"] = strategies
+            proof["key_strategies"] = split_enumerated_strategy_text(strategies)
+            proof["key_strategies_schema"] = "list[{strategy_number:int,strategy:str,original_number:int,category:str}]"
+            converted += 1
+    return converted
+
+
 def count_strategy_categories_in_proofs(proofs: List[Dict[str, Any]], until_proof: Optional[int] = None) -> Dict[str, int]:
     selected = proofs[:until_proof] if until_proof is not None else proofs
     total = 0
@@ -130,10 +202,12 @@ def classify_proof_strategy_objects(
     if until_proof > len(proofs):
         raise ValueError(f"until_proof={until_proof} exceeds available processed proofs: {len(proofs)}")
 
+    converted = normalize_proof_key_strategy_objects(proofs, until_proof)
     counts = count_strategy_categories_in_proofs(proofs, until_proof)
     print(
         f"Proof-category mode: selected proofs 1..{until_proof}; "
-        f"strategies={counts['total']}, categorized={counts['categorized']}, pending={counts['pending']}"
+        f"strategies={counts['total']}, categorized={counts['categorized']}, pending={counts['pending']}, "
+        f"converted_from_text={converted}"
     )
 
     if dry_run:
@@ -149,6 +223,10 @@ def classify_proof_strategy_objects(
 
     backup = make_backup(proofs_jsonl, "proof_strategy_category_classification")
     print(f"Backup written: {backup}")
+    if converted:
+        write_jsonl(proofs_jsonl, proofs)
+        write_json_mirror(proofs_json, proofs)
+        print(f"Converted {converted} proof records from numbered strategy text to structured strategy objects.")
 
     total_pending = counts["pending"]
     done = 0
@@ -253,11 +331,14 @@ def main() -> None:
     load_dotenv()
     api_key = os.environ.get("OPENAI_API_KEY", "").strip()
 
-    strategies = read_strategy_library(args.input)
-    if args.limit is not None:
-        strategies_to_classify = strategies[: args.limit]
-    else:
-        strategies_to_classify = strategies
+    strategies: List[Dict[str, Any]] = []
+    strategies_to_classify: List[Dict[str, Any]] = []
+    if args.until_proof is None:
+        strategies = read_strategy_library(args.input)
+        if args.limit is not None:
+            strategies_to_classify = strategies[: args.limit]
+        else:
+            strategies_to_classify = strategies
 
     if not args.categories.exists():
         raise FileNotFoundError(
@@ -268,7 +349,10 @@ def main() -> None:
     notes = args.notes.read_text(encoding="utf-8") if args.notes.exists() else ""
     category_names = parse_category_names(categories_text)
 
-    print(f"Loaded {len(strategies)} strategies from {args.input}")
+    if args.until_proof is None:
+        print(f"Loaded {len(strategies)} strategies from {args.input}")
+    else:
+        print("Proof-record mode: using key_strategies objects from proofs_with_key_strategies.jsonl")
     print(f"Loaded category taxonomy from {args.categories}")
     print(f"Parsed {len(category_names)} category names")
 

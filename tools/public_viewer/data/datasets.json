@@ -1,0 +1,21 @@
+{
+  "datasets": [
+    {
+      "id": "real_analysis",
+      "label": "RealAnalysis",
+      "overview_count": 94,
+      "overview_path": "data/real_analysis_theorem_overview.json",
+      "proof_count": 94,
+      "proofs_path": "data/real_analysis_proofs_with_key_strategies.json"
+    },
+    {
+      "id": "high_dimensional_statistics",
+      "label": "HighDimensionalStatistics",
+      "overview_count": 58,
+      "overview_path": "data/high_dimensional_statistics_theorem_overview.json",
+      "proof_count": 58,
+      "proofs_path": "data/high_dimensional_statistics_proofs_with_key_strategies.json"
+    }
+  ],
+  "default_dataset": "real_analysis"
+}

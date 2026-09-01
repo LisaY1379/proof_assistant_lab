@@ -73,6 +73,7 @@
       letter-spacing: .04em;
     }
 
+    select,
     input[type="text"] {
       width: 100%;
       padding: 10px 11px;
@@ -270,6 +271,21 @@
       min-height: 48px;
     }
 
+    .english-section-title {
+      font-weight: 800;
+      color: #374151;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: .035em;
+      font-size: 11px;
+    }
+
+    .english-separator {
+      border: 0;
+      border-top: 2px solid #e5e7eb;
+      margin: 14px 0;
+    }
+
     .strategy-table {
       min-width: 0;
       width: 100%;
@@ -351,6 +367,16 @@
       <h1>Proof Strategy Public Viewer</h1>
 
       <section class="nav-section">
+        <h2>Dataset</h2>
+        <label for="datasetSelect" style="display:block;font-size:13px;color:#d1d5db;margin-bottom:6px;">Book / dataset</label>
+        <select id="datasetSelect" style="width:100%;padding:10px 11px;border-radius:8px;border:1px solid #374151;background:#0f172a;color:white;font-size:14px;">
+          <option value="real_analysis">RealAnalysis</option>
+          <option value="high_dimensional_statistics">HighDimensionalStatistics</option>
+        </select>
+        <p class="small-note" id="datasetNote">Choose which public proof library to inspect.</p>
+      </section>
+
+      <section class="nav-section">
         <h2>Views</h2>
         <div class="view-buttons">
           <button class="primary view-button active" id="showOverviewButton">Load theorem/lemma overview</button>
@@ -412,8 +438,23 @@
   <script>
     let allProofs = [];
     let overviewItems = [];
+    let datasetManifest = null;
 
     const $ = (id) => document.getElementById(id);
+
+    function selectedDataset() {
+      return $('datasetSelect') ? $('datasetSelect').value : 'real_analysis';
+    }
+
+    function datasetInfo(datasetId = selectedDataset()) {
+      const datasets = datasetManifest && Array.isArray(datasetManifest.datasets) ? datasetManifest.datasets : [];
+      return datasets.find((item) => item.id === datasetId) || {
+        id: datasetId,
+        label: datasetId,
+        proofs_path: datasetId === 'high_dimensional_statistics' ? 'data/high_dimensional_statistics_proofs_with_key_strategies.json' : 'data/proofs_with_key_strategies.json',
+        overview_path: datasetId === 'high_dimensional_statistics' ? 'data/high_dimensional_statistics_theorem_overview.json' : 'data/theorem_overview.json'
+      };
+    }
 
     async function fetchJSON(path) {
       const response = await fetch(path, { cache: 'no-store' });
@@ -448,6 +489,13 @@
         .replaceAll('>', '&gt;')
         .replaceAll('"', '&quot;')
         .replaceAll("'", '&#039;');
+    }
+
+    function renderRichText(value) {
+      let html = escapeHTML(value || '');
+      html = html.replace(/\*\*([^*\n][\s\S]*?[^*\n])\*\*/g, '<strong>$1</strong>');
+      html = html.replace(/__([^_\n][\s\S]*?[^_\n])__/g, '<strong>$1</strong>');
+      return html;
     }
 
     function overviewMatches(item, query) {
@@ -507,11 +555,12 @@
       showView('overview');
       $('overviewSummary').textContent = 'Loading theorem/lemma overview...';
       try {
-        const data = await fetchJSON('data/theorem_overview.json');
+        const info = datasetInfo();
+        const data = await fetchJSON(info.overview_path);
         overviewItems = Array.isArray(data) ? data : (data.items || []);
         const processedCount = overviewItems.filter((item) => item.processed).length;
         const next = overviewItems.find((item) => !item.processed);
-        $('overviewSummary').textContent = `${processedCount}/${overviewItems.length} processed.${next ? ` Next unprocessed: #${next.index}.` : ' All listed items are processed.'}`;
+        $('overviewSummary').textContent = `${info.label || selectedDataset()}: ${processedCount}/${overviewItems.length} processed.${next ? ` Next unprocessed: #${next.index}.` : ' All listed items are processed.'}`;
         renderOverview();
       } catch (err) {
         $('overviewSummary').textContent = 'Overview load failed: ' + err.message;
@@ -526,6 +575,10 @@
         proof.lean_original_code,
         proof.plain_english,
         proof.textbook_explanation,
+        proof.plain_english_statement,
+        proof.plain_english_proof,
+        proof.book_name,
+        proof.location,
         Array.isArray(proof.key_strategies) ? proof.key_strategies.map(strat => `${strat.strategy || ''} ${strat.category || ''} ${strat.category_reason || ''}`).join('\n') : proof.key_strategies,
         Array.isArray(proof.strategies_refined) ? proof.strategies_refined.map(strat => `${strat.category || ''} ${strat.evidence || ''} ${strat.explanation || ''}`).join('\n') : proof.strategies_refined,
         proof.source_file,
@@ -545,7 +598,7 @@
     function renderStrategyTable(proof) {
       const strategies = proof.key_strategies;
       if (!Array.isArray(strategies)) {
-        return `<div class="keys">${escapeHTML(strategies || '')}</div>`;
+        return `<div class="keys">${renderRichText(strategies || '')}</div>`;
       }
       if (!strategies.length) {
         return '<div class="keys category-empty">No structured strategies.</div>';
@@ -556,7 +609,7 @@
         const reason = item && typeof item === 'object' && item.category_reason ? `<div style="color:#6b7280;margin-top:6px;font-size:11px;">${escapeHTML(item.category_reason)}</div>` : '';
         return `
           <tr>
-            <td><strong>${idx + 1}.</strong> ${escapeHTML(text)}</td>
+            <td><strong>${idx + 1}.</strong> ${renderRichText(text)}</td>
             <td>${category ? `<span class="category-badge">${escapeHTML(category)}</span>${reason}` : '<span class="category-empty">Unclassified</span>'}</td>
           </tr>
         `;
@@ -567,6 +620,22 @@
           <tbody>${rows}</tbody>
         </table>
       `;
+    }
+
+    function renderEnglishProof(proof) {
+      const statement = String(proof.plain_english_statement || '').trim();
+      const proofText = String(proof.plain_english_proof || '').trim();
+      const legacy = String(proof.textbook_explanation || proof.plain_english || '').trim();
+      if (statement || proofText) {
+        return `
+          <div class="english">
+            ${statement ? `<div class="english-section-title">Statement</div><div>${renderRichText(statement)}</div>` : ''}
+            ${(statement && proofText) ? '<hr class="english-separator" />' : ''}
+            ${proofText ? `<div class="english-section-title">Proof</div><div>${renderRichText(proofText)}</div>` : ''}
+          </div>
+        `;
+      }
+      return `<div class="english">${renderRichText(legacy)}</div>`;
     }
 
     function renderRefinedStrategies(proof) {
@@ -603,9 +672,10 @@
       }
 
       const rows = proofs.map((proof, idx) => {
-        const title = `${idx + 1}. ${proof.lean_name || '(unnamed proof)'}`;
-        const subtitle = proof.source_file ? `<div style="font-size:12px;color:#6b7280;margin-bottom:8px;">${escapeHTML(proof.source_file)}</div>` : '';
-        const english = proof.textbook_explanation || proof.plain_english || '';
+        const titleName = proof.book_name || proof.lean_name || '(unnamed proof)';
+        const title = `${idx + 1}. ${titleName}`;
+        const metaBits = [proof.location, proof.source_file].filter(Boolean).join(' · ');
+        const subtitle = metaBits ? `<div style="font-size:12px;color:#6b7280;margin-bottom:8px;">${escapeHTML(metaBits)}</div>` : '';
         return `
           <tr>
             <td>
@@ -613,7 +683,7 @@
               ${subtitle}
               <pre>${escapeHTML(proof.lean_original_code || '')}</pre>
             </td>
-            <td><div class="english">${escapeHTML(english)}</div></td>
+            <td>${renderEnglishProof(proof)}</td>
             <td>${renderStrategyTable(proof)}</td>
             <td>${renderRefinedStrategies(proof)}</td>
           </tr>
@@ -640,8 +710,10 @@
       showView('proofs');
       $('tableInfo').textContent = 'Loading proof file...';
       try {
-        const data = await fetchJSON('data/proofs_with_key_strategies.json');
+        const info = datasetInfo();
+        const data = await fetchJSON(info.proofs_path);
         allProofs = Array.isArray(data) ? data : (data.proofs || []);
+        $('tableInfo').textContent = `Loaded ${allProofs.length} records from ${info.label || selectedDataset()}.`;
         renderProofTable();
       } catch (err) {
         $('tableWrap').innerHTML = `<div class="empty bad">Could not load proofs: ${escapeHTML(err.message)}<br><br>Run the public-data export script first.</div>`;
@@ -649,6 +721,16 @@
       }
     }
 
+    $('datasetSelect').addEventListener('change', async () => {
+      allProofs = [];
+      overviewItems = [];
+      const info = datasetInfo();
+      $('datasetNote').textContent = `Current dataset: ${info.label || selectedDataset()}`;
+      await loadOverview();
+      if (!$('proofsView').classList.contains('hidden')) {
+        await loadProofs();
+      }
+    });
     $('showOverviewButton').addEventListener('click', loadOverview);
     $('loadButton').addEventListener('click', loadProofs);
     $('searchInput').addEventListener('input', renderProofTable);
@@ -662,7 +744,23 @@
       renderOverview();
     });
 
-    loadOverview();
+    async function initializePublicViewer() {
+      try {
+        datasetManifest = await fetchJSON('data/datasets.json');
+        const defaultDataset = datasetManifest.default_dataset || 'real_analysis';
+        if ($('datasetSelect')) {
+          $('datasetSelect').value = defaultDataset;
+        }
+        const info = datasetInfo(defaultDataset);
+        $('datasetNote').textContent = `Current dataset: ${info.label || defaultDataset}`;
+      } catch (err) {
+        console.warn('Could not load dataset manifest; falling back to RealAnalysis defaults:', err);
+        datasetManifest = null;
+      }
+      loadOverview();
+    }
+
+    initializePublicViewer();
   </script>
 </body>
 </html>
