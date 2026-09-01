@@ -269,6 +269,26 @@
       padding: 12px;
     }
 
+    tr.group-start td {
+      border-top: 3px solid #cbd5e1;
+    }
+
+    td.shared-english-cell {
+      background: #fbfdff;
+      border-left: 3px solid #60a5fa;
+    }
+
+    .shared-proof-badge {
+      display: inline-block;
+      margin-bottom: 8px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #dbeafe;
+      color: #1e40af;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
     th:last-child, td:last-child { border-right: 0; }
 
     th {
@@ -310,6 +330,21 @@
       border-radius: 8px;
       padding: 10px;
       min-height: 48px;
+    }
+
+    .english-section-title {
+      font-weight: 800;
+      color: #374151;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: .035em;
+      font-size: 11px;
+    }
+
+    .english-separator {
+      border: 0;
+      border-top: 2px solid #e5e7eb;
+      margin: 14px 0;
     }
 
     .refined-item {
@@ -397,6 +432,18 @@
       <h1>Proof Strategy Extraction UI</h1>
 
       <section class="nav-section">
+        <h2>0. Dataset</h2>
+        <label for="datasetSelect">Book / dataset</label>
+        <select id="datasetSelect" style="width:100%;padding:10px 11px;border-radius:8px;border:1px solid #374151;background:#0f172a;color:white;font-size:14px;">
+          <option value="real_analysis">RealAnalysis</option>
+          <option value="high_dimensional_statistics">HighDimensionalStatistics</option>
+        </select>
+        <p class="small-note" id="datasetNote">
+          RealAnalysis uses the Lean-to-English workflow. HighDimensionalStatistics loads the PDF-aligned book proof library.
+        </p>
+      </section>
+
+      <section class="nav-section">
         <h2>1. Views</h2>
         <div class="view-buttons">
           <button class="primary view-button active" id="showOverviewButton">Load theorem/lemma overview</button>
@@ -421,10 +468,10 @@
       <section class="nav-section">
         <h2>3. Notes</h2>
         <p class="small-note">
-          Overview enumerates all theorem/lemma items. Processed items are green.
+          Overview enumerates items in the selected dataset. Processed/matched items are green.
         </p>
         <p class="small-note">
-          Processed proofs are read from <code>data/processed/proofs_with_key_strategies.jsonl</code>.
+          RealAnalysis reads <code>data/processed/proofs_with_key_strategies.jsonl</code>. HighDimensionalStatistics reads <code>data/high_dimensional_statistics/processed/proofs_with_key_strategies.jsonl</code>.
         </p>
       </section>
     </aside>
@@ -478,6 +525,25 @@
     let allProofs = [];
     let overviewItems = [];
     let lastStatus = null;
+    let currentDataset = 'real_analysis';
+
+    function selectedDataset() {
+      return $('datasetSelect') ? $('datasetSelect').value : currentDataset;
+    }
+
+    function datasetQuery() {
+      return '?dataset=' + encodeURIComponent(selectedDataset());
+    }
+
+    function updateDatasetControls() {
+      currentDataset = selectedDataset();
+      const isRealAnalysis = currentDataset === 'real_analysis';
+      $('startButton').disabled = !isRealAnalysis;
+      $('classifyButton').disabled = !isRealAnalysis;
+      $('datasetNote').textContent = isRealAnalysis
+        ? 'RealAnalysis: workflow controls are enabled and data comes from data/processed/.'
+        : 'HighDimensionalStatistics: read-only PDF-aligned library view; workflow controls are disabled here.';
+    }
 
     const $ = (id) => document.getElementById(id);
 
@@ -619,10 +685,10 @@
       showView('overview');
       $('overviewSummary').textContent = 'Loading theorem/lemma overview...';
       try {
-        const data = await apiGet('/api/overview');
+        const data = await apiGet('/api/overview' + datasetQuery());
         overviewItems = data.items || [];
         const next = data.next_unprocessed_index ? ` Next unprocessed: #${data.next_unprocessed_index}.` : ' All listed items are processed.';
-        $('overviewSummary').textContent = `${data.processed_count || 0}/${data.total || 0} processed.${next}`;
+        $('overviewSummary').textContent = `${data.dataset_label || selectedDataset()}: ${data.processed_count || 0}/${data.total || 0} processed/matched.${next}`;
         if (data.next_unprocessed_index) {
           $('limitInput').value = data.next_unprocessed_index;
         }
@@ -634,6 +700,10 @@
     }
 
     async function startWorkflow() {
+      if (selectedDataset() !== 'real_analysis') {
+        alert('Workflow controls are currently enabled only for the RealAnalysis dataset. HighDimensionalStatistics is loaded as a read-only PDF-aligned library.');
+        return;
+      }
       const limit = Number($('limitInput').value);
       if (!Number.isInteger(limit) || limit <= 0) {
         alert('Please enter a positive integer item number.');
@@ -655,6 +725,10 @@
     }
 
     async function startClassificationWorkflow() {
+      if (selectedDataset() !== 'real_analysis') {
+        alert('Classification workflow controls are currently enabled only for the RealAnalysis dataset.');
+        return;
+      }
       const limit = Number($('limitInput').value);
       if (!Number.isInteger(limit) || limit <= 0) {
         alert('Please enter a positive integer proof item number.');
@@ -684,12 +758,26 @@
         .replaceAll("'", '&#039;');
     }
 
+    function renderRichText(value) {
+      // Safe tiny Markdown subset for cleaned textbook text. We escape HTML first,
+      // then enable only common emphasis markers produced by the cleanup workflow.
+      // MathJax still sees LaTeX delimiters like \(...\) and \[...\].
+      let html = escapeHTML(value || '');
+      html = html.replace(/\*\*([^*\n][\s\S]*?[^*\n])\*\*/g, '<strong>$1</strong>');
+      html = html.replace(/__([^_\n][\s\S]*?[^_\n])__/g, '<strong>$1</strong>');
+      return html;
+    }
+
     function proofMatches(proof, query) {
       if (!query) return true;
       const haystack = [
         proof.lean_name,
         proof.lean_original_code,
         proof.plain_english,
+        proof.plain_english_statement,
+        proof.plain_english_proof,
+        proof.plain_english_statement_cleaned,
+        proof.plain_english_proof_cleaned,
         Array.isArray(proof.key_strategies) ? proof.key_strategies.map(s => `${s.strategy || ''} ${s.category || ''}`).join('\n') : proof.key_strategies,
         Array.isArray(proof.strategies_refined) ? proof.strategies_refined.map(s => `${s.category || ''} ${s.evidence || ''} ${s.explanation || ''}`).join('\n') : proof.strategies_refined,
         proof.source_file,
@@ -706,21 +794,66 @@
       }
     }
 
-    function renderStrategyTable(proof) {
-      const strategies = proof.key_strategies;
-      if (!Array.isArray(strategies)) {
-        return `<div class="keys">${escapeHTML(strategies || '')}</div>`;
+    function splitEnumeratedStrategies(value) {
+      const text = String(value || '').trim();
+      if (!text) return [];
+
+      // Match numbered items like:
+      // 1. Strategy text
+      // 2) Strategy text
+      // and preserve multi-line content until the next numbered item.
+      const itemRe = /(?:^|\n)\s*(\d+)[.)]\s+/g;
+      const matches = [...text.matchAll(itemRe)];
+      if (!matches.length) {
+        return [{ strategy_number: 1, strategy: text, category: '' }];
       }
+
+      return matches.map((match, idx) => {
+        const start = match.index + match[0].length;
+        const end = idx + 1 < matches.length ? matches[idx + 1].index : text.length;
+        return {
+          strategy_number: Number(match[1]) || idx + 1,
+          strategy: text.slice(start, end).trim(),
+          category: ''
+        };
+      }).filter((item) => item.strategy);
+    }
+
+    function normalizeStrategiesForDisplay(proof) {
+      const strategies = proof.key_strategies;
+      if (Array.isArray(strategies)) {
+        return strategies.map((item, idx) => {
+          if (item && typeof item === 'object') {
+            return {
+              strategy_number: item.strategy_number || idx + 1,
+              strategy: String(item.strategy || '').trim(),
+              category: String(item.category || '').trim(),
+              category_reason: String(item.category_reason || '').trim()
+            };
+          }
+          return {
+            strategy_number: idx + 1,
+            strategy: String(item || '').trim(),
+            category: '',
+            category_reason: ''
+          };
+        }).filter((item) => item.strategy);
+      }
+      return splitEnumeratedStrategies(strategies);
+    }
+
+    function renderStrategyTable(proof) {
+      const strategies = normalizeStrategiesForDisplay(proof);
       if (!strategies.length) {
-        return '<div class="keys category-empty">No structured strategies.</div>';
+        return '<div class="keys category-empty">No key strategies yet.</div>';
       }
       const rows = strategies.map((item, idx) => {
-        const text = item && typeof item === 'object' ? item.strategy : String(item || '');
-        const category = item && typeof item === 'object' ? String(item.category || '').trim() : '';
-        const reason = item && typeof item === 'object' && item.category_reason ? `<div style="color:#6b7280;margin-top:6px;font-size:11px;">${escapeHTML(item.category_reason)}</div>` : '';
+        const text = item.strategy || '';
+        const category = String(item.category || '').trim();
+        const reason = item.category_reason ? `<div style="color:#6b7280;margin-top:6px;font-size:11px;">${escapeHTML(item.category_reason)}</div>` : '';
         return `
           <tr>
-            <td><strong>${idx + 1}.</strong> ${escapeHTML(text)}</td>
+            <td><strong>${item.strategy_number || idx + 1}.</strong> ${renderRichText(text)}</td>
             <td>${category ? `<span class="category-badge">${escapeHTML(category)}</span>${reason}` : '<span class="category-empty">Unclassified</span>'}</td>
           </tr>
         `;
@@ -731,6 +864,59 @@
           <tbody>${rows}</tbody>
         </table>
       `;
+    }
+
+    function getEnglishStatement(proof) {
+      return String(proof.plain_english_statement_cleaned || proof.plain_english_statement || '').trim();
+    }
+
+    function getEnglishProofText(proof) {
+      return String(proof.plain_english_proof_cleaned || proof.plain_english_proof || '').trim();
+    }
+
+    function renderEnglishProof(proof, sharedCount = 1) {
+      const statement = getEnglishStatement(proof);
+      const proofText = getEnglishProofText(proof);
+      const legacy = String(proof.plain_english || '').trim();
+      const sharedBadge = sharedCount > 1
+        ? `<div class="shared-proof-badge">Shared textbook proof for ${sharedCount} Lean declarations</div>`
+        : '';
+
+      if (statement || proofText) {
+        return `
+          <div class="english">
+            ${sharedBadge}
+            ${statement ? `<div class="english-section-title">Statement</div><div>${renderRichText(statement)}</div>` : ''}
+            ${(statement && proofText) ? '<hr class="english-separator" />' : ''}
+            ${proofText ? `<div class="english-section-title">Proof</div><div>${renderRichText(proofText)}</div>` : ''}
+          </div>
+        `;
+      }
+      return `<div class="english">${sharedBadge}${renderRichText(legacy || '')}</div>`;
+    }
+
+    function getTextbookProofGroupKey(proof, idx) {
+      // For the PDF-aligned HDS dataset, many Lean declarations correspond to the
+      // same original textbook proof. Group those rows by proof text. Do not group
+      // empty proof cells, otherwise all unmatched auxiliary lemmas would collapse.
+      if (selectedDataset() !== 'high_dimensional_statistics') return `unique:${idx}`;
+      const proofText = getEnglishProofText(proof);
+      if (!proofText) return `unique:${idx}`;
+      return proofText.replace(/\s+/g, ' ').trim();
+    }
+
+    function groupProofsByTextbookProof(proofs) {
+      const groups = [];
+      let current = null;
+      proofs.forEach((proof, idx) => {
+        const key = getTextbookProofGroupKey(proof, idx);
+        if (!current || current.key !== key) {
+          current = { key, proofs: [], firstIndex: idx };
+          groups.push(current);
+        }
+        current.proofs.push({ proof, originalIndex: idx });
+      });
+      return groups;
     }
 
     function renderRefinedStrategies(proof) {
@@ -766,21 +952,28 @@
         return;
       }
 
-      const rows = proofs.map((proof, idx) => {
-        const title = `${idx + 1}. ${proof.lean_name || '(unnamed proof)'}`;
-        const subtitle = proof.source_file ? `<div style="font-size:12px;color:#6b7280;margin-bottom:8px;">${escapeHTML(proof.source_file)}</div>` : '';
-        return `
-          <tr>
-            <td>
-              <div class="proof-title">${escapeHTML(title)}</div>
-              ${subtitle}
-              <pre>${escapeHTML(proof.lean_original_code || '')}</pre>
-            </td>
-            <td><div class="english">${escapeHTML(proof.plain_english || '')}</div></td>
-            <td>${renderStrategyTable(proof)}</td>
-            <td>${renderRefinedStrategies(proof)}</td>
-          </tr>
-        `;
+      const groups = groupProofsByTextbookProof(proofs);
+      const rows = groups.map((group) => {
+        const sharedCount = group.proofs.length;
+        return group.proofs.map(({ proof, originalIndex }, withinGroupIndex) => {
+          const title = `${originalIndex + 1}. ${proof.lean_name || '(unnamed proof)'}`;
+          const subtitle = proof.source_file ? `<div style="font-size:12px;color:#6b7280;margin-bottom:8px;">${escapeHTML(proof.source_file)}</div>` : '';
+          const englishCell = withinGroupIndex === 0
+            ? `<td class="shared-english-cell" rowspan="${sharedCount}">${renderEnglishProof(proof, sharedCount)}</td>`
+            : '';
+          return `
+            <tr class="${withinGroupIndex === 0 ? 'group-start' : ''}">
+              <td>
+                <div class="proof-title">${escapeHTML(title)}</div>
+                ${subtitle}
+                <pre>${escapeHTML(proof.lean_original_code || '')}</pre>
+              </td>
+              ${englishCell}
+              <td>${renderStrategyTable(proof)}</td>
+              <td>${renderRefinedStrategies(proof)}</td>
+            </tr>
+          `;
+        }).join('');
       }).join('');
 
       $('tableWrap').innerHTML = `
@@ -803,8 +996,9 @@
       showView('proofs');
       $('tableInfo').textContent = 'Loading proof file...';
       try {
-        const data = await apiGet('/api/proofs');
+        const data = await apiGet('/api/proofs' + datasetQuery());
         allProofs = data.proofs || [];
+        $('tableInfo').textContent = `Loaded ${data.count || allProofs.length} records from ${data.dataset_label || selectedDataset()}.`;
         renderProofTable();
       } catch (err) {
         $('tableWrap').innerHTML = `<div class="empty bad">Could not load proofs: ${escapeHTML(err.message)}</div>`;
@@ -812,6 +1006,15 @@
       }
     }
 
+    $('datasetSelect').addEventListener('change', async () => {
+      updateDatasetControls();
+      allProofs = [];
+      overviewItems = [];
+      await loadOverview();
+      if (!$('proofsView').classList.contains('hidden')) {
+        await loadProofs();
+      }
+    });
     $('startButton').addEventListener('click', startWorkflow);
     $('classifyButton').addEventListener('click', startClassificationWorkflow);
     $('showOverviewButton').addEventListener('click', loadOverview);
@@ -842,6 +1045,7 @@
       }
     }, 1000);
 
+    updateDatasetControls();
     refreshStatus();
     loadOverview();
   </script>

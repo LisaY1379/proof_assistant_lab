@@ -17,7 +17,7 @@ __pycache__/
 .env
 
 # External cloned repositories / raw third-party data
-external/atlas-lean/
+external/
 
 doc.md
 

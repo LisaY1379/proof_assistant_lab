@@ -585,7 +585,7 @@ Until then, keeping it inside this project makes iteration easier.
 
 - [ ] Create `strategy_taxonomy.yaml`.
 - [ ] Create `extract_proofs.py`.
-- [ ] Extract theorem/proof units from `external/atlas-lean/Atlas/RealAnalysis`.
+- [ ] Extract theorem/proof units from `../../../external/atlas-lean/Atlas/RealAnalysis`.
 - [ ] Save extracted proofs to `data/processed/real_analysis_proofs.jsonl`.
 - [ ] Create `segment_proofs.py`.
 - [ ] Save proof steps to `data/processed/real_analysis_proof_steps.jsonl`.

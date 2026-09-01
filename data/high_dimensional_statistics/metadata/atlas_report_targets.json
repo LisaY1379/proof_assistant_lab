@@ -1,0 +1,1104 @@
+[
+  {
+    "target_id": "GaussianTailBound.gaussian_tail_bound",
+    "index": 0,
+    "kind": "proposition",
+    "name": "Proposition 1.1",
+    "location": "Chapter 1, Section 1.1",
+    "description": "Let $X$ be a Gaussian random variable with mean $\\mu$ and variance $\\sigma^2$. Then for any $t > 0$, it holds $\\mathbb{P}(X - \\mu > t) \\leq \\frac{1}{\\sqrt{2\\pi}} \\cdot \\frac{e^{-t^2/(2\\sigma^2)}}{t}$. By symmetry we also have $\\mathbb{P}(X - \\mu < -t) \\leq \\frac{1}{\\sqrt{2\\pi}} \\cdot \\frac{e^{-t^2/(2\\sigma^2)}}{t}$, and $\\mathbb{P}(|X - \\mu| > t) \\leq \\sqrt{\\frac{2}{\\pi}} \\cdot \\frac{e^{-t^2/(2\\sigma^2)}}{t}$.",
+    "number_key": "proposition_1_1",
+    "official_lean_declaration": "GaussianTailBound.gaussian_tail_bound",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter1/Prop_1_1_full.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 4,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "SubGaussian.subGaussian_tail_bounds",
+    "index": 2,
+    "kind": "lemma",
+    "name": "Lemma 1.3",
+    "location": "Section 1.2",
+    "description": "Let $X \\sim \\mathsf{subG}(\\sigma^2)$. Then for any $t > 0$, it holds $$\\mathbb{P}[X > t] \\leq \\exp\\left(-\\frac{t^2}{2\\sigma^2}\\right), \\quad \\text{and} \\quad \\mathbb{P}[X < -t] \\leq \\exp\\left(-\\frac{t^2}{2\\sigma^2}\\right).$$",
+    "number_key": "lemma_1_3",
+    "official_lean_declaration": "SubGaussian.subGaussian_tail_bounds",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter1/Lemma_1_3.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 5,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "SubGaussianMoments.subgaussian_moment_bounds",
+    "index": 3,
+    "kind": "lemma",
+    "name": "Lemma 1.4",
+    "location": "Section 1.2",
+    "description": "Let $X$ be a random variable such that $\\mathbb{P}[|X| > t] \\leq 2 \\exp\\left(-\\frac{t^2}{2\\sigma^2}\\right)$, then for any positive integer $k \\geq 1$, $$\\mathbb{E}[|X|^k] \\leq (2\\sigma^2)^{k/2} k \\Gamma(k/2).$$ In particular, $$\\left(\\mathbb{E}[|X|^k]\\right)^{1/k} \\leq \\sigma e^{1/e} \\sqrt{k}, \\quad k \\geq 2,$$ and $\\mathbb{E}[|X|] \\leq \\sigma \\sqrt{2\\pi}$.",
+    "number_key": "lemma_1_4",
+    "official_lean_declaration": "SubGaussianMoments.subgaussian_moment_bounds",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter1/Lemma_1_4.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 5,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "lemma_1_5_mgf_bound_from_tails",
+    "index": 4,
+    "kind": "lemma",
+    "name": "Lemma 1.5",
+    "location": "Section 1.2",
+    "description": "If (1.3) holds, i.e., $\\mathbb{P}[X > t] \\leq \\exp(-t^2/(2\\sigma^2))$ and $\\mathbb{P}[X < -t] \\leq \\exp(-t^2/(2\\sigma^2))$ for all $t > 0$, then for any $s > 0$, it holds $$\\mathbb{E}[\\exp(sX)] \\leq e^{4\\sigma^2 s^2}.$$",
+    "number_key": "lemma_1_5",
+    "official_lean_declaration": "lemma_1_5_mgf_bound_from_tails",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter1/Lemma_1_5.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 3,
+      "faithfulness": 4,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "theorem_1_6_subgaussian_vector",
+    "index": 5,
+    "kind": "theorem",
+    "name": "Theorem 1.6",
+    "location": "Section 1.2",
+    "description": "Let $X = (X_1, \\ldots, X_n)$ be a vector of independent sub-Gaussian random variables that have variance proxy $\\sigma^2$. Then, the random vector $X$ is sub-Gaussian with variance proxy $\\sigma^2$.",
+    "number_key": "theorem_1_6",
+    "official_lean_declaration": "theorem_1_6_subgaussian_vector",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter1/Thm_1_6.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 4,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "corollary_1_7_linear_combination_tail",
+    "index": 6,
+    "kind": "corollary",
+    "name": "Corollary 1.7",
+    "location": "Section 1.2",
+    "description": "Let $X_1, \\ldots, X_n$ be $n$ independent random variables such that $X_i \\sim \\mathsf{subG}(\\sigma^2)$. Then for any $a \\in \\mathbb{R}^n$, we have $$\\mathbb{P}\\left[\\sum_{i=1}^{n} a_i X_i > t\\right] \\leq \\exp\\left(-\\frac{t^2}{2\\sigma^2 |a|_2^2}\\right),$$ and $$\\mathbb{P}\\left[\\sum_{i=1}^{n} a_i X_i < -t\\right] \\leq \\exp\\left(-\\frac{t^2}{2\\sigma^2 |a|_2^2}\\right).$$",
+    "number_key": "corollary_1_7",
+    "official_lean_declaration": "corollary_1_7_linear_combination_tail",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter1/Cor_1_7.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 5,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "lemma_1_8_hoeffding",
+    "index": 7,
+    "kind": "lemma",
+    "name": "Lemma 1.8 (Hoeffding's lemma (1963))",
+    "location": "Section 1.2",
+    "description": "Let $X$ be a random variable such that $\\mathbb{E}(X) = 0$ and $X \\in [a, b]$ almost surely. Then, for any $s \\in \\mathbb{R}$, it holds $$\\mathbb{E}[e^{sX}] \\leq e^{s^2(b-a)^2/8}.$$ In particular, $X \\sim \\mathsf{subG}\\!\\left(\\frac{(b-a)^2}{4}\\right)$.",
+    "number_key": "lemma_1_8",
+    "official_lean_declaration": "lemma_1_8_hoeffding",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter1/Lemma_1_8.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 5,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "theorem_1_9_sample_mean",
+    "index": 8,
+    "kind": "theorem",
+    "name": "Theorem 1.9 (Hoeffding's inequality)",
+    "location": "Section 1.2",
+    "description": "Let $X_1, \\ldots, X_n$ be $n$ independent random variables such that almost surely, $X_i \\in [a_i, b_i]$ for all $i$. Let $\\bar{X} = \\frac{1}{n} \\sum_{i=1}^{n} X_i$, then for any $t > 0$, $$\\mathbb{P}(\\bar{X} - \\mathbb{E}(\\bar{X}) > t) \\leq \\exp\\left(-\\frac{2n^2 t^2}{\\sum_{i=1}^n (b_i - a_i)^2}\\right),$$ and $$\\mathbb{P}(\\bar{X} - \\mathbb{E}(\\bar{X}) < -t) \\leq \\exp\\left(-\\frac{2n^2 t^2}{\\sum_{i=1}^n (b_i - a_i)^2}\\right).$$",
+    "number_key": "theorem_1_9",
+    "official_lean_declaration": "theorem_1_9_sample_mean",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter1/Thm_1_9.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 5,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "lemma_1_10",
+    "index": 9,
+    "kind": "lemma",
+    "name": "Lemma 1.10",
+    "location": "Section 1.3",
+    "description": "Let $X$ be a centered random variable such that $\\mathbb{P}(|X| > t) \\leq 2e^{-2t/\\lambda}$ for some $\\lambda > 0$. Then, for any positive integer $k \\geq 1$, $$\\mathbb{E}[|X|^k] \\leq \\lambda^k k!.$$ Moreover, $$\\left(\\mathbb{E}[|X|^k]\\right)^{1/k} \\leq 2\\lambda k,$$ and the moment generating function of $X$ satisfies $$\\mathbb{E}\\left[e^{sX}\\right] \\leq e^{2s^2\\lambda^2}, \\qquad \\forall\\, |s| \\leq \\frac{1}{2\\lambda}.$$",
+    "number_key": "lemma_1_10",
+    "official_lean_declaration": "lemma_1_10",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter1/Lemma_1_10.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 4,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "lemma_1_12_square_subgaussian_is_subexponential",
+    "index": 11,
+    "kind": "lemma",
+    "name": "Lemma 1.12",
+    "location": "Section 1.3",
+    "description": "Let $X \\sim \\mathsf{subG}(\\sigma^2)$. Then the random variable $Z = X^2 - \\mathbb{E}[X^2]$ is sub-exponential: $Z \\sim \\mathsf{subE}(16\\sigma^2)$.",
+    "number_key": "lemma_1_12",
+    "official_lean_declaration": "lemma_1_12_square_subgaussian_is_subexponential",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter1/Lemma_1_12.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 3,
+      "faithfulness": 5,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "theorem_1_13_bernstein_inequality",
+    "index": 12,
+    "kind": "theorem",
+    "name": "Theorem 1.13 (Bernstein's inequality)",
+    "location": "Section 1.3",
+    "description": "Let $X_1, \\ldots, X_n$ be independent random variables such that $\\mathbb{E}(X_i) = 0$ and $X_i \\sim \\mathsf{subE}(\\lambda)$. Define $\\bar{X} = \\frac{1}{n} \\sum_{i=1}^{n} X_i$. Then for any $t > 0$ we have $$\\mathbb{P}(\\bar{X} > t) \\vee \\mathbb{P}(\\bar{X} < -t) \\leq \\exp\\left[-\\frac{n}{2}\\left(\\frac{t^2}{\\lambda^2} \\wedge \\frac{t}{\\lambda}\\right)\\right].$$",
+    "number_key": "theorem_1_13",
+    "official_lean_declaration": "theorem_1_13_bernstein_inequality",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter1/Thm_1_13.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 4,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "subGaussian_maximal_inequality",
+    "index": 13,
+    "kind": "theorem",
+    "name": "Theorem 1.14",
+    "location": "Section 1.4",
+    "description": "Let $X_1, \\ldots, X_N$ be $N$ random variables such that $X_i \\sim \\mathsf{subG}(\\sigma^2)$. Then $$\\mathbb{E}\\!\\left[\\max_{1 \\leq i \\leq N} X_i\\right] \\leq \\sigma \\sqrt{2 \\log(N)}, \\quad \\text{and} \\quad \\mathbb{E}\\!\\left[\\max_{1 \\leq i \\leq N} |X_i|\\right] \\leq \\sigma \\sqrt{2 \\log(2N)}.$$ Moreover, for any $t > 0$, $$\\mathbb{P}\\!\\left(\\max_{1 \\leq i \\leq N} X_i > t\\right) \\leq N e^{-t^2/(2\\sigma^2)}, \\quad \\text{and} \\quad \\mathbb{P}\\!\\left(\\max_{1 \\leq i \\leq N} |X_i| > t\\right) \\leq 2N e^{-t^2/(2\\sigma^2)}.$$ Note that the random variables in this theorem need not be independent.",
+    "number_key": "theorem_1_14",
+    "official_lean_declaration": "subGaussian_maximal_inequality",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter1/Thm_1_14.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 5,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "lemma_1_15_sSup_eq",
+    "index": 14,
+    "kind": "lemma",
+    "name": "Lemma 1.15",
+    "location": "Section 1.4",
+    "description": "Consider a linear form $x \\mapsto c^\\top x$, $x, c \\in \\mathbb{R}^d$. Then for any convex polytope $\\mathsf{P} \\subset \\mathbb{R}^d$, $$\\max_{x \\in \\mathsf{P}} c^\\top x = \\max_{x \\in \\mathcal{V}(\\mathsf{P})} c^\\top x$$ where $\\mathcal{V}(\\mathsf{P})$ denotes the set of vertices of $\\mathsf{P}$.",
+    "number_key": "lemma_1_15",
+    "official_lean_declaration": "lemma_1_15_sSup_eq",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter1/Lemma_1_15.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 4,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "SubGaussianPolytope.theorem_1_16",
+    "index": 15,
+    "kind": "theorem",
+    "name": "Theorem 1.16",
+    "location": "Section 1.4",
+    "description": "Let $\\mathsf{P}$ be a polytope with $N$ vertices $v^{(1)}, \\ldots, v^{(N)} \\in \\mathbb{R}^d$ and let $X \\in \\mathbb{R}^d$ be a random vector such that $[v^{(i)}]^\\top X$, $i = 1, \\ldots, N$ are sub-Gaussian random variables with variance proxy $\\sigma^2$. Then $$\\mathbb{E}\\!\\left[\\max_{\\theta \\in \\mathsf{P}} \\theta^\\top X\\right] \\leq \\sigma \\sqrt{2 \\log(N)}, \\quad \\text{and} \\quad \\mathbb{E}\\!\\left[\\max_{\\theta \\in \\mathsf{P}} |\\theta^\\top X|\\right] \\leq \\sigma \\sqrt{2 \\log(2N)}.$$ Moreover, for any $t > 0$, $$\\mathbb{P}\\!\\left(\\max_{\\theta \\in \\mathsf{P}} \\theta^\\top X > t\\right) \\leq N e^{-t^2/(2\\sigma^2)}, \\quad \\text{and} \\quad \\mathbb{P}\\!\\left(\\max_{\\theta \\in \\mathsf{P}} |\\theta^\\top X| > t\\right) \\leq 2N e^{-t^2/(2\\sigma^2)}.$$",
+    "number_key": "theorem_1_16",
+    "official_lean_declaration": "SubGaussianPolytope.theorem_1_16",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter1/Thm_1_16.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 5,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "lemma_1_18_covering_number_euclidean_ball",
+    "index": 17,
+    "kind": "lemma",
+    "name": "Lemma 1.18",
+    "location": "Section 1.4",
+    "description": "Fix $\\varepsilon \\in (0,1)$. Then the unit Euclidean ball $\\mathcal{B}_2$ has an $\\varepsilon$-net $\\mathcal{N}$ with respect to the Euclidean distance of cardinality $|\\mathcal{N}| \\leq (3/\\varepsilon)^d$.",
+    "number_key": "lemma_1_18",
+    "official_lean_declaration": "lemma_1_18_covering_number_euclidean_ball",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter1/Lemma_1_18.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 4,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "theorem_1_19_high_prob",
+    "index": 18,
+    "kind": "theorem",
+    "name": "Theorem 1.19",
+    "location": "Section 1.4",
+    "description": "Let $X \\in \\mathbb{R}^d$ be a sub-Gaussian random vector with variance proxy $\\sigma^2$. Then $$\\mathbb{E}\\!\\left[\\max_{\\theta \\in \\mathcal{B}_2} \\theta^\\top X\\right] = \\mathbb{E}\\!\\left[\\max_{\\theta \\in \\mathcal{B}_2} |\\theta^\\top X|\\right] \\leq 4\\sigma\\sqrt{d}.$$ Moreover, for any $\\delta > 0$, with probability $1 - \\delta$, it holds $$\\max_{\\theta \\in \\mathcal{B}_2} \\theta^\\top X = \\max_{\\theta \\in \\mathcal{B}_2} |\\theta^\\top X| \\leq 4\\sigma \\sqrt{d} + 2\\sigma \\sqrt{2\\log(1/\\delta)}.$$",
+    "number_key": "theorem_1_19",
+    "official_lean_declaration": "theorem_1_19_high_prob",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter1/Thm_1_19.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 4,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "LeastSquares.leastSquares_normalEquations_and_pseudoinverse",
+    "index": 19,
+    "kind": "proposition",
+    "name": "Proposition 2.1",
+    "location": "Chapter 2, Section 2.2",
+    "description": "The least squares estimator $\\hat{\\mu}^{\\mathrm{LS}} = \\mathbb{X}\\hat{\\theta}^{\\mathrm{LS}} \\in \\mathbb{R}^n$ satisfies $\\mathbb{X}^{\\top} \\hat{\\mu}^{\\mathrm{LS}} = \\mathbb{X}^{\\top} Y$. Moreover, $\\hat{\\theta}^{\\mathrm{LS}}$ can be chosen to be $\\hat{\\theta}^{\\mathrm{LS}} = (\\mathbb{X}^{\\top} \\mathbb{X})^{\\dagger} \\mathbb{X}^{\\top} Y$, where $(\\mathbb{X}^{\\top}\\mathbb{X})^{\\dagger}$ denotes the Moore-Penrose pseudoinverse of $\\mathbb{X}^{\\top}\\mathbb{X}$.",
+    "number_key": "proposition_2_1",
+    "official_lean_declaration": "LeastSquares.leastSquares_normalEquations_and_pseudoinverse",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter2/Prop_2_1.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 5,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "Rigollet.Chapter2.thm_2_2_ridge_risk_bound",
+    "index": 20,
+    "kind": "theorem",
+    "name": "Theorem 2.2",
+    "location": "Chapter 2, Section 2.2",
+    "description": "Assume that the linear model (2.2) holds where $\\varepsilon \\sim \\mathsf{subG}_n(\\sigma^2)$. Then the least squares estimator $\\hat{\\theta}^{\\mathrm{LS}}$ satisfies $$\\mathbb{E}\\!\\left[\\mathsf{MSE}(\\mathbb{X}\\hat{\\theta}^{\\mathrm{LS}})\\right] = \\frac{1}{n}\\mathbb{E}|\\mathbb{X}\\hat{\\theta}^{\\mathrm{LS}} - \\mathbb{X}\\theta^*|_2^2 \\lesssim \\sigma^2 \\frac{r}{n},$$ where $r = \\operatorname{rank}(\\mathbb{X}^{\\top}\\mathbb{X})$. Moreover, for any $\\delta > 0$, with probability $1 - \\delta$, it holds $$\\mathsf{MSE}(\\mathbb{X}\\hat{\\theta}^{\\mathrm{LS}}) \\lesssim \\sigma^2 \\frac{r + \\log(1/\\delta)}{n}.$$",
+    "number_key": "theorem_2_2",
+    "official_lean_declaration": "Rigollet.Chapter2.thm_2_2_ridge_risk_bound",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter2/Thm_2_2.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 3,
+      "faithfulness": 4,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "Rigollet.Chapter2.thm_2_4_l1_ball_mse",
+    "index": 21,
+    "kind": "theorem",
+    "name": "Theorem 2.4",
+    "location": "Chapter 2, Section 2.2",
+    "description": "Let $K = \\mathcal{B}_1$ be the unit $\\ell_1$ ball of $\\mathbb{R}^d$, $d \\geq 2$ and assume that $\\theta^* \\in \\mathcal{B}_1$. Moreover, assume the conditions of Theorem 2.2 and that the columns of $\\mathbb{X}$ are normalized in such a way that $\\max_j |\\mathbb{X}_j|_2 \\leq \\sqrt{n}$. Then the constrained least squares estimator $\\hat{\\theta}_{\\mathcal{B}_1}^{\\mathrm{LS}}$ satisfies $$\\mathbb{E}\\!\\left[\\mathsf{MSE}(\\mathbb{X}\\hat{\\theta}_{\\mathcal{B}_1}^{\\mathrm{LS}})\\right] = \\frac{1}{n}\\mathbb{E}|\\mathbb{X}\\hat{\\theta}_{\\mathcal{B}_1}^{\\mathrm{LS}} - \\mathbb{X}\\theta^*|_2^2 \\lesssim \\sigma\\sqrt{\\frac{\\log d}{n}}.$$ Moreover, for any $\\delta > 0$, with probability $1 - \\delta$, it holds $$\\mathsf{MSE}(\\mathbb{X}\\hat{\\theta}^{\\mathrm{LS}}_{\\mathcal{B}_1}) \\lesssim \\sigma \\sqrt{\\frac{\\log(d/\\delta)}{n}}.$$",
+    "number_key": "theorem_2_4",
+    "official_lean_declaration": "Rigollet.Chapter2.thm_2_4_l1_ball_mse",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter2/Thm_2_4.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 4,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "thm_2_6_sparse_ls_high_prob",
+    "index": 22,
+    "kind": "theorem",
+    "name": "Theorem 2.6",
+    "location": "Chapter 2, Section 2.2",
+    "description": "Fix a positive integer $k \\leq d/2$. Let $K = \\mathcal{B}_0(k)$ be the set of $k$-sparse vectors of $\\mathbb{R}^d$ and assume that $\\theta^* \\in \\mathcal{B}_0(k)$. Moreover, assume the conditions of Theorem 2.2. Then, for any $\\delta > 0$, with probability $1 - \\delta$, it holds $$\\mathsf{MSE}(\\mathbb{X}\\hat{\\theta}_{\\mathcal{B}_0(k)}^{\\mathrm{LS}}) \\lesssim \\frac{\\sigma^2}{n} \\log \\binom{d}{2k} + \\frac{\\sigma^2 k}{n} + \\frac{\\sigma^2}{n} \\log(1/\\delta).$$",
+    "number_key": "theorem_2_6",
+    "official_lean_declaration": "thm_2_6_sparse_ls_high_prob",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter2/Thm_2_6.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 5,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "lemma_2_7",
+    "index": 23,
+    "kind": "lemma",
+    "name": "Lemma 2.7",
+    "location": "Chapter 2, Section 2.2",
+    "description": "For any integers $1 \\leq k \\leq n$, it holds $\\binom{n}{k} \\leq \\left(\\frac{en}{k}\\right)^k$.",
+    "number_key": "lemma_2_7",
+    "official_lean_declaration": "lemma_2_7",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter2/Lemma_2_7.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 5,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "cor_2_8_mse_prob",
+    "index": 24,
+    "kind": "corollary",
+    "name": "Corollary 2.8",
+    "location": "Chapter 2, Section 2.2",
+    "description": "Under the assumptions of Theorem 2.6, for any $\\delta > 0$, with probability $1 - \\delta$, it holds $$\\mathsf{MSE}(\\mathbb{X}\\hat{\\theta}_{\\mathcal{B}_0(k)}^{\\mathrm{LS}}) \\lesssim \\frac{\\sigma^2 k}{n} \\log\\!\\left(\\frac{ed}{2k}\\right) + \\frac{\\sigma^2 k}{n} \\log(6) + \\frac{\\sigma^2}{n} \\log(1/\\delta).$$",
+    "number_key": "corollary_2_8",
+    "official_lean_declaration": "cor_2_8_mse_prob",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter2/Cor_2_8.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 5,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "cor_2_9_expected_mse_bound",
+    "index": 25,
+    "kind": "corollary",
+    "name": "Corollary 2.9",
+    "location": "Chapter 2, Section 2.2",
+    "description": "Under the assumptions of Theorem 2.6, $$\\mathbb{E}\\!\\left[\\mathsf{MSE}(\\mathbb{X}\\hat{\\theta}_{\\mathcal{B}_0(k)}^{\\mathrm{LS}})\\right] \\lesssim \\frac{\\sigma^2 k}{n} \\log \\!\\left(\\frac{ed}{k}\\right).$$",
+    "number_key": "corollary_2_9",
+    "official_lean_declaration": "cor_2_9_expected_mse_bound",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter2/Cor_2_9.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 4,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "HardThresholding.oracle_bound_and_support_recovery",
+    "index": 27,
+    "kind": "theorem",
+    "name": "Theorem 2.11",
+    "location": "Chapter 2, Section 2.3",
+    "description": "Consider the linear regression model (2.2) under the assumption ORT or, equivalently, the sub-Gaussian sequence model (2.9). Then the hard thresholding estimator $\\hat{\\theta}^{\\mathrm{HRD}}$ with threshold $2\\tau = 2\\sigma\\sqrt{2 \\log(2d/\\delta)/n}$ enjoys the following two properties on the same event $A$ such that $\\mathbb{P}(A) \\geq 1 - \\delta$: (i) If $|\\theta^*|_0 = k$, $\\mathsf{MSE}(\\mathbb{X}\\hat{\\theta}^{\\mathrm{HRD}}) = |\\hat{\\theta}^{\\mathrm{HRD}} - \\theta^*|_2^2 \\lesssim \\sigma^2 k \\log(2d/\\delta)/n$. (ii) If $\\min_{j \\in \\operatorname{supp}(\\theta^*)} |\\theta^*_j| > 3\\tau$, then $\\operatorname{supp}(\\hat{\\theta}^{\\mathrm{HRD}}) = \\operatorname{supp}(\\theta^*)$.",
+    "number_key": "theorem_2_11",
+    "official_lean_declaration": "HardThresholding.oracle_bound_and_support_recovery",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter2/Thm_2_11.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 4,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "thm_2_14_probabilistic",
+    "index": 29,
+    "kind": "theorem",
+    "name": "Theorem 2.14",
+    "location": "Chapter 2, Section 2.4",
+    "description": "Assume that the linear model (2.2) holds where $\\varepsilon \\sim \\mathsf{subG}_n(\\sigma^2)$. Then, the BIC estimator $\\hat{\\theta}^{\\mathrm{BIC}}$ with regularization parameter $\\tau^2 = 16 \\log(6) \\sigma^2/n + 32 \\sigma^2 \\log(ed)/n$ satisfies $$\\mathsf{MSE}(\\mathbb{X}\\hat{\\theta}^{\\mathrm{BIC}}) = \\frac{1}{n}|\\mathbb{X}\\hat{\\theta}^{\\mathrm{BIC}} - \\mathbb{X}\\theta^*|_2^2 \\lesssim |\\theta^*|_0 \\frac{\\sigma^2 \\log(ed/\\delta)}{n}$$ with probability at least $1 - \\delta$.",
+    "number_key": "theorem_2_14",
+    "official_lean_declaration": "thm_2_14_probabilistic",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter2/Thm_2_14.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 4,
+      "proof_integrity": 3
+    }
+  },
+  {
+    "target_id": "Rigollet.theorem_2_15",
+    "index": 30,
+    "kind": "theorem",
+    "name": "Theorem 2.15",
+    "location": "Chapter 2, Section 2.4",
+    "description": "Assume that the linear model (2.2) holds where $\\varepsilon \\sim \\mathsf{subG}_n(\\sigma^2)$. Moreover, assume that the columns of $\\mathbb{X}$ are normalized in such a way that $\\max_j |\\mathbb{X}_j|_2 \\leq \\sqrt{n}$. Then, the Lasso estimator $\\hat{\\theta}^{\\mathrm{L}}$ with regularization parameter $2\\tau = 2\\sigma\\sqrt{2 \\log(2d)/n} + 2\\sigma\\sqrt{2 \\log(1/\\delta)/n}$ satisfies $$\\mathsf{MSE}(\\mathbb{X}\\hat{\\theta}^{\\mathrm{L}}) = \\frac{1}{n}|\\mathbb{X}\\hat{\\theta}^{\\mathrm{L}} - \\mathbb{X}\\theta^*|_2^2 \\leq 4|\\theta^*|_1 \\sigma\\sqrt{\\frac{2 \\log(2d)}{n}} + 4|\\theta^*|_1 \\sigma\\sqrt{\\frac{2 \\log(1/\\delta)}{n}}$$ with probability at least $1 - \\delta$. Moreover, there exists a numerical constant $C > 0$ such that $\\mathbb{E}[\\mathsf{MSE}(\\mathbb{X}\\hat{\\theta}^{\\mathrm{L}})] \\leq C |\\theta^*|_1 \\sigma\\sqrt{\\log(2d)/n}$.",
+    "number_key": "theorem_2_15",
+    "official_lean_declaration": "Rigollet.theorem_2_15",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter2/Thm_2_15.lean",
+    "passed": false,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 4,
+      "proof_integrity": 2
+    }
+  },
+  {
+    "target_id": "prop_2_16_rademacher_incoherence",
+    "index": 31,
+    "kind": "proposition",
+    "name": "Proposition 2.16",
+    "location": "Chapter 2, Section 2.4",
+    "description": "Let $\\mathbb{X} \\in \\mathbb{R}^{n \\times d}$ be a random matrix with entries $X_{ij}$, $i = 1, \\ldots, n$, $j = 1, \\ldots, d$ that are i.i.d. Rademacher $(\\pm 1)$ random variables. Then, $\\mathbb{X}$ has incoherence $k$ with probability $1 - \\delta$ as soon as $n \\geq 392 k^2 \\log(1/\\delta) + 784 k^2 \\log(d)$. It implies that there exist matrices that satisfy Assumption $\\mathrm{INC}(k)$ for $n \\gtrsim k^2 \\log(d)$.",
+    "number_key": "proposition_2_16",
+    "official_lean_declaration": "prop_2_16_rademacher_incoherence",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter2/Prop_2_16.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 4,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "lemma_2_17_norm_equivalence",
+    "index": 32,
+    "kind": "lemma",
+    "name": "Lemma 2.17",
+    "location": "Chapter 2, Section 2.4",
+    "description": "Fix a positive integer $k \\leq d$ and assume that $\\mathbb{X}$ satisfies assumption $\\mathrm{INC}(k)$. Then, for any $S \\subset \\{1, \\ldots, d\\}$ such that $|S| \\leq k$ and any $\\theta \\in \\mathbb{R}^d$ that satisfies the cone condition $|\\theta_{S^c}|_1 \\leq 3|\\theta_S|_1$, it holds $|\\theta_S|_2^2 \\leq 2 |\\mathbb{X}\\theta|_2^2 / n$.",
+    "number_key": "lemma_2_17",
+    "official_lean_declaration": "lemma_2_17_norm_equivalence",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter2/Lemma_2_17.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 5,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "thm_2_18_lasso_probabilistic",
+    "index": 33,
+    "kind": "theorem",
+    "name": "Theorem 2.18",
+    "location": "Chapter 2, Section 2.4",
+    "description": "Fix $n \\geq 2$. Assume that the linear model (2.2) holds where $\\varepsilon \\sim \\mathsf{subG}_n(\\sigma^2)$. Moreover, assume that $|\\theta^*|_0 \\leq k$ and that $\\mathbb{X}$ satisfies assumption $\\mathrm{INC}(k)$. Then the Lasso estimator $\\hat{\\theta}^{\\mathrm{L}}$ with regularization parameter $2\\tau = 8\\sigma\\sqrt{\\log(2d)/n} + 8\\sigma\\sqrt{\\log(1/\\delta)/n}$ satisfies $$\\mathsf{MSE}(\\mathbb{X}\\hat{\\theta}^{\\mathrm{L}}) = \\frac{1}{n}|\\mathbb{X}\\hat{\\theta}^{\\mathrm{L}} - \\mathbb{X}\\theta^*|_2^2 \\lesssim \\frac{k \\sigma^2 \\log(2d/\\delta)}{n}$$ and $|\\hat{\\theta}^{\\mathrm{L}} - \\theta^*|_1 \\lesssim k\\sigma\\sqrt{\\log(2d/\\delta)/n}$ with probability at least $1 - \\delta$. Moreover, $\\mathbb{E}[\\mathsf{MSE}(\\mathbb{X}\\hat{\\theta}^{\\mathrm{L}})] \\lesssim k \\sigma^2 \\log(2d)/n$ and $\\mathbb{E}[|\\hat{\\theta}^{\\mathrm{L}} - \\theta^*|_1] \\lesssim k\\sigma\\sqrt{\\log(2d/\\delta)/n}$.",
+    "number_key": "theorem_2_18",
+    "official_lean_declaration": "thm_2_18_lasso_probabilistic",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter2/Thm_2_18.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 3,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "Rigollet.Chapter3.thm_3_3",
+    "index": 37,
+    "kind": "theorem",
+    "name": "Theorem 3.3",
+    "location": "Chapter 3, Section 3.1",
+    "description": "Assume the general regression model (3.1) with $\\varepsilon \\sim \\mathsf{subG}_n(\\sigma^2)$. Then, the least squares estimator $\\hat{\\theta}^{\\mathrm{LS}}$ satisfies for some numerical constant $C > 0$, $$\\mathsf{MSE}(\\varphi_{\\hat{\\theta}^{\\mathrm{LS}}}) \\leq \\inf_{\\theta \\in \\mathbb{R}^M} \\mathsf{MSE}(\\varphi_\\theta) + C \\sigma^2 \\frac{M}{n} \\cdot \\log(1/\\delta)$$ with probability at least $1 - \\delta$.",
+    "number_key": "theorem_3_3",
+    "official_lean_declaration": "Rigollet.Chapter3.thm_3_3",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter3/Thm_3_3.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 3,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "Rigollet.Chapter3.thm_3_4_bic_oracle_inequality",
+    "index": 38,
+    "kind": "theorem",
+    "name": "Theorem 3.4",
+    "location": "Chapter 3, Section 3.1",
+    "description": "Assume the general regression model (3.1) with $\\varepsilon \\sim \\mathsf{subG}_n(\\sigma^2)$. Then, the BIC estimator $\\hat{\\theta}^{\\mathrm{BIC}}$ with regularization parameter $\\tau^2 = 16\\sigma^2/(\\alpha n) \\log(6eM)$, $\\alpha \\in (0,1)$ satisfies for some numerical constant $C > 0$, $$\\mathsf{MSE}(\\varphi_{\\hat{\\theta}^{\\mathrm{BIC}}}) \\leq \\inf_{\\theta \\in \\mathbb{R}^M} \\left\\{ \\frac{1+\\alpha}{1-\\alpha} \\mathsf{MSE}(\\varphi_\\theta) + \\frac{C\\sigma^2}{\\alpha(1-\\alpha)n} |\\theta|_0 \\log(eM) \\right\\} + \\frac{C\\sigma^2}{\\alpha(1-\\alpha)n} \\log(1/\\delta)$$ with probability at least $1 - \\delta$.",
+    "number_key": "theorem_3_4",
+    "official_lean_declaration": "Rigollet.Chapter3.thm_3_4_bic_oracle_inequality",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter3/Thm_3_4.lean",
+    "passed": false,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 3,
+      "faithfulness": 2,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "Rigollet.Chapter3.thm_3_5_lasso_oracle_inequality",
+    "index": 39,
+    "kind": "theorem",
+    "name": "Theorem 3.5",
+    "location": "Chapter 3, Section 3.1",
+    "description": "Assume the general regression model (3.1) with $\\varepsilon \\sim \\mathsf{subG}_n(\\sigma^2)$. Moreover, assume that there exists an integer $k$ such that the matrix $\\Phi$ satisfies assumption $\\mathrm{INC}(k)$. Then, the Lasso estimator $\\hat{\\theta}^{\\mathrm{L}}$ with regularization parameter $2\\tau = 8\\sigma\\sqrt{2\\log(2M)/n} + 8\\sigma\\sqrt{2\\log(1/\\delta)/n}$ satisfies for some numerical constant $C$, $$\\mathsf{MSE}(\\varphi_{\\hat{\\theta}^{\\mathrm{L}}}) \\leq \\inf_{\\theta \\in \\mathbb{R}^M,\\, |\\theta|_0 \\leq k} \\left\\{ \\frac{1+\\alpha}{1-\\alpha} \\mathsf{MSE}(\\varphi_\\theta) + \\frac{C\\sigma^2}{\\alpha(1-\\alpha)n} |\\theta|_0 \\log(eM) \\right\\} + \\frac{C\\sigma^2}{\\alpha(1-\\alpha)n} \\log(1/\\delta)$$ with probability at least $1 - \\delta$.",
+    "number_key": "theorem_3_5",
+    "official_lean_declaration": "Rigollet.Chapter3.thm_3_5_lasso_oracle_inequality",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter3/Thm_3_5.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 3,
+      "faithfulness": 3,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "Chapter3.theorem_3_6_maurey",
+    "index": 40,
+    "kind": "theorem",
+    "name": "Theorem 3.6",
+    "location": "Chapter 3, Section 3.1",
+    "description": "Let $\\{\\varphi_1, \\ldots, \\varphi_M\\}$ be a dictionary normalized in such a way that $\\max_{1 \\leq j \\leq M} |\\varphi_j|_2 \\leq D\\sqrt{n}$. Then for any integer $k$ such that $1 \\leq k \\leq M$ and any positive $R$, we have $$\\min_{\\theta \\in \\mathbb{R}^M,\\, |\\theta|_0 \\leq 2k} \\mathsf{MSE}(\\varphi_\\theta) \\leq \\min_{\\theta \\in \\mathbb{R}^M,\\, |\\theta|_1 \\leq R} \\mathsf{MSE}(\\varphi_\\theta) + D^2 R^2 / k.$$",
+    "number_key": "theorem_3_6",
+    "official_lean_declaration": "Chapter3.theorem_3_6_maurey",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter3/Thm_3_6.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 5,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "Rigollet.Chapter3.cor_3_7_probabilistic",
+    "index": 41,
+    "kind": "corollary",
+    "name": "Corollary 3.7",
+    "location": "Chapter 3, Section 3.1",
+    "description": "Assume that the assumptions of Theorem 3.4 hold and that the dictionary $\\{\\varphi_1, \\ldots, \\varphi_M\\}$ is normalized in such a way that $\\max_{1 \\leq j \\leq M} |\\varphi_j|_2 \\leq \\sqrt{n}$. Then there exists a constant $C > 0$ such that the BIC estimator satisfies $$\\mathsf{MSE}(\\varphi_{\\hat{\\theta}^{\\mathrm{BIC}}}) \\leq \\inf_{\\theta \\in \\mathbb{R}^M} \\left\\{ 2\\, \\mathsf{MSE}(\\varphi_\\theta) + C \\left[ \\frac{\\sigma^2 |\\theta|_0 \\log(eM)}{n} \\wedge \\sigma |\\theta|_1 \\sqrt{\\frac{\\log(eM)}{n}} \\right] \\right\\} + \\frac{C \\sigma^2 \\log(1/\\delta)}{n}$$ with probability at least $1 - \\delta$.",
+    "number_key": "corollary_3_7",
+    "official_lean_declaration": "Rigollet.Chapter3.cor_3_7_probabilistic",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter3/Cor_3_7.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 3,
+      "faithfulness": 4,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "Chapter3.thm_3_11",
+    "index": 43,
+    "kind": "theorem",
+    "name": "Theorem 3.11",
+    "location": "Chapter 3, Section 3.2",
+    "description": "Fix $\\beta \\geq 1$ and $L > 0$ and let $\\{\\varphi_j\\}_{j \\geq 1}$ denote the trigonometric basis of $L_2([0,1])$. Moreover, let $\\{a_j\\}_{j \\geq 1}$ be defined as in (3.9). A function $f \\in W(\\beta, L)$ can be represented as $f = \\sum_{j=1}^{\\infty} \\theta_j^* \\varphi_j$, where the sequence $\\{\\theta_j^*\\}_{j \\geq 1}$ belongs to the Sobolev ellipsoid of $\\ell_2(\\mathbb{N})$ defined by $\\Theta(\\beta, Q) = \\{ \\theta \\in \\ell_2(\\mathbb{N}) \\mid \\sum_{j=1}^{\\infty} a_j^2 \\theta_j^2 \\leq Q \\}$ for $Q = L^2 / \\pi^{2\\beta}$.",
+    "number_key": "theorem_3_11",
+    "official_lean_declaration": "Chapter3.thm_3_11",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter3/Thm_3_11.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 3,
+      "faithfulness": 4,
+      "proof_integrity": 3
+    }
+  },
+  {
+    "target_id": "Chapter3.prop_3_12",
+    "index": 44,
+    "kind": "proposition",
+    "name": "Proposition 3.12",
+    "location": "Chapter 3, Section on Sobolev classes and ellipsoids",
+    "description": "The Sobolev ellipsoids enjoy the following properties: (i) For any $Q > 0$, $0 < \\beta' < \\beta$ implies $\\Theta(\\beta, Q) \\subset \\Theta(\\beta', Q)$. (ii) For any $Q > 0$, $\\beta > 1/2$ implies $f$ is continuous.",
+    "number_key": "proposition_3_12",
+    "official_lean_declaration": "Chapter3.prop_3_12",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter3/Prop_3_12.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 4,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "Chapter3.lemma_3_13",
+    "index": 45,
+    "kind": "lemma",
+    "name": "Lemma 3.13",
+    "location": "Chapter 3, Section on Sobolev classes and ellipsoids",
+    "description": "Assume that $\\{X_1, \\ldots, X_n\\}$ is the regular design, i.e., $X_i = (i-1)/n$. Then, for any $M \\leq n-1$, the design matrix $\\Phi = \\{\\varphi_j(X_i)\\}_{1 \\leq i \\leq n,\\, 1 \\leq j \\leq M}$ satisfies the ORT condition.",
+    "number_key": "lemma_3_13",
+    "official_lean_declaration": "Chapter3.lemma_3_13",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter3/Lemma_3_13.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 5,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "lemma_3_14",
+    "index": 46,
+    "kind": "lemma",
+    "name": "Lemma 3.14",
+    "location": "Chapter 3, Section on Integrated squared error",
+    "description": "For any integer $M \\geq 1$, and $f \\in \\Theta(\\beta, Q)$, $\\beta > 1/2$, it holds $$\\|\\varphi_{\\theta^*}^M - f\\|_{L_2}^2 = \\sum_{j > M} |\\theta_j^*|^2 \\leq Q M^{-2\\beta},$$ and for $M = n-1$, we have $|\\varphi_{\\theta^*}^{n-1} - f|_2^2 \\leq 2n\\!\\left(\\sum_{j \\geq n} |\\theta_j^*|\\right)^2 \\lesssim Q n^{2-2\\beta}$.",
+    "number_key": "lemma_3_14",
+    "official_lean_declaration": "lemma_3_14",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter3/Lemma_3_14.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 4,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "Chapter3.thm_3_15",
+    "index": 47,
+    "kind": "theorem",
+    "name": "Theorem 3.15",
+    "location": "Chapter 3, Section on Integrated squared error",
+    "description": "Fix $\\beta \\geq (1+\\sqrt{5})/4 \\approx 0.81$, $Q > 0$, $\\delta > 0$ and assume the general regression model (3.1) with $f \\in \\Theta(\\beta, Q)$ and $\\varepsilon \\sim \\mathsf{subG}_n(\\sigma^2)$, $\\sigma^2 \\leq 1$. Moreover, let $M = \\lceil n^{1/(2\\beta+1)} \\rceil$ and $n$ be large enough so that $M \\leq n-1$. Then the least squares estimator $\\hat{\\theta}^{\\mathrm{LS}}$ defined in (3.2) with $\\{\\varphi_j\\}_{j=1}^M$ being the trigonometric basis, satisfies with probability $1-\\delta$, for $n$ large enough, $$\\|\\varphi_{\\hat{\\theta}^{\\mathrm{LS}}} - f\\|_{L_2([0,1])}^2 \\lesssim n^{-2\\beta/(2\\beta+1)} + \\sigma^2 \\log(1/\\delta)/n,$$ where the constant factors may depend on $\\beta$, $Q$ and $\\sigma$. Moreover $\\mathbb{E}\\|\\varphi_{\\hat{\\theta}^{\\mathrm{LS}}} - f\\|_{L_2([0,1])}^2 \\lesssim n^{-2\\beta/(2\\beta+1)}$.",
+    "number_key": "theorem_3_15",
+    "official_lean_declaration": "Chapter3.thm_3_15",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter3/Thm_3_15.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 3,
+      "faithfulness": 4,
+      "proof_integrity": 3
+    }
+  },
+  {
+    "target_id": "Chapter3.cor_3_16",
+    "index": 48,
+    "kind": "corollary",
+    "name": "Corollary 3.16",
+    "location": "Chapter 3, Section on Adaptive estimation",
+    "description": "Fix $\\beta \\geq (1+\\sqrt{5})/4 \\approx 0.81$, $Q > 0$, $\\delta > 0$ and $n$ large enough to ensure $n-1 \\geq \\lceil n^{1/(2\\beta+1)} \\rceil$, assume the general regression model (3.1) with $f \\in \\Theta(\\beta, Q)$ and $\\varepsilon \\sim \\mathsf{subG}_n(\\sigma^2)$, $\\sigma^2 \\leq 1$. Let $\\{\\varphi_j\\}_{j=1}^{n-1}$ be the trigonometric basis. Denote by $\\varphi_{\\hat{\\theta}^{\\mathrm{BIC}}}^{n-1}$ (resp. $\\varphi_{\\hat{\\theta}^{\\mathrm{L}}}^{n-1}$) the BIC (resp. Lasso) estimator defined in (3.3) (resp. (3.4)) over $\\mathbb{R}^{n-1}$ with regularization parameter given by (3.5) (resp. (3.6)). Then $\\varphi_{\\hat{\\theta}}^{n-1}$, where $\\hat{\\theta} \\in \\{\\hat{\\theta}^{\\mathrm{BIC}}, \\hat{\\theta}^{\\mathrm{L}}\\}$ satisfies with probability $1-\\delta$, $$\\|\\varphi_{\\hat{\\theta}}^{n-1} - f\\|_{L_2([0,1])}^2 \\lesssim n^{-2\\beta/(2\\beta+1)} + \\sigma^2 \\log(1/\\delta)/n.$$ Moreover, $\\mathbb{E}\\|\\varphi_{\\hat{\\theta}}^{n-1} - f\\|_{L_2([0,1])}^2 \\lesssim \\sigma^2 (\\log n / n)^{2\\beta/(2\\beta+1)}$, where constant factors may depend on $\\beta$ and $Q$.",
+    "number_key": "corollary_3_16",
+    "official_lean_declaration": "Chapter3.cor_3_16",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter3/Cor_3_16.lean",
+    "passed": false,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 3,
+      "faithfulness": 3,
+      "proof_integrity": 2
+    }
+  },
+  {
+    "target_id": "lemma_4_2_operator_norm_high_prob",
+    "index": 50,
+    "kind": "lemma",
+    "name": "Lemma 4.2",
+    "location": "Chapter 4, Section 4.2 (Multivariate regression, Sub-Gaussian matrix model)",
+    "description": "Let $A$ be a $d \\times T$ random matrix such that $A \\sim \\mathsf{subG}_{d \\times T}(\\sigma^2)$. Then $\\|A\\|_{\\mathrm{op}} \\leq 4\\sigma\\sqrt{\\log(12)(d \\vee T)} + 2\\sigma\\sqrt{2 \\log(1/\\delta)}$ with probability $1 - \\delta$.",
+    "number_key": "lemma_4_2",
+    "official_lean_declaration": "lemma_4_2_operator_norm_high_prob",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter4/Lemma_4_2.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 5,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "SingularValueThresholding.theorem_4_3",
+    "index": 51,
+    "kind": "theorem",
+    "name": "Theorem 4.3",
+    "location": "Chapter 4",
+    "description": "Consider the multivariate linear regression model (4.1) under the assumption ORT or, equivalently, the sub-Gaussian matrix model (4.2). Then, the singular value thresholding estimator $\\hat{\\Theta}^{\\mathrm{SVT}}$ with threshold $$2\\tau = 8\\sigma\\sqrt{\\frac{\\log(12)(d \\vee T)}{n}} + 4\\sigma\\sqrt{\\frac{2\\log(1/\\delta)}{n}},$$ satisfies $$\\frac{1}{n} \\|\\mathbb{X}\\hat{\\Theta}^{\\mathrm{SVT}} - \\mathbb{X}\\Theta^*\\|_F^2 = \\|\\hat{\\Theta}^{\\mathrm{SVT}} - \\Theta^*\\|_F^2 \\leq 144 \\operatorname{rank}(\\Theta^*) \\tau^2 \\lesssim \\frac{\\sigma^2 \\operatorname{rank}(\\Theta^*)}{n} \\left( d \\vee T + \\log(1/\\delta) \\right)$$ with probability $1 - \\delta$.",
+    "number_key": "theorem_4_3",
+    "official_lean_declaration": "SingularValueThresholding.theorem_4_3",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter4/Thm_4_3.lean",
+    "passed": false,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 2,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "Rigollet.Chapter4.Thm_4_4.theorem_4_4_with_probability",
+    "index": 52,
+    "kind": "theorem",
+    "name": "Theorem 4.4",
+    "location": "Chapter 4",
+    "description": "Consider the multivariate linear regression model (4.1). Then, the estimator by rank penalization $\\hat{\\Theta}^{\\mathrm{RK}}$ with regularization parameter $\\tau^2$, where $\\tau$ is defined in (4.3) satisfies $$\\frac{1}{n} \\|\\mathbb{X}\\hat{\\Theta}^{\\mathrm{RK}} - \\mathbb{X}\\Theta^*\\|_F^2 \\leq 8 \\operatorname{rank}(\\Theta^*) \\tau^2 \\lesssim \\frac{\\sigma^2 \\operatorname{rank}(\\Theta^*)}{n} \\left( d \\vee T + \\log(1/\\delta) \\right)$$ with probability $1 - \\delta$.",
+    "number_key": "theorem_4_4",
+    "official_lean_declaration": "Rigollet.Chapter4.Thm_4_4.theorem_4_4_with_probability",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter4/Thm_4_4.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 3,
+      "faithfulness": 3,
+      "proof_integrity": 3
+    }
+  },
+  {
+    "target_id": "Rigollet.Chapter4.Thm_4_6.theorem_4_6",
+    "index": 53,
+    "kind": "theorem",
+    "name": "Theorem 4.6",
+    "location": "Section 4.3",
+    "description": "Let $X_1, \\ldots, X_n$ be $n$ i.i.d. sub-Gaussian random vectors such that $\\mathbb{E}[XX^{\\top}] = \\Sigma$ and $X \\sim \\mathsf{subG}_d(\\|\\Sigma\\|_{\\mathrm{op}})$. Then $$\\|\\hat{\\Sigma} - \\Sigma\\|_{\\mathrm{op}} \\lesssim \\|\\Sigma\\|_{\\mathrm{op}} \\left(\\sqrt{\\frac{d + \\log(1/\\delta)}{n}} \\vee \\frac{d + \\log(1/\\delta)}{n}\\right)$$ with probability $1 - \\delta$.",
+    "number_key": "theorem_4_6",
+    "official_lean_declaration": "Rigollet.Chapter4.Thm_4_6.theorem_4_6",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter4/Thm_4_6.lean",
+    "passed": false,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 3,
+      "faithfulness": 4,
+      "proof_integrity": 2
+    }
+  },
+  {
+    "target_id": "Thm48.theorem_4_8",
+    "index": 55,
+    "kind": "theorem",
+    "name": "Theorem 4.8 (Davis-Kahan $\\sin(\\theta)$ theorem)",
+    "location": "Section 4.4",
+    "description": "Let $\\Sigma$ satisfy the spiked covariance model and let $\\tilde{\\Sigma}$ be any PSD estimator of $\\Sigma$. Let $\\tilde{v}$ denote the largest eigenvector of $\\tilde{\\Sigma}$. Then we have $$\\min_{\\varepsilon \\in \\{\\pm 1\\}} |\\varepsilon \\tilde{v} - v|_2^2 \\leq 2 \\sin^2\\!\\left(\\angle(\\tilde{v}, v)\\right) \\leq \\frac{8}{\\theta^2} \\|\\tilde{\\Sigma} - \\Sigma\\|_{\\mathrm{op}}^2.$$",
+    "number_key": "theorem_4_8",
+    "official_lean_declaration": "Thm48.theorem_4_8",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter4/Thm_4_8.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 3,
+      "faithfulness": 5,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "Cor49.corollary_4_9",
+    "index": 56,
+    "kind": "corollary",
+    "name": "Corollary 4.9",
+    "location": "Section 4.4",
+    "description": "Let $X_1, \\ldots, X_n$ be $n$ i.i.d. copies of a sub-Gaussian random vector $X \\in \\mathbb{R}^d$ such that $\\mathbb{E}[XX^\\top] = \\Sigma$ and $X \\sim \\mathsf{subG}_d(\\|\\Sigma\\|_{\\mathrm{op}})$. Assume further that $\\Sigma = \\theta vv^\\top + I_d$ satisfies the spiked covariance model. Then, the largest eigenvector $\\hat{v}$ of the empirical covariance matrix $\\hat{\\Sigma}$ satisfies, $$\\min_{\\varepsilon \\in \\{\\pm 1\\}} |\\varepsilon \\hat{v} - v|_2 \\lesssim \\frac{1+\\theta}{\\theta} \\left(\\sqrt{\\frac{d + \\log(1/\\delta)}{n}} \\vee \\frac{d + \\log(1/\\delta)}{n}\\right)$$ with probability $1 - \\delta$.",
+    "number_key": "corollary_4_9",
+    "official_lean_declaration": "Cor49.corollary_4_9",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter4/Cor_4_9.lean",
+    "passed": false,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 3,
+      "faithfulness": 4,
+      "proof_integrity": 2
+    }
+  },
+  {
+    "target_id": "Rigollet.Chapter4.Thm_4_10.theorem_4_10_textbook",
+    "index": 57,
+    "kind": "theorem",
+    "name": "Theorem 4.10",
+    "location": "Section 4.4",
+    "description": "Let $X_1, \\ldots, X_n$ be $n$ i.i.d. copies of a sub-Gaussian random vector $X \\in \\mathbb{R}^d$ such that $\\mathbb{E}[XX^\\top] = \\Sigma$ and $X \\sim \\mathsf{subG}_d(\\|\\Sigma\\|_{\\mathrm{op}})$. Assume further that $\\Sigma = \\theta vv^\\top + I_d$ satisfies the spiked covariance model for $v$ such that $|v|_0 = k \\leq d/2$. Then, the $k$-sparse largest eigenvector $\\hat{v}$ of the empirical covariance matrix satisfies, $$\\min_{\\varepsilon \\in \\{\\pm 1\\}} |\\varepsilon \\hat{v} - v|_2 \\lesssim \\frac{1 + \\theta}{\\theta} \\left(\\sqrt{\\frac{k \\log(ed/k) + \\log(1/\\delta)}{n}} \\vee \\frac{k \\log(ed/k) + \\log(1/\\delta)}{n}\\right)$$ with probability $1 - \\delta$.",
+    "number_key": "theorem_4_10",
+    "official_lean_declaration": "Rigollet.Chapter4.Thm_4_10.theorem_4_10_textbook",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter4/Thm_4_10.lean",
+    "passed": false,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 3,
+      "faithfulness": 4,
+      "proof_integrity": 2
+    }
+  },
+  {
+    "target_id": "Chapter5.TVNP.neyman_pearson",
+    "index": 60,
+    "kind": "lemma",
+    "name": "Lemma 5.3 (Neyman-Pearson)",
+    "location": "Section 5.3",
+    "description": "Let $\\mathbb{P}_0$ and $\\mathbb{P}_1$ be two probability measures. Then for any test $\\psi$, it holds $$\\mathbb{P}_0(\\psi = 1) + \\mathbb{P}_1(\\psi = 0) \\geq \\int \\min(p_0, p_1).$$ Moreover, equality holds for the Likelihood Ratio test $\\psi^* = \\mathbb{I}(p_1 \\geq p_0)$.",
+    "number_key": "lemma_5_3",
+    "official_lean_declaration": "Chapter5.TVNP.neyman_pearson",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter5/Lemma_5_3_5_4_5_8.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 4,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "Rigollet.Chapter5.prop_5_6_bundle",
+    "index": 63,
+    "kind": "proposition",
+    "name": "Proposition 5.6",
+    "location": "Section 5.3",
+    "description": "Let $\\mathbb{P}$ and $\\mathbb{Q}$ be two probability measures. Then 1. $\\mathsf{KL}(\\mathbb{P}, \\mathbb{Q}) \\geq 0$. 2. If $\\mathbb{P}$ and $\\mathbb{Q}$ are product measures, i.e., $\\mathbb{P} = \\bigotimes_{i=1}^{n} \\mathbb{P}_i$ and $\\mathbb{Q} = \\bigotimes_{i=1}^{n} \\mathbb{Q}_i$, then $\\mathsf{KL}(\\mathbb{P}, \\mathbb{Q}) = \\sum_{i=1}^{n} \\mathsf{KL}(\\mathbb{P}_{i}, \\mathbb{Q}_{i})$.",
+    "number_key": "proposition_5_6",
+    "official_lean_declaration": "Rigollet.Chapter5.prop_5_6_bundle",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter5/Prop_5_6.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 3,
+      "faithfulness": 3,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "Chapter5.TVNP.pinsker_inequality",
+    "index": 64,
+    "kind": "lemma",
+    "name": "Lemma 5.8 (Pinsker's inequality)",
+    "location": "Section 5.3",
+    "description": "Let $\\mathbb{P}$ and $\\mathbb{Q}$ be two probability measures such that $\\mathbb{P} \\ll \\mathbb{Q}$. Then $$\\mathsf{TV}(\\mathbb{P}, \\mathbb{Q}) \\leq \\sqrt{\\mathsf{KL}(\\mathbb{P}, \\mathbb{Q})}.$$",
+    "number_key": "lemma_5_8",
+    "official_lean_declaration": "Chapter5.TVNP.pinsker_inequality",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter5/Lemma_5_3_5_4_5_8.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 4,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "Minimax.theorem_5_9",
+    "index": 65,
+    "kind": "theorem",
+    "name": "Theorem 5.9",
+    "location": "Section 5.3",
+    "description": "Assume that $\\Theta$ contains two hypotheses $\\theta_0$ and $\\theta_1$ such that $|\\theta_0 - \\theta_1|_2^2 = 8\\alpha^2\\sigma^2/n$ for some $\\alpha \\in (0, 1/2)$. Then $$\\inf_{\\hat{\\theta}} \\sup_{\\theta \\in \\Theta} \\mathbb{P}_{\\theta}\\!\\left(|\\hat{\\theta} - \\theta|_2^2 \\geq \\frac{2\\alpha\\sigma^2}{n}\\right) \\geq \\frac{1}{2} - \\alpha.$$",
+    "number_key": "theorem_5_9",
+    "official_lean_declaration": "Minimax.theorem_5_9",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter5/Thm_5_9.lean",
+    "passed": false,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 2,
+      "proof_integrity": 4
+    }
+  },
+  {
+    "target_id": "FanoInequality.fano_inequality",
+    "index": 66,
+    "kind": "theorem",
+    "name": "Theorem 5.10 (Fano's inequality)",
+    "location": "Section 5.4",
+    "description": "Let $P_1, \\ldots, P_M$, $M \\geq 2$ be probability distributions such that $P_j \\ll P_k$ for all $j, k$. Then $$\\inf_{\\psi} \\max_{1 \\leq j \\leq M} P_j\\!\\left[\\psi(X) \\neq j\\right] \\geq 1 - \\frac{\\frac{1}{M^2} \\sum_{j,k=1}^{M} \\mathsf{KL}(P_j, P_k) + \\log 2}{\\log(M - 1)}$$ where the infimum is taken over all tests with values in $\\{1, \\ldots, M\\}$.",
+    "number_key": "theorem_5_10",
+    "official_lean_declaration": "FanoInequality.fano_inequality",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter5/Thm_5_10.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 4,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "MinimaxLowerBound.theorem_5_11",
+    "index": 67,
+    "kind": "theorem",
+    "name": "Theorem 5.11",
+    "location": "Section 5.4",
+    "description": "Assume that $\\Theta$ contains $M \\geq 5$ hypotheses $\\theta_1, \\ldots, \\theta_M$ such that for some constant $0 < \\alpha < 1/4$, it holds (i) $|\\theta_j - \\theta_k|_2^2 \\geq 4\\phi$ and (ii) $|\\theta_j - \\theta_k|_2^2 \\leq \\frac{2\\alpha\\sigma^2}{n}\\log(M)$. Then $$\\inf_{\\hat{\\theta}} \\sup_{\\theta \\in \\Theta} \\mathbb{P}_{\\theta}\\!\\left(|\\hat{\\theta} - \\theta|_2^2 \\geq \\phi\\right) \\geq \\frac{1}{2} - 2\\alpha.$$",
+    "number_key": "theorem_5_11",
+    "official_lean_declaration": "MinimaxLowerBound.theorem_5_11",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter5/Thm_5_11.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 4,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "VarshamovGilbert.varshamov_gilbert",
+    "index": 68,
+    "kind": "lemma",
+    "name": "Lemma 5.12 (Varshamov-Gilbert)",
+    "location": "Section 5.4",
+    "description": "For any $\\gamma \\in (0, 1/2)$, there exist binary vectors $\\omega_1, \\ldots, \\omega_M \\in \\{0, 1\\}^d$ such that (i) $\\rho(\\omega_j, \\omega_k) \\geq \\left(\\frac{1}{2} - \\gamma\\right) d$ for all $j \\neq k$, and (ii) $M = \\lfloor e^{\\gamma^2 d} \\rfloor \\geq e^{\\gamma^2 d / 2}$.",
+    "number_key": "lemma_5_12",
+    "official_lean_declaration": "VarshamovGilbert.varshamov_gilbert",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter5/Lemma_5_12.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 3,
+      "faithfulness": 4,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "GaussianSequenceModel.minimax_rate",
+    "index": 69,
+    "kind": "corollary",
+    "name": "Corollary 5.13",
+    "location": "Section 5.5",
+    "description": "The minimax rate of estimation over $\\mathbb{R}^d$ in the Gaussian sequence model is $\\phi(\\mathbb{R}^d) = \\sigma^2 d/n$. Moreover, it is attained by the least squares estimator $\\hat{\\theta}^{\\mathrm{LS}} = \\mathbf{Y}$.",
+    "number_key": "corollary_5_13",
+    "official_lean_declaration": "GaussianSequenceModel.minimax_rate",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter5/Cor_5_13.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 3,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "SparseVarshamovGilbert.sparse_varshamov_gilbert",
+    "index": 70,
+    "kind": "lemma",
+    "name": "Lemma 5.14 (Sparse Varshamov-Gilbert)",
+    "location": "Section 5.5",
+    "description": "There exist positive constants $C_1$ and $C_2$ such that the following holds for any two integers $k$ and $d$ such that $1 \\leq k \\leq d/8$. There exist binary vectors $\\omega_1, \\ldots, \\omega_M \\in \\{0, 1\\}^d$ such that (i) $\\rho(\\omega_i, \\omega_j) \\geq k/2$ for all $i \\neq j$, (ii) $\\log(M) \\geq \\frac{k}{8} \\log\\!\\left(1 + \\frac{d}{2k}\\right)$, and (iii) $|\\omega_j|_0 = k$ for all $j$.",
+    "number_key": "lemma_5_14",
+    "official_lean_declaration": "SparseVarshamovGilbert.sparse_varshamov_gilbert",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter5/Lemma_5_14.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 4,
+      "proof_integrity": 5
+    }
+  },
+  {
+    "target_id": "Cor_5_15.cor_5_15",
+    "index": 71,
+    "kind": "corollary",
+    "name": "Corollary 5.15",
+    "location": "Chapter 5",
+    "description": "Recall that $\\mathcal{B}_0(k) \\subset \\mathbb{R}^d$ denotes the set of all $k$-sparse vectors of $\\mathbb{R}^d$. The minimax rate of estimation over $\\mathcal{B}_0(k)$ in the Gaussian sequence model is $\\phi(\\mathcal{B}_0(k)) = \\frac{\\sigma^2 k}{n} \\log(ed/k)$. Moreover, it is attained by the constrained least squares estimator $\\hat{\\theta}_{\\mathcal{B}_0(k)}^{\\mathrm{LS}}$.",
+    "number_key": "corollary_5_15",
+    "official_lean_declaration": "Cor_5_15.cor_5_15",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter5/Cor_5_15.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 3,
+      "faithfulness": 3,
+      "proof_integrity": 4
+    }
+  },
+  {
+    "target_id": "MinimaxL1Ball.cor_5_16",
+    "index": 72,
+    "kind": "corollary",
+    "name": "Corollary 5.16",
+    "location": "Chapter 5",
+    "description": "Recall that $\\mathcal{B}_1(R) \\subset \\mathbb{R}^d$ denotes the set of vectors $\\theta \\in \\mathbb{R}^d$ such that $|\\theta|_1 \\leq R$. Then there exists a constant $C > 0$ such that if $d \\geq n^{1/2+\\varepsilon}$, $\\varepsilon > 0$, the minimax rate of estimation over $\\mathcal{B}_1(R)$ in the Gaussian sequence model is $\\phi(\\mathcal{B}_1(R)) = \\min(R^2,\\, R\\sigma \\log d / n)$. Moreover, it is attained by the constrained least squares estimator $\\hat{\\theta}_{\\mathcal{B}_1(R)}^{\\mathrm{LS}}$ if $R \\geq \\sigma \\log d / n$ and by the trivial estimator $\\hat{\\theta} = 0$ otherwise.",
+    "number_key": "corollary_5_16",
+    "official_lean_declaration": "MinimaxL1Ball.cor_5_16",
+    "official_lean_file": "Atlas/HighDimensionalStatistics/code/Chapter5/Cor_5_16.lean",
+    "passed": true,
+    "match_confidence": "high",
+    "scores": {
+      "compilation": 1,
+      "code_quality": 4,
+      "faithfulness": 4,
+      "proof_integrity": 4
+    }
+  }
+]

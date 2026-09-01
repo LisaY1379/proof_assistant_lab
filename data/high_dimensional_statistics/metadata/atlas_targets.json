@@ -1,0 +1,659 @@
+[
+  {
+    "target_id": "hds.target.1a73fde32ebc",
+    "index": 1,
+    "kind": "proposition",
+    "name": "Proposition 1.1",
+    "location": "Chapter 1, Section 1.1",
+    "description": "Let X be a Gaussian random variable with mean μ and variance σ² then\nfor any t > 0, it holds P(X - μ > t) ≤ (1/√(2π)) · e^(-t²/(2σ²)) / t. By symmetry\nwe also have P(X - μ < -t) ≤ (1/√(2π)) · e^(-t²/(2σ²)) / t, and P(|X - μ| > t)\n≤ √(2/π) · e^(-t²/(2σ²)) / t.",
+    "number_key": "proposition_1_1"
+  },
+  {
+    "target_id": "hds.target.87b800ea5627",
+    "index": 2,
+    "kind": "definition",
+    "name": "Definition 1.2",
+    "location": "Chapter 1, Section 1.2",
+    "description": "A random variable X ∈ ℝ is said to be sub-Gaussian with variance proxy\nσ² if E[X] = 0 and its moment generating function satisfies E[exp(sX)] ≤ exp(σ²s²/2),\nfor all s ∈ ℝ. In this case we write X ~ subG(σ²).",
+    "number_key": "definition_1_2"
+  },
+  {
+    "target_id": "hds.target.566f34bdfe8b",
+    "index": 3,
+    "kind": "lemma",
+    "name": "Lemma 1.3",
+    "location": "Section 1.2",
+    "description": "Let $X \\sim \\mathsf{subG}(\\sigma^2)$. Then for any $t > 0$, it holds\n$$\\mathbb{P}[X > t] \\le \\exp\\left(-\\frac{t^2}{2\\sigma^2}\\right), \\quad \\text{and}\n\\quad \\mathbb{P}[X < -t] \\le \\exp\\left(-\\frac{t^2}{2\\sigma^2}\\right).$$",
+    "number_key": "lemma_1_3"
+  },
+  {
+    "target_id": "hds.target.ba5f5fd8bd55",
+    "index": 4,
+    "kind": "lemma",
+    "name": "Lemma 1.4",
+    "location": "Section 1.2",
+    "description": "Let $X$ be a random variable such that $\\mathbb{P}[|X| > t] \\le 2 \\exp\\left(-\\frac{t^2}{2\\sigma^2}\\right)$,\nthen for any positive integer $k \\ge 1$, $$\\mathbb{E}[|X|^k] \\le (2\\sigma^2)^{k/2}\nk \\Gamma(k/2).$$ In particular, $$\\left(\\mathbb{E}[|X|^k]\\right)^{1/k} \\le \\sigma\ne^{1/e} \\sqrt{k}, \\quad k \\ge 2,$$ and $\\mathbb{E}[|X|] \\le \\sigma \\sqrt{2\\pi}$.",
+    "number_key": "lemma_1_4"
+  },
+  {
+    "target_id": "hds.target.028e2b41ffcc",
+    "index": 5,
+    "kind": "lemma",
+    "name": "Lemma 1.5",
+    "location": "Section 1.2",
+    "description": "If (1.3) holds, i.e., $\\mathbb{P}[X > t] \\le \\exp(-t^2/(2\\sigma^2))$\nand $\\mathbb{P}[X < -t] \\le \\exp(-t^2/(2\\sigma^2))$ for all $t > 0$, then for\nany $s > 0$, it holds $$\\mathbb{E}[\\exp(sX)] \\le e^{4\\sigma^2 s^2}.$$",
+    "number_key": "lemma_1_5"
+  },
+  {
+    "target_id": "hds.target.5edafa0b5ded",
+    "index": 6,
+    "kind": "theorem",
+    "name": "Theorem 1.6",
+    "location": "Section 1.2",
+    "description": "Let $X = (X_1, \\ldots, X_n)$ be a vector of independent sub-Gaussian\nrandom variables that have variance proxy $\\sigma^2$. Then, the random vector\n$X$ is sub-Gaussian with variance proxy $\\sigma^2$.",
+    "number_key": "theorem_1_6"
+  },
+  {
+    "target_id": "hds.target.9baf707e6eaf",
+    "index": 7,
+    "kind": "corollary",
+    "name": "Corollary 1.7",
+    "location": "Section 1.2",
+    "description": "Let $X_1, \\ldots, X_n$ be $n$ independent random variables such that\n$X_i \\sim \\mathsf{subG}(\\sigma^2)$. Then for any $a \\in \\mathbb{R}^n$, we have\n$$\\mathbb{P}\\left[\\sum_{i=1}^{n} a_i X_i > t\\right] \\le \\exp\\left(-\\frac{t^2}{2\\sigma^2\n|a|_2^2}\\right),$$ and $$\\mathbb{P}\\left[\\sum_{i=1}^{n} a_i X_i < -t\\right] \\le\n\\exp\\left(-\\frac{t^2}{2\\sigma^2 |a|_2^2}\\right).$$",
+    "number_key": "corollary_1_7"
+  },
+  {
+    "target_id": "hds.target.785a7fba2821",
+    "index": 8,
+    "kind": "lemma",
+    "name": "Lemma 1.8 (Hoeffding's lemma (1963))",
+    "location": "Section 1.2",
+    "description": "Let $X$ be a random variable such that $\\mathbb{E}(X) = 0$ and $X \\in\n[a, b]$ almost surely. Then, for any $s \\in \\mathbb{R}$, it holds $$\\mathbb{E}[e^{sX}]\n\\le e^{\\frac{s^2(b-a)^2}{8}}.$$ In particular, $X \\sim \\mathsf{subG}(\\frac{(b-a)^2}{4})$.",
+    "number_key": "lemma_1_8"
+  },
+  {
+    "target_id": "hds.target.6466c5367272",
+    "index": 9,
+    "kind": "theorem",
+    "name": "Theorem 1.9 (Hoeffding's inequality)",
+    "location": "Section 1.2",
+    "description": "Let $X_1, \\ldots, X_n$ be $n$ independent random variables such that\nalmost surely, $X_i \\in [a_i, b_i]$ for all $i$. Let $\\bar{X} = \\frac{1}{n} \\sum_{i=1}^{n}\nX_i$, then for any $t > 0$, $$\\mathbb{P}(\\bar{X} - \\mathbb{E}(\\bar{X}) > t) \\le\n\\exp\\left(-\\frac{2n^2t^2}{\\sum_{i=1}^n (b_i - a_i)^2}\\right),$$ and $$\\mathbb{P}(\\bar{X}\n- \\mathbb{E}(\\bar{X}) < -t) \\le \\exp\\left(-\\frac{2n^2t^2}{\\sum_{i=1}^n (b_i -\na_i)^2}\\right).$$",
+    "number_key": "theorem_1_9"
+  },
+  {
+    "target_id": "hds.target.fd04169142b6",
+    "index": 10,
+    "kind": "lemma",
+    "name": "Lemma 1.10",
+    "location": "Section 1.3",
+    "description": "Let $X$ be a centered random variable such that $\\mathbb{P}(|X| > t)\n\\le 2e^{-2t/\\lambda}$ for some $\\lambda > 0$. Then, for any positive integer $k\n\\ge 1$, $$\\mathbb{E}[|X|^k] \\le \\lambda^k k!.$$ Moreover, $$\\left(\\mathbb{E}[|X|^k]\\right)^{1/k}\n\\le 2\\lambda k,$$ and the moment generating function of $X$ satisfies $$\\mathbb{E}\\left[e^{sX}\\right]\n\\le e^{2s^2\\lambda^2}, \\qquad \\forall |s| \\le \\frac{1}{2\\lambda}.$$",
+    "number_key": "lemma_1_10"
+  },
+  {
+    "target_id": "hds.target.4d896a0ec927",
+    "index": 11,
+    "kind": "definition",
+    "name": "Definition 1.11",
+    "location": "Section 1.3",
+    "description": "A random variable $X$ is said to be sub-exponential with parameter\n$\\lambda$ (denoted $X \\sim \\mathsf{subE}(\\lambda)$) if $\\mathbb{E}[X] = 0$ and\nits moment generating function satisfies $$\\mathbb{E}\\left[e^{sX}\\right] \\le e^{s^2\\lambda^2/2},\n\\qquad \\forall |s| \\le \\frac{1}{\\lambda}.$$",
+    "number_key": "definition_1_11"
+  },
+  {
+    "target_id": "hds.target.2d193d439f26",
+    "index": 12,
+    "kind": "lemma",
+    "name": "Lemma 1.12",
+    "location": "Section 1.3",
+    "description": "Let $X \\sim \\mathsf{subG}(\\sigma^2)$ then the random variable $Z =\nX^2 - \\mathbb{E}[X^2]$ is sub-exponential: $Z \\sim \\mathsf{subE}(16\\sigma^2)$.'",
+    "number_key": "lemma_1_12"
+  },
+  {
+    "target_id": "hds.target.958b3f563933",
+    "index": 13,
+    "kind": "theorem",
+    "name": "Theorem 1.13 (Bernstein's inequality)",
+    "location": "Section 1.3",
+    "description": "Let $X_1, \\ldots, X_n$ be independent random variables such that $\\mathbb{E}(X_i)\n= 0$ and $X_i \\sim \\mathsf{subE}(\\lambda)$. Define $\\bar{X} = \\frac{1}{n} \\sum_{i=1}^{n}\nX_i$. Then for any $t > 0$ we have $$\\mathbb{P}(\\bar{X} > t) \\vee \\mathbb{P}(\\bar{X}\n< -t) \\le \\exp\\left[-\\frac{n}{2}\\left(\\frac{t^2}{\\lambda^2} \\wedge \\frac{t}{\\lambda}\\right)\\right].$$",
+    "number_key": "theorem_1_13"
+  },
+  {
+    "target_id": "hds.target.6b179c0140a4",
+    "index": 14,
+    "kind": "theorem",
+    "name": "Theorem 1.14",
+    "location": "Section 1.4",
+    "description": "Let $X_1, \\ldots, X_N$ be $N$ random variables such that $X_i \\sim\n\\mathsf{subG}(\\sigma^2)$. Then $$\\mathbb{E}[\\max_{1 \\le i \\le N} X_i] \\le \\sigma\n\\sqrt{2 \\log(N)}, \\quad \\text{and} \\quad \\mathbb{E}[\\max_{1 \\le i \\le N} |X_i|]\n\\le \\sigma \\sqrt{2 \\log(2N)}.$$ Moreover, for any $t > 0$, $$\\mathbb{P}\\big(\\max_{1\\le\ni\\le N}X_i>t\\big)\\le Ne^{-\\frac{t^2}{2\\sigma^2}}, \\quad \\text{and} \\quad \\mathbb{P}\\big(\\max_{1\\le\ni\\le N}|X_i|>t\\big)\\le 2Ne^{-\\frac{t^2}{2\\sigma^2}}.$$ Note that the random variables\nin this theorem need not be independent.",
+    "number_key": "theorem_1_14"
+  },
+  {
+    "target_id": "hds.target.ace93bd943e5",
+    "index": 15,
+    "kind": "lemma",
+    "name": "Lemma 1.15",
+    "location": "Section 1.4",
+    "description": "Consider a linear form $x \\mapsto c^\\top x$, $x, c \\in \\mathbb{R}^d$.\nThen for any convex polytope $\\mathsf{P} \\subset \\mathbb{R}^d$, $$\\max_{x \\in\n\\mathsf{P}} c^\\top x = \\max_{x \\in \\mathcal{V}(\\mathsf{P})} c^\\top x$$ where $\\mathcal{V}(\\mathsf{P})$\ndenotes the set of vertices of $\\mathsf{P}$.",
+    "number_key": "lemma_1_15"
+  },
+  {
+    "target_id": "hds.target.8e3855060057",
+    "index": 16,
+    "kind": "theorem",
+    "name": "Theorem 1.16",
+    "location": "Section 1.4",
+    "description": "Let $\\mathsf{P}$ be a polytope with $N$ vertices $v^{(1)}, \\ldots,\nv^{(N)} \\in \\mathbb{R}^d$ and let $X \\in \\mathbb{R}^d$ be a random vector such\nthat $[v^{(i)}]^\\top X$, $i = 1, \\ldots, N$ are sub-Gaussian random variables\nwith variance proxy $\\sigma^2$. Then $$\\mathbb{E}[\\max_{\\theta \\in \\mathsf{P}}\n\\theta^\\top X] \\le \\sigma \\sqrt{2 \\log(N)}, \\quad \\text{and} \\quad \\mathbb{E}[\\max_{\\theta\n\\in \\mathsf{P}} |\\theta^\\top X|] \\le \\sigma \\sqrt{2 \\log(2N)}.$$ Moreover, for\nany $t > 0$, $$\\mathbb{P}\\left(\\max_{\\theta \\in \\mathsf{P}} \\theta^\\top X > t\\right)\n\\le N e^{-\\frac{t^2}{2\\sigma^2}}, \\quad \\text{and} \\quad \\mathbb{P}\\left(\\max_{\\theta\n\\in \\mathsf{P}} |\\theta^\\top X| > t\\right) \\le 2N e^{-\\frac{t^2}{2\\sigma^2}}.$$",
+    "number_key": "theorem_1_16"
+  },
+  {
+    "target_id": "hds.target.1c41e64a31e0",
+    "index": 17,
+    "kind": "definition",
+    "name": "Definition 1.17",
+    "location": "Section 1.4",
+    "description": "Fix $K \\subset \\mathbb{R}^d$ and $\\varepsilon > 0$. A set $\\mathcal{N}$\nis called an $\\varepsilon$-net of $K$ with respect to a distance $d(\\cdot, \\cdot)$\non $\\mathbb{R}^d$, if $\\mathcal{N} \\subset K$ and for any $z \\in K$, there exists\n$x \\in \\mathcal{N}$ such that $d(x, z) \\le \\varepsilon$.",
+    "number_key": "definition_1_17"
+  },
+  {
+    "target_id": "hds.target.b23be211ed66",
+    "index": 18,
+    "kind": "lemma",
+    "name": "Lemma 1.18",
+    "location": "Section 1.4",
+    "description": "Fix $\\varepsilon \\in (0,1)$. Then the unit Euclidean ball $\\mathcal{B}_2$\nhas an $\\varepsilon$-net $\\mathcal{N}$ with respect to the Euclidean distance\nof cardinality $|\\mathcal{N}| \\le (3/\\varepsilon)^d$.",
+    "number_key": "lemma_1_18"
+  },
+  {
+    "target_id": "hds.target.595b76b58ded",
+    "index": 19,
+    "kind": "theorem",
+    "name": "Theorem 1.19",
+    "location": "Section 1.4",
+    "description": "Let $X \\in \\mathbb{R}^d$ be a sub-Gaussian random vector with variance\nproxy $\\sigma^2$. Then $$\\mathbb{E}[\\max_{\\theta \\in \\mathcal{B}_2} \\theta^\\top\nX] = \\mathbb{E}[\\max_{\\theta \\in \\mathcal{B}_2} |\\theta^\\top X|] \\le 4\\sigma\\sqrt{d}.$$\nMoreover, for any $\\delta > 0$, with probability $1 - \\delta$, it holds $$\\max_{\\theta\n\\in \\mathcal{B}_2} \\theta^\\top X = \\max_{\\theta \\in \\mathcal{B}_2} |\\theta^\\top\nX| \\le 4\\sigma \\sqrt{d} + 2\\sigma \\sqrt{2\\log(1/\\delta)}.$$",
+    "number_key": "theorem_1_19"
+  },
+  {
+    "target_id": "hds.target.2585e064b01a",
+    "index": 20,
+    "kind": "proposition",
+    "name": "Proposition 2.1",
+    "location": "Chapter 2, Section 2.2",
+    "description": "The least squares estimator $\\hat{\\mu}^{\\text{LS}} = \\mathbb{X}\\hat{\\theta}^{\\text{LS}}\n\\in \\mathbb{R}^n$ satisfies $\\mathbb{X}^{\\top} \\hat{\\mu}^{\\text{LS}} = \\mathbb{X}^{\\top}\nY$. Moreover, $\\hat{\\theta}^{\\text{LS}}$ can be chosen to be $\\hat{\\theta}^{\\text{LS}}\n= (\\mathbb{X}^{\\top} \\mathbb{X})^{\\dagger} \\mathbb{X}^{\\top} Y$, where $(\\mathbb{X}^{\\top}\\mathbb{X})^{\\dagger}$\ndenotes the Moore-Penrose pseudoinverse of $\\mathbb{X}^{\\top}\\mathbb{X}$.",
+    "number_key": "proposition_2_1"
+  },
+  {
+    "target_id": "hds.target.b64cfd32d976",
+    "index": 21,
+    "kind": "theorem",
+    "name": "Theorem 2.2",
+    "location": "Chapter 2, Section 2.2",
+    "description": "Assume that the linear model (2.2) holds where $\\varepsilon \\sim \\mathsf{subG}_n(\\sigma^2)$.\nThen the least squares estimator $\\hat{\\theta}^{\\mathrm{LS}}$ satisfies $\\mathbb{E}\\left[\\mathsf{MSE}(\\mathbb{X}\\hat{\\theta}^{\\mathrm{LS}})\\right]\n= \\frac{1}{n}\\mathbb{E}|\\mathbb{X}\\hat{\\theta}^{\\mathrm{LS}} - \\mathbb{X}\\theta^*|_2^2\n\\lesssim \\sigma^2 \\frac{r}{n}$, where $r = \\operatorname{rank}(\\mathbb{X}^{\\top}\\mathbb{X})$.\nMoreover, for any $\\delta > 0$, with probability $1 - \\delta$, it holds $\\mathsf{MSE}(\\mathbb{X}\\hat{\\theta}^{\\mathrm{LS}})\n\\lesssim \\sigma^2 \\frac{r + \\log(1/\\delta)}{n}$.",
+    "number_key": "theorem_2_2"
+  },
+  {
+    "target_id": "hds.target.972588151c42",
+    "index": 22,
+    "kind": "theorem",
+    "name": "Theorem 2.4",
+    "location": "Chapter 2, Section 2.2",
+    "description": "Let $K = \\mathcal{B}_1$ be the unit $\\ell_1$ ball of $\\mathbb{R}^d$,\n$d \\geq 2$ and assume that $\\theta^* \\in \\mathcal{B}_1$. Moreover, assume the\nconditions of Theorem 2.2 and that the columns of $\\mathbb{X}$ are normalized\nin such a way that $\\max_j |\\mathbb{X}_j|_2 \\leq \\sqrt{n}$. Then the constrained\nleast squares estimator $\\hat{\\theta}_{\\mathcal{B}_1}^{\\mathrm{LS}}$ satisfies\n$\\mathbb{E}\\left[\\mathsf{MSE}(\\mathbb{X}\\hat{\\theta}_{\\mathcal{B}_1}^{\\mathrm{LS}})\\right]\n= \\frac{1}{n}\\mathbb{E}|\\mathbb{X}\\hat{\\theta}_{\\mathcal{B}_1}^{\\mathrm{LS}} -\n\\mathbb{X}\\theta^*|_2^2 \\lesssim \\sigma\\sqrt{\\frac{\\log d}{n}}$. Moreover, for\nany $\\delta > 0$, with probability $1 - \\delta$, it holds $\\mathsf{MSE}(\\mathbb{X}\n\\hat{\\theta}^{\\mathrm{LS}}_{\\mathcal{B}_1}) \\lesssim \\sigma \\sqrt{\\frac{\\log(d/\\delta)}{n}}$.",
+    "number_key": "theorem_2_4"
+  },
+  {
+    "target_id": "hds.target.08eba769c24f",
+    "index": 23,
+    "kind": "theorem",
+    "name": "Theorem 2.6",
+    "location": "Chapter 2, Section 2.2",
+    "description": "Fix a positive integer $k \\leq d/2$. Let $K = \\mathcal{B}_0(k)$ be\nthe set of $k$-sparse vectors of $\\mathbb{R}^d$ and assume that $\\theta^* \\in\n\\mathcal{B}_0(k)$. Moreover, assume the conditions of Theorem 2.2. Then, for any\n$\\delta > 0$, with probability $1 - \\delta$, it holds $\\mathsf{MSE}(\\mathbb{X}\\hat{\\theta}_{\\mathcal{B}_0(k)}^{\\mathrm{LS}})\n\\lesssim \\frac{\\sigma^2}{n} \\log \\binom{d}{2k} + \\frac{\\sigma^2 k}{n} + \\frac{\\sigma^2}{n}\n\\log(1/\\delta)$.",
+    "number_key": "theorem_2_6"
+  },
+  {
+    "target_id": "hds.target.a9277d0512b7",
+    "index": 24,
+    "kind": "lemma",
+    "name": "Lemma 2.7",
+    "location": "Chapter 2, Section 2.2",
+    "description": "For any integers $1 \\le k \\le n$, it holds $\\binom{n}{k} \\le \\left(\\frac{en}{k}\\right)^k$.",
+    "number_key": "lemma_2_7"
+  },
+  {
+    "target_id": "hds.target.6d3e7d7d99d2",
+    "index": 25,
+    "kind": "corollary",
+    "name": "Corollary 2.8",
+    "location": "Chapter 2, Section 2.2",
+    "description": "Under the assumptions of Theorem 2.6, for any $\\delta > 0$, with probability\n$1 - \\delta$, it holds $\\mathsf{MSE}(\\mathbb{X}\\hat{\\theta}_{\\mathcal{B}_0(k)}^{\\mathrm{LS}})\n\\lesssim \\frac{\\sigma^2 k}{n} \\log\\left(\\frac{ed}{2k}\\right) + \\frac{\\sigma^2\nk}{n} \\log(6) + \\frac{\\sigma^2}{n} \\log(1/\\delta)$.",
+    "number_key": "corollary_2_8"
+  },
+  {
+    "target_id": "hds.target.ea338c9f383b",
+    "index": 26,
+    "kind": "corollary",
+    "name": "Corollary 2.9",
+    "location": "Chapter 2, Section 2.2",
+    "description": "Under the assumptions of Theorem 2.6, $\\mathbb{E} \\big[ \\mathsf{MSE}\n(\\mathbb{X} \\hat{\\theta}_{\\mathcal{B}_0(k)}^{\\mathrm{LS}}) \\big] \\lesssim \\frac{\\sigma^2\nk}{n} \\log \\left( \\frac{ed}{k} \\right)$.",
+    "number_key": "corollary_2_9"
+  },
+  {
+    "target_id": "hds.target.1fb45361155f",
+    "index": 27,
+    "kind": "definition",
+    "name": "Definition 2.10",
+    "location": "Chapter 2, Section 2.3",
+    "description": "The hard thresholding estimator with threshold 2τ > 0 is denoted by\nθ̂^HRD and has coordinates θ̂_j^HRD = y_j if |y_j| > 2τ, and θ̂_j^HRD = 0 if |y_j|\n≤ 2τ, for j = 1, …, d. In short, we can write θ̂_j^HRD = y_j 𝟙(|y_j| > 2τ).",
+    "number_key": "definition_2_10"
+  },
+  {
+    "target_id": "hds.target.c816f6788eb2",
+    "index": 28,
+    "kind": "theorem",
+    "name": "Theorem 2.11",
+    "location": "Chapter 2, Section 2.3",
+    "description": "Consider the linear regression model (2.2) under the assumption ORT\nor, equivalently, the sub-Gaussian sequence model (2.9). Then the hard thresholding\nestimator θ̂^HRD with threshold 2τ = 2σ√(2 log(2d/δ)/n) enjoys the following two\nproperties on the same event A such that P(A) ≥ 1 − δ: (i) If |θ*|_0 = k, MSE(X\nθ̂^HRD) = |θ̂^HRD − θ*|_2^2 ≲ σ² k log(2d/δ)/n. (ii) If min_{j ∈ supp(θ*)} |θ*_j|\n> 3τ, then supp(θ̂^HRD) = supp(θ*).'",
+    "number_key": "theorem_2_11"
+  },
+  {
+    "target_id": "hds.target.ec3786e2f571",
+    "index": 29,
+    "kind": "definition",
+    "name": "Definition 2.12",
+    "location": "Chapter 2, Section 2.4",
+    "description": "Fix τ > 0 and assume the linear regression model (2.2). The BIC estimator\nof θ* is defined by any θ̂^BIC such that θ̂^BIC ∈ argmin_{θ ∈ R^d} { (1/n)|Y −\nXθ|_2^2 + τ²|θ|_0 }. Moreover the Lasso estimator of θ* is defined by any θ̂^L\nsuch that θ̂^L ∈ argmin_{θ ∈ R^d} { (1/n)|Y − Xθ|_2^2 + 2τ|θ|_1 }.",
+    "number_key": "definition_2_12"
+  },
+  {
+    "target_id": "hds.target.33aa48ddfe33",
+    "index": 30,
+    "kind": "theorem",
+    "name": "Theorem 2.14",
+    "location": "Chapter 2, Section 2.4",
+    "description": "Assume that the linear model (2.2) holds where ε ~ subG_n(σ²). Then,\nthe BIC estimator θ̂^BIC with regularization parameter τ² = 16 log(6) σ²/n + 32\nσ² log(ed)/n satisfies MSE(X θ̂^BIC) = (1/n)|X θ̂^BIC − Xθ*|_2^2 ≲ |θ*|_0 σ² log(ed/δ)/n\nwith probability at least 1 − δ.",
+    "number_key": "theorem_2_14"
+  },
+  {
+    "target_id": "hds.target.2202ec22554b",
+    "index": 31,
+    "kind": "theorem",
+    "name": "Theorem 2.15",
+    "location": "Chapter 2, Section 2.4",
+    "description": "Assume that the linear model (2.2) holds where ε ~ subG_n(σ²). Moreover,\nassume that the columns of X are normalized in such a way that max_j |X_j|_2 ≤\n√n. Then, the Lasso estimator θ̂^L with regularization parameter 2τ = 2σ√(2 log(2d)/n)\n+ 2σ√(2 log(1/δ)/n) satisfies MSE(X θ̂^L) = (1/n)|X θ̂^L − Xθ*|_2^2 ≤ 4|θ*|_1\nσ√(2 log(2d)/n) + 4|θ*|_1 σ√(2 log(1/δ)/n) with probability at least 1 − δ. Moreover,\nthere exists a numerical constant C > 0 such that E[MSE(X θ̂^L)] ≤ C|θ*|_1 σ√(log(2d)/n).",
+    "number_key": "theorem_2_15"
+  },
+  {
+    "target_id": "hds.target.38bf0cd4a4ab",
+    "index": 32,
+    "kind": "proposition",
+    "name": "Proposition 2.16",
+    "location": "Chapter 2, Section 2.4",
+    "description": "Let X ∈ R^{n×d} be a random matrix with entries X_{ij}, i = 1, …, n,\nj = 1, …, d that are i.i.d Rademacher (±1) random variables. Then, X has incoherence\nk with probability 1 − δ as soon as n ≥ 392k² log(1/δ) + 784k² log(d). It implies\nthat there exist matrices that satisfy Assumption INC(k) for n ≳ k² log(d).",
+    "number_key": "proposition_2_16"
+  },
+  {
+    "target_id": "hds.target.da103568c508",
+    "index": 33,
+    "kind": "lemma",
+    "name": "Lemma 2.17",
+    "location": "Chapter 2, Section 2.4",
+    "description": "Fix a positive integer k ≤ d and assume that X satisfies assumption\nINC(k). Then, for any S ⊂ {1, …, d} such that |S| ≤ k and any θ ∈ R^d that satisfies\nthe cone condition |θ_{S^c}|_1 ≤ 3|θ_S|_1, it holds |θ_S|_2^2 ≤ 2 |Xθ|_2^2 / n.",
+    "number_key": "lemma_2_17"
+  },
+  {
+    "target_id": "hds.target.6d7c896051f4",
+    "index": 34,
+    "kind": "theorem",
+    "name": "Theorem 2.18",
+    "location": "Chapter 2, Section 2.4",
+    "description": "Fix n ≥ 2. Assume that the linear model (2.2) holds where ε ~ subG_n(σ²).\nMoreover, assume that |θ*|_0 ≤ k and that X satisfies assumption INC(k). Then\nthe Lasso estimator θ̂^L with regularization parameter 2τ = 8σ√(log(2d)/n) + 8σ√(log(1/δ)/n)\nsatisfies MSE(X θ̂^L) = (1/n)|X θ̂^L − Xθ*|_2^2 ≲ kσ² log(2d/δ)/n and |θ̂^L −\nθ*|_1 ≲ kσ√(log(2d/δ)/n) with probability at least 1 − δ. Moreover, E[MSE(X θ̂^L)]\n≲ kσ² log(2d)/n and E[|θ̂^L − θ*|_1] ≲ kσ√(log(2d/δ)/n).",
+    "number_key": "theorem_2_18"
+  },
+  {
+    "target_id": "hds.target.2b6412e8fda2",
+    "index": 35,
+    "kind": "axiom",
+    "name": "Assumption ORT",
+    "location": "Section 2.3, The sub-Gaussian Sequence Model",
+    "description": "The design matrix satisfies X^T X / n = I_d, where I_d denotes the\nidentity matrix of R^d.",
+    "number_key": ""
+  },
+  {
+    "target_id": "hds.target.c57536789c51",
+    "index": 36,
+    "kind": "axiom",
+    "name": "Assumption INC(k)",
+    "location": "Section 2.4, Incoherence",
+    "description": "We say that the design matrix X has incoherence k for some integer\nk > 0 if |X^T X/n − I_d|_∞ ≤ 1/(14k), where |A|_∞ denotes the largest element\nof A in absolute value. Equivalently: 1. For all j = 1, …, d, ||X_j|_2^2/n − 1|\n≤ 1/(14k). 2. For all 1 ≤ i, j ≤ d, i ≠ j, |X_i^T X_j / n| ≤ 1/(14k).'",
+    "number_key": ""
+  },
+  {
+    "target_id": "hds.target.a46612a83e08",
+    "index": 37,
+    "kind": "definition",
+    "name": "Definition 3.2",
+    "location": "Chapter 3, Section 3.1",
+    "description": "Let R(·) be a risk function and let H = {φ₁, ..., φ_M} be a dictionary\nof functions from ℝ^d to ℝ. Let K be a subset of ℝ^M. The oracle on K with respect\nto R is defined by φ_{θ̄}, where θ̄ ∈ K is such that R(φ_{θ̄}) ≤ R(φ_θ), for all\nθ ∈ K. Moreover, R_K = R(φ_{θ̄}) is called oracle risk on K. An estimator f̂ is\nsaid to satisfy an oracle inequality (over K) with remainder term φ in expectation\n(resp. with high probability) if there exists a constant C ≥ 1 such that 𝔼R(f̂)\n≤ C inf_{θ∈K} R(φ_θ) + φ_{n,M}(K), or ℙ{R(f̂) ≤ C inf_{θ∈K} R(φ_θ) + φ_{n,M,δ}(K)}\n≥ 1 − δ, for all δ > 0, respectively. If C = 1, the oracle inequality is sometimes\ncalled exact.",
+    "number_key": "definition_3_2"
+  },
+  {
+    "target_id": "hds.target.6360bd5d6c50",
+    "index": 38,
+    "kind": "theorem",
+    "name": "Theorem 3.3",
+    "location": "Chapter 3, Section 3.1",
+    "description": "Assume the general regression model (3.1) with ε ~ subG_n(σ²). Then,\nthe least squares estimator θ̂^{LS} satisfies for some numerical constant C >\n0, MSE(φ_{θ̂^{LS}}) ≤ inf_{θ∈ℝ^M} MSE(φ_θ) + Cσ²M/n · log(1/δ) with probability\nat least 1 − δ.",
+    "number_key": "theorem_3_3"
+  },
+  {
+    "target_id": "hds.target.11bfea5807dc",
+    "index": 39,
+    "kind": "theorem",
+    "name": "Theorem 3.4",
+    "location": "Chapter 3, Section 3.1",
+    "description": "Assume the general regression model (3.1) with ε ~ subG_n(σ²). Then,\nthe BIC estimator θ̂^{BIC} with regularization parameter τ² = 16σ²/(αn) log(6eM),\nα ∈ (0,1) satisfies for some numerical constant C > 0, MSE(φ_{θ̂^{BIC}}) ≤ inf_{θ∈ℝ^M}\n{ (1+α)/(1−α) MSE(φ_θ) + Cσ²/(α(1−α)n) |θ|₀ log(eM) } + Cσ²/(α(1−α)n) log(1/δ)\nwith probability at least 1 − δ.",
+    "number_key": "theorem_3_4"
+  },
+  {
+    "target_id": "hds.target.050d376e055d",
+    "index": 40,
+    "kind": "theorem",
+    "name": "Theorem 3.5",
+    "location": "Chapter 3, Section 3.1",
+    "description": "Assume the general regression model (3.1) with ε ~ subG_n(σ²). Moreover,\nassume that there exists an integer k such that the matrix Φ satisfies assumption\nINC(k). Then, the Lasso estimator θ̂^L with regularization parameter 2τ = 8σ√(2log(2M)/n)\n+ 8σ√(2log(1/δ)/n) satisfies for some numerical constant C, MSE(φ_{θ̂^L}) ≤ inf_{θ∈ℝ^M,\n|θ|₀≤k} { (1+α)/(1−α) MSE(φ_θ) + Cσ²/(α(1−α)n) |θ|₀ log(eM) } + Cσ²/(α(1−α)n)\nlog(1/δ) with probability at least 1 − δ.",
+    "number_key": "theorem_3_5"
+  },
+  {
+    "target_id": "hds.target.343fb3894df8",
+    "index": 41,
+    "kind": "theorem",
+    "name": "Theorem 3.6",
+    "location": "Chapter 3, Section 3.1",
+    "description": "Let {φ₁, ..., φ_M} be a dictionary normalized in such a way that max_{1≤j≤M}\n|φ_j|₂ ≤ D√n. Then for any integer k such that 1 ≤ k ≤ M and any positive R, we\nhave min_{θ∈ℝ^M, |θ|₀≤2k} MSE(φ_θ) ≤ min_{θ∈ℝ^M, |θ|₁≤R} MSE(φ_θ) + D²R²/k.",
+    "number_key": "theorem_3_6"
+  },
+  {
+    "target_id": "hds.target.1738462aecbb",
+    "index": 42,
+    "kind": "corollary",
+    "name": "Corollary 3.7",
+    "location": "Chapter 3, Section 3.1",
+    "description": "Assume that the assumptions of Theorem 3.4 hold and that the dictionary\n{φ₁, ..., φ_M} is normalized in such a way that max_{1≤j≤M} |φ_j|₂ ≤ √n. Then\nthere exists a constant C > 0 such that the BIC estimator satisfies MSE(φ_{θ̂^{BIC}})\n≤ inf_{θ∈ℝ^M} { 2 MSE(φ_θ) + C [ σ²|θ|₀log(eM)/n ∧ σ|θ|₁√(log(eM)/n) ] } + Cσ²log(1/δ)/n\nwith probability at least 1 − δ.",
+    "number_key": "corollary_3_7"
+  },
+  {
+    "target_id": "hds.target.abbc8c223f9b",
+    "index": 43,
+    "kind": "definition",
+    "name": "Definition 3.10",
+    "location": "Chapter 3, Section 3.2",
+    "description": "Fix parameters β ∈ {1, 2, ...} and L > 0. The Sobolev class of functions\nW(β, L) is defined by W(β, L) = { f : [0,1] → ℝ : f ∈ L₂([0,1]), f^(β−1) is absolutely\ncontinuous and ∫₀¹ [f^(β)]² ≤ L², f^(j)(0) = f^(j)(1), j = 0, ..., β−1 }.'",
+    "number_key": "definition_3_10"
+  },
+  {
+    "target_id": "hds.target.036398a7c57d",
+    "index": 44,
+    "kind": "theorem",
+    "name": "Theorem 3.11",
+    "location": "Chapter 3, Section 3.2",
+    "description": "Fix β ≥ 1 and L > 0 and let {φ_j}_{j≥1} denote the trigonometric basis\nof L₂([0,1]). Moreover, let {a_j}_{j≥1} be defined as in (3.9). A function f ∈\nW(β, L) can be represented as f = Σ_{j=1}^∞ θ_j* φ_j, where the sequence {θ_j*}_{j≥1}\nbelongs to the Sobolev ellipsoid of ℓ₂(ℕ) defined by Θ(β, Q) = { θ ∈ ℓ₂(ℕ) : Σ_{j=1}^∞\na_j² θ_j² ≤ Q } for Q = L²/π^{2β}.'",
+    "number_key": "theorem_3_11"
+  },
+  {
+    "target_id": "hds.target.e7058a120b23",
+    "index": 45,
+    "kind": "proposition",
+    "name": "Proposition 3.12",
+    "location": "Chapter 3, Section on Sobolev classes and ellipsoids",
+    "description": "The Sobolev ellipsoids enjoy the following properties: (i) For any\nQ > 0, 0 < β'' < β implies Θ(β, Q) ⊂ Θ(β'', Q). (ii) For any Q > 0, β > 1/2 implies\nf is continuous.'",
+    "number_key": "proposition_3_12"
+  },
+  {
+    "target_id": "hds.target.82507529230f",
+    "index": 46,
+    "kind": "lemma",
+    "name": "Lemma 3.13",
+    "location": "Chapter 3, Section on Sobolev classes and ellipsoids",
+    "description": "Assume that {X₁, …, Xₙ} is the regular design, i.e., Xᵢ = (i-1)/n.\nThen, for any M ≤ n-1, the design matrix Φ = {φⱼ(Xᵢ)}_{1≤i≤n, 1≤j≤M} satisfies\nthe ORT condition.",
+    "number_key": "lemma_3_13"
+  },
+  {
+    "target_id": "hds.target.65e7a3ef32b4",
+    "index": 47,
+    "kind": "lemma",
+    "name": "Lemma 3.14",
+    "location": "Chapter 3, Section on Integrated squared error",
+    "description": "For any integer M ≥ 1, and f ∈ Θ(β, Q), β > 1/2, it holds ‖φ_{θ*}^M\n- f‖_{L₂}² = ∑_{j>M} |θⱼ*|² ≤ QM^{-2β}, and for M = n-1, we have |φ_{θ*}^{n-1}\n- f|₂² ≤ 2n(∑_{j≥n} |θⱼ*|)² ≲ Qn^{2-2β}.",
+    "number_key": "lemma_3_14"
+  },
+  {
+    "target_id": "hds.target.0cb4784694ee",
+    "index": 48,
+    "kind": "theorem",
+    "name": "Theorem 3.15",
+    "location": "Chapter 3, Section on Integrated squared error",
+    "description": "Fix β ≥ (1+√5)/4 ≃ 0.81, Q > 0, δ > 0 and assume the general regression\nmodel (3.1) with f ∈ Θ(β, Q) and ε ~ subGₙ(σ²), σ² ≤ 1. Moreover, let M = ⌈n^{1/(2β+1)}⌉\nand n be large enough so that M ≤ n-1. Then the least squares estimator θ̂^{LS}\ndefined in (3.2) with {φⱼ}_{j=1}^M being the trigonometric basis, satisfies with\nprobability 1-δ, for n large enough, ‖φ_{θ̂^{LS}} - f‖_{L₂([0,1])}² ≲ n^{-2β/(2β+1)}\n+ σ² log(1/δ)/n, where the constant factors may depend on β, Q and σ. Moreover\n𝔼‖φ_{θ̂^{LS}} - f‖_{L₂([0,1])}² ≲ n^{-2β/(2β+1)}.",
+    "number_key": "theorem_3_15"
+  },
+  {
+    "target_id": "hds.target.f5e34d72ca1d",
+    "index": 49,
+    "kind": "corollary",
+    "name": "Corollary 3.16",
+    "location": "Chapter 3, Section on Adaptive estimation",
+    "description": "Fix β ≥ (1+√5)/4 ≃ 0.81, Q > 0, δ > 0 and n large enough to ensure\nn-1 ≥ ⌈n^{1/(2β+1)}⌉, assume the general regression model (3.1) with f ∈ Θ(β,\nQ) and ε ~ subGₙ(σ²), σ² ≤ 1. Let {φⱼ}_{j=1}^{n-1} be the trigonometric basis.\nDenote by φ_{θ̂^{BIC}}^{n-1} (resp. φ_{θ̂^{L}}^{n-1}) the BIC (resp. Lasso) estimator\ndefined in (3.3) (resp. (3.4)) over ℝ^{n-1} with regularization parameter given\nby (3.5) (resp. (3.6)). Then φ_{θ̂}^{n-1}, where θ̂ ∈ {θ̂^{BIC}, θ̂^{L}} satisfies\nwith probability 1-δ, ‖φ_{θ̂}^{n-1} - f‖_{L₂([0,1])}² ≲ n^{-2β/(2β+1)} + σ² log(1/δ)/n.\nMoreover, 𝔼‖φ_{θ̂}^{n-1} - f‖_{L₂([0,1])}² ≲ σ²(log n / n)^{2β/(2β+1)}, where\nconstant factors may depend on β and Q.",
+    "number_key": "corollary_3_16"
+  },
+  {
+    "target_id": "hds.target.4d9b998e54d5",
+    "index": 50,
+    "kind": "definition",
+    "name": "Definition 4.1",
+    "location": "Chapter 4, Section 4.2 (Multivariate regression, Sub-Gaussian matrix model)",
+    "description": "The singular value thresholding estimator with threshold 2τ ≥ 0 is\ndefined by Θ̂^{SVT} = ∑ⱼ λ̂ⱼ 𝕀(|λ̂ⱼ| > 2τ) ûⱼ v̂ⱼ^⊤, where y = ∑ⱼ λ̂ⱼ ûⱼ v̂ⱼ^⊤\nis the SVD of the observed matrix y.",
+    "number_key": "definition_4_1"
+  },
+  {
+    "target_id": "hds.target.2f26598b0583",
+    "index": 51,
+    "kind": "lemma",
+    "name": "Lemma 4.2",
+    "location": "Chapter 4, Section 4.2 (Multivariate regression, Sub-Gaussian matrix model)",
+    "description": "Let A be a d × T random matrix such that A ~ subG_{d×T}(σ²). Then ‖A‖_{op}\n≤ 4σ√(log(12)(d ∨ T)) + 2σ√(2 log(1/δ)) with probability 1 - δ.",
+    "number_key": "lemma_4_2"
+  },
+  {
+    "target_id": "hds.target.08fc1c907b8b",
+    "index": 52,
+    "kind": "theorem",
+    "name": "Theorem 4.3",
+    "location": "Chapter 4",
+    "description": "Consider the multivariate linear regression model (4.1) under the assumption\nORT or, equivalently, the sub-Gaussian matrix model (4.2). Then, the singular\nvalue thresholding estimator $\\hat{\\Theta}^{\\text{SVT}}$ with threshold $$2\\tau\n= 8\\sigma\\sqrt{\\frac{\\log(12)(d\\vee T)}{n}} + 4\\sigma\\sqrt{\\frac{2\\log(1/\\delta)}{n}},$$\nsatisfies $$\\frac{1}{n} \\|\\mathbb{X}\\hat{\\Theta}^{\\text{SVT}} - \\mathbb{X}\\Theta^*\\|_F^2\n= \\|\\hat{\\Theta}^{\\text{SVT}} - \\Theta^*\\|_F^2 \\le 144 \\operatorname{rank}(\\Theta^*)\n\\tau^2 \\lesssim \\frac{\\sigma^2 \\operatorname{rank}(\\Theta^*)}{n} \\left( d \\vee\nT + \\log(1/\\delta) \\right).$$ with probability $1 - \\delta$.",
+    "number_key": "theorem_4_3"
+  },
+  {
+    "target_id": "hds.target.03fd48129459",
+    "index": 53,
+    "kind": "theorem",
+    "name": "Theorem 4.4",
+    "location": "Chapter 4",
+    "description": "Consider the multivariate linear regression model (4.1). Then, the\nestimator by rank penalization $\\hat{\\Theta}^{RK}$ with regularization parameter\n$\\tau^2$, where $\\tau$ is defined in (4.3) satisfies $$\\frac{1}{n} \\|\\mathbb{X}\\hat{\\Theta}^{\\mathrm{RK}}\n- \\mathbb{X}\\Theta^*\\|_F^2 \\leq 8 \\operatorname{rank}(\\Theta^*) \\tau^2 \\lesssim\n\\frac{\\sigma^2 \\operatorname{rank}(\\Theta^*)}{n} \\left( d \\vee T + \\log(1/\\delta)\n\\right).$$ with probability $1 - \\delta$.",
+    "number_key": "theorem_4_4"
+  },
+  {
+    "target_id": "hds.target.7f44fa798b85",
+    "index": 54,
+    "kind": "theorem",
+    "name": "Theorem 4.6",
+    "location": "Section 4.3",
+    "description": "Let $X_1, \\ldots, X_n$ be $n$ i.i.d. sub-Gaussian random vectors such\nthat $\\mathbb{E}[XX^{\\top}] = \\Sigma$ and $X \\sim \\mathsf{subG}_d(\\|\\Sigma\\|_{\\mathrm{op}})$.\nThen $$\\|\\hat{\\Sigma} - \\Sigma\\|_{\\text{op}} \\lesssim \\|\\Sigma\\|_{\\text{op}} \\left(\\sqrt{\\frac{d\n+ \\log(1/\\delta)}{n}} \\vee \\frac{d + \\log(1/\\delta)}{n}\\right),$$ with probability\n$1 - \\delta$.",
+    "number_key": "theorem_4_6"
+  },
+  {
+    "target_id": "hds.target.5c194c13637f",
+    "index": 55,
+    "kind": "definition",
+    "name": "Definition 4.7",
+    "location": "Section 4.4",
+    "description": "A covariance matrix $\\Sigma \\in \\mathbb{R}^{d \\times d}$ is said to\nsatisfy the spiked covariance model if it is of the form $$\\Sigma = \\theta v v^{\\top}\n+ I_d$$ where $\\theta > 0$ and $v \\in \\mathcal{S}^{d-1}$. The vector $v$ is called\nthe spike.",
+    "number_key": "definition_4_7"
+  },
+  {
+    "target_id": "hds.target.d32dd431d057",
+    "index": 56,
+    "kind": "theorem",
+    "name": "Theorem 4.8 (Davis-Kahan $\\sin(\\theta)$ theorem)",
+    "location": "Section 4.4",
+    "description": "Let $\\Sigma$ satisfy the spiked covariance model and let $\\tilde{\\Sigma}$\nbe any PSD estimator of $\\Sigma$. Let $\\tilde{v}$ denote the largest eigenvector\nof $\\tilde{\\Sigma}$. Then we have $$\\min_{\\varepsilon \\in \\{\\pm 1\\}} |\\varepsilon\n\\tilde{v} - v|_2^2 \\leq 2 \\sin^2 \\left( \\angle (\\tilde{v}, v) \\right) \\leq \\frac{8}{\\theta^2}\n\\|\\tilde{\\Sigma} - \\Sigma\\|_{\\mathrm{op}}^2.$$",
+    "number_key": "theorem_4_8"
+  },
+  {
+    "target_id": "hds.target.164e2ace0a8e",
+    "index": 57,
+    "kind": "corollary",
+    "name": "Corollary 4.9",
+    "location": "Section 4.4",
+    "description": "Let $X_1, \\ldots, X_n$ be $n$ i.i.d. copies of a sub-Gaussian random\nvector $X \\in \\mathbb{R}^d$ such that $\\mathbb{E}[XX^\\top] = \\Sigma$ and $X \\sim\n\\mathsf{subG}_d(\\|\\Sigma\\|_{\\mathsf{op}})$. Assume further that $\\Sigma = \\theta\nvv^\\top + I_d$ satisfies the spiked covariance model. Then, the largest eigenvector\n$\\hat{v}$ of the empirical covariance matrix $\\hat{\\Sigma}$ satisfies, $$\\min_{\\varepsilon\n\\in \\{\\pm 1\\}} |\\varepsilon \\hat{v} - v|_2 \\lesssim \\frac{1+\\theta}{\\theta} \\Big(\n\\sqrt{\\frac{d + \\log(1/\\delta)}{n}} \\vee \\frac{d + \\log(1/\\delta)}{n} \\Big)$$\nwith probability $1 - \\delta$.",
+    "number_key": "corollary_4_9"
+  },
+  {
+    "target_id": "hds.target.a1ba7ceb70eb",
+    "index": 58,
+    "kind": "theorem",
+    "name": "Theorem 4.10",
+    "location": "Section 4.4",
+    "description": "Let $X_1, \\ldots, X_n$ be $n$ i.i.d. copies of a sub-Gaussian random\nvector $X \\in \\mathbb{R}^d$ such that $\\mathbb{E}[XX^\\top] = \\Sigma$ and $X \\sim\n\\mathsf{subG}_d(\\|\\Sigma\\|_{\\mathsf{op}})$. Assume further that $\\Sigma = \\theta\nvv^\\top + I_d$ satisfies the spiked covariance model for $v$ such that $|v|_0\n= k \\le d/2$. Then, the $k$-sparse largest eigenvector $\\hat{v}$ of the empirical\ncovariance matrix satisfies, $$\\min_{\\varepsilon \\in \\{\\pm 1\\}} |\\varepsilon \\hat{v}\n- v|_2 \\lesssim \\frac{1 + \\theta}{\\theta} \\Big( \\sqrt{\\frac{k \\log(ed/k) + \\log(1/\\delta)}{n}}\n\\vee \\frac{k \\log(ed/k) + \\log(1/\\delta)}{n} \\Big)$$ with probability $1 - \\delta$.",
+    "number_key": "theorem_4_10"
+  },
+  {
+    "target_id": "hds.target.a45984ead902",
+    "index": 59,
+    "kind": "definition",
+    "name": "Definition 5.1",
+    "location": "Section 5.1",
+    "description": "We say that an estimator $\\hat{\\theta}_n$ is minimax optimal over $\\Theta$\nif it satisfies (5.2) and there exists $C' > 0$ such that $$\\inf_{\\hat{\\theta}}\n\\sup_{\\theta \\in \\Theta} \\mathbb{E}_{\\theta} \\left[ \\phi^{-1}(\\Theta) |\\hat{\\theta}\n- \\theta|_{2}^{2} \\right] \\ge C'$$ where the infimum is taken over all estimators\n(i.e., measurable functions of $\\mathbf{Y}$). Moreover, $\\phi(\\Theta)$ is called\nminimax rate of estimation over $\\Theta$.",
+    "number_key": "definition_5_1"
+  },
+  {
+    "target_id": "hds.target.118e8960afe7",
+    "index": 60,
+    "kind": "definition",
+    "name": "Definition 5.2",
+    "location": "Section 5.1",
+    "description": "We say that an estimator $\\hat{\\theta}$ is minimax optimal over $\\Theta$\nif it satisfies either (5.2) or (5.3) and there exists $C' > 0$ such that $$\\inf_{\\hat{\\theta}}\n\\sup_{\\theta \\in \\Theta} \\mathbb{P}_{\\theta} \\left[ |\\hat{\\theta} - \\theta|_2^2\n> \\phi(\\Theta) \\right] \\ge C'$$ where the infimum is taken over all estimators\n(i.e., measurable functions of $\\mathbf{Y}$). Moreover, $\\phi(\\Theta)$ is called\nminimax rate of estimation over $\\Theta$.",
+    "number_key": "definition_5_2"
+  },
+  {
+    "target_id": "hds.target.1a90a58b04ce",
+    "index": 61,
+    "kind": "lemma",
+    "name": "Lemma 5.3 (Neyman-Pearson)",
+    "location": "Section 5.3",
+    "description": "Let $\\mathbb{P}_0$ and $\\mathbb{P}_1$ be two probability measures.\nThen for any test $\\psi$, it holds $$\\mathbb{P}_0(\\psi = 1) + \\mathbb{P}_1(\\psi\n= 0) \\ge \\int \\min(p_0, p_1)$$ Moreover, equality holds for the Likelihood Ratio\ntest $\\psi^* = \\mathbb{I}(p_1 \\geq p_0)$.",
+    "number_key": "lemma_5_3"
+  },
+  {
+    "target_id": "hds.target.a9d7329051a5",
+    "index": 62,
+    "kind": "definition",
+    "name": "Definition-Proposition 5.4",
+    "location": "Section 5.3",
+    "description": "The total variation distance between two probability measures $\\mathbb{P}_0$\nand $\\mathbb{P}_1$ on a measurable space $(\\mathcal{X}, \\mathcal{A})$ is defined\nby $$\\mathsf{TV}(\\mathbb{P}_0, \\mathbb{P}_1) = \\sup_{R \\in \\mathcal{A}} |\\mathbb{P}_0(R)\n- \\mathbb{P}_1(R)| = \\sup_{R \\in \\mathcal{A}} \\left| \\int_{R} p_0 - p_1 \\right|\n= \\frac{1}{2} \\int |p_0 - p_1| = 1 - \\int \\min(p_0, p_1) = 1 - \\inf_{\\psi} \\left[\n\\mathbb{P}_0(\\psi = 1) + \\mathbb{P}_1(\\psi = 0) \\right]$$ where the infimum above\nis taken over all tests.",
+    "number_key": "proposition_5_4"
+  },
+  {
+    "target_id": "hds.target.9ca67d9a4153",
+    "index": 63,
+    "kind": "definition",
+    "name": "Definition 5.5",
+    "location": "Section 5.3",
+    "description": "The Kullback-Leibler divergence between probability measures $\\mathbb{P}_1$\nand $\\mathbb{P}_0$ is given by $$\\mathsf{KL}(\\mathbb{P}_1,\\mathbb{P}_0) = \\begin{cases}\n\\int \\log \\left( \\frac{\\mathrm{d}\\mathbb{P}_1}{\\mathrm{d}\\mathbb{P}_0} \\right)\n\\mathrm{d}\\mathbb{P}_1, & \\text{if } \\mathbb{P}_1 \\ll \\mathbb{P}_0 \\\\ \\infty,\n& \\text{otherwise}. \\end{cases}$$",
+    "number_key": "definition_5_5"
+  },
+  {
+    "target_id": "hds.target.17f684006b76",
+    "index": 64,
+    "kind": "proposition",
+    "name": "Proposition 5.6",
+    "location": "Section 5.3",
+    "description": "Let $\\mathbb{P}$ and $\\mathbb{Q}$ be two probability measures. Then\n1. $\\mathsf{KL}(\\mathbb{P}, \\mathbb{Q}) \\geq 0$. 2. If $\\mathbb{P}$ and $\\mathbb{Q}$\nare product measures, i.e., $\\mathbb{P} = \\bigotimes_{i=1}^{n} \\mathbb{P}_i$ and\n$\\mathbb{Q} = \\bigotimes_{i=1}^{n} \\mathbb{Q}_i$, then $\\mathsf{KL}(\\mathbb{P},\\mathbb{Q})\n= \\sum_{i=1}^{n} \\mathsf{KL}(\\mathbb{P}_{i},\\mathbb{Q}_{i})$.",
+    "number_key": "proposition_5_6"
+  },
+  {
+    "target_id": "hds.target.9fa3f5ad9b3e",
+    "index": 65,
+    "kind": "lemma",
+    "name": "Lemma 5.8 (Pinsker's inequality)",
+    "location": "Section 5.3",
+    "description": "Let $\\mathbb{P}$ and $\\mathbb{Q}$ be two probability measures such\nthat $\\mathbb{P} \\ll \\mathbb{Q}$. Then $$\\mathsf{TV}(\\mathbb{P}, \\mathbb{Q}) \\leq\n\\sqrt{\\mathsf{KL}(\\mathbb{P}, \\mathbb{Q})}$$.",
+    "number_key": "lemma_5_8"
+  },
+  {
+    "target_id": "hds.target.082fa968aef6",
+    "index": 66,
+    "kind": "theorem",
+    "name": "Theorem 5.9",
+    "location": "Section 5.3",
+    "description": "Assume that $\\Theta$ contains two hypotheses $\\theta_0$ and $\\theta_1$\nsuch that $|\\theta_0 - \\theta_1|_2^2 = 8\\alpha^2\\sigma^2/n$ for some $\\alpha \\in\n(0, 1/2)$. Then $$\\inf_{\\hat{\\theta}} \\sup_{\\theta \\in \\Theta} \\mathbb{P}_{\\theta}(|\\hat{\\theta}\n- \\theta|_2^2 \\ge \\frac{2\\alpha\\sigma^2}{n}) \\ge \\frac{1}{2} - \\alpha.$$",
+    "number_key": "theorem_5_9"
+  },
+  {
+    "target_id": "hds.target.30e766bea439",
+    "index": 67,
+    "kind": "theorem",
+    "name": "Theorem 5.10 (Fano's inequality)",
+    "location": "Section 5.4",
+    "description": "Let $P_1, \\ldots, P_M$, $M \\geq 2$ be probability distributions such\nthat $P_j \\ll P_k, \\forall j, k$. Then $$\\inf_{\\psi} \\max_{1 \\le j \\le M} P_j\n\\left[ \\psi(X) \\ne j \\right] \\ge 1 - \\frac{\\frac{1}{M^2} \\sum_{j,k=1}^{M} \\mathsf{KL}(P_j,\nP_k) + \\log 2}{\\log(M - 1)}$$ where the infimum is taken over all tests with values\nin $\\{1, \\ldots, M\\}$.",
+    "number_key": "theorem_5_10"
+  },
+  {
+    "target_id": "hds.target.b0ef1cda8876",
+    "index": 68,
+    "kind": "theorem",
+    "name": "Theorem 5.11",
+    "location": "Section 5.4",
+    "description": "Assume that $\\Theta$ contains $M \\geq 5$ hypotheses $\\theta_1, \\ldots,\n\\theta_M$ such that for some constant $0 < \\alpha < 1/4$, it holds (i) $|\\theta_j\n- \\theta_k|_2^2 \\ge 4\\phi$ and (ii) $|\\theta_j - \\theta_k|_2^2 \\le \\frac{2\\alpha\\sigma^2}{n}\\log(M)$.\nThen $$\\inf_{\\hat{\\theta}} \\sup_{\\theta \\in \\Theta} \\mathbb{P}_{\\theta} \\big(\n|\\hat{\\theta} - \\theta|_2^2 \\geq \\phi \\big) \\geq \\frac{1}{2} - 2\\alpha.$$",
+    "number_key": "theorem_5_11"
+  },
+  {
+    "target_id": "hds.target.bdf75018e7e1",
+    "index": 69,
+    "kind": "lemma",
+    "name": "Lemma 5.12 (Varshamov-Gilbert)",
+    "location": "Section 5.4",
+    "description": "For any $\\gamma \\in (0, 1/2)$, there exist binary vectors $\\omega_1,\n\\ldots, \\omega_M \\in \\{0, 1\\}^d$ such that (i) $\\rho(\\omega_j, \\omega_k) \\ge \\left(\\frac{1}{2}\n- \\gamma\\right) d$ for all $j \\ne k$, and (ii) $M = \\lfloor e^{\\gamma^2 d} \\rfloor\n\\ge e^{\\frac{\\gamma^2 d}{2}}$.",
+    "number_key": "lemma_5_12"
+  },
+  {
+    "target_id": "hds.target.99a6367fafaa",
+    "index": 70,
+    "kind": "corollary",
+    "name": "Corollary 5.13",
+    "location": "Section 5.5",
+    "description": "The minimax rate of estimation over $\\mathbb{R}^d$ in the Gaussian\nsequence model is $\\phi(\\mathbb{R}^d) = \\sigma^2 d/n$. Moreover, it is attained\nby the least squares estimator $\\hat{\\theta}^{LS} = \\mathbf{Y}$.",
+    "number_key": "corollary_5_13"
+  },
+  {
+    "target_id": "hds.target.28dd22d06434",
+    "index": 71,
+    "kind": "lemma",
+    "name": "Lemma 5.14 (Sparse Varshamov-Gilbert)",
+    "location": "Section 5.5",
+    "description": "There exist positive constants $C_1$ and $C_2$ such that the following\nholds for any two integers $k$ and $d$ such that $1 \\le k \\le d/8$. There exist\nbinary vectors $\\omega_1, \\ldots, \\omega_M \\in \\{0, 1\\}^d$ such that (i) $\\rho(\\omega_i,\n\\omega_j) \\ge \\frac{k}{2}$ for all $i \\ne j$, (ii) $\\log(M) \\ge \\frac{k}{8} \\log(1\n+ \\frac{d}{2k})$, and (iii) $|\\omega_j|_0 = k$ for all $j$.",
+    "number_key": "lemma_5_14"
+  },
+  {
+    "target_id": "hds.target.000c6423ac33",
+    "index": 72,
+    "kind": "corollary",
+    "name": "Corollary 5.15",
+    "location": "Chapter 5",
+    "description": "Recall that $\\mathcal{B}_0(k) \\subset \\mathbb{R}^d$ denotes the set\nof all $k$-sparse vectors of $\\mathbb{R}^d$. The minimax rate of estimation over\n$\\mathcal{B}_0(k)$ in the Gaussian sequence model is $\\phi(\\mathcal{B}_0(k)) =\n\\frac{\\sigma^2 k}{n} \\log(ed/k)$. Moreover, it is attained by the constrained\nleast squares estimator $\\hat{\\theta}_{\\mathcal{B}_0(k)}^{\\text{LS}}$.",
+    "number_key": "corollary_5_15"
+  },
+  {
+    "target_id": "hds.target.e9983835a812",
+    "index": 73,
+    "kind": "corollary",
+    "name": "Corollary 5.16",
+    "location": "Chapter 5",
+    "description": "Recall that $\\mathcal{B}_1(R) \\subset \\mathbb{R}^d$ denotes the set\nvectors $\\theta \\in \\mathbb{R}^d$ such that $|\\theta|_1 \\leq R$. Then there exist\na constant $C > 0$ such that if $d \\geq n^{1/2+\\varepsilon}$, $\\varepsilon > 0$,\nthe minimax rate of estimation over $\\mathcal{B}_1(R)$ in the Gaussian sequence\nmodel is $\\phi(\\mathcal{B}_1(R)) = \\min(R^2, R\\sigma \\frac{\\log d}{n})$. Moreover,\nit is attained by the constrained least squares estimator $\\hat{\\theta}_{\\mathcal{B}_1(R)}^{\\text{LS}}$\nif $R \\geq \\sigma \\frac{\\log d}{n}$ and by the trivial estimator $\\hat{\\theta}\n= 0$ otherwise.",
+    "number_key": "corollary_5_16"
+  }
+]

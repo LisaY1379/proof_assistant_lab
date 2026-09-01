@@ -35,12 +35,32 @@ PORT = 8765
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 UI_DIR = Path(__file__).resolve().parent
-PIPELINE_SCRIPT = PROJECT_ROOT / "workflows" / "proof_strategy_extraction" / "run_pipeline.py"
-CLASSIFY_SCRIPT = PROJECT_ROOT / "workflows" / "proof_strategy_extraction" / "classify_strategy_categories.py"
-RESULTS_FILE = PROJECT_ROOT / "data" / "processed" / "proofs_with_key_strategies.jsonl"
-ATLAS_DIR = PROJECT_ROOT / "external" / "atlas-lean" / "Atlas" / "RealAnalysis"
+LEAN_WORKFLOW_DIR = PROJECT_ROOT / "workflows" / "proof_strategy_extraction" / "01_lean_translation"
+PIPELINE_SCRIPT = LEAN_WORKFLOW_DIR / "run_pipeline.py"
+CLASSIFY_SCRIPT = LEAN_WORKFLOW_DIR / "classify_strategy_categories.py"
 ATLAS_REPO_ROOT = PROJECT_ROOT / "external" / "atlas-lean"
 ENV_FILE = PROJECT_ROOT / ".env"
+
+DATASETS: Dict[str, Dict[str, Any]] = {
+    "real_analysis": {
+        "label": "RealAnalysis",
+        "kind": "atlas_lean_real_analysis",
+        "results_file": PROJECT_ROOT / "data" / "real_analysis" / "processed" / "proofs_with_key_strategies.jsonl",
+        "atlas_dir": PROJECT_ROOT / "external" / "atlas-lean" / "Atlas" / "RealAnalysis",
+        "supports_workflows": True,
+    },
+    "high_dimensional_statistics": {
+        "label": "HighDimensionalStatistics",
+        "kind": "pdf_aligned_atlas_lean",
+        "results_file": PROJECT_ROOT / "data" / "high_dimensional_statistics" / "processed" / "proofs_with_key_strategies.jsonl",
+        "atlas_dir": PROJECT_ROOT / "external" / "atlas-lean" / "Atlas" / "HighDimensionalStatistics",
+        "supports_workflows": False,
+    },
+}
+
+# Backward-compatible aliases used by RealAnalysis workflow controls.
+RESULTS_FILE = DATASETS["real_analysis"]["results_file"]
+ATLAS_DIR = DATASETS["real_analysis"]["atlas_dir"]
 
 
 job_lock = threading.Lock()
@@ -79,6 +99,33 @@ def load_dotenv() -> Dict[str, str]:
     return values
 
 
+def get_dataset(dataset_id: Optional[str]) -> Dict[str, Any]:
+    """Return dataset config, defaulting to RealAnalysis."""
+    key = dataset_id or "real_analysis"
+    if key not in DATASETS:
+        raise ValueError(f"Unknown dataset: {key}. Available: {', '.join(DATASETS)}")
+    return DATASETS[key]
+
+
+def dataset_public_info() -> List[Dict[str, Any]]:
+    return [
+        {
+            "id": key,
+            "label": cfg["label"],
+            "kind": cfg["kind"],
+            "supports_workflows": bool(cfg.get("supports_workflows")),
+            "results_file": str(cfg["results_file"].relative_to(PROJECT_ROOT)),
+            "exists": cfg["results_file"].exists(),
+        }
+        for key, cfg in DATASETS.items()
+    ]
+
+
+def get_query_dataset(path_query: str) -> str:
+    query = urllib.parse.parse_qs(path_query)
+    return (query.get("dataset") or ["real_analysis"])[0]
+
+
 def load_pipeline_module() -> Any:
     """Import run_pipeline.py so the UI can reuse its extraction logic."""
     spec = importlib.util.spec_from_file_location("proof_strategy_run_pipeline", PIPELINE_SCRIPT)
@@ -89,38 +136,56 @@ def load_pipeline_module() -> Any:
     return module
 
 
-def make_overview() -> Dict[str, Any]:
-    """Enumerate all theorem/lemma proof records and mark processed ones."""
-    if not ATLAS_DIR.exists():
-        return {
-            "error": f"ATLAS RealAnalysis directory does not exist: {ATLAS_DIR.relative_to(PROJECT_ROOT)}",
-            "items": [],
-            "total": 0,
-            "processed_count": 0,
-            "next_unprocessed_index": None,
-        }
+def make_overview(dataset_id: str = "real_analysis") -> Dict[str, Any]:
+    """Enumerate proof records and mark processed/category status for a dataset."""
+    dataset = get_dataset(dataset_id)
+    results_file = dataset["results_file"]
 
-    pipeline = load_pipeline_module()
-    proofs = pipeline.extract_proofs(
-        atlas_dir=ATLAS_DIR,
-        atlas_repo_root=ATLAS_REPO_ROOT,
-        limit=None,
-    )
-    # Match pipeline main filtering: keep records with a detected proof body and at least one step.
-    proofs = [
-        p for p in proofs
-        if p.get("has_detected_proof") and pipeline.split_proof_into_steps(p.get("proof_code", ""))
-    ]
+    if dataset_id == "real_analysis":
+        atlas_dir = dataset["atlas_dir"]
+        if not atlas_dir.exists():
+            return {
+                "error": f"ATLAS RealAnalysis directory does not exist: {atlas_dir.relative_to(PROJECT_ROOT)}",
+                "items": [],
+                "total": 0,
+                "processed_count": 0,
+                "next_unprocessed_index": None,
+                "dataset": dataset_id,
+            }
 
-    processed_records = parse_pretty_json_records(RESULTS_FILE)
+        pipeline = load_pipeline_module()
+        proofs = pipeline.extract_proofs(
+            atlas_dir=atlas_dir,
+            atlas_repo_root=ATLAS_REPO_ROOT,
+            limit=None,
+        )
+        # Match pipeline main filtering: keep records with a detected proof body and at least one step.
+        proofs = [
+            p for p in proofs
+            if p.get("has_detected_proof") and pipeline.split_proof_into_steps(p.get("proof_code", ""))
+        ]
+    else:
+        # PDF-aligned datasets already store their full extracted library as proof records.
+        proofs = parse_pretty_json_records(results_file)
+
+    processed_records = parse_pretty_json_records(results_file)
     processed_by_id = {r.get("proof_id"): r for r in processed_records if r.get("proof_id")}
+    processed_by_lean = {r.get("lean_name"): r for r in processed_records if r.get("lean_name")}
     processed_ids = set(processed_by_id)
 
     items: List[Dict[str, Any]] = []
     next_unprocessed_index: Optional[int] = None
     for i, proof in enumerate(proofs, start=1):
-        processed = proof.get("proof_id") in processed_ids
-        processed_record = processed_by_id.get(proof.get("proof_id"), {})
+        if dataset_id == "real_analysis":
+            processed = proof.get("proof_id") in processed_ids
+            processed_record = processed_by_id.get(proof.get("proof_id"), {})
+        else:
+            processed_record = proof
+            processed = bool(
+                str(proof.get("plain_english_proof", "")).strip()
+                or str(proof.get("plain_english_statement", "")).strip()
+                or str(proof.get("plain_english", "")).strip()
+            )
         strategy_items = processed_record.get("key_strategies") if isinstance(processed_record, dict) else None
         strategy_count = 0
         categorized_count = 0
@@ -137,11 +202,12 @@ def make_overview() -> Dict[str, Any]:
         comment_excerpt = " ".join(comment.split())
         if len(comment_excerpt) > 180:
             comment_excerpt = comment_excerpt[:177] + "..."
+        inferred = infer_lean_kind_name(proof)
         items.append({
             "index": i,
-            "proof_id": proof.get("proof_id"),
-            "lean_name": proof.get("lean_name"),
-            "kind": proof.get("kind"),
+            "proof_id": proof.get("proof_id") or f"{dataset_id}.{i}",
+            "lean_name": inferred.get("lean_name") or proof.get("lean_name") or f"item_{i}",
+            "kind": inferred.get("kind") or proof.get("kind") or "",
             "source_file": str(proof.get("source_file", "")),
             "start_line": proof.get("start_line"),
             "end_line": proof.get("end_line"),
@@ -158,8 +224,23 @@ def make_overview() -> Dict[str, Any]:
         "processed_count": sum(1 for item in items if item["processed"]),
         "category_processed_count": sum(1 for item in items if item.get("category_processed")),
         "next_unprocessed_index": next_unprocessed_index,
-        "results_file": str(RESULTS_FILE.relative_to(PROJECT_ROOT)),
-        "atlas_dir": str(ATLAS_DIR.relative_to(PROJECT_ROOT)),
+        "dataset": dataset_id,
+        "dataset_label": dataset["label"],
+        "results_file": str(results_file.relative_to(PROJECT_ROOT)),
+        "atlas_dir": str(dataset["atlas_dir"].relative_to(PROJECT_ROOT)),
+    }
+
+
+def infer_lean_kind_name(record: Dict[str, Any]) -> Dict[str, str]:
+    """Infer Lean declaration kind/name from lean_original_code when metadata is absent."""
+    import re
+    code = str(record.get("lean_original_code") or "")
+    m = re.search(r"(?m)^\s*(theorem|lemma|proposition|corollary|def)\s+([^\s(:]+)", code)
+    if not m:
+        return {"kind": str(record.get("kind") or ""), "lean_name": str(record.get("lean_name") or "")}
+    return {
+        "kind": str(record.get("kind") or m.group(1)),
+        "lean_name": str(record.get("lean_name") or m.group(2)),
     }
 
 
@@ -349,9 +430,14 @@ class Handler(BaseHTTPRequestHandler):
             self.send_json(data)
             return
 
+        if path == "/api/datasets":
+            self.send_json({"datasets": dataset_public_info(), "default_dataset": "real_analysis"})
+            return
+
         if path == "/api/overview":
             try:
-                overview = make_overview()
+                dataset_id = get_query_dataset(parsed.query)
+                overview = make_overview(dataset_id)
                 status = 500 if overview.get("error") else 200
                 self.send_json(overview, status=status)
             except Exception as exc:  # noqa: BLE001
@@ -360,10 +446,21 @@ class Handler(BaseHTTPRequestHandler):
 
         if path == "/api/proofs":
             try:
-                proofs = parse_pretty_json_records(RESULTS_FILE)
+                dataset_id = get_query_dataset(parsed.query)
+                dataset = get_dataset(dataset_id)
+                results_file = dataset["results_file"]
+                proofs = parse_pretty_json_records(results_file)
+                # Fill display metadata for minimal HDS records.
+                for i, proof in enumerate(proofs, start=1):
+                    inferred = infer_lean_kind_name(proof)
+                    proof.setdefault("lean_name", inferred.get("lean_name") or f"item_{i}")
+                    proof.setdefault("kind", inferred.get("kind") or "")
+                    proof.setdefault("proof_id", f"{dataset_id}.{i}")
                 self.send_json(
                     {
-                        "path": str(RESULTS_FILE.relative_to(PROJECT_ROOT)),
+                        "dataset": dataset_id,
+                        "dataset_label": dataset["label"],
+                        "path": str(results_file.relative_to(PROJECT_ROOT)),
                         "count": len(proofs),
                         "proofs": proofs,
                     }
