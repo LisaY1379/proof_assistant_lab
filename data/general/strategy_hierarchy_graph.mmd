@@ -1,0 +1,117 @@
+flowchart LR
+  family_definitional_reformulation["Definitional unfolding and equivalent reformulation"]
+  sub_definitional_unfolding["Definitional unfolding"]
+  sub_metric_filter_characterization["Metric and filter characterizations"]
+  sub_canonical_rewriting["Canonical rewriting"]
+  sub_set_extensionality["Set identities and extensionality"]
+  family_normalization_symmetry["Normalization, invariance, and symmetry"]
+  family_standard_theorem_reduction["Reduction to a standard theorem"]
+  sub_regularity_transfer["Restriction, extension, and transfer of regularity"]
+  family_logical_reasoning["Logical decomposition, cases, and contradiction"]
+  family_explicit_construction["Explicit construction and parameter choice"]
+  family_algebra_order_norm["Algebraic, order, and norm estimates"]
+  sub_elementary_algebra_order["Elementary algebra and order reasoning"]
+  family_topology_compactness_connectedness["Compactness and connectedness methods"]
+  sub_compactness["Compactness arguments"]
+  sub_intermediate_value["Intermediate Value Theorem"]
+  family_extremal_order["Supremum, infimum, and extremal arguments"]
+  sub_order_completeness["Suprema, infima, and order completeness"]
+  family_limits_completeness["Limit, sequence, and completeness methods"]
+  sub_limit_laws_squeezing["Limit laws, squeezing, and uniqueness"]
+  sub_sequence_completeness["Sequence and completeness methods"]
+  sub_monotone_limsup_subsequence["Monotone sequences, limsup, and subsequences"]
+  family_differential_calculus["Differential-calculus arguments"]
+  sub_difference_quotient["Difference-quotient characterization of differentiability"]
+  sub_derivative_rules["Differential calculus rules"]
+  sub_mean_value_theorems["Fermat, Rolle, and Mean Value Theorems"]
+  sub_derivative_sign["Derivative-sign arguments"]
+  sub_taylor_remainder["Taylor expansion with remainder"]
+  family_error_decomposition["Error decomposition and balancing"]
+  sub_triangle_error_estimates["Triangle-inequality and error-decomposition estimates"]
+  sub_approximation_archimedean["Approximation and Archimedean error control"]
+  family_comparison_domination["Comparison, domination, and squeezing"]
+  family_series_convergence["Series and uniform-convergence methods"]
+  sub_series_tests["Series comparison and convergence tests"]
+  sub_uniform_convergence_mtest["Uniform convergence and the Weierstrass M-test"]
+  sub_power_series_radius["Power-series radius arguments"]
+  family_integral_calculus["Integral-calculus arguments"]
+  sub_fundamental_theorem_calculus["Fundamental Theorem of Calculus"]
+  sub_integral_structure["Structural properties of the integral"]
+  sub_integration_transformations["Integration by parts and substitution"]
+  sub_partition_refinement["Partition and refinement arguments"]
+  sub_riemann_modulus_control["Modulus-of-continuity control of Riemann sums"]
+  family_reindexing_telescoping["Reindexing and telescoping sums"]
+  family_induction_well_ordering["Induction, recurrence, and well-ordering"]
+  family_structural_foundations["Cardinality, embeddings, and completion"]
+  sub_ordered_field_constructions["Ordered-field structure and canonical constructions"]
+  sub_cardinality_embeddings["Cardinality and embedding arguments"]
+  family_variational_linear_algebra["Variational and linear-algebraic methods"]
+  sub_convexity_variational["Convexity and variational arguments"]
+  sub_orthogonality_spectral["Orthogonality, projection, and spectral arguments"]
+  sub_structured_parameters["Sparsity, low-rank structure, and norm duality"]
+  family_metric_entropy["Metric entropy, covering, and packing methods"]
+  sub_covering_volumetric["Covering-net and volumetric arguments"]
+  sub_probabilistic_packing["Probabilistic method and packing constructions"]
+  family_probability_information["Probability, concentration, and information methods"]
+  sub_exponential_concentration["Exponential-moment and concentration arguments"]
+  sub_tail_integration["Tail integration and moment estimates"]
+  sub_independence_tensorization["Independence, tensorization, and union bounds"]
+  sub_testing_information["Testing and information-theoretic reductions"]
+  family_definitional_reformulation -- parent_of --> sub_definitional_unfolding
+  family_definitional_reformulation -- parent_of --> sub_metric_filter_characterization
+  family_definitional_reformulation -- parent_of --> sub_canonical_rewriting
+  family_definitional_reformulation -- parent_of --> sub_set_extensionality
+  family_normalization_symmetry -- parent_of --> sub_canonical_rewriting
+  family_standard_theorem_reduction -- parent_of --> sub_regularity_transfer
+  family_algebra_order_norm -- parent_of --> sub_elementary_algebra_order
+  family_topology_compactness_connectedness -- parent_of --> sub_compactness
+  family_topology_compactness_connectedness -- parent_of --> sub_intermediate_value
+  family_extremal_order -- parent_of --> sub_order_completeness
+  family_limits_completeness -- parent_of --> sub_limit_laws_squeezing
+  family_limits_completeness -- parent_of --> sub_sequence_completeness
+  family_limits_completeness -- parent_of --> sub_monotone_limsup_subsequence
+  family_limits_completeness -- cross_link --> sub_metric_filter_characterization
+  family_differential_calculus -- parent_of --> sub_difference_quotient
+  family_differential_calculus -- parent_of --> sub_derivative_rules
+  family_differential_calculus -- parent_of --> sub_mean_value_theorems
+  family_differential_calculus -- parent_of --> sub_derivative_sign
+  family_differential_calculus -- parent_of --> sub_taylor_remainder
+  family_error_decomposition -- parent_of --> sub_triangle_error_estimates
+  family_algebra_order_norm -- parent_of --> sub_triangle_error_estimates
+  family_error_decomposition -- parent_of --> sub_approximation_archimedean
+  family_explicit_construction -- parent_of --> sub_approximation_archimedean
+  family_comparison_domination -- parent_of --> sub_limit_laws_squeezing
+  family_comparison_domination -- parent_of --> sub_series_tests
+  family_comparison_domination -- parent_of --> sub_uniform_convergence_mtest
+  family_series_convergence -- parent_of --> sub_series_tests
+  family_series_convergence -- parent_of --> sub_uniform_convergence_mtest
+  family_series_convergence -- parent_of --> sub_power_series_radius
+  family_integral_calculus -- parent_of --> sub_fundamental_theorem_calculus
+  family_integral_calculus -- parent_of --> sub_integral_structure
+  family_integral_calculus -- parent_of --> sub_integration_transformations
+  family_integral_calculus -- parent_of --> sub_partition_refinement
+  sub_partition_refinement -- parent_of --> sub_riemann_modulus_control
+  family_error_decomposition -- cross_link --> sub_riemann_modulus_control
+  family_explicit_construction -- cross_link --> sub_partition_refinement
+  family_structural_foundations -- parent_of --> sub_ordered_field_constructions
+  family_structural_foundations -- parent_of --> sub_cardinality_embeddings
+  family_explicit_construction -- cross_link --> sub_ordered_field_constructions
+  family_structural_foundations -- cross_link --> sub_order_completeness
+  family_variational_linear_algebra -- parent_of --> sub_convexity_variational
+  family_variational_linear_algebra -- parent_of --> sub_orthogonality_spectral
+  family_variational_linear_algebra -- parent_of --> sub_structured_parameters
+  family_extremal_order -- cross_link --> sub_convexity_variational
+  family_algebra_order_norm -- parent_of --> sub_structured_parameters
+  family_metric_entropy -- parent_of --> sub_covering_volumetric
+  family_metric_entropy -- parent_of --> sub_probabilistic_packing
+  family_explicit_construction -- parent_of --> sub_probabilistic_packing
+  family_probability_information -- parent_of --> sub_exponential_concentration
+  family_probability_information -- parent_of --> sub_tail_integration
+  family_probability_information -- parent_of --> sub_independence_tensorization
+  family_probability_information -- parent_of --> sub_testing_information
+  family_probability_information -- cross_link --> sub_probabilistic_packing
+  family_integral_calculus -- parent_of --> sub_tail_integration
+  family_comparison_domination -- cross_link --> sub_tail_integration
+  sub_exponential_concentration -- cross_link --> sub_independence_tensorization
+  sub_covering_volumetric -- cross_link --> sub_exponential_concentration
+  sub_probabilistic_packing -- cross_link --> sub_testing_information

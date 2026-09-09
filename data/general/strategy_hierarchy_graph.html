@@ -1,0 +1,616 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hierarchical Proof Strategy Library</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --panel: #ffffff;
+      --text: #111827;
+      --muted: #64748b;
+      --border: #dbe3ef;
+      --blue: #2563eb;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    header { padding: 24px 28px; background: #0f172a; color: white; }
+    h1 { margin: 0 0 8px; font-size: 24px; }
+    .subtitle { color: #cbd5e1; max-width: 1100px; line-height: 1.45; }
+    .summary { display: flex; flex-wrap: wrap; gap: 10px; padding: 14px 28px; background: white; border-bottom: 1px solid var(--border); align-items: center; }
+    .pill { display: inline-block; padding: 5px 9px; border-radius: 999px; background: #e0f2fe; color: #075985; font-size: 12px; font-weight: 750; }
+    .graph-wrap { overflow: auto; padding: 24px; }
+    .graph-canvas { position: relative; width: 1346px; height: 6870px; min-width: 1346px; min-height: 6870px; }
+    svg.edge-layer { position: absolute; left: 0; top: 0; width: 1346px; height: 6870px; pointer-events: none; }
+    .edge-path { transition: opacity .12s ease, stroke-width .12s ease, filter .12s ease; }
+    .graph-canvas.dimmed .edge-path { opacity: 0.06; }
+    .graph-canvas.dimmed .edge-path.edge-active { opacity: 1; stroke-width: 5; filter: drop-shadow(0 0 3px rgba(37, 99, 235, .45)); }
+    .node-card { position: absolute; background: var(--panel); border: 1px solid var(--border); border-left: 5px solid var(--blue); border-radius: 12px; padding: 12px; box-shadow: 0 3px 10px rgba(15, 23, 42, 0.08); overflow: hidden; transition: opacity .12s ease, transform .12s ease, box-shadow .12s ease, border-color .12s ease; cursor: default; }
+    .graph-canvas.dimmed .node-card { opacity: 0.18; }
+    .graph-canvas.dimmed .node-card.node-active { opacity: 1; transform: translateY(-2px); box-shadow: 0 8px 22px rgba(37,99,235,.22); border-color: #2563eb; z-index: 5; }
+    .graph-canvas.dimmed .node-card.node-locked { outline: 3px solid rgba(37,99,235,.35); outline-offset: 2px; }
+    .graph-canvas.dimmed .node-card.node-parent { opacity: 1; border-left-color: #059669; box-shadow: 0 8px 22px rgba(5,150,105,.20); z-index: 4; }
+    .graph-canvas.dimmed .node-card.node-child { opacity: 1; border-left-color: #f59e0b; box-shadow: 0 8px 22px rgba(245,158,11,.20); z-index: 4; }
+    .node-level { color: var(--muted); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px; }
+    .node-label { font-weight: 850; color: #1d4ed8; font-size: 14px; line-height: 1.25; margin-bottom: 6px; }
+    .node-desc { color: #334155; font-size: 12px; line-height: 1.35; max-height: 48px; overflow: hidden; }
+    .node-sources { color: #64748b; font-size: 10px; line-height: 1.25; margin-top: 7px; max-height: 25px; overflow: hidden; }
+    .node-id { position: absolute; right: 10px; bottom: 7px; color: #94a3b8; font-size: 9px; }
+    .legend-note { color: var(--muted); font-size: 12px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Hierarchical Proof Strategy Library</h1>
+    <div class="subtitle">A graph-like hierarchy merging foundational real-analysis proof techniques with broader analytic, geometric, probabilistic, and statistical strategy families. Broad HighDimensionalStatistics categories are retained as parents when RealAnalysis supplies finer sub-branches; cross-links record techniques that genuinely belong to multiple families.</div>
+  </header>
+  <div class="summary">
+    <span class="pill">Nodes: 58</span>
+    <span class="pill">Edges: 58</span>
+    <span class="pill">Level 1</span><span class="pill">Level 2</span><span class="pill">Level 3</span>
+    <span class="legend-note">Hover a node to preview relations. Click a node to freeze/highlight its relations; click it again or press Escape to clear. Green border = parent; orange border = child.</span>
+  </div>
+  <div class="graph-wrap">
+    <div class="graph-canvas">
+      <svg class="edge-layer" viewBox="0 0 1346 6870" aria-hidden="true">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"></path>
+          </marker>
+        </defs>
+        <path class="edge-path" data-source="family_definitional_reformulation" data-target="sub_definitional_unfolding" d="M378.0,859.0 C443.0,859.0 443.0,1227.0 508.0,1227.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Definitional unfolding is the direct expansion branch of the broader reformulation family.</title></path><path class="edge-path" data-source="family_definitional_reformulation" data-target="sub_metric_filter_characterization" d="M378.0,859.0 C443.0,859.0 443.0,3435.0 508.0,3435.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Metric and filter criteria are standard equivalent reformulations of analytic definitions.</title></path><path class="edge-path" data-source="family_definitional_reformulation" data-target="sub_canonical_rewriting" d="M378.0,859.0 C443.0,859.0 443.0,307.0 508.0,307.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Canonical rewriting replaces abstract notions by equivalent concrete forms.</title></path><path class="edge-path" data-source="family_definitional_reformulation" data-target="sub_set_extensionality" d="M378.0,859.0 C443.0,859.0 443.0,5275.0 508.0,5275.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Set extensionality and Boolean simplification are specialized definitional and reformulation techniques.</title></path><path class="edge-path" data-source="family_normalization_symmetry" data-target="sub_canonical_rewriting" d="M378.0,2515.0 C443.0,2515.0 443.0,307.0 508.0,307.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Concrete norm, metric, slope, and interval rewrites are elementary canonical-normalization steps.</title></path><path class="edge-path" data-source="family_standard_theorem_reduction" data-target="sub_regularity_transfer" d="M378.0,2883.0 C443.0,2883.0 443.0,4723.0 508.0,4723.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Restriction, extension, and regularity transfer are used to align hypotheses with a standard theorem.</title></path><path class="edge-path" data-source="family_algebra_order_norm" data-target="sub_elementary_algebra_order" d="M378.0,123.0 C443.0,123.0 443.0,1963.0 508.0,1963.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Elementary ordered-field manipulations form the scalar algebraic branch of the broader estimate family.</title></path><path class="edge-path" data-source="family_topology_compactness_connectedness" data-target="sub_compactness" d="M378.0,491.0 C443.0,491.0 443.0,675.0 508.0,675.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: The target is the compactness-specific branch of the combined topological family.</title></path><path class="edge-path" data-source="family_topology_compactness_connectedness" data-target="sub_intermediate_value" d="M378.0,491.0 C443.0,491.0 443.0,3067.0 508.0,3067.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: The Intermediate Value Theorem is the interval-connectedness branch of the broader family.</title></path><path class="edge-path" data-source="family_extremal_order" data-target="sub_order_completeness" d="M378.0,3435.0 C443.0,3435.0 443.0,5827.0 508.0,5827.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Least-upper-bound and greatest-lower-bound reasoning is a specific order-theoretic extremal method.</title></path><path class="edge-path" data-source="family_limits_completeness" data-target="sub_limit_laws_squeezing" d="M378.0,1963.0 C443.0,1963.0 443.0,3251.0 508.0,3251.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Limit laws, squeezing, and uniqueness are core sub-branches of limit arguments.</title></path><path class="edge-path" data-source="family_limits_completeness" data-target="sub_sequence_completeness" d="M378.0,1963.0 C443.0,1963.0 443.0,4907.0 508.0,4907.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Sequence and Cauchy-completeness methods specialize the broader limit and completeness family.</title></path><path class="edge-path" data-source="family_limits_completeness" data-target="sub_monotone_limsup_subsequence" d="M378.0,1963.0 C443.0,1963.0 443.0,3619.0 508.0,3619.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Monotone convergence, limsup, and subsequence extraction are specific sequential limit methods.</title></path><path class="edge-path" data-source="family_limits_completeness" data-target="sub_metric_filter_characterization" d="M378.0,1963.0 C443.0,1963.0 443.0,3435.0 508.0,3435.0" stroke="#9333ea" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>cross_link: Metric and filter characterizations provide the formulations used by many limit arguments but also apply to continuity and other notions.</title></path><path class="edge-path" data-source="family_differential_calculus" data-target="sub_difference_quotient" d="M378.0,1043.0 C443.0,1043.0 443.0,1595.0 508.0,1595.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Difference quotients are the characterization branch of differential calculus.</title></path><path class="edge-path" data-source="family_differential_calculus" data-target="sub_derivative_rules" d="M378.0,1043.0 C443.0,1043.0 443.0,1779.0 508.0,1779.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Derivative rules are a standard computational sub-branch of differential calculus.</title></path><path class="edge-path" data-source="family_differential_calculus" data-target="sub_mean_value_theorems" d="M378.0,1043.0 C443.0,1043.0 443.0,2331.0 508.0,2331.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Fermat, Rolle, and mean-value principles are standard differential-calculus theorems.</title></path><path class="edge-path" data-source="family_differential_calculus" data-target="sub_derivative_sign" d="M378.0,1043.0 C443.0,1043.0 443.0,1411.0 508.0,1411.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Derivative-sign methods specialize differential calculus to monotonicity and extrema.</title></path><path class="edge-path" data-source="family_differential_calculus" data-target="sub_taylor_remainder" d="M378.0,1043.0 C443.0,1043.0 443.0,6195.0 508.0,6195.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Taylor expansion is the higher-order approximation branch of differential calculus.</title></path><path class="edge-path" data-source="family_error_decomposition" data-target="sub_triangle_error_estimates" d="M378.0,1227.0 C443.0,1227.0 443.0,6563.0 508.0,6563.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Triangle-based splitting is a basic specific form of error decomposition.</title></path><path class="edge-path" data-source="family_algebra_order_norm" data-target="sub_triangle_error_estimates" d="M378.0,123.0 C443.0,123.0 443.0,6563.0 508.0,6563.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: The target is also a norm-estimate method based on triangle and reverse-triangle inequalities.</title></path><path class="edge-path" data-source="family_error_decomposition" data-target="sub_approximation_archimedean" d="M378.0,1227.0 C443.0,1227.0 443.0,123.0 508.0,123.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Approximation error and the choice of an index to meet a tolerance form a specialized error-control strategy.</title></path><path class="edge-path" data-source="family_explicit_construction" data-target="sub_approximation_archimedean" d="M378.0,1411.0 C443.0,1411.0 443.0,123.0 508.0,123.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: The approximation strategy explicitly chooses an approximant and a sufficiently large index.</title></path><path class="edge-path" data-source="family_comparison_domination" data-target="sub_limit_laws_squeezing" d="M378.0,675.0 C443.0,675.0 443.0,3251.0 508.0,3251.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Squeezing is a limit-specific instance of comparison and domination.</title></path><path class="edge-path" data-source="family_comparison_domination" data-target="sub_series_tests" d="M378.0,675.0 C443.0,675.0 443.0,5091.0 508.0,5091.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Comparison with summable majorants is a principal series-convergence technique.</title></path><path class="edge-path" data-source="family_comparison_domination" data-target="sub_uniform_convergence_mtest" d="M378.0,675.0 C443.0,675.0 443.0,6747.0 508.0,6747.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: The Weierstrass M-test is a uniform domination argument.</title></path><path class="edge-path" data-source="family_series_convergence" data-target="sub_series_tests" d="M378.0,3251.0 C443.0,3251.0 443.0,5091.0 508.0,5091.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: The target contains the detailed summability tests covered broadly by the parent.</title></path><path class="edge-path" data-source="family_series_convergence" data-target="sub_uniform_convergence_mtest" d="M378.0,3251.0 C443.0,3251.0 443.0,6747.0 508.0,6747.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Uniform convergence and the M-test are a distinct sub-branch of the broader series family.</title></path><path class="edge-path" data-source="family_series_convergence" data-target="sub_power_series_radius" d="M378.0,3251.0 C443.0,3251.0 443.0,4355.0 508.0,4355.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Radius-of-convergence reasoning is a power-series-specific branch of series analysis.</title></path><path class="edge-path" data-source="family_integral_calculus" data-target="sub_fundamental_theorem_calculus" d="M378.0,1779.0 C443.0,1779.0 443.0,2515.0 508.0,2515.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: The Fundamental Theorem of Calculus is a specific central branch of integral calculus.</title></path><path class="edge-path" data-source="family_integral_calculus" data-target="sub_integral_structure" d="M378.0,1779.0 C443.0,1779.0 443.0,5643.0 508.0,5643.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Linearity, additivity, and monotonicity are structural sub-techniques of integration.</title></path><path class="edge-path" data-source="family_integral_calculus" data-target="sub_integration_transformations" d="M378.0,1779.0 C443.0,1779.0 443.0,2883.0 508.0,2883.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Integration by parts and substitution are specific integration transformations.</title></path><path class="edge-path" data-source="family_integral_calculus" data-target="sub_partition_refinement" d="M378.0,1779.0 C443.0,1779.0 443.0,4171.0 508.0,4171.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Partition and refinement methods form a Riemann-integration sub-branch.</title></path><path class="edge-path" data-source="sub_partition_refinement" data-target="sub_riemann_modulus_control" d="M838.0,4171.0 C903.0,4171.0 903.0,123.0 968.0,123.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Modulus-of-continuity control is a more specific refinement-based method for comparing Riemann sums.</title></path><path class="edge-path" data-source="family_error_decomposition" data-target="sub_riemann_modulus_control" d="M378.0,1227.0 C673.0,1227.0 673.0,123.0 968.0,123.0" stroke="#9333ea" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>cross_link: The method decomposes and sums local discretization errors, although its primary setting is Riemann integration.</title></path><path class="edge-path" data-source="family_explicit_construction" data-target="sub_partition_refinement" d="M378.0,1411.0 C443.0,1411.0 443.0,4171.0 508.0,4171.0" stroke="#9333ea" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>cross_link: Partition proofs often require explicit construction of common refinements, but the category is primarily an integration method.</title></path><path class="edge-path" data-source="family_structural_foundations" data-target="sub_ordered_field_constructions" d="M378.0,307.0 C443.0,307.0 443.0,3803.0 508.0,3803.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Ordered-field constructions using cuts and completeness instantiate the completion component of the parent.</title></path><path class="edge-path" data-source="family_structural_foundations" data-target="sub_cardinality_embeddings" d="M378.0,307.0 C443.0,307.0 443.0,491.0 508.0,491.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Cardinality comparisons and mutual embeddings instantiate the embedding component of the parent.</title></path><path class="edge-path" data-source="family_explicit_construction" data-target="sub_ordered_field_constructions" d="M378.0,1411.0 C443.0,1411.0 443.0,3803.0 508.0,3803.0" stroke="#9333ea" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>cross_link: Canonical field witnesses are explicit constructions, though the category also contains substantial structural theory.</title></path><path class="edge-path" data-source="family_structural_foundations" data-target="sub_order_completeness" d="M378.0,307.0 C443.0,307.0 443.0,5827.0 508.0,5827.0" stroke="#9333ea" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>cross_link: Order completeness is used in structural characterizations and completions of the real numbers.</title></path><path class="edge-path" data-source="family_variational_linear_algebra" data-target="sub_convexity_variational" d="M378.0,3619.0 C443.0,3619.0 443.0,859.0 508.0,859.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Convex optimality and competitor arguments form the variational branch of the family.</title></path><path class="edge-path" data-source="family_variational_linear_algebra" data-target="sub_orthogonality_spectral" d="M378.0,3619.0 C443.0,3619.0 443.0,3987.0 508.0,3987.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Orthogonality, projection, and spectral methods form the linear-algebraic branch.</title></path><path class="edge-path" data-source="family_variational_linear_algebra" data-target="sub_structured_parameters" d="M378.0,3619.0 C443.0,3619.0 443.0,5459.0 508.0,5459.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Sparse and low-rank decompositions are structured geometric and linear-algebraic methods.</title></path><path class="edge-path" data-source="family_extremal_order" data-target="sub_convexity_variational" d="M378.0,3435.0 C443.0,3435.0 443.0,859.0 508.0,859.0" stroke="#9333ea" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>cross_link: Convexity often reduces extrema to special points or derives optimality conditions, but it is not merely order completeness.</title></path><path class="edge-path" data-source="family_algebra_order_norm" data-target="sub_structured_parameters" d="M378.0,123.0 C443.0,123.0 443.0,5459.0 508.0,5459.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Norm duality and absorption of cross terms are central algebraic-estimate components of structured-parameter arguments.</title></path><path class="edge-path" data-source="family_metric_entropy" data-target="sub_covering_volumetric" d="M378.0,2331.0 C443.0,2331.0 443.0,1043.0 508.0,1043.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Finite-net discretization and volume bounds are the covering branch of metric entropy.</title></path><path class="edge-path" data-source="family_metric_entropy" data-target="sub_probabilistic_packing" d="M378.0,2331.0 C443.0,2331.0 443.0,4539.0 508.0,4539.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Random construction of separated sets is a packing branch of metric-entropy methods.</title></path><path class="edge-path" data-source="family_explicit_construction" data-target="sub_probabilistic_packing" d="M378.0,1411.0 C443.0,1411.0 443.0,4539.0 508.0,4539.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: The probabilistic method is an existence-oriented construction strategy, even though the candidates are generated randomly.</title></path><path class="edge-path" data-source="family_probability_information" data-target="sub_exponential_concentration" d="M378.0,2699.0 C443.0,2699.0 443.0,2147.0 508.0,2147.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Exponential-moment bounds are a central concentration sub-family.</title></path><path class="edge-path" data-source="family_probability_information" data-target="sub_tail_integration" d="M378.0,2699.0 C443.0,2699.0 443.0,6011.0 508.0,6011.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Tail-to-moment conversion is a probabilistic moment-estimation method.</title></path><path class="edge-path" data-source="family_probability_information" data-target="sub_independence_tensorization" d="M378.0,2699.0 C443.0,2699.0 443.0,2699.0 508.0,2699.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Independence, product structure, and union bounds are basic probabilistic proof mechanisms.</title></path><path class="edge-path" data-source="family_probability_information" data-target="sub_testing_information" d="M378.0,2699.0 C443.0,2699.0 443.0,6379.0 508.0,6379.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Testing reductions and divergence inequalities form the information-theoretic branch.</title></path><path class="edge-path" data-source="family_probability_information" data-target="sub_probabilistic_packing" d="M378.0,2699.0 C443.0,2699.0 443.0,4539.0 508.0,4539.0" stroke="#9333ea" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>cross_link: Probabilistic packing arguments use random sampling and probability bounds in addition to metric-entropy structure.</title></path><path class="edge-path" data-source="family_integral_calculus" data-target="sub_tail_integration" d="M378.0,1779.0 C443.0,1779.0 443.0,6011.0 508.0,6011.0" stroke="#2563eb" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>parent_of: Tail integration is a specialized use of integral calculus, including substitutions and threshold splitting, within probability.</title></path><path class="edge-path" data-source="family_comparison_domination" data-target="sub_tail_integration" d="M378.0,675.0 C443.0,675.0 443.0,6011.0 508.0,6011.0" stroke="#9333ea" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>cross_link: Moment bounds arise by inserting a dominating tail estimate into an integral.</title></path><path class="edge-path" data-source="sub_exponential_concentration" data-target="sub_independence_tensorization" d="M838.0,2147.0 C673.0,2147.0 673.0,2699.0 508.0,2699.0" stroke="#9333ea" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>cross_link: Independence frequently factors moment-generating functions and union bounds convert fixed-direction concentration into simultaneous bounds.</title></path><path class="edge-path" data-source="sub_covering_volumetric" data-target="sub_exponential_concentration" d="M838.0,1043.0 C673.0,1043.0 673.0,2147.0 508.0,2147.0" stroke="#9333ea" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>cross_link: Finite-net reductions are commonly combined with concentration and union bounds to control continuous suprema.</title></path><path class="edge-path" data-source="sub_probabilistic_packing" data-target="sub_testing_information" d="M838.0,4539.0 C673.0,4539.0 673.0,6379.0 508.0,6379.0" stroke="#9333ea" stroke-width="2" fill="none" marker-end="url(#arrow)" opacity="0.72"><title>cross_link: Information-theoretic lower bounds often require a large finite packing of well-separated hypotheses.</title></path>
+      </svg>
+      
+            <div class="node-card" data-node-id="family_algebra_order_norm" style="left:48px; top:48px; width:330px; height:150px;">
+              <div class="node-level">Level 1</div>
+              <div class="node-label">Algebraic, order, and norm estimates</div>
+              <div class="node-desc">Combine algebraic rearrangement and order reasoning with norm inequalities and duality estimates.</div>
+              <div class="node-sources">high_dimensional_statistics:high_dimensional_statistics_4 Algebraic, order, and norm estimates</div>
+              <div class="node-id">family_algebra_order_norm</div>
+            </div>
+            
+            <div class="node-card" data-node-id="family_structural_foundations" style="left:48px; top:232px; width:330px; height:150px;">
+              <div class="node-level">Level 1</div>
+              <div class="node-label">Cardinality, embeddings, and completion</div>
+              <div class="node-desc">Use embeddings and cardinal comparisons or construct complete ordered structures from dense substructures and cuts.</div>
+              <div class="node-sources">high_dimensional_statistics:high_dimensional_statistics_16 Cardinality, embeddings, and completion arguments</div>
+              <div class="node-id">family_structural_foundations</div>
+            </div>
+            
+            <div class="node-card" data-node-id="family_topology_compactness_connectedness" style="left:48px; top:416px; width:330px; height:150px;">
+              <div class="node-level">Level 1</div>
+              <div class="node-label">Compactness and connectedness methods</div>
+              <div class="node-desc">Use compactness for boundedness, extrema, subsequences, and uniform continuity, and connectedness for intermediate values and zeros.</div>
+              <div class="node-sources">high_dimensional_statistics:high_dimensional_statistics_7 Compactness and connectedness arguments</div>
+              <div class="node-id">family_topology_compactness_connectedness</div>
+            </div>
+            
+            <div class="node-card" data-node-id="family_comparison_domination" style="left:48px; top:600px; width:330px; height:150px;">
+              <div class="node-level">Level 1</div>
+              <div class="node-label">Comparison, domination, and squeezing</div>
+              <div class="node-desc">Bound complicated quantities by simpler majorants and transfer those bounds through sums, integrals, limits, and suprema.</div>
+              <div class="node-sources">high_dimensional_statistics:high_dimensional_statistics_12 Comparison, domination, and squeezing</div>
+              <div class="node-id">family_comparison_domination</div>
+            </div>
+            
+            <div class="node-card" data-node-id="family_definitional_reformulation" style="left:48px; top:784px; width:330px; height:150px;">
+              <div class="node-level">Level 1</div>
+              <div class="node-label">Definitional unfolding and equivalent reformulation</div>
+              <div class="node-desc">Convert abstract statements into explicit definitions, quantified conditions, or standard equivalent formulations.</div>
+              <div class="node-sources">high_dimensional_statistics:high_dimensional_statistics_1 Unfolding definitions and equivalent reformulations</div>
+              <div class="node-id">family_definitional_reformulation</div>
+            </div>
+            
+            <div class="node-card" data-node-id="family_differential_calculus" style="left:48px; top:968px; width:330px; height:150px;">
+              <div class="node-level">Level 1</div>
+              <div class="node-label">Differential-calculus arguments</div>
+              <div class="node-desc">A broad calculus family covering differentiability criteria, derivative rules, mean-value principles, derivative signs, and Taylor expansion.</div>
+              <div class="node-sources">high_dimensional_statistics:high_dimensional_statistics_10 Differential-calculus arguments</div>
+              <div class="node-id">family_differential_calculus</div>
+            </div>
+            
+            <div class="node-card" data-node-id="family_error_decomposition" style="left:48px; top:1152px; width:330px; height:150px;">
+              <div class="node-level">Level 1</div>
+              <div class="node-label">Error decomposition and balancing</div>
+              <div class="node-desc">Split a total error into analyzable components and choose parameters that balance the dominant contributions.</div>
+              <div class="node-sources">high_dimensional_statistics:high_dimensional_statistics_19 Error decomposition and balancing</div>
+              <div class="node-id">family_error_decomposition</div>
+            </div>
+            
+            <div class="node-card" data-node-id="family_explicit_construction" style="left:48px; top:1336px; width:330px; height:150px;">
+              <div class="node-level">Level 1</div>
+              <div class="node-label">Explicit construction and parameter choice</div>
+              <div class="node-desc">Construct witnesses, sequences, partitions, comparison points, thresholds, or auxiliary objects and tune free parameters.</div>
+              <div class="node-sources">real_analysis:real_analysis_5 Explicit witness and test-point construction; high_dimensional_statistics:high_dimensional_statistics_6 Explicit construction and parameter choice</div>
+              <div class="node-id">family_explicit_construction</div>
+            </div>
+            
+            <div class="node-card" data-node-id="family_induction_well_ordering" style="left:48px; top:1520px; width:330px; height:150px;">
+              <div class="node-level">Level 1</div>
+              <div class="node-label">Induction, recurrence, and well-ordering</div>
+              <div class="node-desc">Use induction, strengthened hypotheses, recurrence, least witnesses, or minimal counterexamples over the natural numbers.</div>
+              <div class="node-sources">real_analysis:real_analysis_30 Induction and well-ordering; high_dimensional_statistics:high_dimensional_statistics_15 Induction, recurrence, and well-ordering</div>
+              <div class="node-id">family_induction_well_ordering</div>
+            </div>
+            
+            <div class="node-card" data-node-id="family_integral_calculus" style="left:48px; top:1704px; width:330px; height:150px;">
+              <div class="node-level">Level 1</div>
+              <div class="node-label">Integral-calculus arguments</div>
+              <div class="node-desc">A broad integration family covering the fundamental theorem, structural integral identities, transformations, and Riemann-sum methods.</div>
+              <div class="node-sources">high_dimensional_statistics:high_dimensional_statistics_11 Integral-calculus arguments</div>
+              <div class="node-id">family_integral_calculus</div>
+            </div>
+            
+            <div class="node-card" data-node-id="family_limits_completeness" style="left:48px; top:1888px; width:330px; height:150px;">
+              <div class="node-level">Level 1</div>
+              <div class="node-label">Limit, sequence, and completeness methods</div>
+              <div class="node-desc">Use epsilon or filter formulations, limit laws, squeezing, completeness, subsequences, and limsup-liminf criteria.</div>
+              <div class="node-sources">high_dimensional_statistics:high_dimensional_statistics_9 Limit and completeness arguments</div>
+              <div class="node-id">family_limits_completeness</div>
+            </div>
+            
+            <div class="node-card" data-node-id="family_logical_reasoning" style="left:48px; top:2072px; width:330px; height:150px;">
+              <div class="node-level">Level 1</div>
+              <div class="node-label">Logical decomposition, cases, and contradiction</div>
+              <div class="node-desc">Split logical, order, endpoint, degeneracy, or parameter cases and use contradiction or contraposition to eliminate alternatives.</div>
+              <div class="node-sources">real_analysis:real_analysis_4 Logical decomposition and case analysis; high_dimensional_statistics:high_dimensional_statistics_5 Proof by cases and contradiction</div>
+              <div class="node-id">family_logical_reasoning</div>
+            </div>
+            
+            <div class="node-card" data-node-id="family_metric_entropy" style="left:48px; top:2256px; width:330px; height:150px;">
+              <div class="node-level">Level 1</div>
+              <div class="node-label">Metric entropy, covering, and packing methods</div>
+              <div class="node-desc">Discretize continuous classes by finite nets or construct well-separated finite subsets using packing methods.</div>
+              <div class="node-sources"></div>
+              <div class="node-id">family_metric_entropy</div>
+            </div>
+            
+            <div class="node-card" data-node-id="family_normalization_symmetry" style="left:48px; top:2440px; width:330px; height:150px;">
+              <div class="node-level">Level 1</div>
+              <div class="node-label">Normalization, invariance, and symmetry</div>
+              <div class="node-desc">Translate, rescale, whiten, permute, or otherwise transform a problem to a canonical case and transfer the conclusion back.</div>
+              <div class="node-sources">high_dimensional_statistics:high_dimensional_statistics_2 Normalization, invariance, and symmetry</div>
+              <div class="node-id">family_normalization_symmetry</div>
+            </div>
+            
+            <div class="node-card" data-node-id="family_probability_information" style="left:48px; top:2624px; width:330px; height:150px;">
+              <div class="node-level">Level 1</div>
+              <div class="node-label">Probability, concentration, and information methods</div>
+              <div class="node-desc">Probabilistic proof methods based on exponential moments, tails, independence, union bounds, and information-theoretic reductions.</div>
+              <div class="node-sources"></div>
+              <div class="node-id">family_probability_information</div>
+            </div>
+            
+            <div class="node-card" data-node-id="family_standard_theorem_reduction" style="left:48px; top:2808px; width:330px; height:150px;">
+              <div class="node-level">Level 1</div>
+              <div class="node-label">Reduction to a standard theorem</div>
+              <div class="node-desc">Modify domains and regularity hypotheses so that a known theorem applies directly.</div>
+              <div class="node-sources">high_dimensional_statistics:high_dimensional_statistics_3 Reduction to a standard theorem</div>
+              <div class="node-id">family_standard_theorem_reduction</div>
+            </div>
+            
+            <div class="node-card" data-node-id="family_reindexing_telescoping" style="left:48px; top:2992px; width:330px; height:150px;">
+              <div class="node-level">Level 1</div>
+              <div class="node-label">Reindexing and telescoping sums</div>
+              <div class="node-desc">Reindex sums under bijections or fibers and cancel consecutive terms so only boundary contributions remain.</div>
+              <div class="node-sources">real_analysis:real_analysis_25 Finite-sum reindexing and telescoping; high_dimensional_statistics:high_dimensional_statistics_14 Reindexing and telescoping sums</div>
+              <div class="node-id">family_reindexing_telescoping</div>
+            </div>
+            
+            <div class="node-card" data-node-id="family_series_convergence" style="left:48px; top:3176px; width:330px; height:150px;">
+              <div class="node-level">Level 1</div>
+              <div class="node-label">Series and uniform-convergence methods</div>
+              <div class="node-desc">A broad family covering summability tests, uniform convergence, and power-series convergence radii.</div>
+              <div class="node-sources">high_dimensional_statistics:high_dimensional_statistics_13 Series tests and uniform convergence</div>
+              <div class="node-id">family_series_convergence</div>
+            </div>
+            
+            <div class="node-card" data-node-id="family_extremal_order" style="left:48px; top:3360px; width:330px; height:150px;">
+              <div class="node-level">Level 1</div>
+              <div class="node-label">Supremum, infimum, and extremal arguments</div>
+              <div class="node-desc">Control quantities through suprema, infima, extremal points, or attained optimizers.</div>
+              <div class="node-sources">high_dimensional_statistics:high_dimensional_statistics_8 Supremum, infimum, and extremal arguments</div>
+              <div class="node-id">family_extremal_order</div>
+            </div>
+            
+            <div class="node-card" data-node-id="family_variational_linear_algebra" style="left:48px; top:3544px; width:330px; height:150px;">
+              <div class="node-level">Level 1</div>
+              <div class="node-label">Variational and linear-algebraic methods</div>
+              <div class="node-desc">Optimization and geometric methods based on convexity, orthogonality, projections, spectra, and structured parameter spaces.</div>
+              <div class="node-sources"></div>
+              <div class="node-id">family_variational_linear_algebra</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_approximation_archimedean" style="left:508px; top:48px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Approximation and Archimedean error control</div>
+              <div class="node-desc">Choose dense approximants and then select an index making the uniform approximation error smaller than a prescribed tolerance.</div>
+              <div class="node-sources">real_analysis:real_analysis_21 Approximation and Archimedean error control</div>
+              <div class="node-id">sub_approximation_archimedean</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_canonical_rewriting" style="left:508px; top:232px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Canonical rewriting</div>
+              <div class="node-desc">Rewrite abstract distances, norms, slopes, interval interiors, and formal-series expressions in concrete canonical forms.</div>
+              <div class="node-sources">real_analysis:real_analysis_3 Canonical rewriting and normalization</div>
+              <div class="node-id">sub_canonical_rewriting</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_cardinality_embeddings" style="left:508px; top:416px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Cardinality and embedding arguments</div>
+              <div class="node-desc">Use injections, diagonalization, Cantor&#x27;s theorem, interval cardinality, and Cantor-Schroeder-Bernstein.</div>
+              <div class="node-sources">real_analysis:real_analysis_33 Cardinality and embedding arguments</div>
+              <div class="node-id">sub_cardinality_embeddings</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_compactness" style="left:508px; top:600px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Compactness arguments</div>
+              <div class="node-desc">Apply compactness of intervals or images to obtain boundedness, attained extrema, uniform continuity, or convergent subsequences.</div>
+              <div class="node-sources">real_analysis:real_analysis_7 Compactness arguments</div>
+              <div class="node-id">sub_compactness</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_convexity_variational" style="left:508px; top:784px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Convexity and variational arguments</div>
+              <div class="node-desc">Use Jensen&#x27;s inequality, convex combinations, first-order optimality, or comparison with feasible competitors.</div>
+              <div class="node-sources">high_dimensional_statistics:high_dimensional_statistics_17 Convexity and variational arguments</div>
+              <div class="node-id">sub_convexity_variational</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_covering_volumetric" style="left:508px; top:968px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Covering-net and volumetric arguments</div>
+              <div class="node-desc">Replace continuous suprema by maxima over finite epsilon-nets and bound net sizes through packing and volume comparison.</div>
+              <div class="node-sources">high_dimensional_statistics:high_dimensional_statistics_20 Covering-net and volumetric arguments</div>
+              <div class="node-id">sub_covering_volumetric</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_definitional_unfolding" style="left:508px; top:1152px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Definitional unfolding</div>
+              <div class="node-desc">Expand boundedness, inclusion, extrema, Riemann sums, and auxiliary constructions into their defining statements.</div>
+              <div class="node-sources">real_analysis:real_analysis_1 Definitional unfolding</div>
+              <div class="node-id">sub_definitional_unfolding</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_derivative_sign" style="left:508px; top:1336px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Derivative-sign arguments</div>
+              <div class="node-desc">Infer monotonicity, constancy, or local extrema from first- or second-derivative sign information.</div>
+              <div class="node-sources">real_analysis:real_analysis_15 Derivative-sign arguments</div>
+              <div class="node-id">sub_derivative_sign</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_difference_quotient" style="left:508px; top:1520px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Difference-quotient characterization of differentiability</div>
+              <div class="node-desc">Express differentiability as convergence of slopes on a punctured neighborhood.</div>
+              <div class="node-sources">real_analysis:real_analysis_12 Difference-quotient characterization of differentiability</div>
+              <div class="node-id">sub_difference_quotient</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_derivative_rules" style="left:508px; top:1704px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Differential calculus rules</div>
+              <div class="node-desc">Apply chain, composition, and related closure rules for differentiable functions.</div>
+              <div class="node-sources">real_analysis:real_analysis_13 Differential calculus rules</div>
+              <div class="node-id">sub_derivative_rules</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_elementary_algebra_order" style="left:508px; top:1888px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Elementary algebra and order reasoning</div>
+              <div class="node-desc">Prove positivity or nonvanishing, clear denominators, cancel factors, rearrange identities, and combine inequalities.</div>
+              <div class="node-sources">real_analysis:real_analysis_6 Elementary algebra and order reasoning</div>
+              <div class="node-id">sub_elementary_algebra_order</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_exponential_concentration" style="left:508px; top:2072px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Exponential-moment and concentration arguments</div>
+              <div class="node-desc">Apply exponential Markov inequalities, control moment-generating functions, and optimize parameters to derive tail bounds.</div>
+              <div class="node-sources">high_dimensional_statistics:high_dimensional_statistics_21 Exponential-moment and concentration arguments</div>
+              <div class="node-id">sub_exponential_concentration</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_mean_value_theorems" style="left:508px; top:2256px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Fermat, Rolle, and Mean Value Theorems</div>
+              <div class="node-desc">Convert extrema or endpoint equalities into derivative information and represent increments by intermediate derivatives.</div>
+              <div class="node-sources">real_analysis:real_analysis_14 Fermat, Rolle, and Mean Value Theorems</div>
+              <div class="node-id">sub_mean_value_theorems</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_fundamental_theorem_calculus" style="left:508px; top:2440px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Fundamental Theorem of Calculus</div>
+              <div class="node-desc">Convert derivatives into integral increments or differentiate parameterized integrals.</div>
+              <div class="node-sources">real_analysis:real_analysis_22 Fundamental Theorem of Calculus</div>
+              <div class="node-id">sub_fundamental_theorem_calculus</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_independence_tensorization" style="left:508px; top:2624px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Independence, tensorization, and union bounds</div>
+              <div class="node-desc">Factor quantities using independence, tensorize information, and upgrade pointwise bounds to simultaneous bounds by a union bound.</div>
+              <div class="node-sources">high_dimensional_statistics:high_dimensional_statistics_23 Independence, tensorization, and union bounds</div>
+              <div class="node-id">sub_independence_tensorization</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_integration_transformations" style="left:508px; top:2808px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Integration by parts and substitution</div>
+              <div class="node-desc">Verify regularity and integrability hypotheses and then apply integration by parts or change of variables.</div>
+              <div class="node-sources">real_analysis:real_analysis_24 Integration by parts and substitution</div>
+              <div class="node-id">sub_integration_transformations</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_intermediate_value" style="left:508px; top:2992px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Intermediate Value Theorem</div>
+              <div class="node-desc">Use continuity and endpoint value information to produce an intermediate value or interior zero.</div>
+              <div class="node-sources">real_analysis:real_analysis_10 Intermediate Value Theorem</div>
+              <div class="node-id">sub_intermediate_value</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_limit_laws_squeezing" style="left:508px; top:3176px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Limit laws, squeezing, and uniqueness</div>
+              <div class="node-desc">Compose limits, pass bounds to limits, squeeze between convergent quantities, and use uniqueness to identify limits.</div>
+              <div class="node-sources">real_analysis:real_analysis_11 Limit laws, squeezing, and uniqueness</div>
+              <div class="node-id">sub_limit_laws_squeezing</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_metric_filter_characterization" style="left:508px; top:3360px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Metric and filter characterizations</div>
+              <div class="node-desc">Replace continuity, convergence, Cauchy conditions, and eventual properties by neighborhood, filter, or epsilon-based criteria.</div>
+              <div class="node-sources">real_analysis:real_analysis_2 Metric and filter characterization</div>
+              <div class="node-id">sub_metric_filter_characterization</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_monotone_limsup_subsequence" style="left:508px; top:3544px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Monotone sequences, limsup, and subsequences</div>
+              <div class="node-desc">Use monotone convergence, limsup-liminf characterizations, and extraction of convergent subsequences.</div>
+              <div class="node-sources">real_analysis:real_analysis_29 Monotone sequences, limsup, and subsequences</div>
+              <div class="node-id">sub_monotone_limsup_subsequence</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_ordered_field_constructions" style="left:508px; top:3728px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Ordered-field structure and canonical constructions</div>
+              <div class="node-desc">Use ordered-field operations, canonical witnesses, Archimedeanness, completeness, and rational cuts in structural arguments about the reals.</div>
+              <div class="node-sources">real_analysis:real_analysis_32 Ordered-field structure and canonical constructions</div>
+              <div class="node-id">sub_ordered_field_constructions</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_orthogonality_spectral" style="left:508px; top:3912px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Orthogonality, projection, and spectral arguments</div>
+              <div class="node-desc">Use orthogonal expansions, Pythagoras, Parseval, normal equations, Rayleigh quotients, and eigenvector principles.</div>
+              <div class="node-sources">high_dimensional_statistics:high_dimensional_statistics_18 Orthogonality, projection, and spectral arguments</div>
+              <div class="node-id">sub_orthogonality_spectral</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_partition_refinement" style="left:508px; top:4096px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Partition and refinement arguments</div>
+              <div class="node-desc">Control meshes and subintervals, construct common refinements, and decompose coarse partitions into fine pieces.</div>
+              <div class="node-sources">real_analysis:real_analysis_26 Partition and refinement arguments</div>
+              <div class="node-id">sub_partition_refinement</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_power_series_radius" style="left:508px; top:4280px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Power-series radius arguments</div>
+              <div class="node-desc">Compare coefficient growth and apply Cauchy-Hadamard or radius-of-convergence comparison results.</div>
+              <div class="node-sources">real_analysis:real_analysis_20 Power-series radius arguments</div>
+              <div class="node-id">sub_power_series_radius</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_probabilistic_packing" style="left:508px; top:4464px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Probabilistic method and packing constructions</div>
+              <div class="node-desc">Randomly generate nets, codes, sparse vectors, or approximants and prove that a suitable deterministic construction exists.</div>
+              <div class="node-sources">high_dimensional_statistics:high_dimensional_statistics_26 Probabilistic method and packing constructions</div>
+              <div class="node-id">sub_probabilistic_packing</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_regularity_transfer" style="left:508px; top:4648px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Restriction, extension, and transfer of regularity</div>
+              <div class="node-desc">Restrict or extend functions and transfer continuity, differentiability, or integrability between compatible domains.</div>
+              <div class="node-sources">real_analysis:real_analysis_9 Restriction, extension, and transfer of regularity</div>
+              <div class="node-id">sub_regularity_transfer</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_sequence_completeness" style="left:508px; top:4832px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Sequence and completeness methods</div>
+              <div class="node-desc">Use epsilon-N arguments, Cauchy completeness, subsequences, and sequences approaching a point.</div>
+              <div class="node-sources">real_analysis:real_analysis_28 Sequence and completeness methods</div>
+              <div class="node-id">sub_sequence_completeness</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_series_tests" style="left:508px; top:5016px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Series comparison and convergence tests</div>
+              <div class="node-desc">Use comparison, term, root, ratio, alternating-series, geometric, or rearrangement criteria.</div>
+              <div class="node-sources">real_analysis:real_analysis_18 Series comparison and convergence tests</div>
+              <div class="node-id">sub_series_tests</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_set_extensionality" style="left:508px; top:5200px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Set identities and extensionality</div>
+              <div class="node-desc">Prove set equalities by extensionality or mutual inclusion and simplify Boolean set operations.</div>
+              <div class="node-sources">real_analysis:real_analysis_31 Set-theoretic identities and extensionality</div>
+              <div class="node-id">sub_set_extensionality</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_structured_parameters" style="left:508px; top:5384px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Sparsity, low-rank structure, and norm duality</div>
+              <div class="node-desc">Exploit support, cone, rank, or singular-space decompositions together with dual norms and restricted geometric conditions.</div>
+              <div class="node-sources">high_dimensional_statistics:high_dimensional_statistics_24 Sparsity, low-rank structure, and norm duality</div>
+              <div class="node-id">sub_structured_parameters</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_integral_structure" style="left:508px; top:5568px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Structural properties of the integral</div>
+              <div class="node-desc">Use linearity, interval additivity, monotonicity, constant-integral formulas, and integral norm inequalities.</div>
+              <div class="node-sources">real_analysis:real_analysis_23 Structural properties of the integral</div>
+              <div class="node-id">sub_integral_structure</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_order_completeness" style="left:508px; top:5752px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Suprema, infima, and order completeness</div>
+              <div class="node-desc">Apply least-upper-bound and greatest-lower-bound properties to bounded sets, images, limsups, and moduli of continuity.</div>
+              <div class="node-sources">real_analysis:real_analysis_8 Suprema, infima, and order completeness</div>
+              <div class="node-id">sub_order_completeness</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_tail_integration" style="left:508px; top:5936px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Tail integration and moment estimates</div>
+              <div class="node-desc">Convert moments into tail integrals, insert probability bounds, and estimate the resulting integrals.</div>
+              <div class="node-sources">high_dimensional_statistics:high_dimensional_statistics_22 Tail integration and moment estimates</div>
+              <div class="node-id">sub_tail_integration</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_taylor_remainder" style="left:508px; top:6120px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Taylor expansion with remainder</div>
+              <div class="node-desc">Apply finite Taylor expansion with a controlled remainder and normalize the resulting coefficients.</div>
+              <div class="node-sources">real_analysis:real_analysis_16 Taylor expansion with remainder</div>
+              <div class="node-id">sub_taylor_remainder</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_testing_information" style="left:508px; top:6304px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Testing and information-theoretic reductions</div>
+              <div class="node-desc">Reduce estimation to hypothesis testing and control testing error using divergence or mutual-information inequalities.</div>
+              <div class="node-sources">high_dimensional_statistics:high_dimensional_statistics_25 Testing and information-theoretic reductions</div>
+              <div class="node-id">sub_testing_information</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_triangle_error_estimates" style="left:508px; top:6488px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Triangle-inequality and error-decomposition estimates</div>
+              <div class="node-desc">Separate dominant and error terms and control them with triangle and reverse-triangle inequalities.</div>
+              <div class="node-sources">real_analysis:real_analysis_17 Triangle-inequality and error-decomposition estimates</div>
+              <div class="node-id">sub_triangle_error_estimates</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_uniform_convergence_mtest" style="left:508px; top:6672px; width:330px; height:150px;">
+              <div class="node-level">Level 2</div>
+              <div class="node-label">Uniform convergence and the Weierstrass M-test</div>
+              <div class="node-desc">Produce a summable uniform majorant and transfer continuity or bounds to the resulting series.</div>
+              <div class="node-sources">real_analysis:real_analysis_19 Uniform convergence and the Weierstrass M-test</div>
+              <div class="node-id">sub_uniform_convergence_mtest</div>
+            </div>
+            
+            <div class="node-card" data-node-id="sub_riemann_modulus_control" style="left:968px; top:48px; width:330px; height:150px;">
+              <div class="node-level">Level 3</div>
+              <div class="node-label">Modulus-of-continuity control of Riemann sums</div>
+              <div class="node-desc">Control tag changes using a modulus of continuity and sum local errors to prove convergence and partition independence.</div>
+              <div class="node-sources">real_analysis:real_analysis_27 Modulus-of-continuity control of Riemann sums</div>
+              <div class="node-id">sub_riemann_modulus_control</div>
+            </div>
+            
+    </div>
+  </div>
+  <script>
+    (function () {
+      const canvas = document.querySelector('.graph-canvas');
+      const nodes = Array.from(document.querySelectorAll('.node-card'));
+      const edges = Array.from(document.querySelectorAll('.edge-path'));
+      const nodeById = new Map(nodes.map((node) => [node.dataset.nodeId, node]));
+      let lockedNodeId = null;
+
+      function clearHighlight() {
+        canvas.classList.remove('dimmed', 'locked');
+        nodes.forEach((node) => node.classList.remove('node-active', 'node-parent', 'node-child', 'node-locked'));
+        edges.forEach((edge) => edge.classList.remove('edge-active'));
+      }
+
+      function highlight(nodeId, locked = false) {
+        clearHighlight();
+        canvas.classList.add('dimmed');
+        if (locked) canvas.classList.add('locked');
+        const active = nodeById.get(nodeId);
+        if (active) {
+          active.classList.add('node-active');
+          if (locked) active.classList.add('node-locked');
+        }
+
+        edges.forEach((edge) => {
+          const source = edge.dataset.source;
+          const target = edge.dataset.target;
+          if (source === nodeId || target === nodeId) {
+            edge.classList.add('edge-active');
+            if (source === nodeId && nodeById.has(target)) {
+              nodeById.get(target).classList.add('node-child');
+            }
+            if (target === nodeId && nodeById.has(source)) {
+              nodeById.get(source).classList.add('node-parent');
+            }
+          }
+        });
+      }
+
+      function lockNode(nodeId) {
+        if (lockedNodeId === nodeId) {
+          lockedNodeId = null;
+          clearHighlight();
+          return;
+        }
+        lockedNodeId = nodeId;
+        highlight(nodeId, true);
+      }
+
+      nodes.forEach((node) => {
+        node.addEventListener('mouseenter', () => {
+          if (!lockedNodeId) highlight(node.dataset.nodeId, false);
+        });
+        node.addEventListener('mouseleave', () => {
+          if (!lockedNodeId) clearHighlight();
+        });
+        node.addEventListener('focus', () => {
+          if (!lockedNodeId) highlight(node.dataset.nodeId, false);
+        });
+        node.addEventListener('blur', () => {
+          if (!lockedNodeId) clearHighlight();
+        });
+        node.addEventListener('click', (event) => {
+          event.stopPropagation();
+          lockNode(node.dataset.nodeId);
+        });
+        node.tabIndex = 0;
+      });
+
+      canvas.addEventListener('click', () => {
+        if (lockedNodeId) {
+          lockedNodeId = null;
+          clearHighlight();
+        }
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && lockedNodeId) {
+          lockedNodeId = null;
+          clearHighlight();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

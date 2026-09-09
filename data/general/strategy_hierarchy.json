@@ -1,0 +1,1125 @@
+{
+  "metadata": {
+    "title": "Hierarchical Proof Strategy Library",
+    "description": "A graph-like hierarchy merging foundational real-analysis proof techniques with broader analytic, geometric, probabilistic, and statistical strategy families. Broad HighDimensionalStatistics categories are retained as parents when RealAnalysis supplies finer sub-branches; cross-links record techniques that genuinely belong to multiple families.",
+    "source_libraries": [
+      "real_analysis",
+      "high_dimensional_statistics"
+    ],
+    "created_at": "2026-09-09T18:40:11.324750+00:00",
+    "model": "gpt-5.6-sol",
+    "real_analysis_category_count": 33,
+    "high_dimensional_statistics_category_count": 26,
+    "real_analysis_source": "data/real_analysis/processed/strategy_categories.txt",
+    "high_dimensional_statistics_source": "data/high_dimensional_statistics/processed/strategy_categories.txt"
+  },
+  "nodes": [
+    {
+      "id": "family_definitional_reformulation",
+      "label": "Definitional unfolding and equivalent reformulation",
+      "level": 1,
+      "description": "Convert abstract statements into explicit definitions, quantified conditions, or standard equivalent formulations.",
+      "source_categories": [
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_1",
+          "name": "Unfolding definitions and equivalent reformulations"
+        }
+      ]
+    },
+    {
+      "id": "sub_definitional_unfolding",
+      "label": "Definitional unfolding",
+      "level": 2,
+      "description": "Expand boundedness, inclusion, extrema, Riemann sums, and auxiliary constructions into their defining statements.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_1",
+          "name": "Definitional unfolding"
+        }
+      ]
+    },
+    {
+      "id": "sub_metric_filter_characterization",
+      "label": "Metric and filter characterizations",
+      "level": 2,
+      "description": "Replace continuity, convergence, Cauchy conditions, and eventual properties by neighborhood, filter, or epsilon-based criteria.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_2",
+          "name": "Metric and filter characterization"
+        }
+      ]
+    },
+    {
+      "id": "sub_canonical_rewriting",
+      "label": "Canonical rewriting",
+      "level": 2,
+      "description": "Rewrite abstract distances, norms, slopes, interval interiors, and formal-series expressions in concrete canonical forms.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_3",
+          "name": "Canonical rewriting and normalization"
+        }
+      ]
+    },
+    {
+      "id": "sub_set_extensionality",
+      "label": "Set identities and extensionality",
+      "level": 2,
+      "description": "Prove set equalities by extensionality or mutual inclusion and simplify Boolean set operations.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_31",
+          "name": "Set-theoretic identities and extensionality"
+        }
+      ]
+    },
+    {
+      "id": "family_normalization_symmetry",
+      "label": "Normalization, invariance, and symmetry",
+      "level": 1,
+      "description": "Translate, rescale, whiten, permute, or otherwise transform a problem to a canonical case and transfer the conclusion back.",
+      "source_categories": [
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_2",
+          "name": "Normalization, invariance, and symmetry"
+        }
+      ]
+    },
+    {
+      "id": "family_standard_theorem_reduction",
+      "label": "Reduction to a standard theorem",
+      "level": 1,
+      "description": "Modify domains and regularity hypotheses so that a known theorem applies directly.",
+      "source_categories": [
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_3",
+          "name": "Reduction to a standard theorem"
+        }
+      ]
+    },
+    {
+      "id": "sub_regularity_transfer",
+      "label": "Restriction, extension, and transfer of regularity",
+      "level": 2,
+      "description": "Restrict or extend functions and transfer continuity, differentiability, or integrability between compatible domains.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_9",
+          "name": "Restriction, extension, and transfer of regularity"
+        }
+      ]
+    },
+    {
+      "id": "family_logical_reasoning",
+      "label": "Logical decomposition, cases, and contradiction",
+      "level": 1,
+      "description": "Split logical, order, endpoint, degeneracy, or parameter cases and use contradiction or contraposition to eliminate alternatives.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_4",
+          "name": "Logical decomposition and case analysis"
+        },
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_5",
+          "name": "Proof by cases and contradiction"
+        }
+      ]
+    },
+    {
+      "id": "family_explicit_construction",
+      "label": "Explicit construction and parameter choice",
+      "level": 1,
+      "description": "Construct witnesses, sequences, partitions, comparison points, thresholds, or auxiliary objects and tune free parameters.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_5",
+          "name": "Explicit witness and test-point construction"
+        },
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_6",
+          "name": "Explicit construction and parameter choice"
+        }
+      ]
+    },
+    {
+      "id": "family_algebra_order_norm",
+      "label": "Algebraic, order, and norm estimates",
+      "level": 1,
+      "description": "Combine algebraic rearrangement and order reasoning with norm inequalities and duality estimates.",
+      "source_categories": [
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_4",
+          "name": "Algebraic, order, and norm estimates"
+        }
+      ]
+    },
+    {
+      "id": "sub_elementary_algebra_order",
+      "label": "Elementary algebra and order reasoning",
+      "level": 2,
+      "description": "Prove positivity or nonvanishing, clear denominators, cancel factors, rearrange identities, and combine inequalities.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_6",
+          "name": "Elementary algebra and order reasoning"
+        }
+      ]
+    },
+    {
+      "id": "family_topology_compactness_connectedness",
+      "label": "Compactness and connectedness methods",
+      "level": 1,
+      "description": "Use compactness for boundedness, extrema, subsequences, and uniform continuity, and connectedness for intermediate values and zeros.",
+      "source_categories": [
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_7",
+          "name": "Compactness and connectedness arguments"
+        }
+      ]
+    },
+    {
+      "id": "sub_compactness",
+      "label": "Compactness arguments",
+      "level": 2,
+      "description": "Apply compactness of intervals or images to obtain boundedness, attained extrema, uniform continuity, or convergent subsequences.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_7",
+          "name": "Compactness arguments"
+        }
+      ]
+    },
+    {
+      "id": "sub_intermediate_value",
+      "label": "Intermediate Value Theorem",
+      "level": 2,
+      "description": "Use continuity and endpoint value information to produce an intermediate value or interior zero.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_10",
+          "name": "Intermediate Value Theorem"
+        }
+      ]
+    },
+    {
+      "id": "family_extremal_order",
+      "label": "Supremum, infimum, and extremal arguments",
+      "level": 1,
+      "description": "Control quantities through suprema, infima, extremal points, or attained optimizers.",
+      "source_categories": [
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_8",
+          "name": "Supremum, infimum, and extremal arguments"
+        }
+      ]
+    },
+    {
+      "id": "sub_order_completeness",
+      "label": "Suprema, infima, and order completeness",
+      "level": 2,
+      "description": "Apply least-upper-bound and greatest-lower-bound properties to bounded sets, images, limsups, and moduli of continuity.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_8",
+          "name": "Suprema, infima, and order completeness"
+        }
+      ]
+    },
+    {
+      "id": "family_limits_completeness",
+      "label": "Limit, sequence, and completeness methods",
+      "level": 1,
+      "description": "Use epsilon or filter formulations, limit laws, squeezing, completeness, subsequences, and limsup-liminf criteria.",
+      "source_categories": [
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_9",
+          "name": "Limit and completeness arguments"
+        }
+      ]
+    },
+    {
+      "id": "sub_limit_laws_squeezing",
+      "label": "Limit laws, squeezing, and uniqueness",
+      "level": 2,
+      "description": "Compose limits, pass bounds to limits, squeeze between convergent quantities, and use uniqueness to identify limits.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_11",
+          "name": "Limit laws, squeezing, and uniqueness"
+        }
+      ]
+    },
+    {
+      "id": "sub_sequence_completeness",
+      "label": "Sequence and completeness methods",
+      "level": 2,
+      "description": "Use epsilon-N arguments, Cauchy completeness, subsequences, and sequences approaching a point.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_28",
+          "name": "Sequence and completeness methods"
+        }
+      ]
+    },
+    {
+      "id": "sub_monotone_limsup_subsequence",
+      "label": "Monotone sequences, limsup, and subsequences",
+      "level": 2,
+      "description": "Use monotone convergence, limsup-liminf characterizations, and extraction of convergent subsequences.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_29",
+          "name": "Monotone sequences, limsup, and subsequences"
+        }
+      ]
+    },
+    {
+      "id": "family_differential_calculus",
+      "label": "Differential-calculus arguments",
+      "level": 1,
+      "description": "A broad calculus family covering differentiability criteria, derivative rules, mean-value principles, derivative signs, and Taylor expansion.",
+      "source_categories": [
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_10",
+          "name": "Differential-calculus arguments"
+        }
+      ]
+    },
+    {
+      "id": "sub_difference_quotient",
+      "label": "Difference-quotient characterization of differentiability",
+      "level": 2,
+      "description": "Express differentiability as convergence of slopes on a punctured neighborhood.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_12",
+          "name": "Difference-quotient characterization of differentiability"
+        }
+      ]
+    },
+    {
+      "id": "sub_derivative_rules",
+      "label": "Differential calculus rules",
+      "level": 2,
+      "description": "Apply chain, composition, and related closure rules for differentiable functions.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_13",
+          "name": "Differential calculus rules"
+        }
+      ]
+    },
+    {
+      "id": "sub_mean_value_theorems",
+      "label": "Fermat, Rolle, and Mean Value Theorems",
+      "level": 2,
+      "description": "Convert extrema or endpoint equalities into derivative information and represent increments by intermediate derivatives.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_14",
+          "name": "Fermat, Rolle, and Mean Value Theorems"
+        }
+      ]
+    },
+    {
+      "id": "sub_derivative_sign",
+      "label": "Derivative-sign arguments",
+      "level": 2,
+      "description": "Infer monotonicity, constancy, or local extrema from first- or second-derivative sign information.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_15",
+          "name": "Derivative-sign arguments"
+        }
+      ]
+    },
+    {
+      "id": "sub_taylor_remainder",
+      "label": "Taylor expansion with remainder",
+      "level": 2,
+      "description": "Apply finite Taylor expansion with a controlled remainder and normalize the resulting coefficients.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_16",
+          "name": "Taylor expansion with remainder"
+        }
+      ]
+    },
+    {
+      "id": "family_error_decomposition",
+      "label": "Error decomposition and balancing",
+      "level": 1,
+      "description": "Split a total error into analyzable components and choose parameters that balance the dominant contributions.",
+      "source_categories": [
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_19",
+          "name": "Error decomposition and balancing"
+        }
+      ]
+    },
+    {
+      "id": "sub_triangle_error_estimates",
+      "label": "Triangle-inequality and error-decomposition estimates",
+      "level": 2,
+      "description": "Separate dominant and error terms and control them with triangle and reverse-triangle inequalities.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_17",
+          "name": "Triangle-inequality and error-decomposition estimates"
+        }
+      ]
+    },
+    {
+      "id": "sub_approximation_archimedean",
+      "label": "Approximation and Archimedean error control",
+      "level": 2,
+      "description": "Choose dense approximants and then select an index making the uniform approximation error smaller than a prescribed tolerance.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_21",
+          "name": "Approximation and Archimedean error control"
+        }
+      ]
+    },
+    {
+      "id": "family_comparison_domination",
+      "label": "Comparison, domination, and squeezing",
+      "level": 1,
+      "description": "Bound complicated quantities by simpler majorants and transfer those bounds through sums, integrals, limits, and suprema.",
+      "source_categories": [
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_12",
+          "name": "Comparison, domination, and squeezing"
+        }
+      ]
+    },
+    {
+      "id": "family_series_convergence",
+      "label": "Series and uniform-convergence methods",
+      "level": 1,
+      "description": "A broad family covering summability tests, uniform convergence, and power-series convergence radii.",
+      "source_categories": [
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_13",
+          "name": "Series tests and uniform convergence"
+        }
+      ]
+    },
+    {
+      "id": "sub_series_tests",
+      "label": "Series comparison and convergence tests",
+      "level": 2,
+      "description": "Use comparison, term, root, ratio, alternating-series, geometric, or rearrangement criteria.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_18",
+          "name": "Series comparison and convergence tests"
+        }
+      ]
+    },
+    {
+      "id": "sub_uniform_convergence_mtest",
+      "label": "Uniform convergence and the Weierstrass M-test",
+      "level": 2,
+      "description": "Produce a summable uniform majorant and transfer continuity or bounds to the resulting series.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_19",
+          "name": "Uniform convergence and the Weierstrass M-test"
+        }
+      ]
+    },
+    {
+      "id": "sub_power_series_radius",
+      "label": "Power-series radius arguments",
+      "level": 2,
+      "description": "Compare coefficient growth and apply Cauchy-Hadamard or radius-of-convergence comparison results.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_20",
+          "name": "Power-series radius arguments"
+        }
+      ]
+    },
+    {
+      "id": "family_integral_calculus",
+      "label": "Integral-calculus arguments",
+      "level": 1,
+      "description": "A broad integration family covering the fundamental theorem, structural integral identities, transformations, and Riemann-sum methods.",
+      "source_categories": [
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_11",
+          "name": "Integral-calculus arguments"
+        }
+      ]
+    },
+    {
+      "id": "sub_fundamental_theorem_calculus",
+      "label": "Fundamental Theorem of Calculus",
+      "level": 2,
+      "description": "Convert derivatives into integral increments or differentiate parameterized integrals.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_22",
+          "name": "Fundamental Theorem of Calculus"
+        }
+      ]
+    },
+    {
+      "id": "sub_integral_structure",
+      "label": "Structural properties of the integral",
+      "level": 2,
+      "description": "Use linearity, interval additivity, monotonicity, constant-integral formulas, and integral norm inequalities.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_23",
+          "name": "Structural properties of the integral"
+        }
+      ]
+    },
+    {
+      "id": "sub_integration_transformations",
+      "label": "Integration by parts and substitution",
+      "level": 2,
+      "description": "Verify regularity and integrability hypotheses and then apply integration by parts or change of variables.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_24",
+          "name": "Integration by parts and substitution"
+        }
+      ]
+    },
+    {
+      "id": "sub_partition_refinement",
+      "label": "Partition and refinement arguments",
+      "level": 2,
+      "description": "Control meshes and subintervals, construct common refinements, and decompose coarse partitions into fine pieces.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_26",
+          "name": "Partition and refinement arguments"
+        }
+      ]
+    },
+    {
+      "id": "sub_riemann_modulus_control",
+      "label": "Modulus-of-continuity control of Riemann sums",
+      "level": 3,
+      "description": "Control tag changes using a modulus of continuity and sum local errors to prove convergence and partition independence.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_27",
+          "name": "Modulus-of-continuity control of Riemann sums"
+        }
+      ]
+    },
+    {
+      "id": "family_reindexing_telescoping",
+      "label": "Reindexing and telescoping sums",
+      "level": 1,
+      "description": "Reindex sums under bijections or fibers and cancel consecutive terms so only boundary contributions remain.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_25",
+          "name": "Finite-sum reindexing and telescoping"
+        },
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_14",
+          "name": "Reindexing and telescoping sums"
+        }
+      ]
+    },
+    {
+      "id": "family_induction_well_ordering",
+      "label": "Induction, recurrence, and well-ordering",
+      "level": 1,
+      "description": "Use induction, strengthened hypotheses, recurrence, least witnesses, or minimal counterexamples over the natural numbers.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_30",
+          "name": "Induction and well-ordering"
+        },
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_15",
+          "name": "Induction, recurrence, and well-ordering"
+        }
+      ]
+    },
+    {
+      "id": "family_structural_foundations",
+      "label": "Cardinality, embeddings, and completion",
+      "level": 1,
+      "description": "Use embeddings and cardinal comparisons or construct complete ordered structures from dense substructures and cuts.",
+      "source_categories": [
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_16",
+          "name": "Cardinality, embeddings, and completion arguments"
+        }
+      ]
+    },
+    {
+      "id": "sub_ordered_field_constructions",
+      "label": "Ordered-field structure and canonical constructions",
+      "level": 2,
+      "description": "Use ordered-field operations, canonical witnesses, Archimedeanness, completeness, and rational cuts in structural arguments about the reals.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_32",
+          "name": "Ordered-field structure and canonical constructions"
+        }
+      ]
+    },
+    {
+      "id": "sub_cardinality_embeddings",
+      "label": "Cardinality and embedding arguments",
+      "level": 2,
+      "description": "Use injections, diagonalization, Cantor's theorem, interval cardinality, and Cantor-Schroeder-Bernstein.",
+      "source_categories": [
+        {
+          "dataset": "real_analysis",
+          "id": "real_analysis_33",
+          "name": "Cardinality and embedding arguments"
+        }
+      ]
+    },
+    {
+      "id": "family_variational_linear_algebra",
+      "label": "Variational and linear-algebraic methods",
+      "level": 1,
+      "description": "Optimization and geometric methods based on convexity, orthogonality, projections, spectra, and structured parameter spaces.",
+      "source_categories": []
+    },
+    {
+      "id": "sub_convexity_variational",
+      "label": "Convexity and variational arguments",
+      "level": 2,
+      "description": "Use Jensen's inequality, convex combinations, first-order optimality, or comparison with feasible competitors.",
+      "source_categories": [
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_17",
+          "name": "Convexity and variational arguments"
+        }
+      ]
+    },
+    {
+      "id": "sub_orthogonality_spectral",
+      "label": "Orthogonality, projection, and spectral arguments",
+      "level": 2,
+      "description": "Use orthogonal expansions, Pythagoras, Parseval, normal equations, Rayleigh quotients, and eigenvector principles.",
+      "source_categories": [
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_18",
+          "name": "Orthogonality, projection, and spectral arguments"
+        }
+      ]
+    },
+    {
+      "id": "sub_structured_parameters",
+      "label": "Sparsity, low-rank structure, and norm duality",
+      "level": 2,
+      "description": "Exploit support, cone, rank, or singular-space decompositions together with dual norms and restricted geometric conditions.",
+      "source_categories": [
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_24",
+          "name": "Sparsity, low-rank structure, and norm duality"
+        }
+      ]
+    },
+    {
+      "id": "family_metric_entropy",
+      "label": "Metric entropy, covering, and packing methods",
+      "level": 1,
+      "description": "Discretize continuous classes by finite nets or construct well-separated finite subsets using packing methods.",
+      "source_categories": []
+    },
+    {
+      "id": "sub_covering_volumetric",
+      "label": "Covering-net and volumetric arguments",
+      "level": 2,
+      "description": "Replace continuous suprema by maxima over finite epsilon-nets and bound net sizes through packing and volume comparison.",
+      "source_categories": [
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_20",
+          "name": "Covering-net and volumetric arguments"
+        }
+      ]
+    },
+    {
+      "id": "sub_probabilistic_packing",
+      "label": "Probabilistic method and packing constructions",
+      "level": 2,
+      "description": "Randomly generate nets, codes, sparse vectors, or approximants and prove that a suitable deterministic construction exists.",
+      "source_categories": [
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_26",
+          "name": "Probabilistic method and packing constructions"
+        }
+      ]
+    },
+    {
+      "id": "family_probability_information",
+      "label": "Probability, concentration, and information methods",
+      "level": 1,
+      "description": "Probabilistic proof methods based on exponential moments, tails, independence, union bounds, and information-theoretic reductions.",
+      "source_categories": []
+    },
+    {
+      "id": "sub_exponential_concentration",
+      "label": "Exponential-moment and concentration arguments",
+      "level": 2,
+      "description": "Apply exponential Markov inequalities, control moment-generating functions, and optimize parameters to derive tail bounds.",
+      "source_categories": [
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_21",
+          "name": "Exponential-moment and concentration arguments"
+        }
+      ]
+    },
+    {
+      "id": "sub_tail_integration",
+      "label": "Tail integration and moment estimates",
+      "level": 2,
+      "description": "Convert moments into tail integrals, insert probability bounds, and estimate the resulting integrals.",
+      "source_categories": [
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_22",
+          "name": "Tail integration and moment estimates"
+        }
+      ]
+    },
+    {
+      "id": "sub_independence_tensorization",
+      "label": "Independence, tensorization, and union bounds",
+      "level": 2,
+      "description": "Factor quantities using independence, tensorize information, and upgrade pointwise bounds to simultaneous bounds by a union bound.",
+      "source_categories": [
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_23",
+          "name": "Independence, tensorization, and union bounds"
+        }
+      ]
+    },
+    {
+      "id": "sub_testing_information",
+      "label": "Testing and information-theoretic reductions",
+      "level": 2,
+      "description": "Reduce estimation to hypothesis testing and control testing error using divergence or mutual-information inequalities.",
+      "source_categories": [
+        {
+          "dataset": "high_dimensional_statistics",
+          "id": "high_dimensional_statistics_25",
+          "name": "Testing and information-theoretic reductions"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "source": "family_definitional_reformulation",
+      "target": "sub_definitional_unfolding",
+      "relation": "parent_of",
+      "rationale": "Definitional unfolding is the direct expansion branch of the broader reformulation family."
+    },
+    {
+      "source": "family_definitional_reformulation",
+      "target": "sub_metric_filter_characterization",
+      "relation": "parent_of",
+      "rationale": "Metric and filter criteria are standard equivalent reformulations of analytic definitions."
+    },
+    {
+      "source": "family_definitional_reformulation",
+      "target": "sub_canonical_rewriting",
+      "relation": "parent_of",
+      "rationale": "Canonical rewriting replaces abstract notions by equivalent concrete forms."
+    },
+    {
+      "source": "family_definitional_reformulation",
+      "target": "sub_set_extensionality",
+      "relation": "parent_of",
+      "rationale": "Set extensionality and Boolean simplification are specialized definitional and reformulation techniques."
+    },
+    {
+      "source": "family_normalization_symmetry",
+      "target": "sub_canonical_rewriting",
+      "relation": "parent_of",
+      "rationale": "Concrete norm, metric, slope, and interval rewrites are elementary canonical-normalization steps."
+    },
+    {
+      "source": "family_standard_theorem_reduction",
+      "target": "sub_regularity_transfer",
+      "relation": "parent_of",
+      "rationale": "Restriction, extension, and regularity transfer are used to align hypotheses with a standard theorem."
+    },
+    {
+      "source": "family_algebra_order_norm",
+      "target": "sub_elementary_algebra_order",
+      "relation": "parent_of",
+      "rationale": "Elementary ordered-field manipulations form the scalar algebraic branch of the broader estimate family."
+    },
+    {
+      "source": "family_topology_compactness_connectedness",
+      "target": "sub_compactness",
+      "relation": "parent_of",
+      "rationale": "The target is the compactness-specific branch of the combined topological family."
+    },
+    {
+      "source": "family_topology_compactness_connectedness",
+      "target": "sub_intermediate_value",
+      "relation": "parent_of",
+      "rationale": "The Intermediate Value Theorem is the interval-connectedness branch of the broader family."
+    },
+    {
+      "source": "family_extremal_order",
+      "target": "sub_order_completeness",
+      "relation": "parent_of",
+      "rationale": "Least-upper-bound and greatest-lower-bound reasoning is a specific order-theoretic extremal method."
+    },
+    {
+      "source": "family_limits_completeness",
+      "target": "sub_limit_laws_squeezing",
+      "relation": "parent_of",
+      "rationale": "Limit laws, squeezing, and uniqueness are core sub-branches of limit arguments."
+    },
+    {
+      "source": "family_limits_completeness",
+      "target": "sub_sequence_completeness",
+      "relation": "parent_of",
+      "rationale": "Sequence and Cauchy-completeness methods specialize the broader limit and completeness family."
+    },
+    {
+      "source": "family_limits_completeness",
+      "target": "sub_monotone_limsup_subsequence",
+      "relation": "parent_of",
+      "rationale": "Monotone convergence, limsup, and subsequence extraction are specific sequential limit methods."
+    },
+    {
+      "source": "family_limits_completeness",
+      "target": "sub_metric_filter_characterization",
+      "relation": "cross_link",
+      "rationale": "Metric and filter characterizations provide the formulations used by many limit arguments but also apply to continuity and other notions."
+    },
+    {
+      "source": "family_differential_calculus",
+      "target": "sub_difference_quotient",
+      "relation": "parent_of",
+      "rationale": "Difference quotients are the characterization branch of differential calculus."
+    },
+    {
+      "source": "family_differential_calculus",
+      "target": "sub_derivative_rules",
+      "relation": "parent_of",
+      "rationale": "Derivative rules are a standard computational sub-branch of differential calculus."
+    },
+    {
+      "source": "family_differential_calculus",
+      "target": "sub_mean_value_theorems",
+      "relation": "parent_of",
+      "rationale": "Fermat, Rolle, and mean-value principles are standard differential-calculus theorems."
+    },
+    {
+      "source": "family_differential_calculus",
+      "target": "sub_derivative_sign",
+      "relation": "parent_of",
+      "rationale": "Derivative-sign methods specialize differential calculus to monotonicity and extrema."
+    },
+    {
+      "source": "family_differential_calculus",
+      "target": "sub_taylor_remainder",
+      "relation": "parent_of",
+      "rationale": "Taylor expansion is the higher-order approximation branch of differential calculus."
+    },
+    {
+      "source": "family_error_decomposition",
+      "target": "sub_triangle_error_estimates",
+      "relation": "parent_of",
+      "rationale": "Triangle-based splitting is a basic specific form of error decomposition."
+    },
+    {
+      "source": "family_algebra_order_norm",
+      "target": "sub_triangle_error_estimates",
+      "relation": "parent_of",
+      "rationale": "The target is also a norm-estimate method based on triangle and reverse-triangle inequalities."
+    },
+    {
+      "source": "family_error_decomposition",
+      "target": "sub_approximation_archimedean",
+      "relation": "parent_of",
+      "rationale": "Approximation error and the choice of an index to meet a tolerance form a specialized error-control strategy."
+    },
+    {
+      "source": "family_explicit_construction",
+      "target": "sub_approximation_archimedean",
+      "relation": "parent_of",
+      "rationale": "The approximation strategy explicitly chooses an approximant and a sufficiently large index."
+    },
+    {
+      "source": "family_comparison_domination",
+      "target": "sub_limit_laws_squeezing",
+      "relation": "parent_of",
+      "rationale": "Squeezing is a limit-specific instance of comparison and domination."
+    },
+    {
+      "source": "family_comparison_domination",
+      "target": "sub_series_tests",
+      "relation": "parent_of",
+      "rationale": "Comparison with summable majorants is a principal series-convergence technique."
+    },
+    {
+      "source": "family_comparison_domination",
+      "target": "sub_uniform_convergence_mtest",
+      "relation": "parent_of",
+      "rationale": "The Weierstrass M-test is a uniform domination argument."
+    },
+    {
+      "source": "family_series_convergence",
+      "target": "sub_series_tests",
+      "relation": "parent_of",
+      "rationale": "The target contains the detailed summability tests covered broadly by the parent."
+    },
+    {
+      "source": "family_series_convergence",
+      "target": "sub_uniform_convergence_mtest",
+      "relation": "parent_of",
+      "rationale": "Uniform convergence and the M-test are a distinct sub-branch of the broader series family."
+    },
+    {
+      "source": "family_series_convergence",
+      "target": "sub_power_series_radius",
+      "relation": "parent_of",
+      "rationale": "Radius-of-convergence reasoning is a power-series-specific branch of series analysis."
+    },
+    {
+      "source": "family_integral_calculus",
+      "target": "sub_fundamental_theorem_calculus",
+      "relation": "parent_of",
+      "rationale": "The Fundamental Theorem of Calculus is a specific central branch of integral calculus."
+    },
+    {
+      "source": "family_integral_calculus",
+      "target": "sub_integral_structure",
+      "relation": "parent_of",
+      "rationale": "Linearity, additivity, and monotonicity are structural sub-techniques of integration."
+    },
+    {
+      "source": "family_integral_calculus",
+      "target": "sub_integration_transformations",
+      "relation": "parent_of",
+      "rationale": "Integration by parts and substitution are specific integration transformations."
+    },
+    {
+      "source": "family_integral_calculus",
+      "target": "sub_partition_refinement",
+      "relation": "parent_of",
+      "rationale": "Partition and refinement methods form a Riemann-integration sub-branch."
+    },
+    {
+      "source": "sub_partition_refinement",
+      "target": "sub_riemann_modulus_control",
+      "relation": "parent_of",
+      "rationale": "Modulus-of-continuity control is a more specific refinement-based method for comparing Riemann sums."
+    },
+    {
+      "source": "family_error_decomposition",
+      "target": "sub_riemann_modulus_control",
+      "relation": "cross_link",
+      "rationale": "The method decomposes and sums local discretization errors, although its primary setting is Riemann integration."
+    },
+    {
+      "source": "family_explicit_construction",
+      "target": "sub_partition_refinement",
+      "relation": "cross_link",
+      "rationale": "Partition proofs often require explicit construction of common refinements, but the category is primarily an integration method."
+    },
+    {
+      "source": "family_structural_foundations",
+      "target": "sub_ordered_field_constructions",
+      "relation": "parent_of",
+      "rationale": "Ordered-field constructions using cuts and completeness instantiate the completion component of the parent."
+    },
+    {
+      "source": "family_structural_foundations",
+      "target": "sub_cardinality_embeddings",
+      "relation": "parent_of",
+      "rationale": "Cardinality comparisons and mutual embeddings instantiate the embedding component of the parent."
+    },
+    {
+      "source": "family_explicit_construction",
+      "target": "sub_ordered_field_constructions",
+      "relation": "cross_link",
+      "rationale": "Canonical field witnesses are explicit constructions, though the category also contains substantial structural theory."
+    },
+    {
+      "source": "family_structural_foundations",
+      "target": "sub_order_completeness",
+      "relation": "cross_link",
+      "rationale": "Order completeness is used in structural characterizations and completions of the real numbers."
+    },
+    {
+      "source": "family_variational_linear_algebra",
+      "target": "sub_convexity_variational",
+      "relation": "parent_of",
+      "rationale": "Convex optimality and competitor arguments form the variational branch of the family."
+    },
+    {
+      "source": "family_variational_linear_algebra",
+      "target": "sub_orthogonality_spectral",
+      "relation": "parent_of",
+      "rationale": "Orthogonality, projection, and spectral methods form the linear-algebraic branch."
+    },
+    {
+      "source": "family_variational_linear_algebra",
+      "target": "sub_structured_parameters",
+      "relation": "parent_of",
+      "rationale": "Sparse and low-rank decompositions are structured geometric and linear-algebraic methods."
+    },
+    {
+      "source": "family_extremal_order",
+      "target": "sub_convexity_variational",
+      "relation": "cross_link",
+      "rationale": "Convexity often reduces extrema to special points or derives optimality conditions, but it is not merely order completeness."
+    },
+    {
+      "source": "family_algebra_order_norm",
+      "target": "sub_structured_parameters",
+      "relation": "parent_of",
+      "rationale": "Norm duality and absorption of cross terms are central algebraic-estimate components of structured-parameter arguments."
+    },
+    {
+      "source": "family_metric_entropy",
+      "target": "sub_covering_volumetric",
+      "relation": "parent_of",
+      "rationale": "Finite-net discretization and volume bounds are the covering branch of metric entropy."
+    },
+    {
+      "source": "family_metric_entropy",
+      "target": "sub_probabilistic_packing",
+      "relation": "parent_of",
+      "rationale": "Random construction of separated sets is a packing branch of metric-entropy methods."
+    },
+    {
+      "source": "family_explicit_construction",
+      "target": "sub_probabilistic_packing",
+      "relation": "parent_of",
+      "rationale": "The probabilistic method is an existence-oriented construction strategy, even though the candidates are generated randomly."
+    },
+    {
+      "source": "family_probability_information",
+      "target": "sub_exponential_concentration",
+      "relation": "parent_of",
+      "rationale": "Exponential-moment bounds are a central concentration sub-family."
+    },
+    {
+      "source": "family_probability_information",
+      "target": "sub_tail_integration",
+      "relation": "parent_of",
+      "rationale": "Tail-to-moment conversion is a probabilistic moment-estimation method."
+    },
+    {
+      "source": "family_probability_information",
+      "target": "sub_independence_tensorization",
+      "relation": "parent_of",
+      "rationale": "Independence, product structure, and union bounds are basic probabilistic proof mechanisms."
+    },
+    {
+      "source": "family_probability_information",
+      "target": "sub_testing_information",
+      "relation": "parent_of",
+      "rationale": "Testing reductions and divergence inequalities form the information-theoretic branch."
+    },
+    {
+      "source": "family_probability_information",
+      "target": "sub_probabilistic_packing",
+      "relation": "cross_link",
+      "rationale": "Probabilistic packing arguments use random sampling and probability bounds in addition to metric-entropy structure."
+    },
+    {
+      "source": "family_integral_calculus",
+      "target": "sub_tail_integration",
+      "relation": "parent_of",
+      "rationale": "Tail integration is a specialized use of integral calculus, including substitutions and threshold splitting, within probability."
+    },
+    {
+      "source": "family_comparison_domination",
+      "target": "sub_tail_integration",
+      "relation": "cross_link",
+      "rationale": "Moment bounds arise by inserting a dominating tail estimate into an integral."
+    },
+    {
+      "source": "sub_exponential_concentration",
+      "target": "sub_independence_tensorization",
+      "relation": "cross_link",
+      "rationale": "Independence frequently factors moment-generating functions and union bounds convert fixed-direction concentration into simultaneous bounds."
+    },
+    {
+      "source": "sub_covering_volumetric",
+      "target": "sub_exponential_concentration",
+      "relation": "cross_link",
+      "rationale": "Finite-net reductions are commonly combined with concentration and union bounds to control continuous suprema."
+    },
+    {
+      "source": "sub_probabilistic_packing",
+      "target": "sub_testing_information",
+      "relation": "cross_link",
+      "rationale": "Information-theoretic lower bounds often require a large finite packing of well-separated hypotheses."
+    }
+  ],
+  "unmapped_source_categories": []
+}
