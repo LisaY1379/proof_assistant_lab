@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Proof Assistant Lab — Agent Interface</title>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)'], ['$', '$']],
+        displayMath: [['\\[', '\\]'], ['$$', '$$']],
+        processEscapes: true
+      },
+      svg: { fontCache: 'global' },
+      startup: { typeset: false }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --panel: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #dbe3ef;
+      --accent: #3157d5;
+      --accent-dark: #2443a8;
+      --code-bg: #f1f5f9;
+      --user: #e0ecff;
+      --assistant: #ffffff;
+      --rag: #ecfeff;
+      --control: #eef2ff;
+      --danger: #b3261e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    .app {
+      display: grid;
+      grid-template-columns: 330px 1fr;
+      min-height: 100vh;
+    }
+    aside {
+      background: #0f172a;
+      color: white;
+      padding: 20px;
+      border-right: 1px solid #0b1220;
+    }
+    aside h1 {
+      font-size: 18px;
+      margin: 0 0 20px;
+      line-height: 1.3;
+    }
+    .nav-section {
+      margin-bottom: 18px;
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+    }
+    .nav-section h2 {
+      margin: 0 0 10px;
+      color: #dbeafe;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    label {
+      display: block;
+      color: #d1d5db;
+      font-size: 13px;
+      margin: 10px 0 6px;
+    }
+    input, select, textarea {
+      width: 100%;
+      border-radius: 9px;
+      border: 1px solid #334155;
+      background: #111827;
+      color: white;
+      padding: 10px 11px;
+      outline: none;
+      font-size: 14px;
+    }
+    .small-note {
+      color: #9ca3af;
+      font-size: 12px;
+      line-height: 1.45;
+      margin: 9px 0 0;
+    }
+    .status-pill {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.10);
+      color: #dbeafe;
+      font-size: 12px;
+      margin: 4px 4px 0 0;
+    }
+    main {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-width: 0;
+      height: 100vh;
+    }
+    .topbar {
+      padding: 18px 22px;
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .topbar h1 { margin: 0; font-size: 21px; }
+    .mode-badge {
+      display: inline-block;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #1e3a8a;
+      background: var(--control);
+    }
+    .mode-badge.rag { background: var(--rag); color: #155e75; }
+    .chat {
+      overflow-y: auto;
+      padding: 22px;
+    }
+    .message {
+      max-width: 980px;
+      margin: 0 auto 16px;
+      display: grid;
+      gap: 7px;
+    }
+    .message .role {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .bubble {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 15px;
+      background: var(--assistant);
+      line-height: 1.55;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      box-shadow: 0 1px 3px rgba(15,23,42,.04);
+    }
+    .message.user .bubble { background: var(--user); border-color: #bdd4ff; }
+    .message.system .bubble { background: #fff7ed; border-color: #fed7aa; color: #7c2d12; }
+    pre {
+      background: var(--code-bg);
+      padding: 10px;
+      border-radius: 9px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+    .input-area {
+      padding: 14px 18px 18px;
+      background: var(--panel);
+      border-top: 1px solid var(--border);
+    }
+    .composer {
+      max-width: 980px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: end;
+    }
+    #messageInput {
+      min-height: 54px;
+      max-height: 180px;
+      resize: vertical;
+      color: var(--text);
+      background: white;
+      border-color: var(--border);
+    }
+    button {
+      cursor: pointer;
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-weight: 800;
+      font-size: 14px;
+    }
+    .mode-toggle { background: #e0f2fe; color: #155e75; min-width: 140px; }
+    .mode-toggle.control { background: #eef2ff; color: #3730a3; }
+    .send { background: var(--accent); color: white; min-width: 92px; }
+    .send:hover { background: var(--accent-dark); }
+    .send:disabled, .mode-toggle:disabled { opacity: .55; cursor: not-allowed; }
+    .progress {
+      max-width: 980px;
+      margin: 8px auto 0;
+      display: none;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      color: #334155;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .progress.active { display: block; }
+    .progress .dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      margin-right: 7px;
+      border-radius: 50%;
+      background: #3157d5;
+      animation: pulse 1s infinite ease-in-out;
+    }
+    @keyframes pulse { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+    .retrieved {
+      max-width: 980px;
+      margin: 8px auto 0;
+      display: none;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .retrieved span {
+      display: inline-block;
+      margin: 3px 4px 0 0;
+      padding: 4px 7px;
+      border-radius: 999px;
+      background: #e0f2fe;
+      color: #155e75;
+      font-weight: 750;
+    }
+    @media (max-width: 850px) {
+      .app { grid-template-columns: 1fr; }
+      aside { display: none; }
+      .composer { grid-template-columns: 1fr; }
+      .mode-toggle, .send { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside>
+      <h1>Proof Assistant Lab<br><span style="font-size:12px;color:#9ca3af;">Agent Interface</span></h1>
+
+      <section class="nav-section">
+        <h2>Modes</h2>
+        <p class="small-note"><strong>Control group:</strong> direct GPT response, no forced library reference.</p>
+        <p class="small-note"><strong>Library-RAG:</strong> retrieves strategy nodes from <code>data/general/strategy_hierarchy.json</code> and requires strategy references or proposed additions.</p>
+      </section>
+
+      <section class="nav-section">
+        <h2>Settings</h2>
+        <label for="modelInput">Model</label>
+        <input id="modelInput" value="gpt-5.6-sol" />
+        <label for="reasoningSelect">Reasoning effort</label>
+        <select id="reasoningSelect">
+          <option value="high" selected>high</option>
+          <option value="medium">medium</option>
+          <option value="low">low</option>
+          <option value="none">none / omit</option>
+        </select>
+        <label for="maxTokensInput">Max completion tokens</label>
+        <input id="maxTokensInput" type="number" value="4000" min="100" max="12000" />
+      </section>
+
+      <section class="nav-section">
+        <h2>Status</h2>
+        <div id="statusBox"><span class="status-pill">Not checked</span></div>
+        <p class="small-note">Run server with <code>.venv/bin/python main/agent_server.py</code>.</p>
+      </section>
+    </aside>
+
+    <main>
+      <div class="topbar">
+        <h1>Interactive Proof Strategy Agent</h1>
+        <span class="mode-badge" id="modeBadge">Control group</span>
+      </div>
+
+      <div class="chat" id="chatLog">
+        <div class="message system">
+          <div class="role">System</div>
+          <div class="bubble">Choose a mode and ask a proof-strategy question. In Library-RAG mode, the agent will consult the hierarchy graph first and cite strategy nodes at the end.</div>
+        </div>
+      </div>
+
+      <div class="input-area">
+        <div class="composer">
+          <button class="mode-toggle control" id="modeButton">Mode: Control</button>
+          <textarea id="messageInput" placeholder="Ask for a proof plan, proof explanation, Lean debugging idea, or strategy analysis..."></textarea>
+          <button class="send" id="sendButton">Send</button>
+        </div>
+        <div class="progress" id="progressBox"></div>
+        <div class="retrieved" id="retrievedBox"></div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    let mode = 'control';
+    let history = [];
+    let busy = false;
+
+    function escapeHTML(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function renderMarkdownLite(text) {
+      let html = escapeHTML(text);
+      html = html.replace(/```([\s\S]*?)```/g, (_, code) => `<pre>${code.trim()}</pre>`);
+      html = html.replace(/\*\*([^*\n][\s\S]*?[^*\n])\*\*/g, '<strong>$1</strong>');
+      html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+      return html;
+    }
+
+    function renderMathIfAvailable(root = document.body) {
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([root]).catch((err) => console.warn('MathJax render failed:', err));
+      }
+    }
+
+    function addMessage(role, content) {
+      const el = document.createElement('div');
+      el.className = `message ${role}`;
+      el.innerHTML = `
+        <div class="role">${role}</div>
+        <div class="bubble">${renderMarkdownLite(content)}</div>
+      `;
+      $('chatLog').appendChild(el);
+      $('chatLog').scrollTop = $('chatLog').scrollHeight;
+      renderMathIfAvailable(el);
+    }
+
+    function updateModeUI() {
+      const isRag = mode === 'library_rag';
+      $('modeButton').textContent = isRag ? 'Mode: Library-RAG' : 'Mode: Control';
+      $('modeButton').className = isRag ? 'mode-toggle' : 'mode-toggle control';
+      $('modeBadge').textContent = isRag ? 'Library-RAG mode' : 'Control group';
+      $('modeBadge').className = isRag ? 'mode-badge rag' : 'mode-badge';
+    }
+
+    async function checkStatus() {
+      try {
+        const res = await fetch('/api/status');
+        const data = await res.json();
+        $('statusBox').innerHTML = `
+          <span class="status-pill">Graph: ${data.graph_exists ? 'found' : 'missing'}</span>
+          <span class="status-pill">Default: ${escapeHTML(data.model_default)}</span>
+          <span class="status-pill">API key: ${data.api_key_loaded ? 'configured' : 'missing'}</span>
+        `;
+      } catch (err) {
+        $('statusBox').innerHTML = `<span class="status-pill" style="color:#fecaca;">Status error</span>`;
+      }
+    }
+
+    function setBusy(value) {
+      busy = value;
+      $('sendButton').disabled = value;
+      $('modeButton').disabled = value;
+      $('sendButton').textContent = value ? 'Sending...' : 'Send';
+      if (!value) setProgress('');
+    }
+
+    function setProgress(text) {
+      const box = $('progressBox');
+      if (!text) {
+        box.classList.remove('active');
+        box.innerHTML = '';
+        return;
+      }
+      box.classList.add('active');
+      box.innerHTML = `<span class="dot"></span>${escapeHTML(text)}`;
+    }
+
+    function showRetrieved(nodes) {
+      if (!nodes || !nodes.length) {
+        $('retrievedBox').style.display = 'none';
+        $('retrievedBox').innerHTML = '';
+        return;
+      }
+      $('retrievedBox').style.display = 'block';
+      $('retrievedBox').innerHTML = 'Retrieved strategy nodes: ' + nodes.map((n) => `<span>${escapeHTML(n.id)} · ${escapeHTML(n.label)}</span>`).join('');
+    }
+
+    async function sendMessage() {
+      if (busy) return;
+      const text = $('messageInput').value.trim();
+      if (!text) return;
+      $('messageInput').value = '';
+      addMessage('user', text);
+      history.push({ role: 'user', content: text });
+      setBusy(true);
+      showRetrieved([]);
+      let progressTimer = null;
+      if (mode === 'library_rag') {
+        setProgress('Step 1/2: reading strategy hierarchy library and retrieving relevant nodes...');
+        progressTimer = setTimeout(() => {
+          if (busy) setProgress('Step 2/2: reasoning with the model using retrieved library context...');
+        }, 700);
+      } else {
+        setProgress('Step 1/1: sending direct control-group prompt to the model...');
+      }
+      try {
+        const payload = {
+          mode,
+          message: text,
+          history,
+          model: $('modelInput').value.trim() || 'gpt-5.6-sol',
+          reasoning_effort: $('reasoningSelect').value,
+          max_completion_tokens: Number($('maxTokensInput').value || 4000),
+          temperature: 1.0
+        };
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok || !data.ok) {
+          throw new Error(data.error || res.statusText);
+        }
+        if (progressTimer) clearTimeout(progressTimer);
+        setProgress('Done: response received. Rendering math...');
+        addMessage('assistant', data.answer || '[empty response]');
+        history.push({ role: 'assistant', content: data.answer || '' });
+        showRetrieved(data.retrieved_nodes || []);
+      } catch (err) {
+        addMessage('system', 'Error: ' + err.message);
+      } finally {
+        if (progressTimer) clearTimeout(progressTimer);
+        setBusy(false);
+      }
+    }
+
+    $('modeButton').addEventListener('click', () => {
+      mode = mode === 'control' ? 'library_rag' : 'control';
+      updateModeUI();
+    });
+    $('sendButton').addEventListener('click', sendMessage);
+    $('messageInput').addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        sendMessage();
+      }
+    });
+
+    updateModeUI();
+    checkStatus();
+  </script>
+</body>
+</html>
