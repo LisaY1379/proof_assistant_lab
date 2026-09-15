@@ -1,0 +1,21 @@
+.git
+.venv
+.env
+.idea
+.DS_Store
+__pycache__
+*.pyc
+*.bak
+*.bak_*
+*.bak-*
+
+external/
+data/high_dimensional_statistics/
+data/real_analysis/
+docs/
+tools/
+workflows/
+
+# Keep only the strategy hierarchy file copied explicitly by Dockerfile.
+data/general/*
+!data/general/strategy_hierarchy.json

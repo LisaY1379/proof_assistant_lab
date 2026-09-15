@@ -137,6 +137,12 @@
       display: grid;
       gap: 7px;
     }
+    .message-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
     .message .role {
       color: var(--muted);
       font-size: 12px;
@@ -144,6 +150,15 @@
       text-transform: uppercase;
       letter-spacing: .05em;
     }
+    .copy-raw {
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #3730a3;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .copy-raw:hover { background: #dbe4ff; }
     .bubble {
       border: 1px solid var(--border);
       border-radius: 14px;
@@ -156,6 +171,38 @@
     }
     .message.user .bubble { background: var(--user); border-color: #bdd4ff; }
     .message.system .bubble { background: #fff7ed; border-color: #fed7aa; color: #7c2d12; }
+    .strategy-inline-card {
+      white-space: normal;
+      margin: 10px 0;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid #bfdbfe;
+      border-left: 5px solid #2563eb;
+      background: #eff6ff;
+      color: #1e3a8a;
+    }
+    .strategy-inline-card.new {
+      border-color: #fed7aa;
+      border-left-color: #f97316;
+      background: #fff7ed;
+      color: #7c2d12;
+    }
+    .strategy-card-title {
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin-bottom: 5px;
+    }
+    .strategy-card-meta {
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+    .strategy-card-body {
+      font-size: 13px;
+      line-height: 1.45;
+    }
     pre {
       background: var(--code-bg);
       padding: 10px;
@@ -252,7 +299,7 @@
       <section class="nav-section">
         <h2>Modes</h2>
         <p class="small-note"><strong>Control group:</strong> direct GPT response, no forced library reference.</p>
-        <p class="small-note"><strong>Library-RAG:</strong> retrieves strategy nodes from <code>data/general/strategy_hierarchy.json</code> and requires strategy references or proposed additions.</p>
+        <p class="small-note"><strong>Library-RAG:</strong> retrieves strategy nodes from <code>data/general/strategy_hierarchy.json</code> and embeds strategy-reference cards directly inside the answer.</p>
       </section>
 
       <section class="nav-section">
@@ -286,7 +333,7 @@
       <div class="chat" id="chatLog">
         <div class="message system">
           <div class="role">System</div>
-          <div class="bubble">Choose a mode and ask a proof-strategy question. In Library-RAG mode, the agent will consult the hierarchy graph first and cite strategy nodes at the end.</div>
+          <div class="bubble">Choose a mode and ask a proof-strategy question. In Library-RAG mode, the agent will consult the hierarchy graph first and embed strategy-reference cards directly in the response.</div>
         </div>
       </div>
 
@@ -296,7 +343,6 @@
           <textarea id="messageInput" placeholder="Ask for a proof plan, proof explanation, Lean debugging idea, or strategy analysis..."></textarea>
           <button class="send" id="sendButton">Send</button>
         </div>
-        <div class="progress" id="progressBox"></div>
         <div class="retrieved" id="retrievedBox"></div>
       </div>
     </main>
@@ -320,6 +366,22 @@
     function renderMarkdownLite(text) {
       let html = escapeHTML(text);
       html = html.replace(/```([\s\S]*?)```/g, (_, code) => `<pre>${code.trim()}</pre>`);
+      html = html.replace(/\[STRATEGY:\s*([^|\]\n]+)\s*\|\s*([^\]\n]+)\]\s*([\s\S]*?)\s*\[\/STRATEGY\]/g,
+        (_, nodeId, label, body) => `
+          <div class="strategy-inline-card">
+            <div class="strategy-card-title">Library strategy reference</div>
+            <div class="strategy-card-meta">${nodeId.trim()} · ${label.trim()}</div>
+            <div class="strategy-card-body">${body.trim()}</div>
+          </div>`
+      );
+      html = html.replace(/\[NEW_STRATEGY:\s*([^\]\n]+)\]\s*([\s\S]*?)\s*\[\/NEW_STRATEGY\]/g,
+        (_, label, body) => `
+          <div class="strategy-inline-card new">
+            <div class="strategy-card-title">Proposed new strategy</div>
+            <div class="strategy-card-meta">${label.trim()}</div>
+            <div class="strategy-card-body">${body.trim()}</div>
+          </div>`
+      );
       html = html.replace(/\*\*([^*\n][\s\S]*?[^*\n])\*\*/g, '<strong>$1</strong>');
       html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
       return html;
@@ -334,13 +396,54 @@
     function addMessage(role, content) {
       const el = document.createElement('div');
       el.className = `message ${role}`;
+      const copyButton = role === 'assistant'
+        ? '<button class="copy-raw" type="button">Copy raw</button>'
+        : '';
       el.innerHTML = `
-        <div class="role">${role}</div>
+        <div class="message-header"><div class="role">${role}</div>${copyButton}</div>
         <div class="bubble">${renderMarkdownLite(content)}</div>
       `;
+      if (role === 'assistant') {
+        const button = el.querySelector('.copy-raw');
+        button.addEventListener('click', async () => {
+          try {
+            await navigator.clipboard.writeText(content || '');
+            const old = button.textContent;
+            button.textContent = 'Copied';
+            setTimeout(() => { button.textContent = old; }, 1200);
+          } catch (err) {
+            button.textContent = 'Copy failed';
+            setTimeout(() => { button.textContent = 'Copy raw'; }, 1200);
+          }
+        });
+      }
       $('chatLog').appendChild(el);
       $('chatLog').scrollTop = $('chatLog').scrollHeight;
       renderMathIfAvailable(el);
+      return el;
+    }
+
+    function addLoadingMessage(text) {
+      const el = document.createElement('div');
+      el.className = 'message assistant loading-message';
+      el.innerHTML = `
+        <div class="message-header"><div class="role">assistant</div></div>
+        <div class="bubble"><span class="dot"></span><span class="loading-text">${escapeHTML(text)}</span></div>
+      `;
+      $('chatLog').appendChild(el);
+      $('chatLog').scrollTop = $('chatLog').scrollHeight;
+      return el;
+    }
+
+    function updateLoadingMessage(el, text) {
+      if (!el) return;
+      const target = el.querySelector('.loading-text');
+      if (target) target.textContent = text;
+      $('chatLog').scrollTop = $('chatLog').scrollHeight;
+    }
+
+    function removeLoadingMessage(el) {
+      if (el && el.parentNode) el.parentNode.removeChild(el);
     }
 
     function updateModeUI() {
@@ -370,18 +473,6 @@
       $('sendButton').disabled = value;
       $('modeButton').disabled = value;
       $('sendButton').textContent = value ? 'Sending...' : 'Send';
-      if (!value) setProgress('');
-    }
-
-    function setProgress(text) {
-      const box = $('progressBox');
-      if (!text) {
-        box.classList.remove('active');
-        box.innerHTML = '';
-        return;
-      }
-      box.classList.add('active');
-      box.innerHTML = `<span class="dot"></span>${escapeHTML(text)}`;
     }
 
     function showRetrieved(nodes) {
@@ -404,13 +495,15 @@
       setBusy(true);
       showRetrieved([]);
       let progressTimer = null;
+      const loadingMessage = addLoadingMessage(
+        mode === 'library_rag'
+          ? 'Step 1/2: reading strategy hierarchy library and retrieving relevant nodes...'
+          : 'Step 1/1: sending direct control-group prompt to the model...'
+      );
       if (mode === 'library_rag') {
-        setProgress('Step 1/2: reading strategy hierarchy library and retrieving relevant nodes...');
         progressTimer = setTimeout(() => {
-          if (busy) setProgress('Step 2/2: reasoning with the model using retrieved library context...');
+          if (busy) updateLoadingMessage(loadingMessage, 'Step 2/2: reasoning with the model using retrieved library context...');
         }, 700);
-      } else {
-        setProgress('Step 1/1: sending direct control-group prompt to the model...');
       }
       try {
         const payload = {
@@ -420,7 +513,7 @@
           model: $('modelInput').value.trim() || 'gpt-5.6-sol',
           reasoning_effort: $('reasoningSelect').value,
           max_completion_tokens: Number($('maxTokensInput').value || 4000),
-          temperature: 1.0
+          temperature: 1
         };
         const res = await fetch('/api/chat', {
           method: 'POST',
@@ -432,11 +525,15 @@
           throw new Error(data.error || res.statusText);
         }
         if (progressTimer) clearTimeout(progressTimer);
-        setProgress('Done: response received. Rendering math...');
+        updateLoadingMessage(loadingMessage, 'Done: response received. Rendering math...');
+        removeLoadingMessage(loadingMessage);
         addMessage('assistant', data.answer || '[empty response]');
         history.push({ role: 'assistant', content: data.answer || '' });
-        showRetrieved(data.retrieved_nodes || []);
+        // Strategy references now appear inline inside the chat response, so the
+        // old separate retrieved-node chip list is intentionally hidden.
+        showRetrieved([]);
       } catch (err) {
+        removeLoadingMessage(loadingMessage);
         addMessage('system', 'Error: ' + err.message);
       } finally {
         if (progressTimer) clearTimeout(progressTimer);

@@ -21,10 +21,12 @@ This server is local-only and uses only Python stdlib.
 
 from __future__ import annotations
 
+import base64
 import datetime as _dt
 import json
 import os
 import re
+import secrets
 import ssl
 import sys
 import time
@@ -36,14 +38,17 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
-HOST = "127.0.0.1"
-PORT = 8877
+# Local default remains 127.0.0.1:8877. For cloud/Hugging Face Docker Space,
+# set HOST=0.0.0.0 and PORT=7860 in the environment.
+HOST = os.environ.get("HOST", "127.0.0.1")
+PORT = int(os.environ.get("PORT", "8877"))
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MAIN_DIR = Path(__file__).resolve().parent
 INDEX_HTML = MAIN_DIR / "index.html"
 ENV_FILE = PROJECT_ROOT / ".env"
 GRAPH_PATH = PROJECT_ROOT / "data" / "general" / "strategy_hierarchy.json"
+CHAT_LOG_PATH = PROJECT_ROOT / "data" / "general" / "chat_logs.jsonl"
 DEFAULT_MODEL = "gpt-5.6-sol"
 DEFAULT_API_BASE = "https://api.openai.com/v1"
 
@@ -65,6 +70,45 @@ def load_dotenv(path: Path = ENV_FILE) -> None:
         value = value.strip().strip('"').strip("'")
         if key:
             os.environ[key] = value
+
+
+def basic_auth_enabled() -> bool:
+    return bool(os.environ.get("PROOF_AGENT_USERNAME") and os.environ.get("PROOF_AGENT_PASSWORD"))
+
+
+def check_basic_auth(header: Optional[str]) -> bool:
+    """Return True if request is authenticated or auth is disabled.
+
+    In local development, Basic Auth is disabled unless both PROOF_AGENT_USERNAME
+    and PROOF_AGENT_PASSWORD are set. In cloud deployment, set both variables.
+    """
+    load_dotenv()
+    if not basic_auth_enabled():
+        return True
+    if not header or not header.startswith("Basic "):
+        return False
+    try:
+        encoded = header.split(" ", 1)[1]
+        decoded = base64.b64decode(encoded).decode("utf-8")
+        username, password = decoded.split(":", 1)
+    except Exception:
+        return False
+    expected_user = os.environ.get("PROOF_AGENT_USERNAME", "")
+    expected_pass = os.environ.get("PROOF_AGENT_PASSWORD", "")
+    return secrets.compare_digest(username, expected_user) and secrets.compare_digest(password, expected_pass)
+
+
+def require_basic_auth(handler: BaseHTTPRequestHandler) -> bool:
+    if check_basic_auth(handler.headers.get("Authorization")):
+        return True
+    body = b"Authentication required.\n"
+    handler.send_response(401)
+    handler.send_header("WWW-Authenticate", 'Basic realm="Proof Strategy Agent"')
+    handler.send_header("Content-Type", "text/plain; charset=utf-8")
+    handler.send_header("Content-Length", str(len(body)))
+    handler.end_headers()
+    handler.wfile.write(body)
+    return False
 
 
 def make_ssl_context() -> ssl.SSLContext:
@@ -308,18 +352,21 @@ def build_messages(mode: str, message: str, history: Any) -> Tuple[List[Dict[str
             "You must use the provided strategy hierarchy library as methodological grounding. "
             "When you use or mention a method, connect it to one or more strategy nodes from the library. "
             "If the proof needs a method not covered by the retrieved nodes, propose a new strategy explicitly. "
-            "Include a brief section titled 'Reasoning summary' that summarizes the high-level steps you took, "
-            "without exposing private chain-of-thought. Then at the end of every answer, include a section exactly titled "
-            "'Referenced strategy nodes / proposed additions'. In that section list: (1) node id, label, and how it was used; "
-            "and/or (2) proposed new strategy with rationale. Do not claim that a node was used unless it genuinely supports the reasoning."
+            "When a sentence or paragraph uses a strategy from the library, embed the reference directly in the answer immediately after that explanation using this exact block syntax:\n"
+            "[STRATEGY: node_id | node label]\nDerived according to this strategy: <one concise explanation of how this strategy supports the preceding reasoning>.\n[/STRATEGY]\n"
+            "If the proof needs a method not covered by any retrieved/library node, embed a proposed addition at the relevant point using:\n"
+            "[NEW_STRATEGY: proposed strategy label]\nWhy this is new: <concise rationale>.\n[/NEW_STRATEGY]\n"
+            "Do not put all referenced strategies in a final list. Do not include a section titled 'Referenced strategy nodes / proposed additions'. "
+            "Use inline strategy blocks only where they genuinely support the reasoning. Include a brief 'Reasoning summary' section if useful, but do not expose private chain-of-thought."
         )
         user = (
             f"{library_context}\n\n"
             "USER QUESTION:\n"
             f"{message}\n\n"
             "Answer the user. Use the library context when discussing proof methods. "
-            "Include a concise 'Reasoning summary' section with high-level reasoning steps only. "
-            "End with 'Referenced strategy nodes / proposed additions'."
+            "When using a library strategy, insert an inline [STRATEGY: ...] block immediately after the relevant reasoning. "
+            "If no retrieved node fits an essential method, insert an inline [NEW_STRATEGY: ...] block. "
+            "Do not end with a separate list of referenced strategies."
         )
         return [{"role": "system", "content": system}, *prior, {"role": "user", "content": user}], selected_nodes
 
@@ -329,6 +376,17 @@ def build_messages(mode: str, message: str, history: Any) -> Tuple[List[Dict[str
         "When useful, include a concise high-level reasoning summary, but do not reveal private chain-of-thought."
     )
     return [{"role": "system", "content": system}, *prior, {"role": "user", "content": message}], []
+
+
+def append_chat_log(record: Dict[str, Any]) -> None:
+    """Append one chat event to JSONL. Never log API keys or environment values."""
+    CHAT_LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
+    safe_record = dict(record)
+    # Defensive removal in case a caller accidentally included sensitive fields.
+    for key in ["api_key", "OPENAI_API_KEY", "authorization", "headers"]:
+        safe_record.pop(key, None)
+    with CHAT_LOG_PATH.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(safe_record, ensure_ascii=False, sort_keys=True) + "\n")
 
 
 def handle_chat(payload: Dict[str, Any]) -> Dict[str, Any]:
@@ -347,7 +405,7 @@ def handle_chat(payload: Dict[str, Any]) -> Dict[str, Any]:
     model = str(payload.get("model") or DEFAULT_MODEL).strip()
     api_base = str(payload.get("api_base") or DEFAULT_API_BASE).strip()
     max_tokens = int(payload.get("max_completion_tokens") or 4000)
-    temperature = float(payload.get("temperature") or 1.0)
+    temperature = float(payload["temperature"]) if "temperature" in payload and payload.get("temperature") is not None else 1.0
     reasoning_effort_raw = payload.get("reasoning_effort", "high")
     reasoning_effort = None if reasoning_effort_raw in {None, "", "none"} else str(reasoning_effort_raw)
 
@@ -379,11 +437,12 @@ def handle_chat(payload: Dict[str, Any]) -> Dict[str, Any]:
         raise RuntimeError(
             "The model returned an empty visible response after retry. Try increasing max tokens, lowering reasoning effort, or switching models."
         )
-    return {
+    created_at = now_iso()
+    result = {
         "ok": True,
         "mode": mode,
         "model": model,
-        "created_at": now_iso(),
+        "created_at": created_at,
         "answer": answer,
         "steps": [
             "read_library" if mode == "library_rag" else "control_prompt",
@@ -400,6 +459,22 @@ def handle_chat(payload: Dict[str, Any]) -> Dict[str, Any]:
             for n in selected_nodes
         ],
     }
+    append_chat_log(
+        {
+            "created_at": created_at,
+            "status": "success",
+            "mode": mode,
+            "model": model,
+            "reasoning_effort": reasoning_effort_raw,
+            "max_completion_tokens": max_tokens,
+            "temperature": temperature,
+            "message": message,
+            "answer": answer,
+            "retrieved_nodes": result["retrieved_nodes"],
+            "steps": result["steps"],
+        }
+    )
+    return result
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -425,6 +500,8 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
 
     def do_GET(self) -> None:  # noqa: N802
+        if not require_basic_auth(self):
+            return
         parsed = urllib.parse.urlparse(self.path)
         if parsed.path in {"/", "/index.html"}:
             self.send_text(INDEX_HTML.read_text(encoding="utf-8"))
@@ -444,6 +521,8 @@ class Handler(BaseHTTPRequestHandler):
         self.send_json({"error": f"Not found: {parsed.path}"}, status=404)
 
     def do_POST(self) -> None:  # noqa: N802
+        if not require_basic_auth(self):
+            return
         parsed = urllib.parse.urlparse(self.path)
         if parsed.path != "/api/chat":
             self.send_json({"error": f"Not found: {parsed.path}"}, status=404)
@@ -455,6 +534,17 @@ class Handler(BaseHTTPRequestHandler):
             result = handle_chat(payload)
             self.send_json(result)
         except Exception as exc:  # noqa: BLE001
+            try:
+                append_chat_log(
+                    {
+                        "created_at": now_iso(),
+                        "status": "error",
+                        "error": str(exc),
+                        "traceback": traceback.format_exc(),
+                    }
+                )
+            except Exception:
+                pass
             self.send_json(
                 {
                     "ok": False,
