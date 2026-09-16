@@ -51,6 +51,9 @@ GRAPH_PATH = PROJECT_ROOT / "data" / "general" / "strategy_hierarchy.json"
 CHAT_LOG_PATH = PROJECT_ROOT / "data" / "general" / "chat_logs.jsonl"
 DEFAULT_MODEL = "gpt-5.6-sol"
 DEFAULT_API_BASE = "https://api.openai.com/v1"
+DEFAULT_MAX_COMPLETION_TOKENS = 4000
+MAX_ALLOWED_COMPLETION_TOKENS = int(os.environ.get("MAX_ALLOWED_COMPLETION_TOKENS", str(DEFAULT_MAX_COMPLETION_TOKENS)))
+MIN_ALLOWED_COMPLETION_TOKENS = 100
 
 
 def now_iso() -> str:
@@ -404,7 +407,11 @@ def handle_chat(payload: Dict[str, Any]) -> Dict[str, Any]:
 
     model = str(payload.get("model") or DEFAULT_MODEL).strip()
     api_base = str(payload.get("api_base") or DEFAULT_API_BASE).strip()
-    max_tokens = int(payload.get("max_completion_tokens") or 4000)
+    requested_max_tokens = int(payload.get("max_completion_tokens") or DEFAULT_MAX_COMPLETION_TOKENS)
+    max_tokens = max(
+        MIN_ALLOWED_COMPLETION_TOKENS,
+        min(requested_max_tokens, MAX_ALLOWED_COMPLETION_TOKENS),
+    )
     temperature = float(payload["temperature"]) if "temperature" in payload and payload.get("temperature") is not None else 1.0
     reasoning_effort_raw = payload.get("reasoning_effort", "high")
     reasoning_effort = None if reasoning_effort_raw in {None, "", "none"} else str(reasoning_effort_raw)
@@ -466,7 +473,9 @@ def handle_chat(payload: Dict[str, Any]) -> Dict[str, Any]:
             "mode": mode,
             "model": model,
             "reasoning_effort": reasoning_effort_raw,
+            "requested_max_completion_tokens": requested_max_tokens,
             "max_completion_tokens": max_tokens,
+            "tokens_were_clamped": requested_max_tokens != max_tokens,
             "temperature": temperature,
             "message": message,
             "answer": answer,
