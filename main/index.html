@@ -334,7 +334,7 @@
       <div class="chat" id="chatLog">
         <div class="message system">
           <div class="role">System</div>
-          <div class="bubble">Choose a mode and ask a proof-strategy question. In Library-RAG mode, the agent will consult the hierarchy graph first and embed strategy-reference cards directly in the response.</div>
+          <div class="bubble">Library-RAG mode is selected by default. Ask a proof-strategy question and the agent will consult the hierarchy graph first and embed strategy-reference cards directly in the response. You can switch to Control mode with the button near the input box.</div>
         </div>
       </div>
 
@@ -351,7 +351,7 @@
 
   <script>
     const $ = (id) => document.getElementById(id);
-    let mode = 'control';
+    let mode = 'library_rag';
     let history = [];
     let busy = false;
 
