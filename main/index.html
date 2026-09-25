@@ -187,6 +187,28 @@
       background: #fff7ed;
       color: #7c2d12;
     }
+    .proof-highlight {
+      white-space: pre-wrap;
+      margin: 6px 0;
+      padding: 4px 6px;
+      border-radius: 6px;
+      border-left: 4px solid transparent;
+    }
+    .proof-highlight.elaborated {
+      background: #ecfdf5;
+      border-left-color: #16a34a;
+    }
+    .proof-highlight.omitted {
+      background: #f3f4f6;
+      border-left-color: #6b7280;
+      color: #374151;
+      font-style: italic;
+    }
+    .proof-highlight.control-ref {
+      background: #eff6ff;
+      border-left-color: #2563eb;
+      color: #1e3a8a;
+    }
     .strategy-card-title {
       font-size: 12px;
       font-weight: 900;
@@ -299,7 +321,7 @@
       <section class="nav-section">
         <h2>Modes</h2>
         <p class="small-note"><strong>Control group:</strong> direct GPT response, no forced library reference.</p>
-        <p class="small-note"><strong>Library-RAG:</strong> retrieves strategy nodes from <code>data/general/strategy_hierarchy.json</code> and embeds strategy-reference cards directly inside the answer.</p>
+        <p class="small-note"><strong>Library-RAG:</strong> first generates a direct draft, then reads the strategy library to rewrite the proof, elaborating critical missing strategies and omitting trivial details.</p>
       </section>
 
       <section class="nav-section">
@@ -328,19 +350,19 @@
     <main>
       <div class="topbar">
         <h1>Interactive Proof Strategy Agent</h1>
-        <span class="mode-badge" id="modeBadge">Control group</span>
+        <span class="mode-badge" id="modeBadge">Library-RAG</span>
       </div>
 
       <div class="chat" id="chatLog">
         <div class="message system">
           <div class="role">System</div>
-          <div class="bubble">Library-RAG mode is selected by default. Ask a proof-strategy question and the agent will consult the hierarchy graph first and embed strategy-reference cards directly in the response. You can switch to Control mode with the button near the input box.</div>
+          <div class="bubble">Library-RAG mode is selected by default. Ask a proof-strategy question and the agent will first draft a direct proof, then consult the hierarchy graph to rewrite it by elaborating critical underexplained strategies and omitting trivial details. You can switch to Control mode with the button near the input box.</div>
         </div>
       </div>
 
       <div class="input-area">
         <div class="composer">
-          <button class="mode-toggle control" id="modeButton">Mode: Control</button>
+          <button class="mode-toggle rag" id="modeButton">Mode: Library-RAG</button>
           <textarea id="messageInput" placeholder="Ask for a proof plan, proof explanation, Lean debugging idea, or strategy analysis..."></textarea>
           <button class="send" id="sendButton">Send</button>
         </div>
@@ -367,6 +389,21 @@
     function renderMarkdownLite(text) {
       let html = escapeHTML(text);
       html = html.replace(/```([\s\S]*?)```/g, (_, code) => `<pre>${code.trim()}</pre>`);
+      html = html.replace(/\[CONTROL_SECTION:\s*([^|\]\n]+)\s*\|\s*([^\]\n]+)\]\s*([\s\S]*?)\s*\[\/CONTROL_SECTION\]/g,
+        (_, pairId, label, body) => `<div class="proof-highlight control-ref" title="Control section ${pairId.trim()}: ${label.trim()}">${body.trim()}</div>`
+      );
+      html = html.replace(/\[RAG_ELABORATED_SECTION:\s*([^|\]\n]+)\s*\|\s*([^\]\n]+)\]\s*([\s\S]*?)\s*\[\/RAG_ELABORATED_SECTION\]/g,
+        (_, pairId, label, body) => `<div class="proof-highlight elaborated" title="Elaborated RAG section ${pairId.trim()}: ${label.trim()}">${body.trim()}</div>`
+      );
+      html = html.replace(/\[RAG_OMITTED_SECTION:\s*([^|\]\n]+)\s*\|\s*([^\]\n]+)\]\s*([\s\S]*?)\s*\[\/RAG_OMITTED_SECTION\]/g,
+        (_, pairId, label, body) => `<div class="proof-highlight omitted" title="Omitted/compressed RAG section ${pairId.trim()}: ${label.trim()}">${body.trim()}</div>`
+      );
+      html = html.replace(/\[ELABORATED_SECTION:\s*([^\]\n]+)\]\s*([\s\S]*?)\s*\[\/ELABORATED_SECTION\]/g,
+        (_, label, body) => `<div class="proof-highlight elaborated" title="Elaborated section: ${label.trim()}">${body.trim()}</div>`
+      );
+      html = html.replace(/\[OMITTED_SECTION:\s*([^\]\n]+)\]\s*([\s\S]*?)\s*\[\/OMITTED_SECTION\]/g,
+        (_, label, body) => `<div class="proof-highlight omitted" title="Omitted/compressed section: ${label.trim()}">${body.trim()}</div>`
+      );
       html = html.replace(/\[STRATEGY:\s*([^|\]\n]+)\s*\|\s*([^\]\n]+)\]\s*([\s\S]*?)\s*\[\/STRATEGY\]/g,
         (_, nodeId, label, body) => `
           <div class="strategy-inline-card">
@@ -496,15 +533,23 @@
       setBusy(true);
       showRetrieved([]);
       let progressTimer = null;
+      let progressTimer2 = null;
+      let progressTimer3 = null;
       const loadingMessage = addLoadingMessage(
         mode === 'library_rag'
-          ? 'Step 1/2: reading strategy hierarchy library and retrieving relevant nodes...'
+          ? 'Step 1/4: generating direct control proof...'
           : 'Step 1/1: sending direct control-group prompt to the model...'
       );
       if (mode === 'library_rag') {
         progressTimer = setTimeout(() => {
-          if (busy) updateLoadingMessage(loadingMessage, 'Step 2/2: reasoning with the model using retrieved library context...');
+          if (busy) updateLoadingMessage(loadingMessage, 'Step 2/4: annotating control proof with library strategies and new critical strategies...');
         }, 700);
+        progressTimer2 = setTimeout(() => {
+          if (busy) updateLoadingMessage(loadingMessage, 'Step 3/4: revising highlighted strategy sections...');
+        }, 1800);
+        progressTimer3 = setTimeout(() => {
+          if (busy) updateLoadingMessage(loadingMessage, 'Step 4/4: checking unhighlighted proof text for trivial calculations to compress...');
+        }, 3000);
       }
       try {
         const payload = {
@@ -526,18 +571,35 @@
           throw new Error(data.error || res.statusText);
         }
         if (progressTimer) clearTimeout(progressTimer);
+        if (progressTimer2) clearTimeout(progressTimer2);
+        if (progressTimer3) clearTimeout(progressTimer3);
         updateLoadingMessage(loadingMessage, 'Done: response received. Rendering math...');
         removeLoadingMessage(loadingMessage);
-        addMessage('assistant', data.answer || '[empty response]');
+        const responseEl = addMessage('assistant', data.answer || '[empty response]');
+        if (data.comparison_html) {
+          const comparison = document.createElement('details');
+          const summary = document.createElement('summary');
+          summary.textContent = 'View annotated control and linked revisions';
+          comparison.appendChild(summary);
+          const body = document.createElement('div');
+          body.innerHTML = data.comparison_html;
+          comparison.appendChild(body);
+          responseEl.appendChild(comparison);
+          renderMathIfAvailable(comparison);
+        }
         history.push({ role: 'assistant', content: data.answer || '' });
         // Strategy references now appear inline inside the chat response, so the
         // old separate retrieved-node chip list is intentionally hidden.
         showRetrieved([]);
       } catch (err) {
+        if (progressTimer2) clearTimeout(progressTimer2);
+        if (progressTimer3) clearTimeout(progressTimer3);
         removeLoadingMessage(loadingMessage);
         addMessage('system', 'Error: ' + err.message);
       } finally {
         if (progressTimer) clearTimeout(progressTimer);
+        if (progressTimer2) clearTimeout(progressTimer2);
+        if (progressTimer3) clearTimeout(progressTimer3);
         setBusy(false);
       }
     }

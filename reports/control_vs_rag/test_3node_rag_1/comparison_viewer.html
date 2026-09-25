@@ -1,0 +1,1488 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Control vs Library-RAG Visualizer</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']], processEscapes: true },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <style>
+    :root { --bg:#f8fafc; --panel:#fff; --border:#dbe3ef; --text:#111827; --muted:#64748b; --blue:#1d4ed8; --cyan:#155e75; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; }
+    header { position: sticky; top:0; z-index:10; background:#0f172a; color:white; padding:16px 22px; box-shadow:0 2px 10px rgba(15,23,42,.18); }
+    header h1 { margin:0 0 4px; font-size:22px; }
+    header .sub { color:#cbd5e1; font-size:13px; }
+    .layout { display:grid; grid-template-columns:260px 1fr; gap:0; }
+    nav { position:sticky; top:72px; align-self:start; height:calc(100vh - 72px); overflow:auto; padding:14px; border-right:1px solid var(--border); background:white; }
+    nav h2 { font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin:0 0 10px; }
+    nav a { display:block; padding:8px 9px; border-radius:8px; color:#1e3a8a; text-decoration:none; font-size:13px; line-height:1.25; }
+    nav a:hover { background:#eff6ff; }
+    main { padding:18px; min-width:0; }
+    .case { margin:0 0 26px; }
+    .case-title { display:flex; justify-content:space-between; align-items:end; gap:10px; margin:0 0 10px; }
+    .case-title h2 { margin:0; font-size:20px; }
+    .case-id { color:var(--muted); font-size:12px; }
+    .split { display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:start; position:relative; }
+    .link-layer { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:2; overflow:visible; }
+    .link-layer path { stroke:#94a3b8; stroke-width:2; fill:none; opacity:.28; }
+    .link-layer path.active { stroke:#2563eb; stroke-width:4; opacity:.92; }
+    .link-layer path.locked { stroke:#1d4ed8; stroke-width:5; opacity:1; }
+    .result-col { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:13px; min-width:0; box-shadow:0 1px 5px rgba(15,23,42,.05); position:relative; z-index:3; }
+    .result-col.control { border-top:5px solid #6366f1; }
+    .result-col.rag { border-top:5px solid #06b6d4; }
+    .col-header { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    .col-header h3 { margin:0 0 8px; color:#111827; }
+    .copy-btn { border:0; border-radius:999px; padding:5px 9px; background:#eef2ff; color:#3730a3; font-weight:800; cursor:pointer; }
+    .prompt-box, .nodes-box { border:1px solid #e2e8f0; background:#f8fafc; border-radius:10px; padding:10px; margin:8px 0; }
+    .small-title { font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin-bottom:5px; }
+    .prompt-text { white-space:pre-wrap; font-size:13px; line-height:1.45; max-height:220px; overflow:auto; }
+    .meta-row { margin:8px 0; }
+    .meta-pill { display:inline-block; margin:2px 4px 2px 0; padding:4px 7px; border-radius:999px; background:#e0f2fe; color:#155e75; font-size:11px; font-weight:800; }
+    .meta-pill.error { background:#fee2e2; color:#991b1b; }
+    .node-chip { display:inline-block; margin:3px 4px 0 0; padding:4px 7px; border-radius:999px; background:#ecfeff; color:#155e75; font-size:11px; }
+    .answer-box { line-height:1.55; font-size:14px; overflow-wrap:anywhere; }
+    .answer-block { white-space:pre-wrap; margin:0 0 10px; padding:6px 0; }
+    .answer-block.annotated { background:#fffbeb; border-left:4px solid #f59e0b; padding:9px 10px; border-radius:8px; }
+    .answer-block.link-hover { outline:3px solid rgba(37,99,235,.35); background:#eff6ff; }
+    .answer-block.link-locked { outline:4px solid rgba(37,99,235,.55); background:#dbeafe; }
+    .eval-note.link-hover { outline:2px solid rgba(37,99,235,.35); }
+    .eval-note.link-locked { outline:3px solid rgba(37,99,235,.55); }
+    .eval-summary { border:1px solid #c7d2fe; background:#eef2ff; color:#312e81; border-radius:10px; padding:10px; margin:8px 0; }
+    .eval-overall { margin-top:6px; font-size:13px; line-height:1.45; }
+    .eval-note { white-space:normal; border-radius:10px; padding:10px; margin:-3px 0 12px 14px; font-size:13px; line-height:1.45; }
+    .eval-note.worked { background:#ecfdf5; border:1px solid #bbf7d0; color:#14532d; }
+    .eval-note.improve { background:#fff7ed; border:1px solid #fed7aa; color:#7c2d12; }
+    .eval-note.linked { background:#f8fafc; border:1px solid #cbd5e1; color:#334155; }
+    .eval-note-title { font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:.05em; margin-bottom:5px; }
+    .error-box { border:1px solid #fecaca; background:#fef2f2; color:#991b1b; border-radius:9px; padding:9px; margin:8px 0; white-space:pre-wrap; }
+    code { background:#f1f5f9; padding:1px 4px; border-radius:4px; }
+    pre { background:#0f172a; color:#e5e7eb; padding:10px; border-radius:9px; overflow:auto; }
+    .strategy-card { white-space:normal; margin:10px 0; padding:10px 12px; border-radius:12px; border:1px solid #bfdbfe; border-left:5px solid #2563eb; background:#eff6ff; color:#1e3a8a; }
+    .strategy-card.new { border-color:#fed7aa; border-left-color:#f97316; background:#fff7ed; color:#7c2d12; }
+    .proof-highlight { white-space:pre-wrap; margin:6px 0; padding:4px 6px; border-radius:6px; border-left:4px solid transparent; }
+    .proof-highlight.elaborated { background:#ecfdf5; border-left-color:#16a34a; }
+    .proof-highlight.omitted { background:#f3f4f6; border-left-color:#6b7280; color:#374151; font-style:italic; }
+    .proof-highlight.control-ref { background:#eff6ff; border-left-color:#2563eb; color:#1e3a8a; }
+    .strategy-card-title { font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.04em; margin-bottom:5px; }
+    .strategy-card-meta { font-size:12px; font-weight:800; margin-bottom:5px; }
+    .strategy-card-body { font-size:13px; line-height:1.45; }
+    .muted { color:var(--muted); }
+    @media (max-width: 980px) { .layout { grid-template-columns:1fr; } nav { position:static; height:auto; border-right:0; border-bottom:1px solid var(--border); } .split { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Control vs Library-RAG Visualizer</h1>
+    <div class="sub">Run: <code>reports/control_vs_rag/test_3node_rag_1</code></div>
+  </header>
+  <div class="layout">
+    <nav><h2>Cases</h2><a href='#case-theorem_6_2_2'>1. Theorem 6.2.2 (Hanson-Wright inequality)</a></nav>
+    <main>
+    <article class="case" id="case-theorem_6_2_2">
+      <div class="case-title">
+        <h2>1. Theorem 6.2.2 (Hanson-Wright inequality)</h2>
+        <div class="case-id"><code>theorem_6_2_2</code></div>
+      </div>
+      <div class="prompt-box global-prompt">
+        <div class="small-title">Prompt</div>
+        <div class="prompt-text">Can you prove this theorem? Theorem 6.2.2 (Hanson-Wright inequality). Let A be an n × n matrix. Let X =
+(X1 , . . . , Xn ) ∈ Rn be a random vector with independent, mean-zero, subgaussian
+coordinates. Then, for every t ≥ 0, we have
+                                               h             t2       t i
+         P |X T AX − E X T AX| ≥ t ≤ 2 exp − c min
+            
+                                                                 2
+                                                                   ,        ,
+                                                          K 4 ∥A∥F K 2 ∥A∥
+where K = maxi ∥Xi ∥ψ2 .
+
+Our</div>
+      </div>
+      <div class="split" data-pair-links='[]'>
+        <svg class="link-layer" aria-hidden="true"></svg>
+        
+        <section class="result-col control">
+          <div class="col-header">
+            <h3>Control</h3>
+            <button class="copy-btn" data-copy="Let \(\|\cdot\|\) denote the operator norm. Throughout, \(c,C&gt;0\) denote universal constants whose values may change from line to line.
+
+We use the following standard consequences of subgaussianity:
+
+1. If \(Z_i\) are independent, mean-zero, and \(\|Z_i\|_{\psi_2}\le K\), then
+   \[
+   \mathbb E\exp\left(s\sum_i v_iZ_i\right)
+   \le \exp\big(C s^2K^2\|v\|_2^2\big).
+   \tag{1}
+   \]
+2. If \(\|Z\|_{\psi_2}\le K\), then
+   \[
+   \|Z^2-\mathbb EZ^2\|_{\psi_1}\le CK^2.
+   \tag{2}
+   \]
+   Consequently, for independent centered subexponential \(Y_i\) with
+   \(\|Y_i\|_{\psi_1}\le K^2\),
+   \[
+   \mathbb E\exp\left(\lambda\sum_i a_iY_i\right)
+   \le \exp\left(C\lambda^2K^4\sum_i a_i^2\right)
+   \tag{3}
+   \]
+   whenever
+   \[
+   |\lambda|\le \frac{c}{K^2\max_i|a_i|}.
+   \]
+
+### 1. Reduction to the symmetric case
+
+Set
+\[
+B=\frac{A+A^T}{2}.
+\]
+Then \(x^TAx=x^TBx\) for every \(x\), and
+\[
+\|B\|\le \|A\|,\qquad \|B\|_F\le \|A\|_F.
+\]
+Thus it suffices to prove the result when \(A\) is symmetric.
+
+Write
+\[
+X^TAX-\mathbb EX^TAX=D+S,
+\]
+where
+\[
+D=\sum_{i=1}^n a_{ii}\big(X_i^2-\mathbb EX_i^2\big),
+\qquad
+S=\sum_{i\ne j}a_{ij}X_iX_j.
+\]
+Independence and mean-zero imply \(\mathbb ES=0\).
+
+### 2. The diagonal part
+
+By (2)–(3),
+\[
+\mathbb E e^{\lambda D}
+\le
+\exp\left(C\lambda^2K^4\sum_i a_{ii}^2\right)
+\le
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)
+\tag{4}
+\]
+provided
+\[
+|\lambda|
+\le \frac{c}{K^2\max_i|a_{ii}|}
+\le \frac{c}{K^2\|A\|}.
+\tag{5}
+\]
+
+### 3. The off-diagonal part
+
+We prove
+\[
+\mathbb E e^{\lambda S}
+\le
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)
+\tag{6}
+\]
+whenever
+\[
+|\lambda|\le \frac{c}{K^2\|A\|}.
+\tag{7}
+\]
+
+Let \(\delta_1,\dots,\delta_n\) be independent Bernoulli random variables with
+\(\mathbb P(\delta_i=1)=1/2\), independent of \(X\). Define
+\[
+S_\delta=\sum_{i,j}\delta_i(1-\delta_j)a_{ij}X_iX_j.
+\]
+Since \(\mathbb E_\delta[\delta_i(1-\delta_j)]=1/4\) for \(i\ne j\),
+\[
+S=4\mathbb E_\delta S_\delta.
+\]
+Convexity of the exponential gives
+\[
+\mathbb Ee^{\lambda S}
+\le
+\mathbb E_\delta\mathbb E_Xe^{4\lambda S_\delta}.
+\tag{8}
+\]
+
+Fix \(\delta\), and let
+\[
+\Lambda=\{i:\delta_i=1\}.
+\]
+Then
+\[
+S_\delta=X_\Lambda^TBX_{\Lambda^c},
+\]
+where \(B=A_{\Lambda,\Lambda^c}\) is the corresponding rectangular block.
+
+Conditioning on \(X_{\Lambda^c}\) and using (1),
+\[
+\mathbb E_{X_\Lambda}
+ \exp\big(4\lambda X_\Lambda^TBX_{\Lambda^c}\big)
+\le
+\exp\left(C\lambda^2K^2\|BX_{\Lambda^c}\|_2^2\right).
+\tag{9}
+\]
+
+We next bound the expectation of the right-hand side. For \(\eta\ge0\) and a standard Gaussian vector \(g\),
+\[
+e^{\eta\|z\|_2^2}
+=
+\mathbb E_g e^{\sqrt{2\eta}\langle g,z\rangle}.
+\]
+Using this identity and then (1),
+\[
+\begin{aligned}
+\mathbb E_Xe^{\eta\|BX\|_2^2}
+&amp;=\mathbb E_g\mathbb E_X
+   e^{\sqrt{2\eta}\langle B^Tg,X\rangle}\\
+&amp;\le
+\mathbb E_g
+   e^{C\eta K^2\|B^Tg\|_2^2}.
+\end{aligned}
+\tag{10}
+\]
+
+For any matrix \(B\), the Gaussian quadratic-form calculation gives
+\[
+\mathbb E_g e^{\theta\|B^Tg\|_2^2}
+\le
+\exp\big(C\theta\|B\|_F^2\big)
+\tag{11}
+\]
+provided \(\theta\|B\|^2\le c\). Indeed, writing \(s_k\) for the singular values of \(B\), the left side equals
+\[
+\prod_k(1-2\theta s_k^2)^{-1/2}.
+\]
+
+Taking \(\eta=C\lambda^2K^2\) in (10) therefore gives
+\[
+\mathbb E_X e^{C\lambda^2K^2\|BX\|_2^2}
+\le
+\exp\left(C\lambda^2K^4\|B\|_F^2\right)
+\tag{12}
+\]
+provided
+\[
+|\lambda|\le \frac{c}{K^2\|B\|}.
+\]
+Since \(B=P_\Lambda AP_{\Lambda^c}\),
+\[
+\|B\|\le \|A\|,
+\qquad
+\|B\|_F\le \|A\|_F.
+\]
+Combining (8), (9), and (12) proves (6).
+
+### 4. MGF of the full quadratic form
+
+Let
+\[
+Y=X^TAX-\mathbb EX^TAX=D+S.
+\]
+The variables \(D\) and \(S\) need not be independent, but Cauchy–Schwarz, together with (4) and (6), yields
+\[
+\begin{aligned}
+\mathbb Ee^{\lambda Y}
+&amp;\le
+\big(\mathbb Ee^{2\lambda D}\big)^{1/2}
+\big(\mathbb Ee^{2\lambda S}\big)^{1/2}\\
+&amp;\le
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)
+\end{aligned}
+\tag{13}
+\]
+whenever
+\[
+|\lambda|\le \frac{c}{K^2\|A\|}.
+\tag{14}
+\]
+
+For \(0\le\lambda\le c/(K^2\|A\|)\), Chernoff’s bound gives
+\[
+\mathbb P(Y\ge t)
+\le
+\exp\left(
+-\lambda t+C\lambda^2K^4\|A\|_F^2
+\right).
+\]
+Optimizing over the permitted \(\lambda\), namely taking \(\lambda\) comparable to
+\[
+\min\left\{
+\frac{t}{K^4\|A\|_F^2},
+\frac{1}{K^2\|A\|}
+\right\},
+\]
+gives
+\[
+\mathbb P(Y\ge t)
+\le
+\exp\left[
+-c\min\left(
+\frac{t^2}{K^4\|A\|_F^2},
+\frac{t}{K^2\|A\|}
+\right)
+\right].
+\]
+Applying the same argument to \(-Y\) and taking a union bound proves
+\[
+\boxed{
+\mathbb P\left(
+\left|X^TAX-\mathbb EX^TAX\right|\ge t
+\right)
+\le
+2\exp\left[
+-c\min\left(
+\frac{t^2}{K^4\|A\|_F^2},
+\frac{t}{K^2\|A\|}
+\right)
+\right].
+}
+\]
+
+This is the Hanson–Wright inequality.">Copy raw</button>
+          </div>
+          <div class="meta-row"><span class='meta-pill'>model: gpt-5.6-sol</span><span class='meta-pill'>reasoning effort: high</span><span class='meta-pill'>max completion tokens: 4000</span><span class='meta-pill'>elapsed seconds: 144.759</span></div>
+          
+          <div class="answer-box"><div class="answer-block raw-answer">Let \(\|\cdot\|\) denote the operator norm. Throughout, \(c,C&gt;0\) denote universal constants whose values may change from line to line.
+
+We use the following standard consequences of subgaussianity:
+
+1. If \(Z_i\) are independent, mean-zero, and \(\|Z_i\|_{\psi_2}\le K\), then
+   \[
+   \mathbb E\exp\left(s\sum_i v_iZ_i\right)
+   \le \exp\big(C s^2K^2\|v\|_2^2\big).
+   \tag{1}
+   \]
+2. If \(\|Z\|_{\psi_2}\le K\), then
+   \[
+   \|Z^2-\mathbb EZ^2\|_{\psi_1}\le CK^2.
+   \tag{2}
+   \]
+   Consequently, for independent centered subexponential \(Y_i\) with
+   \(\|Y_i\|_{\psi_1}\le K^2\),
+   \[
+   \mathbb E\exp\left(\lambda\sum_i a_iY_i\right)
+   \le \exp\left(C\lambda^2K^4\sum_i a_i^2\right)
+   \tag{3}
+   \]
+   whenever
+   \[
+   |\lambda|\le \frac{c}{K^2\max_i|a_i|}.
+   \]
+
+### 1. Reduction to the symmetric case
+
+Set
+\[
+B=\frac{A+A^T}{2}.
+\]
+Then \(x^TAx=x^TBx\) for every \(x\), and
+\[
+\|B\|\le \|A\|,\qquad \|B\|_F\le \|A\|_F.
+\]
+Thus it suffices to prove the result when \(A\) is symmetric.
+
+Write
+\[
+X^TAX-\mathbb EX^TAX=D+S,
+\]
+where
+\[
+D=\sum_{i=1}^n a_{ii}\big(X_i^2-\mathbb EX_i^2\big),
+\qquad
+S=\sum_{i\ne j}a_{ij}X_iX_j.
+\]
+Independence and mean-zero imply \(\mathbb ES=0\).
+
+### 2. The diagonal part
+
+By (2)–(3),
+\[
+\mathbb E e^{\lambda D}
+\le
+\exp\left(C\lambda^2K^4\sum_i a_{ii}^2\right)
+\le
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)
+\tag{4}
+\]
+provided
+\[
+|\lambda|
+\le \frac{c}{K^2\max_i|a_{ii}|}
+\le \frac{c}{K^2\|A\|}.
+\tag{5}
+\]
+
+### 3. The off-diagonal part
+
+We prove
+\[
+\mathbb E e^{\lambda S}
+\le
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)
+\tag{6}
+\]
+whenever
+\[
+|\lambda|\le \frac{c}{K^2\|A\|}.
+\tag{7}
+\]
+
+Let \(\delta_1,\dots,\delta_n\) be independent Bernoulli random variables with
+\(\mathbb P(\delta_i=1)=1/2\), independent of \(X\). Define
+\[
+S_\delta=\sum_{i,j}\delta_i(1-\delta_j)a_{ij}X_iX_j.
+\]
+Since \(\mathbb E_\delta[\delta_i(1-\delta_j)]=1/4\) for \(i\ne j\),
+\[
+S=4\mathbb E_\delta S_\delta.
+\]
+Convexity of the exponential gives
+\[
+\mathbb Ee^{\lambda S}
+\le
+\mathbb E_\delta\mathbb E_Xe^{4\lambda S_\delta}.
+\tag{8}
+\]
+
+Fix \(\delta\), and let
+\[
+\Lambda=\{i:\delta_i=1\}.
+\]
+Then
+\[
+S_\delta=X_\Lambda^TBX_{\Lambda^c},
+\]
+where \(B=A_{\Lambda,\Lambda^c}\) is the corresponding rectangular block.
+
+Conditioning on \(X_{\Lambda^c}\) and using (1),
+\[
+\mathbb E_{X_\Lambda}
+ \exp\big(4\lambda X_\Lambda^TBX_{\Lambda^c}\big)
+\le
+\exp\left(C\lambda^2K^2\|BX_{\Lambda^c}\|_2^2\right).
+\tag{9}
+\]
+
+We next bound the expectation of the right-hand side. For \(\eta\ge0\) and a standard Gaussian vector \(g\),
+\[
+e^{\eta\|z\|_2^2}
+=
+\mathbb E_g e^{\sqrt{2\eta}\langle g,z\rangle}.
+\]
+Using this identity and then (1),
+\[
+\begin{aligned}
+\mathbb E_Xe^{\eta\|BX\|_2^2}
+&amp;=\mathbb E_g\mathbb E_X
+   e^{\sqrt{2\eta}\langle B^Tg,X\rangle}\\
+&amp;\le
+\mathbb E_g
+   e^{C\eta K^2\|B^Tg\|_2^2}.
+\end{aligned}
+\tag{10}
+\]
+
+For any matrix \(B\), the Gaussian quadratic-form calculation gives
+\[
+\mathbb E_g e^{\theta\|B^Tg\|_2^2}
+\le
+\exp\big(C\theta\|B\|_F^2\big)
+\tag{11}
+\]
+provided \(\theta\|B\|^2\le c\). Indeed, writing \(s_k\) for the singular values of \(B\), the left side equals
+\[
+\prod_k(1-2\theta s_k^2)^{-1/2}.
+\]
+
+Taking \(\eta=C\lambda^2K^2\) in (10) therefore gives
+\[
+\mathbb E_X e^{C\lambda^2K^2\|BX\|_2^2}
+\le
+\exp\left(C\lambda^2K^4\|B\|_F^2\right)
+\tag{12}
+\]
+provided
+\[
+|\lambda|\le \frac{c}{K^2\|B\|}.
+\]
+Since \(B=P_\Lambda AP_{\Lambda^c}\),
+\[
+\|B\|\le \|A\|,
+\qquad
+\|B\|_F\le \|A\|_F.
+\]
+Combining (8), (9), and (12) proves (6).
+
+### 4. MGF of the full quadratic form
+
+Let
+\[
+Y=X^TAX-\mathbb EX^TAX=D+S.
+\]
+The variables \(D\) and \(S\) need not be independent, but Cauchy–Schwarz, together with (4) and (6), yields
+\[
+\begin{aligned}
+\mathbb Ee^{\lambda Y}
+&amp;\le
+\big(\mathbb Ee^{2\lambda D}\big)^{1/2}
+\big(\mathbb Ee^{2\lambda S}\big)^{1/2}\\
+&amp;\le
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)
+\end{aligned}
+\tag{13}
+\]
+whenever
+\[
+|\lambda|\le \frac{c}{K^2\|A\|}.
+\tag{14}
+\]
+
+For \(0\le\lambda\le c/(K^2\|A\|)\), Chernoff’s bound gives
+\[
+\mathbb P(Y\ge t)
+\le
+\exp\left(
+-\lambda t+C\lambda^2K^4\|A\|_F^2
+\right).
+\]
+Optimizing over the permitted \(\lambda\), namely taking \(\lambda\) comparable to
+\[
+\min\left\{
+\frac{t}{K^4\|A\|_F^2},
+\frac{1}{K^2\|A\|}
+\right\},
+\]
+gives
+\[
+\mathbb P(Y\ge t)
+\le
+\exp\left[
+-c\min\left(
+\frac{t^2}{K^4\|A\|_F^2},
+\frac{t}{K^2\|A\|}
+\right)
+\right].
+\]
+Applying the same argument to \(-Y\) and taking a union bound proves
+\[
+\boxed{
+\mathbb P\left(
+\left|X^TAX-\mathbb EX^TAX\right|\ge t
+\right)
+\le
+2\exp\left[
+-c\min\left(
+\frac{t^2}{K^4\|A\|_F^2},
+\frac{t}{K^2\|A\|}
+\right)
+\right].
+}
+\]
+
+This is the Hanson–Wright inequality.</div></div>
+        </section>
+        
+        
+        <section class="result-col rag">
+          <div class="col-header">
+            <h3>Library-RAG</h3>
+            <button class="copy-btn" data-copy="Let \(\|\cdot\|\) denote the operator norm. Throughout, \(c,C&gt;0\) denote universal constants whose values may change from line to line.
+
+We use the following standard consequences of subgaussianity:
+
+1. If \(Z_i\) are independent, mean-zero, and \(\|Z_i\|_{\psi_2}\le K\), then
+   \[
+   \mathbb E\exp\left(s\sum_i v_iZ_i\right)
+   \le \exp\big(C s^2K^2\|v\|_2^2\big).
+   \tag{1}
+   \]
+Annotation: This linear-form MGF bound follows by factoring the exponential moment across independent coordinates.
+
+2. If \(\|Z\|_{\psi_2}\le K\), then
+   \[
+   \|Z^2-\mathbb EZ^2\|_{\psi_1}\le CK^2.
+   \tag{2}
+   \]
+   Consequently, for independent centered subexponential \(Y_i\) with
+   \(\|Y_i\|_{\psi_1}\le K^2\),
+   \[
+   \mathbb E\exp\left(\lambda\sum_i a_iY_i\right)
+   \le \exp\left(C\lambda^2K^4\sum_i a_i^2\right)
+   \tag{3}
+   \]
+   whenever
+   \[
+   |\lambda|\le \frac{c}{K^2\max_i|a_i|}.
+   \]
+Annotation: This passage converts subgaussian control into a local exponential-moment bound for weighted subexponential sums.
+
+### 1. Reduction to the symmetric case
+
+Set
+\[
+B=\frac{A+A^T}{2}.
+\]
+Then \(x^TAx=x^TBx\) for every \(x\), and
+\[
+\|B\|\le \|A\|,\qquad \|B\|_F\le \|A\|_F.
+\]
+Thus it suffices to prove the result when \(A\) is symmetric.
+Annotation: The quadratic form is canonically rewritten using the symmetric part of \(A\) while preserving the required norm bounds.
+
+Write
+\[
+X^TAX-\mathbb EX^TAX=D+S,
+\]
+where
+\[
+D=\sum_{i=1}^n a_{ii}\big(X_i^2-\mathbb EX_i^2\big),
+\qquad
+S=\sum_{i\ne j}a_{ij}X_iX_j.
+\]
+Independence and mean-zero imply \(\mathbb ES=0\).
+Annotation: This critical decomposition separates the directly subexponential diagonal terms from the dependent bilinear terms, a strategy absent from the retrieved library.
+
+### 2. The diagonal part
+
+[CONTROL_SECTION: p1 | diagonal MGF parameter range]
+By (2)–(3),
+\[
+\mathbb E e^{\lambda D}
+\le
+\exp\left(C\lambda^2K^4\sum_i a_{ii}^2\right)
+\le
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)
+\tag{4}
+\]
+provided
+\[
+|\lambda|
+\le \frac{c}{K^2\max_i|a_{ii}|}
+\le \frac{c}{K^2\|A\|}.
+\tag{5}
+\]
+Annotation: The diagonal contribution is controlled by applying the weighted subexponential MGF bound in its permitted parameter range.
+[/CONTROL_SECTION]
+[RAG_OMITTED_SECTION: p1 | diagonal MGF parameter range]
+By (2)–(3),
+\[
+\mathbb E e^{\lambda D}
+\le
+\exp\left(C\lambda^2K^4\sum_i a_{ii}^2\right)
+\le
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)
+\tag{4}
+\]
+whenever
+\[
+|\lambda|\le \frac{c}{K^2\max_i|a_{ii}|}.
+\]
+Since \(\max_i|a_{ii}|\le \|A\|\), it is sufficient to impose the smaller range
+\[
+|\lambda|\le \frac{c}{K^2\|A\|}.
+\tag{5}
+\]
+[/RAG_OMITTED_SECTION]
+
+### 3. The off-diagonal part
+
+We prove
+\[
+\mathbb E e^{\lambda S}
+\le
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)
+\tag{6}
+\]
+whenever
+\[
+|\lambda|\le \frac{c}{K^2\|A\|}.
+\tag{7}
+\]
+
+[CONTROL_SECTION: p2 | Random-partition decoupling of off-diagonal interactions]
+Let \(\delta_1,\dots,\delta_n\) be independent Bernoulli random variables with
+\(\mathbb P(\delta_i=1)=1/2\), independent of \(X\). Define
+\[
+S_\delta=\sum_{i,j}\delta_i(1-\delta_j)a_{ij}X_iX_j.
+\]
+Since \(\mathbb E_\delta[\delta_i(1-\delta_j)]=1/4\) for \(i\ne j\),
+\[
+S=4\mathbb E_\delta S_\delta.
+\]
+Annotation: The random cut converts the coupled off-diagonal quadratic form into an average of bilinear forms on disjoint coordinate sets, a critical decoupling strategy absent from the library.
+[/CONTROL_SECTION]
+[RAG_ELABORATED_SECTION: p2 | Random-partition decoupling of off-diagonal interactions]
+Let \(\delta_1,\dots,\delta_n\) be independent Bernoulli random variables with
+\(\mathbb P(\delta_i=1)=1/2\), independent of \(X\). Define
+\[
+S_\delta=\sum_{i,j}\delta_i(1-\delta_j)a_{ij}X_iX_j.
+\]
+For \(i=j\), \(\delta_i(1-\delta_i)=0\), while for \(i\ne j\), independence gives
+\[
+\mathbb E_\delta\big[\delta_i(1-\delta_j)\big]
+=\mathbb E\delta_i\,\mathbb E(1-\delta_j)=\frac14.
+\]
+Therefore, pointwise in \(X\),
+\[
+\mathbb E_\delta S_\delta
+=\frac14\sum_{i\ne j}a_{ij}X_iX_j
+=\frac14S,
+\]
+and hence
+\[
+S=4\mathbb E_\delta S_\delta.
+\]
+For each fixed realization of \(\delta\), the two coordinate sets selected by
+\(\delta_i=1\) and \(\delta_j=0\) are disjoint; the corresponding subvectors of
+\(X\) are therefore independent.
+[/RAG_ELABORATED_SECTION]
+
+Convexity of the exponential gives
+\[
+\mathbb Ee^{\lambda S}
+\le
+\mathbb E_\delta\mathbb E_Xe^{4\lambda S_\delta}.
+\tag{8}
+\]
+Annotation: Jensen’s inequality moves the random-partition average outside the convex exponential.
+
+Fix \(\delta\), and let
+\[
+\Lambda=\{i:\delta_i=1\}.
+\]
+Then
+\[
+S_\delta=X_\Lambda^TBX_{\Lambda^c},
+\]
+where \(B=A_{\Lambda,\Lambda^c}\) is the corresponding rectangular block.
+
+Conditioning on \(X_{\Lambda^c}\) and using (1),
+\[
+\mathbb E_{X_\Lambda}
+ \exp\big(4\lambda X_\Lambda^TBX_{\Lambda^c}\big)
+\le
+\exp\left(C\lambda^2K^2\|BX_{\Lambda^c}\|_2^2\right).
+\tag{9}
+\]
+Annotation: Conditioning isolates an independent coordinate block so that the tensorized subgaussian linear-form MGF bound applies.
+
+[CONTROL_SECTION: p2 | Gaussian linearization of a squared Euclidean norm]
+We next bound the expectation of the right-hand side. For \(\eta\ge0\) and a standard Gaussian vector \(g\),
+\[
+e^{\eta\|z\|_2^2}
+=
+\mathbb E_g e^{\sqrt{2\eta}\langle g,z\rangle}.
+\]
+Using this identity and then (1),
+\[
+\begin{aligned}
+\mathbb E_Xe^{\eta\|BX\|_2^2}
+&amp;=\mathbb E_g\mathbb E_X
+   e^{\sqrt{2\eta}\langle B^Tg,X\rangle}\\
+&amp;\le
+\mathbb E_g
+   e^{C\eta K^2\|B^Tg\|_2^2}.
+\end{aligned}
+\tag{10}
+\]
+Annotation: The auxiliary Gaussian identity linearizes the squared norm and is the critical bridge to a tractable Gaussian quadratic MGF, but it is absent from the library.
+[/CONTROL_SECTION]
+[RAG_ELABORATED_SECTION: p2 | Gaussian linearization of a squared Euclidean norm]
+We next bound the expectation of the right-hand side. Let \(g\) be a standard Gaussian vector of the appropriate dimension, independent of \(X\). For each fixed \(z\),
+\[
+\langle g,z\rangle\sim N(0,\|z\|_2^2),
+\]
+so the Gaussian MGF formula gives, for \(\eta\ge0\),
+\[
+\mathbb E_g e^{\sqrt{2\eta}\langle g,z\rangle}
+=
+\exp\left(\frac{2\eta}{2}\|z\|_2^2\right)
+=e^{\eta\|z\|_2^2}.
+\]
+Applying this identity with \(z=BX\), and then using Tonelli’s theorem and the
+linear-form estimate (1) conditionally on \(g\), yields
+\[
+\begin{aligned}
+\mathbb E_Xe^{\eta\|BX\|_2^2}
+&amp;=\mathbb E_X\mathbb E_g
+   e^{\sqrt{2\eta}\langle g,BX\rangle}\\
+&amp;=\mathbb E_g\mathbb E_X
+   e^{\sqrt{2\eta}\langle B^Tg,X\rangle}\\
+&amp;\le
+\mathbb E_g
+   e^{C\eta K^2\|B^Tg\|_2^2}.
+\end{aligned}
+\tag{10}
+\]
+[/RAG_ELABORATED_SECTION]
+
+[CONTROL_SECTION: p2 | Singular-value evaluation of a Gaussian quadratic MGF]
+For any matrix \(B\), the Gaussian quadratic-form calculation gives
+\[
+\mathbb E_g e^{\theta\|B^Tg\|_2^2}
+\le
+\exp\big(C\theta\|B\|_F^2\big)
+\tag{11}
+\]
+provided \(\theta\|B\|^2\le c\). Indeed, writing \(s_k\) for the singular values of \(B\), the left side equals
+\[
+\prod_k(1-2\theta s_k^2)^{-1/2}.
+\]
+Annotation: Diagonalizing through singular values supplies both the Frobenius-norm exponent and operator-norm admissibility condition, a specialized strategy not represented in the library.
+[/CONTROL_SECTION]
+[RAG_ELABORATED_SECTION: p2 | Singular-value evaluation of a Gaussian quadratic MGF]
+For any matrix \(B\) and \(\theta\ge0\), let \(s_k\) denote the singular values of
+\(B\). By the singular value decomposition and rotational invariance of the
+standard Gaussian distribution,
+\[
+\|B^Tg\|_2^2\stackrel{d}{=}\sum_k s_k^2g_k^2,
+\]
+where the \(g_k\) are independent \(N(0,1)\) variables. Thus, provided
+\(2\theta s_k^2&lt;1\) for every \(k\),
+\[
+\mathbb E_g e^{\theta\|B^Tg\|_2^2}
+=
+\prod_k\mathbb E e^{\theta s_k^2g_k^2}
+=
+\prod_k(1-2\theta s_k^2)^{-1/2}.
+\]
+If \(\theta\|B\|^2\le c\) for a sufficiently small universal \(c\), then
+\(2\theta s_k^2\le 1/2\). Using
+\(-\log(1-u)\le Cu\) for \(0\le u\le1/2\), we obtain
+\[
+\begin{aligned}
+\log\mathbb E_g e^{\theta\|B^Tg\|_2^2}
+&amp;=-\frac12\sum_k\log(1-2\theta s_k^2)\\
+&amp;\le C\theta\sum_k s_k^2
+=C\theta\|B\|_F^2.
+\end{aligned}
+\]
+Exponentiating gives
+\[
+\mathbb E_g e^{\theta\|B^Tg\|_2^2}
+\le
+\exp\big(C\theta\|B\|_F^2\big).
+\tag{11}
+\]
+[/RAG_ELABORATED_SECTION]
+
+[CONTROL_SECTION: u1 | routine norm and parameter check]
+Taking \(\eta=C\lambda^2K^2\) in (10) therefore gives
+\[
+\mathbb E_X e^{C\lambda^2K^2\|BX\|_2^2}
+\le
+\exp\left(C\lambda^2K^4\|B\|_F^2\right)
+\tag{12}
+\]
+provided
+\[
+|\lambda|\le \frac{c}{K^2\|B\|}.
+\]
+Since \(B=P_\Lambda AP_{\Lambda^c}\),
+\[
+\|B\|\le \|A\|,
+\qquad
+\|B\|_F\le \|A\|_F.
+\]
+Combining (8), (9), and (12) proves (6).
+[/CONTROL_SECTION]
+[RAG_OMITTED_SECTION: u1 | routine norm and parameter check]
+Applying (10)–(11) with \(\eta=C\lambda^2K^2\), and using
+\(\|A_{\Lambda,\Lambda^c}\|\le\|A\|\) and
+\(\|A_{\Lambda,\Lambda^c}\|_F\le\|A\|_F\), gives
+\[
+\mathbb E_X e^{C\lambda^2K^2\|BX\|_2^2}
+\le
+\exp\left(C\lambda^2K^4\|B\|_F^2\right)
+\tag{12}
+\]
+uniformly for \(|\lambda|\le c/(K^2\|A\|)\). Together with (8)–(9), this proves (6).
+[/RAG_OMITTED_SECTION]
+
+### 4. MGF of the full quadratic form
+
+Let
+\[
+Y=X^TAX-\mathbb EX^TAX=D+S.
+\]
+The variables \(D\) and \(S\) need not be independent, but Cauchy–Schwarz, together with (4) and (6), yields
+\[
+\begin{aligned}
+\mathbb Ee^{\lambda Y}
+&amp;\le
+\big(\mathbb Ee^{2\lambda D}\big)^{1/2}
+\big(\mathbb Ee^{2\lambda S}\big)^{1/2}\\
+&amp;\le
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)
+\end{aligned}
+\tag{13}
+\]
+whenever
+\[
+|\lambda|\le \frac{c}{K^2\|A\|}.
+\tag{14}
+\]
+Annotation: Cauchy–Schwarz combines the two component MGF estimates without requiring independence and produces an MGF bound for the full form.
+
+For \(0\le\lambda\le c/(K^2\|A\|)\), Chernoff’s bound gives
+\[
+\mathbb P(Y\ge t)
+\le
+\exp\left(
+-\lambda t+C\lambda^2K^4\|A\|_F^2
+\right).
+\]
+Optimizing over the permitted \(\lambda\), namely taking \(\lambda\) comparable to
+\[
+\min\left\{
+\frac{t}{K^4\|A\|_F^2},
+\frac{1}{K^2\|A\|}
+\right\},
+\]
+gives
+\[
+\mathbb P(Y\ge t)
+\le
+\exp\left[
+-c\min\left(
+\frac{t^2}{K^4\|A\|_F^2},
+\frac{t}{K^2\|A\|}
+\right)
+\right].
+\]
+Annotation: Exponential Markov inequality followed by optimization of the MGF parameter yields the two-regime upper-tail bound.
+
+Applying the same argument to \(-Y\) and taking a union bound proves
+\[
+\boxed{
+\mathbb P\left(
+\left|X^TAX-\mathbb EX^TAX\right|\ge t
+\right)
+\le
+2\exp\left[
+-c\min\left(
+\frac{t^2}{K^4\|A\|_F^2},
+\frac{t}{K^2\|A\|}
+\right)
+\right].
+}
+\]
+Annotation: A union bound combines the upper and lower one-sided estimates into the stated two-sided inequality.
+
+This is the Hanson–Wright inequality.">Copy raw</button>
+          </div>
+          <div class="meta-row"><span class='meta-pill'>model: gpt-5.6-sol</span><span class='meta-pill'>reasoning effort: high</span><span class='meta-pill'>max completion tokens: 4000</span><span class='meta-pill'>elapsed seconds: 219.128</span></div>
+          
+          <div class="answer-box"><div class="answer-block raw-answer">Let \(\|\cdot\|\) denote the operator norm. Throughout, \(c,C&gt;0\) denote universal constants whose values may change from line to line.
+
+We use the following standard consequences of subgaussianity:
+
+1. If \(Z_i\) are independent, mean-zero, and \(\|Z_i\|_{\psi_2}\le K\), then
+   \[
+   \mathbb E\exp\left(s\sum_i v_iZ_i\right)
+   \le \exp\big(C s^2K^2\|v\|_2^2\big).
+   \tag{1}
+   \]
+Annotation: This linear-form MGF bound follows by factoring the exponential moment across independent coordinates.
+
+2. If \(\|Z\|_{\psi_2}\le K\), then
+   \[
+   \|Z^2-\mathbb EZ^2\|_{\psi_1}\le CK^2.
+   \tag{2}
+   \]
+   Consequently, for independent centered subexponential \(Y_i\) with
+   \(\|Y_i\|_{\psi_1}\le K^2\),
+   \[
+   \mathbb E\exp\left(\lambda\sum_i a_iY_i\right)
+   \le \exp\left(C\lambda^2K^4\sum_i a_i^2\right)
+   \tag{3}
+   \]
+   whenever
+   \[
+   |\lambda|\le \frac{c}{K^2\max_i|a_i|}.
+   \]
+Annotation: This passage converts subgaussian control into a local exponential-moment bound for weighted subexponential sums.
+
+### 1. Reduction to the symmetric case
+
+Set
+\[
+B=\frac{A+A^T}{2}.
+\]
+Then \(x^TAx=x^TBx\) for every \(x\), and
+\[
+\|B\|\le \|A\|,\qquad \|B\|_F\le \|A\|_F.
+\]
+Thus it suffices to prove the result when \(A\) is symmetric.
+Annotation: The quadratic form is canonically rewritten using the symmetric part of \(A\) while preserving the required norm bounds.
+
+Write
+\[
+X^TAX-\mathbb EX^TAX=D+S,
+\]
+where
+\[
+D=\sum_{i=1}^n a_{ii}\big(X_i^2-\mathbb EX_i^2\big),
+\qquad
+S=\sum_{i\ne j}a_{ij}X_iX_j.
+\]
+Independence and mean-zero imply \(\mathbb ES=0\).
+Annotation: This critical decomposition separates the directly subexponential diagonal terms from the dependent bilinear terms, a strategy absent from the retrieved library.
+
+### 2. The diagonal part
+
+[CONTROL_SECTION: p1 | diagonal MGF parameter range]
+By (2)–(3),
+\[
+\mathbb E e^{\lambda D}
+\le
+\exp\left(C\lambda^2K^4\sum_i a_{ii}^2\right)
+\le
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)
+\tag{4}
+\]
+provided
+\[
+|\lambda|
+\le \frac{c}{K^2\max_i|a_{ii}|}
+\le \frac{c}{K^2\|A\|}.
+\tag{5}
+\]
+Annotation: The diagonal contribution is controlled by applying the weighted subexponential MGF bound in its permitted parameter range.
+[/CONTROL_SECTION]
+[RAG_OMITTED_SECTION: p1 | diagonal MGF parameter range]
+By (2)–(3),
+\[
+\mathbb E e^{\lambda D}
+\le
+\exp\left(C\lambda^2K^4\sum_i a_{ii}^2\right)
+\le
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)
+\tag{4}
+\]
+whenever
+\[
+|\lambda|\le \frac{c}{K^2\max_i|a_{ii}|}.
+\]
+Since \(\max_i|a_{ii}|\le \|A\|\), it is sufficient to impose the smaller range
+\[
+|\lambda|\le \frac{c}{K^2\|A\|}.
+\tag{5}
+\]
+[/RAG_OMITTED_SECTION]
+
+### 3. The off-diagonal part
+
+We prove
+\[
+\mathbb E e^{\lambda S}
+\le
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)
+\tag{6}
+\]
+whenever
+\[
+|\lambda|\le \frac{c}{K^2\|A\|}.
+\tag{7}
+\]
+
+[CONTROL_SECTION: p2 | Random-partition decoupling of off-diagonal interactions]
+Let \(\delta_1,\dots,\delta_n\) be independent Bernoulli random variables with
+\(\mathbb P(\delta_i=1)=1/2\), independent of \(X\). Define
+\[
+S_\delta=\sum_{i,j}\delta_i(1-\delta_j)a_{ij}X_iX_j.
+\]
+Since \(\mathbb E_\delta[\delta_i(1-\delta_j)]=1/4\) for \(i\ne j\),
+\[
+S=4\mathbb E_\delta S_\delta.
+\]
+Annotation: The random cut converts the coupled off-diagonal quadratic form into an average of bilinear forms on disjoint coordinate sets, a critical decoupling strategy absent from the library.
+[/CONTROL_SECTION]
+[RAG_ELABORATED_SECTION: p2 | Random-partition decoupling of off-diagonal interactions]
+Let \(\delta_1,\dots,\delta_n\) be independent Bernoulli random variables with
+\(\mathbb P(\delta_i=1)=1/2\), independent of \(X\). Define
+\[
+S_\delta=\sum_{i,j}\delta_i(1-\delta_j)a_{ij}X_iX_j.
+\]
+For \(i=j\), \(\delta_i(1-\delta_i)=0\), while for \(i\ne j\), independence gives
+\[
+\mathbb E_\delta\big[\delta_i(1-\delta_j)\big]
+=\mathbb E\delta_i\,\mathbb E(1-\delta_j)=\frac14.
+\]
+Therefore, pointwise in \(X\),
+\[
+\mathbb E_\delta S_\delta
+=\frac14\sum_{i\ne j}a_{ij}X_iX_j
+=\frac14S,
+\]
+and hence
+\[
+S=4\mathbb E_\delta S_\delta.
+\]
+For each fixed realization of \(\delta\), the two coordinate sets selected by
+\(\delta_i=1\) and \(\delta_j=0\) are disjoint; the corresponding subvectors of
+\(X\) are therefore independent.
+[/RAG_ELABORATED_SECTION]
+
+Convexity of the exponential gives
+\[
+\mathbb Ee^{\lambda S}
+\le
+\mathbb E_\delta\mathbb E_Xe^{4\lambda S_\delta}.
+\tag{8}
+\]
+Annotation: Jensen’s inequality moves the random-partition average outside the convex exponential.
+
+Fix \(\delta\), and let
+\[
+\Lambda=\{i:\delta_i=1\}.
+\]
+Then
+\[
+S_\delta=X_\Lambda^TBX_{\Lambda^c},
+\]
+where \(B=A_{\Lambda,\Lambda^c}\) is the corresponding rectangular block.
+
+Conditioning on \(X_{\Lambda^c}\) and using (1),
+\[
+\mathbb E_{X_\Lambda}
+ \exp\big(4\lambda X_\Lambda^TBX_{\Lambda^c}\big)
+\le
+\exp\left(C\lambda^2K^2\|BX_{\Lambda^c}\|_2^2\right).
+\tag{9}
+\]
+Annotation: Conditioning isolates an independent coordinate block so that the tensorized subgaussian linear-form MGF bound applies.
+
+[CONTROL_SECTION: p2 | Gaussian linearization of a squared Euclidean norm]
+We next bound the expectation of the right-hand side. For \(\eta\ge0\) and a standard Gaussian vector \(g\),
+\[
+e^{\eta\|z\|_2^2}
+=
+\mathbb E_g e^{\sqrt{2\eta}\langle g,z\rangle}.
+\]
+Using this identity and then (1),
+\[
+\begin{aligned}
+\mathbb E_Xe^{\eta\|BX\|_2^2}
+&amp;=\mathbb E_g\mathbb E_X
+   e^{\sqrt{2\eta}\langle B^Tg,X\rangle}\\
+&amp;\le
+\mathbb E_g
+   e^{C\eta K^2\|B^Tg\|_2^2}.
+\end{aligned}
+\tag{10}
+\]
+Annotation: The auxiliary Gaussian identity linearizes the squared norm and is the critical bridge to a tractable Gaussian quadratic MGF, but it is absent from the library.
+[/CONTROL_SECTION]
+[RAG_ELABORATED_SECTION: p2 | Gaussian linearization of a squared Euclidean norm]
+We next bound the expectation of the right-hand side. Let \(g\) be a standard Gaussian vector of the appropriate dimension, independent of \(X\). For each fixed \(z\),
+\[
+\langle g,z\rangle\sim N(0,\|z\|_2^2),
+\]
+so the Gaussian MGF formula gives, for \(\eta\ge0\),
+\[
+\mathbb E_g e^{\sqrt{2\eta}\langle g,z\rangle}
+=
+\exp\left(\frac{2\eta}{2}\|z\|_2^2\right)
+=e^{\eta\|z\|_2^2}.
+\]
+Applying this identity with \(z=BX\), and then using Tonelli’s theorem and the
+linear-form estimate (1) conditionally on \(g\), yields
+\[
+\begin{aligned}
+\mathbb E_Xe^{\eta\|BX\|_2^2}
+&amp;=\mathbb E_X\mathbb E_g
+   e^{\sqrt{2\eta}\langle g,BX\rangle}\\
+&amp;=\mathbb E_g\mathbb E_X
+   e^{\sqrt{2\eta}\langle B^Tg,X\rangle}\\
+&amp;\le
+\mathbb E_g
+   e^{C\eta K^2\|B^Tg\|_2^2}.
+\end{aligned}
+\tag{10}
+\]
+[/RAG_ELABORATED_SECTION]
+
+[CONTROL_SECTION: p2 | Singular-value evaluation of a Gaussian quadratic MGF]
+For any matrix \(B\), the Gaussian quadratic-form calculation gives
+\[
+\mathbb E_g e^{\theta\|B^Tg\|_2^2}
+\le
+\exp\big(C\theta\|B\|_F^2\big)
+\tag{11}
+\]
+provided \(\theta\|B\|^2\le c\). Indeed, writing \(s_k\) for the singular values of \(B\), the left side equals
+\[
+\prod_k(1-2\theta s_k^2)^{-1/2}.
+\]
+Annotation: Diagonalizing through singular values supplies both the Frobenius-norm exponent and operator-norm admissibility condition, a specialized strategy not represented in the library.
+[/CONTROL_SECTION]
+[RAG_ELABORATED_SECTION: p2 | Singular-value evaluation of a Gaussian quadratic MGF]
+For any matrix \(B\) and \(\theta\ge0\), let \(s_k\) denote the singular values of
+\(B\). By the singular value decomposition and rotational invariance of the
+standard Gaussian distribution,
+\[
+\|B^Tg\|_2^2\stackrel{d}{=}\sum_k s_k^2g_k^2,
+\]
+where the \(g_k\) are independent \(N(0,1)\) variables. Thus, provided
+\(2\theta s_k^2&lt;1\) for every \(k\),
+\[
+\mathbb E_g e^{\theta\|B^Tg\|_2^2}
+=
+\prod_k\mathbb E e^{\theta s_k^2g_k^2}
+=
+\prod_k(1-2\theta s_k^2)^{-1/2}.
+\]
+If \(\theta\|B\|^2\le c\) for a sufficiently small universal \(c\), then
+\(2\theta s_k^2\le 1/2\). Using
+\(-\log(1-u)\le Cu\) for \(0\le u\le1/2\), we obtain
+\[
+\begin{aligned}
+\log\mathbb E_g e^{\theta\|B^Tg\|_2^2}
+&amp;=-\frac12\sum_k\log(1-2\theta s_k^2)\\
+&amp;\le C\theta\sum_k s_k^2
+=C\theta\|B\|_F^2.
+\end{aligned}
+\]
+Exponentiating gives
+\[
+\mathbb E_g e^{\theta\|B^Tg\|_2^2}
+\le
+\exp\big(C\theta\|B\|_F^2\big).
+\tag{11}
+\]
+[/RAG_ELABORATED_SECTION]
+
+[CONTROL_SECTION: u1 | routine norm and parameter check]
+Taking \(\eta=C\lambda^2K^2\) in (10) therefore gives
+\[
+\mathbb E_X e^{C\lambda^2K^2\|BX\|_2^2}
+\le
+\exp\left(C\lambda^2K^4\|B\|_F^2\right)
+\tag{12}
+\]
+provided
+\[
+|\lambda|\le \frac{c}{K^2\|B\|}.
+\]
+Since \(B=P_\Lambda AP_{\Lambda^c}\),
+\[
+\|B\|\le \|A\|,
+\qquad
+\|B\|_F\le \|A\|_F.
+\]
+Combining (8), (9), and (12) proves (6).
+[/CONTROL_SECTION]
+[RAG_OMITTED_SECTION: u1 | routine norm and parameter check]
+Applying (10)–(11) with \(\eta=C\lambda^2K^2\), and using
+\(\|A_{\Lambda,\Lambda^c}\|\le\|A\|\) and
+\(\|A_{\Lambda,\Lambda^c}\|_F\le\|A\|_F\), gives
+\[
+\mathbb E_X e^{C\lambda^2K^2\|BX\|_2^2}
+\le
+\exp\left(C\lambda^2K^4\|B\|_F^2\right)
+\tag{12}
+\]
+uniformly for \(|\lambda|\le c/(K^2\|A\|)\). Together with (8)–(9), this proves (6).
+[/RAG_OMITTED_SECTION]
+
+### 4. MGF of the full quadratic form
+
+Let
+\[
+Y=X^TAX-\mathbb EX^TAX=D+S.
+\]
+The variables \(D\) and \(S\) need not be independent, but Cauchy–Schwarz, together with (4) and (6), yields
+\[
+\begin{aligned}
+\mathbb Ee^{\lambda Y}
+&amp;\le
+\big(\mathbb Ee^{2\lambda D}\big)^{1/2}
+\big(\mathbb Ee^{2\lambda S}\big)^{1/2}\\
+&amp;\le
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)
+\end{aligned}
+\tag{13}
+\]
+whenever
+\[
+|\lambda|\le \frac{c}{K^2\|A\|}.
+\tag{14}
+\]
+Annotation: Cauchy–Schwarz combines the two component MGF estimates without requiring independence and produces an MGF bound for the full form.
+
+For \(0\le\lambda\le c/(K^2\|A\|)\), Chernoff’s bound gives
+\[
+\mathbb P(Y\ge t)
+\le
+\exp\left(
+-\lambda t+C\lambda^2K^4\|A\|_F^2
+\right).
+\]
+Optimizing over the permitted \(\lambda\), namely taking \(\lambda\) comparable to
+\[
+\min\left\{
+\frac{t}{K^4\|A\|_F^2},
+\frac{1}{K^2\|A\|}
+\right\},
+\]
+gives
+\[
+\mathbb P(Y\ge t)
+\le
+\exp\left[
+-c\min\left(
+\frac{t^2}{K^4\|A\|_F^2},
+\frac{t}{K^2\|A\|}
+\right)
+\right].
+\]
+Annotation: Exponential Markov inequality followed by optimization of the MGF parameter yields the two-regime upper-tail bound.
+
+Applying the same argument to \(-Y\) and taking a union bound proves
+\[
+\boxed{
+\mathbb P\left(
+\left|X^TAX-\mathbb EX^TAX\right|\ge t
+\right)
+\le
+2\exp\left[
+-c\min\left(
+\frac{t^2}{K^4\|A\|_F^2},
+\frac{t}{K^2\|A\|}
+\right)
+\right].
+}
+\]
+Annotation: A union bound combines the upper and lower one-sided estimates into the stated two-sided inequality.
+
+This is the Hanson–Wright inequality.</div></div>
+        </section>
+        
+      </div>
+    </article>
+    </main>
+  </div>
+  <script>
+    document.querySelectorAll('.copy-btn').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const raw = button.getAttribute('data-copy') || '';
+        try {
+          await navigator.clipboard.writeText(raw);
+          const old = button.textContent;
+          button.textContent = 'Copied';
+          setTimeout(() => button.textContent = old, 1200);
+        } catch (err) {
+          button.textContent = 'Copy failed';
+          setTimeout(() => button.textContent = 'Copy raw', 1200);
+        }
+      });
+    });
+
+    function pairsFor(el) {
+      return (el.getAttribute('data-pairs') || '').split(/\s+/).filter(Boolean);
+    }
+
+    function drawLinksForSplit(split) {
+      const svg = split.querySelector('.link-layer');
+      if (!svg) return;
+      svg.innerHTML = '';
+      const splitRect = split.getBoundingClientRect();
+      const blocks = Array.from(split.querySelectorAll('.linked-block'));
+      const pairToBlocks = new Map();
+      for (const block of blocks) {
+        for (const pair of pairsFor(block)) {
+          if (!pairToBlocks.has(pair)) pairToBlocks.set(pair, []);
+          pairToBlocks.get(pair).push(block);
+        }
+      }
+      for (const [pair, els] of pairToBlocks.entries()) {
+        if (els.length < 2) continue;
+        const control = els.find(e => e.closest('.result-col.control')) || els[0];
+        const rag = els.find(e => e.closest('.result-col.rag')) || els[1];
+        if (!control || !rag || control === rag) continue;
+        const a = control.getBoundingClientRect();
+        const b = rag.getBoundingClientRect();
+        const x1 = a.right - splitRect.left;
+        const y1 = a.top + a.height / 2 - splitRect.top;
+        const x2 = b.left - splitRect.left;
+        const y2 = b.top + b.height / 2 - splitRect.top;
+        const mid = (x1 + x2) / 2;
+        const d = `M ${x1} ${y1} C ${mid} ${y1}, ${mid} ${y2}, ${x2} ${y2}`;
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', d);
+        path.setAttribute('data-pair', pair);
+        svg.appendChild(path);
+      }
+    }
+
+    let lockedPair = null;
+
+    function elementsForPair(pair) {
+      return document.querySelectorAll(`[data-pairs~="${CSS.escape(pair)}"], [data-pair="${CSS.escape(pair)}"]`);
+    }
+
+    function setPairActive(pair, active) {
+      if (lockedPair === pair && !active) return;
+      elementsForPair(pair).forEach(el => {
+        el.classList.toggle('link-hover', active);
+        el.classList.toggle('active', active);
+      });
+    }
+
+    function clearLockedPair() {
+      if (!lockedPair) return;
+      elementsForPair(lockedPair).forEach(el => {
+        el.classList.remove('link-locked', 'locked', 'link-hover', 'active');
+      });
+      lockedPair = null;
+    }
+
+    function lockPair(pair) {
+      if (!pair) return;
+      if (lockedPair === pair) {
+        clearLockedPair();
+        return;
+      }
+      clearLockedPair();
+      lockedPair = pair;
+      elementsForPair(pair).forEach(el => {
+        el.classList.add('link-locked', 'locked', 'link-hover', 'active');
+      });
+    }
+
+    function setupLinkedHover() {
+      document.querySelectorAll('.split').forEach(drawLinksForSplit);
+      document.querySelectorAll('.linked-block, .eval-note[data-pair]').forEach(el => {
+        const getPairs = () => el.hasAttribute('data-pair') ? [el.getAttribute('data-pair')] : pairsFor(el);
+        el.addEventListener('mouseenter', () => getPairs().forEach(pair => pair && setPairActive(pair, true)));
+        el.addEventListener('mouseleave', () => getPairs().forEach(pair => pair && setPairActive(pair, false)));
+        el.addEventListener('click', (event) => {
+          event.stopPropagation();
+          const pair = getPairs()[0];
+          if (pair) lockPair(pair);
+        });
+      });
+      document.addEventListener('click', () => clearLockedPair());
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') clearLockedPair();
+      });
+    }
+
+    window.addEventListener('load', setupLinkedHover);
+    window.addEventListener('resize', () => {
+      document.querySelectorAll('.split').forEach(drawLinksForSplit);
+      if (lockedPair) lockPair(lockedPair);
+    });
+  </script>
+</body>
+</html>

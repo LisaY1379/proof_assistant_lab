@@ -109,3 +109,54 @@ PORT=7860
 main/agent_server.py
 main/index.html
 ```
+
+## Current processing flow
+
+The diagram below reflects the current three-node pipeline in `agent_server.py`.
+Blue boxes are LLM calls; the other steps run in Python. This flow supersedes the
+older Library-RAG description above: node 1 receives the full strategy library
+from `data/train/general/strategy_hierarchy.json`.
+
+```mermaid
+flowchart TD
+    P["User prompt + conversation history"] --> C["LLM: Generate control proof"]
+    C --> M{"Selected mode"}
+    M -->|Control| O["Return control proof"]
+    M -->|Library-RAG| N1
+
+    P -->|"Original prompt"| N1
+    L[("Full strategy library")] --> N1
+
+    N1["Node 1 — Annotate control proof<br/>Identify library strategies<br/>Identify new critical strategies"]
+    N1 --> V1["Validate exact quoted passages,<br/>library IDs, and non-overlapping highlights"]
+    V1 --> A["Original proof + highlights<br/>+ strategy annotations"]
+    V1 --> U["Extract originally<br/>unhighlighted passages"]
+
+    A --> N2["Node 2 — Evaluate highlights<br/>Library: keep / compress / omit<br/>New: keep / elaborate"]
+    P -->|"Original prompt"| N2
+    N2 --> V2["Validate permitted edits"]
+    V2 --> I["Apply edits to original proof<br/>Save initial revised proof"]
+
+    I -.->|"Next stage — execution order only"| N3
+    U -->|"Only text supplied to node 3"| N3
+    N3["Node 3 — Inspect trivial calculations<br/>Propose compression or omission"]
+    N3 --> V3["Validate edits stay within<br/>originally unhighlighted passages"]
+
+    C --> F
+    V2 -->|"Node 2 edits"| F
+    V3 -->|"Node 3 edits"| F
+    F["Apply combined edits to original proof<br/>Preserve all other text exactly"]
+    F --> R["Return final proof + intermediate results<br/>+ linked before/after comparison"]
+    R --> LOG["Save chat log"]
+    O --> LOG
+
+    classDef llm fill:#dbeafe,stroke:#2563eb,color:#172554
+    class C,N1,N2,N3 llm
+```
+
+Node 3 does not receive the initial revised proof. It runs afterward but sees only
+the originally unhighlighted passages. Python combines both nodes' edits against
+the original control proof.
+
+Invalid edits stop the pipeline with an error. Validation enforces editing
+boundaries; it does not formally verify mathematical correctness.

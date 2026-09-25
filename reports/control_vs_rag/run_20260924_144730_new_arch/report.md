@@ -1,0 +1,1566 @@
+# Control vs Library-RAG Batch Experiment
+
+## Metadata
+
+- **created_at**: `2026-09-25T04:13:42.332131+00:00`
+- **input_path**: `data/test/high_dimensional_probability/test_01/data.json`
+- **input_count**: `5`
+- **conditions**: `['control', 'library_rag']`
+- **model**: `gpt-5.6-sol`
+- **temperature**: `1.0`
+- **reasoning_effort**: `high`
+- **max_completion_tokens**: `4000`
+- **strategy_graph**: `data/train/general/strategy_hierarchy.json`
+
+## theorem_6_2_2 — Theorem 6.2.2 (Hanson-Wright inequality)
+
+Dataset: `high_dimensional_probability`
+
+### Input statement
+
+Theorem 6.2.2 (Hanson-Wright inequality). Let A be an n × n matrix. Let X =
+(X1 , . . . , Xn ) ∈ Rn be a random vector with independent, mean-zero, subgaussian
+coordinates. Then, for every t ≥ 0, we have
+                                               h             t2       t i
+         P |X T AX − E X T AX| ≥ t ≤ 2 exp − c min
+            
+                                                                 2
+                                                                   ,        ,
+                                                          K 4 ∥A∥F K 2 ∥A∥
+where K = maxi ∥Xi ∥ψ2 .
+
+Our
+
+### Task
+
+Explain the proof strategy and give a proof plan. Identify the main mathematical methods used.
+
+### Control output
+
+Let \(\|\cdot\|\) denote the operator norm and \(\|\cdot\|_F\) the Frobenius norm. We prove that for an absolute constant \(c>0\),
+\[
+\mathbb P\!\left(\left|X^{T}AX-\mathbb E X^{T}AX\right|\ge t\right)
+\le
+2\exp\!\left[
+-c\min\left\{
+\frac{t^{2}}{K^{4}\|A\|_{F}^{2}},
+\frac{t}{K^{2}\|A\|}
+\right\}\right].
+\]
+
+We use the following standard consequences of subgaussianity.
+
+1. If \(Y\) is mean-zero and \(\|Y\|_{\psi_2}\le K\), then
+   \[
+   \mathbb E e^{sY}\le e^{Cs^{2}K^{2}},\qquad s\in\mathbb R.
+   \]
+   Consequently, for independent such \(Y_i\),
+   \[
+   \mathbb E\exp\left(s\sum_i u_iY_i\right)
+   \le \exp\left(Cs^{2}K^{2}\|u\|_2^{2}\right).
+   \]
+
+2. One has
+   \[
+   \|Y^{2}-\mathbb EY^{2}\|_{\psi_1}\le CK^{2}.
+   \]
+   Thus Bernstein's inequality gives
+   \[
+   \mathbb P\left(\left|\sum_i b_i(Y_i^2-\mathbb EY_i^2)\right|\ge t\right)
+   \le
+   2\exp\left[-c\min\left\{
+   \frac{t^2}{K^4\sum_i b_i^2},
+   \frac{t}{K^2\max_i|b_i|}
+   \right\}\right].
+   \tag{1}
+   \]
+
+All constants below are absolute and may change from line to line.
+
+### 1. Reduction to the symmetric case
+
+Set
+\[
+B=\frac{A+A^T}{2}.
+\]
+Then \(X^TAX=X^TBX\), while
+\[
+\|B\|\le \|A\|,\qquad \|B\|_F\le \|A\|_F.
+\]
+It therefore suffices to assume that \(A\) is symmetric.
+
+Write
+\[
+X^TAX-\mathbb EX^TAX=D+Z,
+\]
+where
+\[
+D=\sum_i a_{ii}(X_i^2-\mathbb EX_i^2),
+\qquad
+Z=\sum_{i\ne j}a_{ij}X_iX_j.
+\]
+The off-diagonal terms have mean zero because the coordinates are independent and mean-zero.
+
+### 2. The diagonal part
+
+Applying (1) with \(b_i=a_{ii}\), and using
+\[
+\sum_i a_{ii}^{2}\le \|A\|_F^{2},
+\qquad
+\max_i|a_{ii}|\le \|A\|,
+\]
+we obtain
+\[
+\mathbb P(|D|\ge t)
+\le
+2\exp\left[-c\min\left\{
+\frac{t^2}{K^4\|A\|_F^2},
+\frac{t}{K^2\|A\|}
+\right\}\right].
+\tag{2}
+\]
+
+### 3. Decoupling the off-diagonal part
+
+Let \(\delta_1,\dots,\delta_n\) be independent Bernoulli variables with
+\(\mathbb P(\delta_i=1)=1/2\), independent of \(X\), and put
+\[
+\Lambda=\{i:\delta_i=1\}.
+\]
+Define
+\[
+Z_\delta
+=\sum_{i\in\Lambda,\;j\notin\Lambda}a_{ij}X_iX_j.
+\]
+Since, for \(i\ne j\),
+\[
+\mathbb E_\delta[\delta_i(1-\delta_j)]=\frac14,
+\]
+we have
+\[
+Z=4\,\mathbb E_\delta Z_\delta.
+\]
+Hence Jensen's inequality gives, for every \(\lambda\in\mathbb R\),
+\[
+\mathbb E_Xe^{\lambda Z}
+\le
+\mathbb E_\delta\mathbb E_X e^{4\lambda Z_\delta}.
+\tag{3}
+\]
+
+Fix \(\delta\), hence fix \(\Lambda\). Let
+\[
+B=A_{\Lambda,\Lambda^c}.
+\]
+Conditioning on \(X_\Lambda=(X_i)_{i\in\Lambda}\), we may write
+\[
+Z_\delta
+=\sum_{j\notin\Lambda}X_j
+  \left(\sum_{i\in\Lambda}a_{ij}X_i\right).
+\]
+The linear-form subgaussian estimate therefore yields
+\[
+\mathbb E_{X_{\Lambda^c}}
+  e^{4\lambda Z_\delta}
+\le
+\exp\left(
+C\lambda^2K^2\|B^TX_\Lambda\|_2^2
+\right).
+\tag{4}
+\]
+
+We next estimate the expectation of the right-hand side.
+
+### 4. Gaussian comparison
+
+Let \(g\) be a standard Gaussian vector in \(\mathbb R^{|\Lambda^c|}\), independent of everything else. For every \(\alpha\ge0\),
+\[
+e^{\alpha\|B^Tx\|_2^2}
+=
+\mathbb E_g
+\exp\left(\sqrt{2\alpha}\,\langle Bg,x\rangle\right).
+\]
+Using this with \(\alpha=C\lambda^2K^2\), followed by the subgaussian linear-form estimate for \(X_\Lambda\), gives
+\[
+\begin{aligned}
+\mathbb E_{X_\Lambda}
+e^{C\lambda^2K^2\|B^TX_\Lambda\|_2^2}
+&=
+\mathbb E_g\mathbb E_{X_\Lambda}
+\exp\left(C|\lambda|K\langle Bg,X_\Lambda\rangle\right)\\
+&\le
+\mathbb E_g
+\exp\left(C\lambda^2K^4\|Bg\|_2^2\right).
+\end{aligned}
+\tag{5}
+\]
+
+If \(s_1,\dots,s_r\) are the singular values of \(B\), then for \(q\ge0\),
+\[
+\mathbb E_g e^{q\|Bg\|_2^2}
+=
+\prod_{k=1}^r(1-2qs_k^2)^{-1/2},
+\]
+provided \(2q\|B\|^2<1\). If \(q\le c/\|B\|^2\), then
+\[
+\log\mathbb E_g e^{q\|Bg\|_2^2}
+\le Cq\sum_k s_k^2
+=Cq\|B\|_F^2.
+\]
+Since
+\[
+\|B\|\le \|A\|,
+\qquad
+\|B\|_F\le \|A\|_F,
+\]
+equations (3)–(5) imply
+\[
+\mathbb E e^{\lambda Z}
+\le
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)
+\tag{6}
+\]
+whenever
+\[
+|\lambda|\le \frac{c}{K^2\|A\|}.
+\tag{7}
+\]
+
+### 5. Chernoff's bound
+
+For \(0\le \lambda\le c/(K^2\|A\|)\), (6) gives
+\[
+\mathbb P(Z\ge t)
+\le
+\exp\left(
+-\lambda t+C\lambda^2K^4\|A\|_F^2
+\right).
+\]
+Choose \(\lambda\) comparable to
+\[
+\min\left\{
+\frac{t}{K^4\|A\|_F^2},
+\frac{1}{K^2\|A\|}
+\right\}.
+\]
+Then
+\[
+\mathbb P(Z\ge t)
+\le
+\exp\left[-c\min\left\{
+\frac{t^2}{K^4\|A\|_F^2},
+\frac{t}{K^2\|A\|}
+\right\}\right].
+\]
+Applying the same argument to \(-Z\), we obtain
+\[
+\mathbb P(|Z|\ge t)
+\le
+2\exp\left[-c\min\left\{
+\frac{t^2}{K^4\|A\|_F^2},
+\frac{t}{K^2\|A\|}
+\right\}\right].
+\tag{8}
+\]
+
+### 6. Combining the two parts
+
+By the triangle inequality,
+\[
+\mathbb P(|D+Z|\ge t)
+\le
+\mathbb P(|D|\ge t/2)+\mathbb P(|Z|\ge t/2).
+\]
+Combining (2) and (8), and adjusting the absolute constant \(c\), yields
+\[
+\boxed{
+\mathbb P\!\left(\left|X^{T}AX-\mathbb EX^{T}AX\right|\ge t\right)
+\le
+2\exp\left[-c\min\left\{
+\frac{t^2}{K^4\|A\|_F^2},
+\frac{t}{K^2\|A\|}
+\right\}\right].
+}
+\]
+This is the Hanson–Wright inequality.
+
+### Library-RAG output
+
+Let \(\|\cdot\|\) and \(\|\cdot\|_F\) denote the operator and Frobenius norms. We use two standard subgaussian facts. If \(Y_i\) are independent, mean-zero, and \(\|Y_i\|_{\psi_2}\le K\), then
+\[
+\mathbb E\exp\!\left(s\sum_i u_iY_i\right)
+ \le \exp\!\left(C s^2K^2\|u\|_2^2\right).
+\tag{1}
+\]
+Also, \(\|Y_i^2-\mathbb EY_i^2\|_{\psi_1}\le CK^2\), so independence gives
+\[
+\mathbb E\exp\!\left(
+\lambda\sum_i b_i(Y_i^2-\mathbb EY_i^2)
+\right)
+\le
+\exp\!\left(C\lambda^2K^4\sum_i b_i^2\right)
+\tag{2}
+\]
+whenever
+\[
+|\lambda|\le \frac{c}{K^2\max_i|b_i|}.
+\]
+[STRATEGY: sub_exponential_concentration | Exponential-moment and concentration arguments]
+Derived according to this strategy: the proof establishes a local quadratic bound for the moment-generating function and then applies Chernoff’s inequality.
+[/STRATEGY]
+
+Replace \(A\) by its symmetric part \((A+A^T)/2\). This leaves \(X^TAX\) unchanged and does not increase either \(\|A\|\) or \(\|A\|_F\). Thus assume \(A\) is symmetric and write
+\[
+X^TAX-\mathbb EX^TAX=D+Z,
+\]
+where
+\[
+D=\sum_i a_{ii}(X_i^2-\mathbb EX_i^2),
+\qquad
+Z=\sum_{i\ne j}a_{ij}X_iX_j.
+\]
+The off-diagonal terms are centered because the coordinates are independent and mean-zero.
+
+[OMITTED_SECTION: routine norm checks]
+Omitted/compressed from the direct draft: the elementary verifications
+\(\sum_i a_{ii}^2\le \|A\|_F^2\), \(\max_i|a_{ii}|\le\|A\|\), and the corresponding norm bounds for the symmetric part.
+[/OMITTED_SECTION]
+
+Applying (2) to \(D\) gives
+\[
+\mathbb Ee^{\lambda D}
+\le
+\exp\!\left(C\lambda^2K^4\|A\|_F^2\right)
+\quad\text{for}\quad
+|\lambda|\le \frac{c}{K^2\|A\|}.
+\tag{3}
+\]
+
+It remains to control \(Z\).
+
+[ELABORATED_SECTION: random-partition decoupling]
+Let \(\delta_1,\dots,\delta_n\) be independent Bernoulli\((1/2)\) variables, independent of \(X\), and let
+\[
+\Lambda=\{i:\delta_i=1\}.
+\]
+Define the one-sided cut form
+\[
+Z_\delta
+=\sum_{i\in\Lambda,\ j\notin\Lambda}a_{ij}X_iX_j.
+\]
+For each ordered pair \(i\ne j\),
+\[
+\mathbb P_\delta(i\in\Lambda,\ j\notin\Lambda)=\frac14,
+\]
+hence
+\[
+Z=4\,\mathbb E_\delta Z_\delta.
+\tag{4}
+\]
+The point of this random partition is not merely the identity (4): after fixing \(\Lambda\), every product in \(Z_\delta\) has one coordinate from \(\Lambda\) and one from \(\Lambda^c\). The two coordinate blocks are independent, so conditioning on either block turns the bilinear form into a linear form in the other block. This is the decoupling needed to apply (1).
+
+By convexity of the exponential, for every \(\lambda\in\mathbb R\),
+\[
+\mathbb E_Xe^{\lambda Z}
+\le
+\mathbb E_\delta\mathbb E_Xe^{4\lambda Z_\delta}.
+\tag{5}
+\]
+[/ELABORATED_SECTION]
+[NEW_STRATEGY: random-partition decoupling of quadratic forms]
+Why this is new and critical: no retrieved node describes introducing a random coordinate cut to convert dependent off-diagonal products into a bilinear form between independent coordinate blocks.
+[/NEW_STRATEGY]
+
+Fix \(\Lambda\), and let \(B=A_{\Lambda,\Lambda^c}\). Then
+\[
+Z_\delta=\langle B^TX_\Lambda,X_{\Lambda^c}\rangle.
+\]
+Conditioning on \(X_\Lambda\) and applying (1) to the independent coordinates in \(\Lambda^c\),
+\[
+\mathbb E_{X_{\Lambda^c}}e^{4\lambda Z_\delta}
+\le
+\exp\!\left(C\lambda^2K^2\|B^TX_\Lambda\|_2^2\right).
+\tag{6}
+\]
+
+[ELABORATED_SECTION: Gaussian linearization]
+The remaining exponent is quadratic in \(X_\Lambda\), so (1) cannot yet be applied directly. Introduce a standard Gaussian vector \(g\in\mathbb R^{|\Lambda^c|}\), independent of everything else. The Gaussian moment-generating identity gives, for every \(\alpha\ge0\),
+\[
+e^{\alpha\|B^Tx\|_2^2}
+=
+\mathbb E_g
+\exp\!\left(\sqrt{2\alpha}\,\langle B^Tx,g\rangle\right)
+=
+\mathbb E_g
+\exp\!\left(\sqrt{2\alpha}\,\langle x,Bg\rangle\right).
+\tag{7}
+\]
+Thus the quadratic exponential has been represented as an average of exponentials of linear forms. Taking \(\alpha=C\lambda^2K^2\) and applying (1), now to \(X_\Lambda\), yields
+\[
+\mathbb E_{X_\Lambda}
+e^{C\lambda^2K^2\|B^TX_\Lambda\|_2^2}
+\le
+\mathbb E_g
+e^{C\lambda^2K^4\|Bg\|_2^2}.
+\tag{8}
+\]
+[/ELABORATED_SECTION]
+[NEW_STRATEGY: auxiliary-Gaussian linearization]
+Why this is new and critical: the retrieved strategies do not include the exact Gaussian transform that converts the exponential of a squared norm into linear-form exponentials, allowing the subgaussian MGF estimate to be used a second time.
+[/NEW_STRATEGY]
+
+If \(s_k\) are the singular values of \(B\), then
+\[
+\mathbb E_ge^{q\|Bg\|_2^2}
+=\prod_k(1-2qs_k^2)^{-1/2}.
+\]
+Consequently,
+\[
+\mathbb E_ge^{q\|Bg\|_2^2}
+\le \exp(Cq\|B\|_F^2)
+\quad\text{whenever}\quad
+q\le \frac{c}{\|B\|^2}.
+\tag{9}
+\]
+Since \(B\) is a coordinate compression of \(A\),
+\[
+\|B\|\le\|A\|,
+\qquad
+\|B\|_F\le\|A\|_F.
+\]
+Combining (5)–(9), uniformly over \(\Lambda\), gives
+\[
+\mathbb Ee^{\lambda Z}
+\le
+\exp\!\left(C\lambda^2K^4\|A\|_F^2\right)
+\quad\text{for}\quad
+|\lambda|\le\frac{c}{K^2\|A\|}.
+\tag{10}
+\]
+
+[OMITTED_SECTION: Gaussian product algebra]
+Omitted/compressed from the direct draft: the routine estimate of the product in (9), obtained from \(-\log(1-u)\le Cu\) for sufficiently small \(u\).
+[/OMITTED_SECTION]
+
+Although \(D\) and \(Z\) need not be independent, Cauchy–Schwarz, (3), and (10) imply
+\[
+\begin{aligned}
+\mathbb E e^{\lambda(D+Z)}
+&\le
+\bigl(\mathbb Ee^{2\lambda D}\bigr)^{1/2}
+\bigl(\mathbb Ee^{2\lambda Z}\bigr)^{1/2}\\
+&\le
+\exp\!\left(C\lambda^2K^4\|A\|_F^2\right)
+\end{aligned}
+\tag{11}
+\]
+whenever
+\[
+|\lambda|\le\frac{c}{K^2\|A\|}.
+\]
+
+Chernoff’s inequality now gives
+\[
+\mathbb P(D+Z\ge t)
+\le
+\exp\!\left(-\lambda t+C\lambda^2K^4\|A\|_F^2\right).
+\]
+Choosing
+\[
+\lambda
+=
+c_0\min\left\{
+\frac{t}{K^4\|A\|_F^2},
+\frac{1}{K^2\|A\|}
+\right\},
+\]
+with \(c_0>0\) sufficiently small, yields
+\[
+\mathbb P(D+Z\ge t)
+\le
+\exp\!\left[
+-c\min\left\{
+\frac{t^2}{K^4\|A\|_F^2},
+\frac{t}{K^2\|A\|}
+\right\}\right].
+\]
+Applying the same argument to \(-(D+Z)\) and adding the two tails proves
+\[
+\boxed{
+\mathbb P\!\left(
+\left|X^TAX-\mathbb EX^TAX\right|\ge t
+\right)
+\le
+2\exp\!\left[
+-c\min\left\{
+\frac{t^2}{K^4\|A\|_F^2},
+\frac{t}{K^2\|A\|}
+\right\}\right].
+}
+\]
+
+[OMITTED_SECTION: elementary Chernoff optimization]
+Omitted/compressed from the direct draft: the routine two-regime calculation for the minimizing admissible value of \(\lambda\).
+[/OMITTED_SECTION]
+
+### Retrieved strategy nodes
+
+- `family_standard_theorem_reduction` — **Reduction to a standard theorem**: Modify domains and regularity hypotheses so that a known theorem applies directly.
+- `sub_triangle_error_estimates` — **Triangle-inequality and error-decomposition estimates**: Separate dominant and error terms and control them with triangle and reverse-triangle inequalities.
+- `sub_exponential_concentration` — **Exponential-moment and concentration arguments**: Apply exponential Markov inequalities, control moment-generating functions, and optimize parameters to derive tail bounds.
+- `sub_integration_transformations` — **Integration by parts and substitution**: Verify regularity and integrability hypotheses and then apply integration by parts or change of variables.
+- `family_logical_reasoning` — **Logical decomposition, cases, and contradiction**: Split logical, order, endpoint, degeneracy, or parameter cases and use contradiction or contraposition to eliminate alternatives.
+- `family_comparison_domination` — **Comparison, domination, and squeezing**: Bound complicated quantities by simpler majorants and transfer those bounds through sums, integrals, limits, and suprema.
+- `family_algebra_order_norm` — **Algebraic, order, and norm estimates**: Combine algebraic rearrangement and order reasoning with norm inequalities and duality estimates.
+- `sub_mean_value_theorems` — **Fermat, Rolle, and Mean Value Theorems**: Convert extrema or endpoint equalities into derivative information and represent increments by intermediate derivatives.
+- `sub_independence_tensorization` — **Independence, tensorization, and union bounds**: Factor quantities using independence, tensorize information, and upgrade pointwise bounds to simultaneous bounds by a union bound.
+- `sub_partition_refinement` — **Partition and refinement arguments**: Control meshes and subintervals, construct common refinements, and decompose coarse partitions into fine pieces.
+
+---
+
+## theorem_4_7_1 — Theorem 4.7.1 (Covariance estimation)
+
+Dataset: `high_dimensional_probability`
+
+### Input statement
+
+Theorem 4.7.1 (Covariance estimation). Let X be a subgaussian random vector
+in Rn . More specifically, assume that there exists K ≥ 1 such that13
+                       ∥⟨X, x⟩∥ψ2 ≤ K∥⟨X, x⟩∥L2           for any x ∈ Rn .                   (4.29)
+Then, for every positive integer m, we have
+                                          r n   n
+                                        2
+                      E∥Σm − Σ∥ ≤ CK           +    ∥Σ∥.
+                                            m m
+
+### Task
+
+Explain the proof strategy and give a proof plan. Identify the main mathematical methods used.
+
+### Control output
+
+Let \(X_1,\dots,X_m\) be independent copies of \(X\), and write
+\[
+\Sigma=\mathbb E XX^\top,\qquad
+\Sigma_m=\frac1m\sum_{i=1}^m X_iX_i^\top .
+\]
+If covariance is defined in the centered sense, assume \(X\) has already been centered.
+
+We prove
+\[
+\mathbb E\|\Sigma_m-\Sigma\|
+\le CK^2\left(\sqrt{\frac nm}+\frac nm\right)\|\Sigma\|.
+\]
+
+### 1. Reduction to the isotropic case
+
+Let \(E=\operatorname{range}(\Sigma)\), with \(r=\dim E\le n\). Since
+\[
+\mathbb E\langle X,x\rangle^2=x^\top\Sigma x=0
+\qquad (x\in\ker\Sigma),
+\]
+we have \(X\in E\) almost surely.
+
+If \(\Sigma=0\), the result is immediate. Otherwise, on \(E\), define
+\[
+Y=\Sigma^{-1/2}X .
+\]
+Then
+\[
+\mathbb E YY^\top=I_E.
+\]
+Moreover, for every \(y\in E\),
+\[
+\begin{aligned}
+\|\langle Y,y\rangle\|_{\psi_2}
+&=\|\langle X,\Sigma^{-1/2}y\rangle\|_{\psi_2}\\
+&\le K\|\langle X,\Sigma^{-1/2}y\rangle\|_{L^2}
+ =K\|y\|_2.
+\end{aligned}
+\]
+Thus \(Y\) is isotropic and all its one-dimensional marginals have subgaussian norm at most \(K\) on the unit sphere.
+
+Let
+\[
+A=\frac1m\sum_{i=1}^mY_iY_i^\top-I_E.
+\]
+Then
+\[
+\Sigma_m-\Sigma=\Sigma^{1/2}A\Sigma^{1/2},
+\]
+and hence
+\[
+\|\Sigma_m-\Sigma\|\le \|\Sigma\|\,\|A\|.
+\]
+It remains to estimate \(\mathbb E\|A\|\).
+
+### 2. Concentration in a fixed direction
+
+Fix \(u\in S(E)\). Then
+\[
+u^\top Au
+=\frac1m\sum_{i=1}^m\big(\langle Y_i,u\rangle^2-1\big).
+\]
+Because \(Y\) is isotropic,
+\[
+\mathbb E\langle Y,u\rangle^2=1,
+\]
+and by the subgaussian-square property,
+\[
+\big\|\langle Y,u\rangle^2-1\big\|_{\psi_1}
+\le C\|\langle Y,u\rangle\|_{\psi_2}^2
+\le CK^2.
+\]
+Bernstein’s inequality for independent centered subexponential random variables therefore gives, for every \(t\ge0\),
+\[
+\mathbb P\{|u^\top Au|>t\}
+\le
+2\exp\left[-cm\min\left(\frac{t^2}{K^4},\frac{t}{K^2}\right)\right].
+\tag{1}
+\]
+
+### 3. Passing to all directions
+
+Let \(\mathcal N\) be a \(1/4\)-net of \(S(E)\). It can be chosen so that
+\[
+|\mathcal N|\le 9^r.
+\]
+For every symmetric operator \(A\) on \(E\), the standard net argument gives
+\[
+\|A\|\le 2\max_{u\in\mathcal N}|u^\top Au|.
+\]
+Consequently, by (1) and the union bound,
+\[
+\mathbb P\{\|A\|>2t\}
+\le
+2\cdot 9^r
+\exp\left[-cm\min\left(\frac{t^2}{K^4},\frac{t}{K^2}\right)\right].
+\tag{2}
+\]
+
+For \(s\ge0\), choose
+\[
+t=CK^2\left(\sqrt{\frac{r+s}{m}}+\frac{r+s}{m}\right)
+\]
+with a sufficiently large absolute constant \(C\). Since, with \(q=(r+s)/m\),
+\[
+\min\big((\sqrt q+q)^2,\sqrt q+q\big)\ge q
+\]
+up to the chosen absolute constant, (2) yields
+\[
+\mathbb P\left\{
+\|A\|>
+CK^2\left(\sqrt{\frac{r+s}{m}}+\frac{r+s}{m}\right)
+\right\}
+\le 2e^{-s}.
+\tag{3}
+\]
+
+Integrating this tail bound gives
+\[
+\mathbb E\|A\|
+\le
+CK^2\left(\sqrt{\frac rm}+\frac rm\right).
+\tag{4}
+\]
+(The additional terms arising from integration are of order
+\(K^2(m^{-1/2}+m^{-1})\), which are absorbed since \(r\ge1\).)
+
+Finally, using \(r\le n\),
+\[
+\begin{aligned}
+\mathbb E\|\Sigma_m-\Sigma\|
+&\le \|\Sigma\|\,\mathbb E\|A\|\\
+&\le CK^2
+\left(\sqrt{\frac rm}+\frac rm\right)\|\Sigma\|\\
+&\le CK^2
+\left(\sqrt{\frac nm}+\frac nm\right)\|\Sigma\|.
+\end{aligned}
+\]
+This proves the theorem.
+
+### Library-RAG output
+
+Let \(X_1,\ldots,X_m\) be independent copies of \(X\), and set
+\[
+\Sigma=\mathbb E(XX^\top),
+\qquad
+\Sigma_m=\frac1m\sum_{i=1}^m X_iX_i^\top .
+\]
+(When covariance is defined for centered vectors, \(X\) is understood to be centered.)
+
+[ELABORATED_SECTION: Reduction with possibly singular covariance]
+Let \(E=\operatorname{range}(\Sigma)\) and \(r=\dim E\). If \(v_1,\ldots,v_{n-r}\) is an orthonormal basis of \(\ker\Sigma\), then
+\[
+\mathbb E\langle X,v_j\rangle^2=v_j^\top\Sigma v_j=0.
+\]
+Thus \(\langle X,v_j\rangle=0\) almost surely for every \(j\), and, since this is a finite family, \(X\in E\) almost surely. This justifies restricting the problem to \(E\), where \(\Sigma\) is invertible.
+
+If \(r=0\), then \(X=0\) almost surely and the result is immediate. Otherwise define, on \(E\),
+\[
+Y=\Sigma^{-1/2}X.
+\]
+Then \(Y\) is isotropic:
+\[
+\mathbb E(YY^\top)=I_E.
+\]
+Moreover, for every \(y\in E\),
+\[
+\|\langle Y,y\rangle\|_{\psi_2}
+=\|\langle X,\Sigma^{-1/2}y\rangle\|_{\psi_2}
+\le K\|\langle X,\Sigma^{-1/2}y\rangle\|_{L^2}
+=K\|y\|_2.
+\]
+Writing
+\[
+A=\frac1m\sum_{i=1}^mY_iY_i^\top-I_E,
+\]
+we have
+\[
+\Sigma_m-\Sigma=\Sigma^{1/2}A\Sigma^{1/2},
+\qquad
+\|\Sigma_m-\Sigma\|\le \|\Sigma\|\,\|A\|.
+\]
+Thus it suffices to estimate \(\mathbb E\|A\|\).
+[/ELABORATED_SECTION]
+
+[STRATEGY: family_standard_theorem_reduction | Reduction to a standard theorem]
+Derived according to this strategy: localization to the support of \(\Sigma\) permits whitening even when \(\Sigma\) is singular, reducing the proof to isotropic covariance estimation.
+[/STRATEGY]
+
+Fix \(u\in S(E)\). Then
+\[
+u^\top Au
+=\frac1m\sum_{i=1}^m\bigl(\langle Y_i,u\rangle^2-1\bigr).
+\]
+
+[ELABORATED_SECTION: From subgaussian linear forms to subexponential quadratic forms]
+Set \(Z=\langle Y,u\rangle\). Isotropy gives \(\mathbb EZ^2=1\), while the hypothesis gives \(\|Z\|_{\psi_2}\le K\). The defining exponential integrability of the Orlicz norms implies
+\[
+\|Z^2\|_{\psi_1}\le C\|Z\|_{\psi_2}^2.
+\]
+Centering costs only another absolute constant:
+\[
+\|Z^2-\mathbb EZ^2\|_{\psi_1}
+\le C\|Z^2\|_{\psi_1}
+\le CK^2.
+\]
+Consequently, the summands \(\langle Y_i,u\rangle^2-1\) are independent, centered, and uniformly subexponential. Bernstein’s inequality therefore yields
+\[
+\mathbb P\{|u^\top Au|>t\}
+\le
+2\exp\!\left[-cm\min\!\left(\frac{t^2}{K^4},\frac{t}{K^2}\right)\right],
+\qquad t\ge0.
+\tag{1}
+\]
+[/ELABORATED_SECTION]
+
+[NEW_STRATEGY: Subgaussian squaring and centering]
+Why this is new and critical: the retrieved nodes include concentration tools but not the essential Orlicz-norm conversion \(Z\in\psi_2\Rightarrow Z^2-\mathbb EZ^2\in\psi_1\), which is the bridge allowing Bernstein’s inequality to control empirical quadratic forms.
+[/NEW_STRATEGY]
+
+Let \(\mathcal N\) be a \(1/4\)-net of \(S(E)\) with \(|\mathcal N|\le 9^r\). For a symmetric operator \(A\),
+\[
+\|A\|\le 2\max_{u\in\mathcal N}|u^\top Au|.
+\]
+Indeed, approximating any \(x\in S(E)\) by \(u\in\mathcal N\) gives
+\[
+|x^\top Ax-u^\top Au|\le 2\|x-u\|_2\|A\|\le \tfrac12\|A\|.
+\]
+Thus (1) and the union bound imply
+\[
+\mathbb P\{\|A\|>2t\}
+\le
+2\exp\!\left[
+r\log 9-cm\min\!\left(\frac{t^2}{K^4},\frac{t}{K^2}\right)
+\right].
+\tag{2}
+\]
+
+[STRATEGY: sub_covering_volumetric | Covering-net and volumetric arguments]
+Derived according to this strategy: the operator norm, a supremum over the sphere, is reduced to finitely many quadratic forms on a net.
+[/STRATEGY]
+
+[STRATEGY: sub_independence_tensorization | Independence, tensorization, and union bounds]
+Derived according to this strategy: the fixed-direction Bernstein bound is upgraded to simultaneous control over the net by a union bound.
+[/STRATEGY]
+
+Choosing the absolute constant \(C\) sufficiently large in
+\[
+g(s)=CK^2\left(\sqrt{\frac{r+s}{m}}+\frac{r+s}{m}\right)
+\]
+and substituting in (2), we obtain
+\[
+\mathbb P\{\|A\|>g(s)\}\le 2e^{-s},
+\qquad s\ge0.
+\tag{3}
+\]
+
+[OMITTED_SECTION: Routine inversion of the Bernstein exponent]
+Omitted/compressed from the direct draft: the elementary verification that, for \(q\ge0\), the expression \(\sqrt q+q\) makes both Bernstein regimes dominate \(q\), together with the absorption of the net entropy \(r\log 9\).
+[/OMITTED_SECTION]
+
+[ELABORATED_SECTION: Integrating the nonlinearly parametrized tail]
+Since \(g\) is increasing and tends to infinity, the tail formula and the change of variables \(t=g(s)\) give
+\[
+\begin{aligned}
+\mathbb E\|A\|
+&=\int_0^\infty \mathbb P\{\|A\|>t\}\,dt\\
+&\le g(0)+\int_0^\infty \mathbb P\{\|A\|>g(s)\}g'(s)\,ds\\
+&\le g(0)+2\int_0^\infty e^{-s}g'(s)\,ds.
+\end{aligned}
+\]
+Here
+\[
+g'(s)\le CK^2\left(\frac1{\sqrt{m(r+s)}}+\frac1m\right).
+\]
+Because \(r\ge1\), the resulting terms \(CK^2(m^{-1/2}+m^{-1})\) are absorbed by \(g(0)\). Hence
+\[
+\mathbb E\|A\|
+\le CK^2\left(\sqrt{\frac rm}+\frac rm\right).
+\tag{4}
+\]
+[/ELABORATED_SECTION]
+
+[STRATEGY: sub_tail_integration | Tail integration and moment estimates]
+Derived according to this strategy: the high-probability estimate is converted into the required expectation bound by integrating its tail.
+[/STRATEGY]
+
+Finally, since \(r\le n\),
+\[
+\mathbb E\|\Sigma_m-\Sigma\|
+\le \|\Sigma\|\,\mathbb E\|A\|
+\le
+CK^2\left(\sqrt{\frac nm}+\frac nm\right)\|\Sigma\|.
+\]
+
+[OMITTED_SECTION: Repeated concluding inequalities]
+Omitted/compressed from the direct draft: the separate display of each immediate monotonicity step replacing \(r\) by \(n\).
+[/OMITTED_SECTION]
+
+This proves the theorem.
+
+### Retrieved strategy nodes
+
+- `sub_tail_integration` — **Tail integration and moment estimates**: Convert moments into tail integrals, insert probability bounds, and estimate the resulting integrals.
+- `sub_exponential_concentration` — **Exponential-moment and concentration arguments**: Apply exponential Markov inequalities, control moment-generating functions, and optimize parameters to derive tail bounds.
+- `family_standard_theorem_reduction` — **Reduction to a standard theorem**: Modify domains and regularity hypotheses so that a known theorem applies directly.
+- `family_algebra_order_norm` — **Algebraic, order, and norm estimates**: Combine algebraic rearrangement and order reasoning with norm inequalities and duality estimates.
+- `sub_independence_tensorization` — **Independence, tensorization, and union bounds**: Factor quantities using independence, tensorize information, and upgrade pointwise bounds to simultaneous bounds by a union bound.
+- `family_probability_information` — **Probability, concentration, and information methods**: Probabilistic proof methods based on exponential moments, tails, independence, union bounds, and information-theoretic reductions.
+- `sub_covering_volumetric` — **Covering-net and volumetric arguments**: Replace continuous suprema by maxima over finite epsilon-nets and bound net sizes through packing and volume comparison.
+- `sub_order_completeness` — **Suprema, infima, and order completeness**: Apply least-upper-bound and greatest-lower-bound properties to bounded sets, images, limsups, and moduli of continuity.
+- `sub_triangle_error_estimates` — **Triangle-inequality and error-decomposition estimates**: Separate dominant and error terms and control them with triangle and reverse-triangle inequalities.
+- `sub_ordered_field_constructions` — **Ordered-field structure and canonical constructions**: Use ordered-field operations, canonical witnesses, Archimedeanness, completeness, and rational cuts in structural arguments about the reals.
+
+---
+
+## lemma_8_3_14 — Lemma 8.3.14 (Dimension reduction)
+
+Dataset: `high_dimensional_probability`
+
+### Input statement
+
+Lemma 8.3.14 (Dimension reduction). Let F be a finite class of Boolean func-
+tions on a domain Ω with a probability measure µ on it. Assume that all functions
+in F are ε-separated, that is
+                    ∥f − g∥L2 (µ) > ε     for all distinct f, g ∈ F.
+If n ≥ Cε−4 log|F |, then the empirical measure µn satisfies the following with
+probability at least 0.99:
+                  ∥f − g∥L2 (µn ) > ε/2    for all distinct f, g ∈ F.
+  By definition of empirical measure (see Section 8.2.3), ∥f − g∥L2 (µn ) is the same
+as (8.31) but with the population average replaced by the sample average:
+                                      1 Xn                1/2
+                    ∥f − g∥L2 (µn ) =        (f − g)(Xi )2      ,               (8.32)
+                                       n i=1
+where Xi are i.i.d. copies of X.
+
+### Task
+
+Explain the proof strategy and give a proof plan. Identify the main mathematical methods used.
+
+### Control output
+
+Let \(m=|F|\). If \(m\le 1\), the conclusion is vacuous, so assume \(m\ge 2\).
+
+For each distinct \(f,g\in F\), define
+\[
+Y_i^{f,g}:=(f(X_i)-g(X_i))^2.
+\]
+Assuming Boolean functions take values in \(\{0,1\}\), we have \(0\le Y_i^{f,g}\le 1\), and
+\[
+\mathbb E Y_i^{f,g}
+ =\|f-g\|_{L_2(\mu)}^2>\varepsilon^2.
+\]
+Moreover,
+\[
+\frac1n\sum_{i=1}^nY_i^{f,g}
+=\|f-g\|_{L_2(\mu_n)}^2.
+\]
+
+Fix \(f\ne g\). If
+\[
+\|f-g\|_{L_2(\mu_n)}\le \frac{\varepsilon}{2},
+\]
+then
+\[
+\frac1n\sum_{i=1}^nY_i^{f,g}\le \frac{\varepsilon^2}{4}.
+\]
+Since \(\mathbb EY_i^{f,g}>\varepsilon^2\), this implies
+\[
+\frac1n\sum_{i=1}^nY_i^{f,g}-\mathbb EY_i^{f,g}
+<-\frac{3\varepsilon^2}{4}.
+\]
+Hoeffding’s inequality therefore gives
+\[
+\mathbb P\left\{
+\|f-g\|_{L_2(\mu_n)}\le \frac{\varepsilon}{2}
+\right\}
+\le
+\exp\left(-2n\left(\frac{3\varepsilon^2}{4}\right)^2\right)
+=
+\exp\left(-\frac98n\varepsilon^4\right).
+\]
+
+There are fewer than \(m^2\) ordered pairs of distinct functions. Hence, by the union bound,
+\[
+\mathbb P\left\{
+\exists f\ne g:\ 
+\|f-g\|_{L_2(\mu_n)}\le \frac{\varepsilon}{2}
+\right\}
+\le
+m^2\exp\left(-\frac98n\varepsilon^4\right).
+\]
+If, for example,
+\[
+n\ge 8\varepsilon^{-4}\log m,
+\]
+then the right-hand side is at most
+\[
+m^2e^{-9\log m}=m^{-7}\le 2^{-7}<0.01.
+\]
+Thus, with probability at least \(0.99\),
+\[
+\|f-g\|_{L_2(\mu_n)}>\frac{\varepsilon}{2}
+\qquad\text{for every distinct }f,g\in F.
+\]
+
+This proves the lemma with a universal constant \(C\) (for instance \(C=8\) under the \(\{0,1\}\) convention). If Boolean functions are represented by \(\{-1,1\}\), the same proof applies with a different universal constant because \(Y_i^{f,g}\in[0,4]\).
+
+### Library-RAG output
+
+Let \(m=|F|\). The claim is vacuous when \(m\le 1\), so assume \(m\ge 2\). We use the convention that Boolean functions take values in \(\{0,1\}\).
+
+[ELABORATED_SECTION: reduction to disagreement frequencies]
+For each distinct \(f,g\in F\), set
+\[
+Y_i^{f,g}=(f(X_i)-g(X_i))^2=\mathbf 1_{\{f(X_i)\ne g(X_i)\}}.
+\]
+Thus the \(Y_i^{f,g}\) are independent Bernoulli variables with mean
+\[
+p_{f,g}:=\mathbb E Y_i^{f,g}
+       =\|f-g\|_{L_2(\mu)}^2>\varepsilon^2,
+\]
+while
+\[
+\|f-g\|_{L_2(\mu_n)}^2=\frac1n\sum_{i=1}^nY_i^{f,g}.
+\]
+Consequently, failure for this pair implies
+\[
+\frac1n\sum_{i=1}^nY_i^{f,g}\le \frac{\varepsilon^2}{4},
+\]
+and hence
+\[
+\frac1n\sum_{i=1}^nY_i^{f,g}-p_{f,g}
+\le-\left(p_{f,g}-\frac{\varepsilon^2}{4}\right)
+<-\frac{3\varepsilon^2}{4}.
+\]
+This event containment is what permits one concentration bound, independent of the particular pair.
+[/ELABORATED_SECTION]
+
+Hoeffding’s inequality now yields
+\[
+\mathbb P\!\left(
+\|f-g\|_{L_2(\mu_n)}\le\frac{\varepsilon}{2}
+\right)
+\le \exp\!\left(-\frac98\,n\varepsilon^4\right).
+\]
+
+[STRATEGY: sub_exponential_concentration | Exponential-moment and concentration arguments]
+Derived according to this strategy: the empirical squared distance is a bounded sample average, so a fixed-pair lower-tail estimate follows from Hoeffding’s inequality.
+[/STRATEGY]
+
+[ELABORATED_SECTION: simultaneous control over all pairs]
+There are at most \(m^2\) distinct ordered pairs. Therefore, by the union bound,
+\[
+\mathbb P\!\left(
+\exists f\ne g:\ \|f-g\|_{L_2(\mu_n)}\le\frac{\varepsilon}{2}
+\right)
+\le m^2\exp\!\left(-\frac98\,n\varepsilon^4\right).
+\]
+If \(n\ge 8\varepsilon^{-4}\log m\), this probability is at most
+\(m^{-7}\le 2^{-7}<0.01\). Thus, with probability at least \(0.99\),
+\[
+\|f-g\|_{L_2(\mu_n)}>\frac{\varepsilon}{2}
+\qquad\text{for every distinct }f,g\in F.
+\]
+[/ELABORATED_SECTION]
+
+[STRATEGY: sub_independence_tensorization | Independence, tensorization, and union bounds]
+Derived according to this strategy: fixed-pair concentration is upgraded to a uniform statement over the finite class by a union bound over all pairs.
+[/STRATEGY]
+
+[OMITTED_SECTION: routine constant calculations]
+Omitted/compressed from the direct draft: repeated exponent arithmetic and the separate derivation for the \(\{-1,1\}\) convention. Under that convention, Hoeffding applied to variables in \([0,4]\) gives the same conclusion after changing the universal constant \(C\).
+[/OMITTED_SECTION]
+
+Hence the lemma holds for a universal constant \(C\).
+
+### Retrieved strategy nodes
+
+- `sub_ordered_field_constructions` — **Ordered-field structure and canonical constructions**: Use ordered-field operations, canonical witnesses, Archimedeanness, completeness, and rational cuts in structural arguments about the reals.
+- `family_probability_information` — **Probability, concentration, and information methods**: Probabilistic proof methods based on exponential moments, tails, independence, union bounds, and information-theoretic reductions.
+- `sub_probabilistic_packing` — **Probabilistic method and packing constructions**: Randomly generate nets, codes, sparse vectors, or approximants and prove that a suitable deterministic construction exists.
+- `sub_exponential_concentration` — **Exponential-moment and concentration arguments**: Apply exponential Markov inequalities, control moment-generating functions, and optimize parameters to derive tail bounds.
+- `family_standard_theorem_reduction` — **Reduction to a standard theorem**: Modify domains and regularity hypotheses so that a known theorem applies directly.
+- `sub_independence_tensorization` — **Independence, tensorization, and union bounds**: Factor quantities using independence, tensorize information, and upgrade pointwise bounds to simultaneous bounds by a union bound.
+- `sub_testing_information` — **Testing and information-theoretic reductions**: Reduce estimation to hypothesis testing and control testing error using divergence or mutual-information inequalities.
+- `sub_tail_integration` — **Tail integration and moment estimates**: Convert moments into tail integrals, insert probability bounds, and estimate the resulting integrals.
+- `sub_intermediate_value` — **Intermediate Value Theorem**: Use continuity and endpoint value information to produce an intermediate value or interior zero.
+- `sub_derivative_rules` — **Differential calculus rules**: Apply chain, composition, and related closure rules for differentiable functions.
+
+---
+
+## theorem_7_2_2 — Theorem 7.2.2 (Slepian inequality). Let (Xt )t∈T and (Yt)
+
+Dataset: `high_dimensional_probability`
+
+### Input statement
+
+Theorem 7.2.2 (Slepian inequality). Let (Xt )t∈T and (Yt )t∈T be two mean-zero
+Gaussian processes. Assume that for all t, s ∈ T , we have
+                E Xt2 = E Yt2     and     E(Xt − Xs )2 ≤ E(Yt − Ys )2 .      (7.3)
+Then supt∈T Xt is stochastically dominated by supt∈T Yt : for every τ ∈ R, we have
+                          n          o   n          o
+                         P sup Xt ≥ τ ≤ P sup Yt ≥ τ .                       (7.4)
+                            t∈T                   t∈T
+
+Consequently,
+                                  E sup Xt ≤ E sup Yt .                      (7.5)
+                                    t∈T          t∈T
+
+  We now prepare for the
+
+### Task
+
+Explain the proof strategy and give a proof plan. Identify the main mathematical methods used.
+
+### Control output
+
+Assume the usual separability convention for Gaussian processes: there is a countable subset of \(T\) over which each supremum agrees almost surely. This is automatic when \(T\) is finite or countable and ensures that the suprema are measurable.
+
+Set
+\[
+M_X=\sup_{t\in T}X_t,\qquad M_Y=\sup_{t\in T}Y_t.
+\]
+
+### 1. The finite case
+
+Suppose first that \(T=\{1,\dots,m\}\). Write
+\[
+C^X_{ij}=\mathbb E X_iX_j,\qquad C^Y_{ij}=\mathbb E Y_iY_j,
+\qquad D=C^X-C^Y.
+\]
+The equality of variances gives \(D_{ii}=0\). Moreover, for \(i\ne j\),
+\[
+\begin{aligned}
+D_{ij}
+&=\frac12\left(\mathbb E(Y_i-Y_j)^2-\mathbb E(X_i-X_j)^2\right)\\
+&\ge 0.
+\end{aligned}
+\tag{1}
+\]
+
+We use the Gaussian interpolation identity: if \(G_u\) is a centered Gaussian vector with covariance
+\[
+C(u)=(1-u)C^Y+uC^X,\qquad 0\le u\le1,
+\]
+then, for every sufficiently smooth \(f:\mathbb R^m\to\mathbb R\),
+\[
+\frac{d}{du}\mathbb E f(G_u)
+=
+\frac12\sum_{i,j=1}^m D_{ij}\,
+\mathbb E\big[\partial_{ij}f(G_u)\big].
+\tag{2}
+\]
+This follows from Gaussian integration by parts. Singular covariance matrices are handled by adding \(\varepsilon I\) to both covariance matrices and then letting \(\varepsilon\downarrow0\).
+
+Choose any smooth nonincreasing function \(\varphi:\mathbb R\to[0,1]\), and put
+\[
+f(x_1,\dots,x_m)=\prod_{i=1}^m\varphi(x_i).
+\]
+For \(i\ne j\),
+\[
+\partial_{ij}f(x)
+=
+\varphi'(x_i)\varphi'(x_j)
+\prod_{k\ne i,j}\varphi(x_k)\ge0,
+\]
+because \(\varphi'\le0\). Since \(D_{ii}=0\) and \(D_{ij}\ge0\) for \(i\ne j\), (2) shows that
+\[
+\frac{d}{du}\mathbb E f(G_u)\ge0.
+\]
+Consequently,
+\[
+\mathbb E\prod_{i=1}^m\varphi(X_i)
+\ge
+\mathbb E\prod_{i=1}^m\varphi(Y_i).
+\tag{3}
+\]
+
+Fix \(a\in\mathbb R\). Choose a smooth nonincreasing \(h:\mathbb R\to[0,1]\) such that
+\[
+h(r)=1\quad(r\le0),\qquad h(r)=0\quad(r\ge1),
+\]
+and set
+\[
+\varphi_\varepsilon(x)=h\!\left(\frac{x-a}{\varepsilon}\right).
+\]
+Then, as \(\varepsilon\downarrow0\),
+\[
+\varphi_\varepsilon(x)\longrightarrow \mathbf 1_{\{x\le a\}}.
+\]
+Applying (3) and using dominated convergence gives
+\[
+\mathbb P\left\{\max_{1\le i\le m}X_i\le a\right\}
+\ge
+\mathbb P\left\{\max_{1\le i\le m}Y_i\le a\right\}.
+\tag{4}
+\]
+Equivalently,
+\[
+\mathbb P\left\{\max_iX_i>a\right\}
+\le
+\mathbb P\left\{\max_iY_i>a\right\}.
+\tag{5}
+\]
+Letting \(a\uparrow\tau\), the events \(\{\max_iX_i>a\}\) decrease to \(\{\max_iX_i\ge\tau\}\). Thus
+\[
+\mathbb P\left\{\max_iX_i\ge\tau\right\}
+\le
+\mathbb P\left\{\max_iY_i\ge\tau\right\}.
+\tag{6}
+\]
+
+### 2. Countable and separable index sets
+
+Let \(T=\{t_1,t_2,\dots\}\), and define
+\[
+M_{X,n}=\max_{1\le i\le n}X_{t_i},
+\qquad
+M_{Y,n}=\max_{1\le i\le n}Y_{t_i}.
+\]
+For every \(a\), the finite case gives
+\[
+\mathbb P\{M_{X,n}>a\}\le \mathbb P\{M_{Y,n}>a\}.
+\]
+Since \(M_{X,n}\uparrow M_X\) and \(M_{Y,n}\uparrow M_Y\),
+\[
+\mathbb P\{M_X>a\}
+=
+\lim_{n\to\infty}\mathbb P\{M_{X,n}>a\}
+\le
+\lim_{n\to\infty}\mathbb P\{M_{Y,n}>a\}
+=
+\mathbb P\{M_Y>a\}.
+\]
+Taking \(a\uparrow\tau\) yields
+\[
+\boxed{\;
+\mathbb P\left\{\sup_{t\in T}X_t\ge\tau\right\}
+\le
+\mathbb P\left\{\sup_{t\in T}Y_t\ge\tau\right\}.
+\;}
+\tag{7.4}
+\]
+For separable processes, apply this argument to a common countable separating subset of \(T\).
+
+### 3. Comparison of expectations
+
+Equation (7.4) says precisely that \(M_X\) is stochastically dominated by \(M_Y\). Therefore every bounded increasing function \(g\) satisfies
+\[
+\mathbb E g(M_X)\le \mathbb E g(M_Y).
+\]
+Apply this to
+\[
+g_N(x)=(-N)\vee(x\wedge N)
+\]
+and let \(N\to\infty\). The negative parts are integrable: for any fixed \(t_0\in T\),
+\[
+M_X\ge X_{t_0}\quad\Longrightarrow\quad M_X^-\le X_{t_0}^-,
+\]
+and similarly for \(M_Y\). Hence the expectations are well-defined, possibly \(+\infty\), and we obtain
+\[
+\boxed{\;
+\mathbb E\sup_{t\in T}X_t
+\le
+\mathbb E\sup_{t\in T}Y_t.
+\;}
+\tag{7.5}
+\]
+
+Without a separability assumption, arbitrary null-set modifications of individual coordinates can change an uncountable supremum, so some such convention is necessary.
+
+### Library-RAG output
+
+Assume the standard separability convention: for each process there is a deterministic countable subset of \(T\) on which its supremum agrees almost surely with the supremum over \(T\). This ensures measurability. Supremum and expectation may take the value \(+\infty\).
+
+### Finite index sets
+
+First let \(T=\{1,\dots,m\}\). Denote the covariance matrices of \(X=(X_1,\dots,X_m)\) and \(Y=(Y_1,\dots,Y_m)\) by \(C^X\) and \(C^Y\), and set
+\[
+D=C^X-C^Y.
+\]
+The assumptions imply
+\[
+D_{ii}=0,\qquad
+D_{ij}
+=\frac12\left(\mathbb E(Y_i-Y_j)^2-\mathbb E(X_i-X_j)^2\right)\ge 0
+\quad(i\ne j).
+\tag{1}
+\]
+
+[OMITTED_SECTION: covariance algebra]
+Omitted/compressed from the direct draft: the routine multi-line expansion expressing covariance differences in terms of increment variances.
+[/OMITTED_SECTION]
+
+[ELABORATED_SECTION: Gaussian covariance interpolation]
+We need the following interpolation identity. Let
+\[
+C(u)=(1-u)C^Y+uC^X,\qquad 0\le u\le1,
+\]
+and let \(G_u\) be a centered Gaussian vector with covariance \(C(u)\). For every \(C^2\) function \(f\) with bounded derivatives,
+\[
+\frac{d}{du}\mathbb E f(G_u)
+=
+\frac12\sum_{i,j=1}^m D_{ij}\,
+\mathbb E[\partial_{ij}f(G_u)].
+\tag{2}
+\]
+
+To justify this when the covariances may be singular, first replace \(C(u)\) by \(C(u)+\delta I\), \(\delta>0\). Its Gaussian density \(p_{u,\delta}\) satisfies
+\[
+\partial_u p_{u,\delta}
+=
+\frac12\sum_{i,j}D_{ij}\,\partial_{ij}p_{u,\delta}.
+\]
+Differentiating under the integral and integrating by parts twice therefore gives
+\[
+\frac{d}{du}\int f(x)p_{u,\delta}(x)\,dx
+=
+\frac12\sum_{i,j}D_{ij}
+\int \partial_{ij}f(x)p_{u,\delta}(x)\,dx.
+\]
+The Gaussian decay removes all boundary terms. Finally, letting \(\delta\downarrow0\) proves (2), since adding \(\delta I\) amounts to adding an independent \(N(0,\delta I)\) vector and bounded continuous functions converge in expectation.
+[/ELABORATED_SECTION]
+
+[STRATEGY: sub_integration_transformations | Integration by parts and substitution]
+Derived according to this strategy: the covariance derivative of a Gaussian density is transferred to the test function by two integrations by parts.
+[/STRATEGY]
+
+[NEW_STRATEGY: Gaussian covariance interpolation with signed mixed derivatives]
+Why this is new and critical: generic integration by parts alone does not produce the comparison; the key is to interpolate between covariance matrices and choose an orthant-approximating test function whose mixed derivatives have the sign of the off-diagonal covariance differences.
+[/NEW_STRATEGY]
+
+Let \(\varphi:\mathbb R\to[0,1]\) be smooth and nonincreasing, and define
+\[
+f(x)=\prod_{i=1}^m\varphi(x_i).
+\]
+For \(i\ne j\),
+\[
+\partial_{ij}f(x)
+=
+\varphi'(x_i)\varphi'(x_j)
+\prod_{k\ne i,j}\varphi(x_k)\ge0.
+\]
+Because \(D_{ii}=0\) and \(D_{ij}\ge0\) for \(i\ne j\), (2) yields
+\[
+\frac{d}{du}\mathbb E f(G_u)\ge0.
+\]
+Thus
+\[
+\mathbb E\prod_{i=1}^m\varphi(X_i)
+\ge
+\mathbb E\prod_{i=1}^m\varphi(Y_i).
+\tag{3}
+\]
+
+Fix \(a\in\mathbb R\). Choose a smooth nonincreasing \(h:\mathbb R\to[0,1]\) with
+\[
+h(r)=1\quad(r\le0),\qquad h(r)=0\quad(r\ge1),
+\]
+and set
+\[
+\varphi_\varepsilon(x)=h\!\left(\frac{x-a}{\varepsilon}\right).
+\]
+Then \(\varphi_\varepsilon(x)\to\mathbf 1_{\{x\le a\}}\). Applying (3) and dominated convergence gives
+\[
+\mathbb P\!\left\{\max_i X_i\le a\right\}
+\ge
+\mathbb P\!\left\{\max_i Y_i\le a\right\},
+\]
+or equivalently,
+\[
+\mathbb P\!\left\{\max_i X_i>a\right\}
+\le
+\mathbb P\!\left\{\max_i Y_i>a\right\}.
+\tag{4}
+\]
+Taking \(a\uparrow\tau\) and using continuity of probability for decreasing events,
+\[
+\mathbb P\!\left\{\max_i X_i\ge\tau\right\}
+\le
+\mathbb P\!\left\{\max_i Y_i\ge\tau\right\}.
+\tag{5}
+\]
+
+[OMITTED_SECTION: routine threshold limits]
+Omitted/compressed from the direct draft: separate displays for complementing the distribution-function inequality and for the elementary limit \(a\uparrow\tau\).
+[/OMITTED_SECTION]
+
+### Countable and separable index sets
+
+Suppose first that \(T=\{t_1,t_2,\dots\}\), and define
+\[
+M_{X,n}=\max_{1\le i\le n}X_{t_i},
+\qquad
+M_{Y,n}=\max_{1\le i\le n}Y_{t_i}.
+\]
+For every \(a\), the finite-dimensional result gives
+\[
+\mathbb P\{M_{X,n}>a\}\le \mathbb P\{M_{Y,n}>a\}.
+\]
+Since
+\[
+M_{X,n}\uparrow M_X:=\sup_{t\in T}X_t,
+\qquad
+M_{Y,n}\uparrow M_Y:=\sup_{t\in T}Y_t,
+\]
+continuity from below yields
+\[
+\mathbb P\{M_X>a\}\le\mathbb P\{M_Y>a\}.
+\tag{6}
+\]
+Taking \(a\uparrow\tau\) now gives
+\[
+\boxed{\;
+\mathbb P\left\{\sup_{t\in T}X_t\ge\tau\right\}
+\le
+\mathbb P\left\{\sup_{t\in T}Y_t\ge\tau\right\}.
+\;}
+\tag{7.4}
+\]
+
+For general separable processes, let \(S_X,S_Y\subseteq T\) be countable separating sets and use the common countable set \(S=S_X\cup S_Y\). For each process, its supremum over \(S\) equals its supremum over \(T\) almost surely, so the countable argument applies.
+
+### Comparison of expectations
+
+[ELABORATED_SECTION: passing safely from stochastic order to expectations]
+The expectation comparison requires care because the suprema need not be integrable above. For \(K,N>0\), define the bounded increasing truncation
+\[
+g_{K,N}(x)=(-K)\vee(x\wedge N).
+\]
+It has the representation
+\[
+g_{K,N}(x)
+=
+-K+\int_{-K}^{N}\mathbf 1_{\{x>t\}}\,dt.
+\]
+Therefore (6) and Tonelli’s theorem imply
+\[
+\mathbb E g_{K,N}(M_X)\le \mathbb E g_{K,N}(M_Y).
+\tag{7}
+\]
+For fixed \(K\), let \(N\uparrow\infty\). Since \(g_{K,N}(M)+K\) increases to \(M\vee(-K)+K\), monotone convergence gives
+\[
+\mathbb E[M_X\vee(-K)]
+\le
+\mathbb E[M_Y\vee(-K)].
+\tag{8}
+\]
+
+Choose any \(t_0\in T\). Since \(M_X\ge X_{t_0}\) and \(M_Y\ge Y_{t_0}\),
+\[
+M_X^-\le X_{t_0}^-,
+\qquad
+M_Y^-\le Y_{t_0}^-.
+\]
+The right-hand sides are integrable Gaussian random variables, so both negative parts are integrable. Consequently,
+\[
+\mathbb E[M\vee(-K)]
+=
+\mathbb E M^+-\mathbb E(M^-\wedge K)
+\longrightarrow
+\mathbb E M
+\]
+as \(K\to\infty\), with the expectation allowed to equal \(+\infty\). Passing to the limit in (8) proves the desired comparison.
+[/ELABORATED_SECTION]
+
+[NEW_STRATEGY: two-stage monotone truncation for extended expectations]
+Why this is new and critical: symmetric truncations do not form a monotone sequence, so their expectations cannot be passed to the limit without further justification. Truncating first above and then below isolates the potentially infinite positive part while using a fixed coordinate to control the negative part.
+[/NEW_STRATEGY]
+
+Thus
+\[
+\boxed{\;
+\mathbb E\sup_{t\in T}X_t
+\le
+\mathbb E\sup_{t\in T}Y_t.
+\;}
+\tag{7.5}
+\]
+
+Without a measurability or separability convention, an uncountable pointwise supremum need not be measurable and can be altered by coordinatewise null-set modifications; thus such a convention is necessary for the general-index formulation.
+
+### Retrieved strategy nodes
+
+- `family_extremal_order` — **Supremum, infimum, and extremal arguments**: Control quantities through suprema, infima, extremal points, or attained optimizers.
+- `sub_order_completeness` — **Suprema, infima, and order completeness**: Apply least-upper-bound and greatest-lower-bound properties to bounded sets, images, limsups, and moduli of continuity.
+- `sub_integration_transformations` — **Integration by parts and substitution**: Verify regularity and integrability hypotheses and then apply integration by parts or change of variables.
+- `sub_covering_volumetric` — **Covering-net and volumetric arguments**: Replace continuous suprema by maxima over finite epsilon-nets and bound net sizes through packing and volume comparison.
+- `sub_series_tests` — **Series comparison and convergence tests**: Use comparison, term, root, ratio, alternating-series, geometric, or rearrangement criteria.
+- `sub_triangle_error_estimates` — **Triangle-inequality and error-decomposition estimates**: Separate dominant and error terms and control them with triangle and reverse-triangle inequalities.
+- `sub_convexity_variational` — **Convexity and variational arguments**: Use Jensen's inequality, convex combinations, first-order optimality, or comparison with feasible competitors.
+- `family_logical_reasoning` — **Logical decomposition, cases, and contradiction**: Split logical, order, endpoint, degeneracy, or parameter cases and use contradiction or contraposition to eliminate alternatives.
+- `sub_compactness` — **Compactness arguments**: Apply compactness of intervals or images to obtain boundedness, attained extrema, uniform continuity, or convergent subsequences.
+- `sub_intermediate_value` — **Intermediate Value Theorem**: Use continuity and endpoint value information to produce an intermediate value or interior zero.
+
+---
+
+## lemma_2_7_8 — Lemma 2.7.8 (Centering)
+
+Dataset: `high_dimensional_probability`
+
+### Input statement
+
+Lemma 2.7.8 (Centering). Any subgaussian random variable X satisfies
+                                    ∥X − E X∥ψ2 ≤ C∥X∥ψ2 .
+
+### Task
+
+Explain the proof strategy and give a proof plan. Identify the main mathematical methods used.
+
+### Control output
+
+Let the \(\psi_2\)-norm be defined by
+\[
+\|X\|_{\psi_2}
+:=\inf\left\{t>0:\mathbb E\exp\left(\frac{X^2}{t^2}\right)\le 2\right\}.
+\]
+
+Fix \(s>\|X\|_{\psi_2}\), so that
+\[
+\mathbb E e^{X^2/s^2}\le 2.
+\]
+Write \(\mu=\mathbb EX\). By Jensen’s inequality,
+\[
+\exp\left(\frac{\mathbb E X^2}{s^2}\right)
+\le \mathbb E\exp\left(\frac{X^2}{s^2}\right)\le 2.
+\]
+Thus
+\[
+\mu^2\le \mathbb E X^2\le s^2\log 2.
+\]
+
+Using \((X-\mu)^2\le 2X^2+2\mu^2\), followed by Cauchy–Schwarz,
+\[
+\begin{aligned}
+\mathbb E\exp\left(\frac{(X-\mu)^2}{4s^2}\right)
+&\le
+\exp\left(\frac{\mu^2}{2s^2}\right)
+\mathbb E\exp\left(\frac{X^2}{2s^2}\right)\\
+&\le
+\sqrt 2\left(\mathbb E\exp\left(\frac{X^2}{s^2}\right)\right)^{1/2}\\
+&\le 2.
+\end{aligned}
+\]
+Therefore,
+\[
+\|X-\mathbb EX\|_{\psi_2}\le 2s.
+\]
+Letting \(s\downarrow \|X\|_{\psi_2}\) gives
+\[
+\boxed{\|X-\mathbb EX\|_{\psi_2}\le 2\|X\|_{\psi_2}}.
+\]
+Hence the result holds with the universal constant \(C=2\) under this normalization.
+
+### Library-RAG output
+
+Let
+\[
+K:=\|X\|_{\psi_2}
+=\inf\left\{t>0:\mathbb E e^{X^2/t^2}\le 2\right\}<\infty .
+\]
+
+[ELABORATED_SECTION: Admissibility and existence of the mean]
+Fix \(s>K\). By the definition of the infimum, there is an admissible \(t<s\); monotonicity in the denominator then gives
+\[
+\mathbb E e^{X^2/s^2}\le \mathbb E e^{X^2/t^2}\le 2.
+\]
+Moreover, \(u\le e^u\) for \(u\ge0\), so
+\[
+\mathbb E X^2\le s^2\mathbb E e^{X^2/s^2}<\infty.
+\]
+Thus \(X\) is integrable and \(\mu:=\mathbb EX\) is well-defined. Jensen’s inequality, now legitimately applicable, yields
+\[
+e^{\mathbb E X^2/s^2}
+\le \mathbb E e^{X^2/s^2}\le2,
+\]
+and hence
+\[
+\mu^2\le \mathbb E X^2\le s^2\log 2.
+\]
+[STRATEGY: sub_order_completeness | Suprema, infima, and order completeness]
+Derived according to this strategy: the infimum defining the norm is converted into an admissible exponential-moment bound for every \(s>K\).
+[/STRATEGY]
+[NEW_STRATEGY: Certify well-definedness from exponential integrability]
+Why this is new and critical: before centering by \(\mathbb EX\) or applying Jensen to \(X^2\), one must verify that the exponential-moment assumption implies the required integrability.
+[/NEW_STRATEGY]
+[/ELABORATED_SECTION]
+
+Using \((X-\mu)^2\le 2X^2+2\mu^2\) and Cauchy–Schwarz,
+\[
+\mathbb E e^{(X-\mu)^2/(4s^2)}
+\le e^{\mu^2/(2s^2)}
+   \left(\mathbb E e^{X^2/s^2}\right)^{1/2}
+\le \sqrt2\,\sqrt2=2.
+\]
+Therefore \(2s\) is admissible in the definition of the \(\psi_2\)-norm of \(X-\mu\), so
+\[
+\|X-\mathbb EX\|_{\psi_2}\le 2s.
+\]
+
+[OMITTED_SECTION: Routine exponential estimate]
+Omitted/compressed from the direct draft: the separate line-by-line manipulation of the elementary quadratic inequality and the Cauchy–Schwarz bound.
+[/OMITTED_SECTION]
+
+Since this holds for every \(s>K\), letting \(s\downarrow K\) gives
+\[
+\boxed{\|X-\mathbb EX\|_{\psi_2}\le 2\|X\|_{\psi_2}}.
+\]
+Thus the lemma holds with the universal constant \(C=2\) under this normalization.
+
+### Retrieved strategy nodes
+
+- `family_normalization_symmetry` — **Normalization, invariance, and symmetry**: Translate, rescale, whiten, permute, or otherwise transform a problem to a canonical case and transfer the conclusion back.
+- `sub_order_completeness` — **Suprema, infima, and order completeness**: Apply least-upper-bound and greatest-lower-bound properties to bounded sets, images, limsups, and moduli of continuity.
+- `sub_canonical_rewriting` — **Canonical rewriting**: Rewrite abstract distances, norms, slopes, interval interiors, and formal-series expressions in concrete canonical forms.
+- `family_standard_theorem_reduction` — **Reduction to a standard theorem**: Modify domains and regularity hypotheses so that a known theorem applies directly.
+- `family_algebra_order_norm` — **Algebraic, order, and norm estimates**: Combine algebraic rearrangement and order reasoning with norm inequalities and duality estimates.
+- `sub_intermediate_value` — **Intermediate Value Theorem**: Use continuity and endpoint value information to produce an intermediate value or interior zero.
+- `sub_sequence_completeness` — **Sequence and completeness methods**: Use epsilon-N arguments, Cauchy completeness, subsequences, and sequences approaching a point.
+- `sub_fundamental_theorem_calculus` — **Fundamental Theorem of Calculus**: Convert derivatives into integral increments or differentiate parameterized integrals.
+- `sub_structured_parameters` — **Sparsity, low-rank structure, and norm duality**: Exploit support, cone, rank, or singular-space decompositions together with dual norms and restricted geometric conditions.
+- `family_logical_reasoning` — **Logical decomposition, cases, and contradiction**: Split logical, order, endpoint, degeneracy, or parameter cases and use contradiction or contraposition to eliminate alternatives.
+
+---

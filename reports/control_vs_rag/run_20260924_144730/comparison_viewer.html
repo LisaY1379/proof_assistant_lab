@@ -32,6 +32,7 @@
     .link-layer { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:2; overflow:visible; }
     .link-layer path { stroke:#94a3b8; stroke-width:2; fill:none; opacity:.28; }
     .link-layer path.active { stroke:#2563eb; stroke-width:4; opacity:.92; }
+    .link-layer path.locked { stroke:#1d4ed8; stroke-width:5; opacity:1; }
     .result-col { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:13px; min-width:0; box-shadow:0 1px 5px rgba(15,23,42,.05); position:relative; z-index:3; }
     .result-col.control { border-top:5px solid #6366f1; }
     .result-col.rag { border-top:5px solid #06b6d4; }
@@ -49,7 +50,9 @@
     .answer-block { white-space:pre-wrap; margin:0 0 10px; padding:6px 0; }
     .answer-block.annotated { background:#fffbeb; border-left:4px solid #f59e0b; padding:9px 10px; border-radius:8px; }
     .answer-block.link-hover { outline:3px solid rgba(37,99,235,.35); background:#eff6ff; }
+    .answer-block.link-locked { outline:4px solid rgba(37,99,235,.55); background:#dbeafe; }
     .eval-note.link-hover { outline:2px solid rgba(37,99,235,.35); }
+    .eval-note.link-locked { outline:3px solid rgba(37,99,235,.55); }
     .eval-summary { border:1px solid #c7d2fe; background:#eef2ff; color:#312e81; border-radius:10px; padding:10px; margin:8px 0; }
     .eval-overall { margin-top:6px; font-size:13px; line-height:1.45; }
     .eval-note { white-space:normal; border-radius:10px; padding:10px; margin:-3px 0 12px 14px; font-size:13px; line-height:1.45; }
@@ -3191,10 +3194,38 @@ Thus the lemma holds with the universal constant \(C=2\) under this normalizatio
       }
     }
 
+    let lockedPair = null;
+
+    function elementsForPair(pair) {
+      return document.querySelectorAll(`[data-pairs~="${CSS.escape(pair)}"], [data-pair="${CSS.escape(pair)}"]`);
+    }
+
     function setPairActive(pair, active) {
-      document.querySelectorAll(`[data-pairs~="${CSS.escape(pair)}"], [data-pair="${CSS.escape(pair)}"]`).forEach(el => {
+      if (lockedPair === pair && !active) return;
+      elementsForPair(pair).forEach(el => {
         el.classList.toggle('link-hover', active);
         el.classList.toggle('active', active);
+      });
+    }
+
+    function clearLockedPair() {
+      if (!lockedPair) return;
+      elementsForPair(lockedPair).forEach(el => {
+        el.classList.remove('link-locked', 'locked', 'link-hover', 'active');
+      });
+      lockedPair = null;
+    }
+
+    function lockPair(pair) {
+      if (!pair) return;
+      if (lockedPair === pair) {
+        clearLockedPair();
+        return;
+      }
+      clearLockedPair();
+      lockedPair = pair;
+      elementsForPair(pair).forEach(el => {
+        el.classList.add('link-locked', 'locked', 'link-hover', 'active');
       });
     }
 
@@ -3204,11 +3235,23 @@ Thus the lemma holds with the universal constant \(C=2\) under this normalizatio
         const getPairs = () => el.hasAttribute('data-pair') ? [el.getAttribute('data-pair')] : pairsFor(el);
         el.addEventListener('mouseenter', () => getPairs().forEach(pair => pair && setPairActive(pair, true)));
         el.addEventListener('mouseleave', () => getPairs().forEach(pair => pair && setPairActive(pair, false)));
+        el.addEventListener('click', (event) => {
+          event.stopPropagation();
+          const pair = getPairs()[0];
+          if (pair) lockPair(pair);
+        });
+      });
+      document.addEventListener('click', () => clearLockedPair());
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') clearLockedPair();
       });
     }
 
     window.addEventListener('load', setupLinkedHover);
-    window.addEventListener('resize', () => document.querySelectorAll('.split').forEach(drawLinksForSplit));
+    window.addEventListener('resize', () => {
+      document.querySelectorAll('.split').forEach(drawLinksForSplit);
+      if (lockedPair) lockPair(lockedPair);
+    });
   </script>
 </body>
 </html>

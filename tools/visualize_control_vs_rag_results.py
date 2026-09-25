@@ -99,7 +99,12 @@ def statement_text(item: Dict[str, Any]) -> str:
     ).strip()
 
 
-def prompt_text(item: Dict[str, Any]) -> str:
+def prompt_text(item: Dict[str, Any], cleaned_prompts_by_input: Optional[Dict[str, Dict[str, Any]]] = None, index: Optional[int] = None) -> str:
+    iid = input_id(item, index)
+    if cleaned_prompts_by_input and iid in cleaned_prompts_by_input:
+        cleaned = str(cleaned_prompts_by_input[iid].get("prompt_cleaned") or "").strip()
+        if cleaned:
+            return cleaned
     return "Can you prove this theorem? " + statement_text(item)
 
 
@@ -122,7 +127,52 @@ def render_text(value: Any) -> str:
     text = re.sub(r"```([\s\S]*?)```", lambda m: f"<pre>{m.group(1).strip()}</pre>", text)
     text = re.sub(r"\*\*([^*\n][\s\S]*?[^*\n])\*\*", r"<strong>\1</strong>", text)
     text = re.sub(r"`([^`]+)`", r"<code>\1</code>", text)
-    # Render inline strategy tags as small cards if present.
+    # Render rewrite/highlight tags and inline strategy tags if present.
+    text = re.sub(
+        r"\[CONTROL_SECTION:\s*([^|\]\n]+)\s*\|\s*([^\]\n]+)\]\s*([\s\S]*?)\s*\[/CONTROL_SECTION\]",
+        lambda m: (
+            f'<div class="proof-highlight control-ref" title="Control section {m.group(1).strip()}: {m.group(2).strip()}">'
+            f'{m.group(3).strip()}'
+            '</div>'
+        ),
+        text,
+    )
+    text = re.sub(
+        r"\[RAG_ELABORATED_SECTION:\s*([^|\]\n]+)\s*\|\s*([^\]\n]+)\]\s*([\s\S]*?)\s*\[/RAG_ELABORATED_SECTION\]",
+        lambda m: (
+            f'<div class="proof-highlight elaborated" title="Elaborated RAG section {m.group(1).strip()}: {m.group(2).strip()}">'
+            f'{m.group(3).strip()}'
+            '</div>'
+        ),
+        text,
+    )
+    text = re.sub(
+        r"\[RAG_OMITTED_SECTION:\s*([^|\]\n]+)\s*\|\s*([^\]\n]+)\]\s*([\s\S]*?)\s*\[/RAG_OMITTED_SECTION\]",
+        lambda m: (
+            f'<div class="proof-highlight omitted" title="Omitted/compressed RAG section {m.group(1).strip()}: {m.group(2).strip()}">'
+            f'{m.group(3).strip()}'
+            '</div>'
+        ),
+        text,
+    )
+    text = re.sub(
+        r"\[ELABORATED_SECTION:\s*([^\]\n]+)\]\s*([\s\S]*?)\s*\[/ELABORATED_SECTION\]",
+        lambda m: (
+            f'<div class="proof-highlight elaborated" title="Elaborated section: {m.group(1).strip()}">'
+            f'{m.group(2).strip()}'
+            '</div>'
+        ),
+        text,
+    )
+    text = re.sub(
+        r"\[OMITTED_SECTION:\s*([^\]\n]+)\]\s*([\s\S]*?)\s*\[/OMITTED_SECTION\]",
+        lambda m: (
+            f'<div class="proof-highlight omitted" title="Omitted/compressed section: {m.group(1).strip()}">'
+            f'{m.group(2).strip()}'
+            '</div>'
+        ),
+        text,
+    )
     text = re.sub(
         r"\[STRATEGY:\s*([^|\]\n]+)\s*\|\s*([^\]\n]+)\]\s*([\s\S]*?)\s*\[/STRATEGY\]",
         lambda m: (
@@ -153,12 +203,33 @@ def tokenize(text: str) -> set[str]:
 
 
 def split_answer_blocks(answer: str) -> List[str]:
-    """Split an answer into display blocks for localized annotations."""
+    """Split an answer into display blocks for localized annotations.
+
+    Keep explicit markup blocks such as [ELABORATED_SECTION] and
+    [OMITTED_SECTION] intact even when they contain many blank lines/equations.
+    """
     text = str(answer or "").strip()
     if not text:
         return [""]
-    parts = [p.strip() for p in re.split(r"\n\s*\n", text) if p.strip()]
-    if len(parts) <= 1:
+
+    tag_re = re.compile(
+        r"\[(?P<tag>CONTROL_SECTION|RAG_ELABORATED_SECTION|RAG_OMITTED_SECTION|ELABORATED_SECTION|OMITTED_SECTION|STRATEGY|NEW_STRATEGY):[^\]]+\]"
+        r"[\s\S]*?"
+        r"\[/(?P=tag)\]"
+    )
+    blocks: List[str] = []
+    pos = 0
+    for m in tag_re.finditer(text):
+        before = text[pos:m.start()].strip()
+        if before:
+            blocks.extend(p.strip() for p in re.split(r"\n\s*\n", before) if p.strip())
+        blocks.append(m.group(0).strip())
+        pos = m.end()
+    tail = text[pos:].strip()
+    if tail:
+        blocks.extend(p.strip() for p in re.split(r"\n\s*\n", tail) if p.strip())
+
+    if len(blocks) <= 1:
         # Fallback sentence-ish chunks for single-paragraph outputs.
         sentences = re.split(r"(?<=[.!?])\s+(?=[A-Z0-9])", text)
         chunks: List[str] = []
@@ -171,7 +242,7 @@ def split_answer_blocks(answer: str) -> List[str]:
         if current:
             chunks.append(" ".join(current).strip())
         return chunks or [text]
-    return parts
+    return blocks
 
 
 def best_block_index(blocks: List[str], quote: str) -> int:
@@ -241,6 +312,32 @@ def evaluation_annotations_for_rag(answer: str, evaluation: Optional[Dict[str, A
     return annotations
 
 
+def extract_pairs_from_rag_markup(rag_answer: str) -> List[Dict[str, Any]]:
+    """Extract paired control/RAG modification markers emitted by the new RAG prompt."""
+    controls: Dict[str, Dict[str, str]] = {}
+    rags: Dict[str, Dict[str, str]] = {}
+    for m in re.finditer(r"\[CONTROL_SECTION:\s*([^|\]\n]+)\s*\|\s*([^\]\n]+)\]\s*([\s\S]*?)\s*\[/CONTROL_SECTION\]", rag_answer or ""):
+        pid = m.group(1).strip()
+        controls[pid] = {"label": m.group(2).strip(), "text": m.group(3).strip()}
+    for tag, judgment in [("RAG_ELABORATED_SECTION", "worked_well"), ("RAG_OMITTED_SECTION", "needs_improvement")]:
+        pattern = rf"\[{tag}:\s*([^|\]\n]+)\s*\|\s*([^\]\n]+)\]\s*([\s\S]*?)\s*\[/{tag}\]"
+        for m in re.finditer(pattern, rag_answer or ""):
+            pid = m.group(1).strip()
+            rags[pid] = {"label": m.group(2).strip(), "text": m.group(3).strip(), "judgment": judgment}
+    pairs: List[Dict[str, Any]] = []
+    for pid, rag in rags.items():
+        ctrl = controls.get(pid, {})
+        pairs.append({
+            "pair_id": pid,
+            "judgment": rag.get("judgment", "linked"),
+            "rag_section_or_quote": rag.get("text", ""),
+            "control_section_or_quote": ctrl.get("text", ""),
+            "summary": f"{rag.get('label', '')}".strip(),
+            "related_strategy_block": "",
+        })
+    return pairs
+
+
 def build_paired_annotations(
     control_answer: str,
     rag_answer: str,
@@ -252,15 +349,16 @@ def build_paired_annotations(
     control_ann: Dict[int, List[Dict[str, str]]] = {}
     rag_ann: Dict[int, List[Dict[str, str]]] = {}
     pair_links: List[Dict[str, Any]] = []
-    if not evaluation:
-        return control_ann, rag_ann, pair_links
 
-    paired = evaluation.get("paired_section_links") if isinstance(evaluation.get("paired_section_links"), list) else []
+    # Prefer explicit paired tags emitted by the RAG proof itself. These should
+    # work even when there is no evaluation.jsonl file.
+    markup_pairs = extract_pairs_from_rag_markup(rag_answer)
+    paired = evaluation.get("paired_section_links") if evaluation and isinstance(evaluation.get("paired_section_links"), list) else []
 
     # Backward/robust fallback: derive pairs from worked/improvement sections.
     derived: List[Dict[str, Any]] = []
     for kind, key in [("worked_well", "rag_worked_sections"), ("needs_improvement", "rag_needs_improvement_sections")]:
-        for idx, item in enumerate(evaluation.get(key, []) or [], start=1):
+        for idx, item in enumerate((evaluation or {}).get(key, []) or [], start=1):
             if not isinstance(item, dict):
                 continue
             derived.append({
@@ -272,9 +370,9 @@ def build_paired_annotations(
                 "related_strategy_block": item.get("related_strategy_block", ""),
             })
 
-    pairs = paired or derived
+    pairs = markup_pairs or paired or derived
     details_by_pair: Dict[str, Dict[str, Any]] = {}
-    for item in (evaluation.get("rag_worked_sections", []) or []) + (evaluation.get("rag_needs_improvement_sections", []) or []):
+    for item in ((evaluation or {}).get("rag_worked_sections", []) or []) + ((evaluation or {}).get("rag_needs_improvement_sections", []) or []):
         if isinstance(item, dict) and item.get("pair_id"):
             details_by_pair[str(item.get("pair_id"))] = item
 
@@ -303,11 +401,12 @@ def build_paired_annotations(
             + (f'<div><strong>Comparison:</strong> {render_text(summary)}</div>' if summary else '')
             + '</div>'
         )
+        action = "elaborated in RAG" if judgment == "worked_well" else "compressed/omitted in RAG" if judgment == "needs_improvement" else "modified in RAG"
         control_note = (
             f'<div class="eval-note linked" data-pair="{escape(pair_id)}">'
-            '<div class="eval-note-title">Linked control section</div>'
-            + (f'<div><strong>RAG section:</strong> {render_text(rag_quote)}</div>' if rag_quote else '')
-            + (f'<div><strong>Comparison:</strong> {render_text(summary)}</div>' if summary else '')
+            f'<div class="eval-note-title">Original proof section {escape(action)}</div>'
+            + (f'<div><strong>RAG replacement/modification:</strong> {render_text(rag_quote)}</div>' if rag_quote else '')
+            + (f'<div><strong>Reason:</strong> {render_text(summary)}</div>' if summary else '')
             + '</div>'
         )
         rag_ann.setdefault(rag_idx, []).append({"pair_id": pair_id, "html": rag_note})
@@ -317,18 +416,8 @@ def build_paired_annotations(
 
 
 def render_answer_blocks(answer: str, *, linked_annotations: Optional[Dict[int, List[Dict[str, str]]]] = None) -> str:
-    blocks = split_answer_blocks(answer)
-    annotations = linked_annotations or {}
-    rendered: List[str] = []
-    for idx, block in enumerate(blocks):
-        notes = annotations.get(idx, [])
-        pair_ids = " ".join(str(n.get("pair_id", "")) for n in notes if n.get("pair_id"))
-        cls = "answer-block annotated linked-block" if notes else "answer-block"
-        data_attr = f' data-block-index="{idx}" data-pairs="{escape(pair_ids)}"' if pair_ids else f' data-block-index="{idx}"'
-        rendered.append(f'<div class="{cls}"{data_attr}>{render_text(block)}</div>')
-        for note in notes:
-            rendered.append(note.get("html", ""))
-    return "".join(rendered)
+    """Render exactly the raw model answer, without highlights or annotations."""
+    return f'<div class="answer-block raw-answer">{escape(str(answer or ""))}</div>'
 
 
 def render_evaluation_summary(evaluation: Optional[Dict[str, Any]]) -> str:
@@ -373,21 +462,91 @@ def output_meta(out: Optional[Dict[str, Any]]) -> str:
     return "".join(bits)
 
 
+def render_structured_proofs(rag: Dict[str, Any], case_index: int) -> tuple[str, str]:
+    """Use exact original offsets, never fuzzy quote matching, for the new pipeline."""
+    proof = str(rag.get("direct_draft") or "")
+    annotated = rag.get("annotated_control") or {}
+    highlights = annotated.get("highlights", [])
+    changes = sorted(rag.get("changes", []), key=lambda e: e["start"])
+    by_id = {e["id"]: e for e in changes}
+    decisions = {e["id"]: e for e in rag.get("node2_decisions", [])}
+    cursor, rebuilt = 0, []
+    for e in changes:
+        if not (cursor <= e["start"] < e["end"] <= len(proof)):
+            raise ValueError("Invalid or overlapping change offsets")
+        if proof[e["start"]:e["end"]] != e["quote"]:
+            raise ValueError("Change quote does not match the control proof")
+        rebuilt.extend([proof[cursor:e["start"]], e["replacement"]])
+        cursor = e["end"]
+    rebuilt.append(proof[cursor:])
+    if "".join(rebuilt) != rag.get("answer", ""):
+        raise ValueError("Stored changes do not reconstruct the revised proof")
+
+    def pane(revised):
+        spans = changes if revised else sorted(
+            highlights + [e for e in changes if e["stage"] == 3], key=lambda e: e["start"]
+        )
+        parts, cursor = [], 0
+        for span in spans:
+            start, end = span["start"], span["end"]
+            if not (cursor <= start < end <= len(proof)) or proof[start:end] != span["quote"]:
+                raise ValueError("Invalid highlight offsets")
+            parts.append(render_text(proof[cursor:start]))
+            pid = f"case{case_index}-" + re.sub(r"[^a-zA-Z0-9_-]", "_", str(span["id"]))
+            side, other = ("rag", "control") if revised else ("control", "rag")
+            edit = by_id.get(span["id"])
+            action = edit["action"] if edit else "keep"
+            text = span["replacement"] if revised else proof[start:end]
+            body = render_text(text) if text else '<span class="omission-line" aria-label="Passage omitted"></span>'
+            linked = ' linked-block' if edit else ''
+            pair_attr = f' data-pairs="{pid}"' if edit else ''
+            color = 'omitted' if revised and action in {'omit', 'compress'} else 'elaborated' if revised else 'control-ref'
+            parts.append(f'<span class="proof-highlight answer-block {color}{linked}" id="{pid}-{side}"{pair_attr}>{body}')
+            if edit:
+                label = {"elaborate": "Elaborated", "compress": "Compressed", "omit": "Omitted"}[action]
+                parts.append(f'<a class="pair-jump" href="#{pid}-{other}" aria-label="Go to corresponding {other} passage">{label} · {escape(span["id"])} ↔</a>')
+            parts.append('</span>')
+            if not revised and span.get("annotation"):
+                origin = 'Library strategy' if span.get('kind') == 'library' else 'Proposed new strategy'
+                decision = decisions.get(span['id'], {})
+                note = span['annotation']
+                if decision.get('reason'):
+                    note += ' ' + decision['reason']
+                parts.append('<span class="strategy-annotation"><strong>' + escape(origin + ': ' + span.get('strategy', ''))
+                             + '</strong><span>' + render_text(note) + '</span></span>')
+            elif revised and span.get('reason'):
+                parts.append('<span class="strategy-annotation">' + render_text(span['reason']) + '</span>')
+            cursor = end
+        parts.append(render_text(proof[cursor:]))
+        return '<div class="answer-block structured-answer">' + ''.join(parts) + '</div>'
+    return pane(False), pane(True)
+
+
 def render_pair(
     item: Dict[str, Any],
     idx: int,
     outputs_by_input: Dict[str, Dict[str, Dict[str, Any]]],
     evaluations_by_input: Dict[str, Dict[str, Any]],
+    cleaned_prompts_by_input: Dict[str, Dict[str, Any]],
 ) -> str:
     iid = input_id(item, idx)
     pair = outputs_by_input.get(iid, {})
     control = pair.get("control")
     rag = pair.get("library_rag")
-    prompt = prompt_text(item)
+    prompt = prompt_text(item, cleaned_prompts_by_input, idx)
     evaluation = evaluations_by_input.get(iid)
     control_answer = control.get("answer", "") if control else "[missing]"
     rag_answer = rag.get("answer", "") if rag else "[missing]"
-    control_annotations, rag_annotations, pair_links = build_paired_annotations(control_answer, rag_answer, evaluation)
+    structured = bool(rag and isinstance(rag.get("annotated_control"), dict) and "changes" in rag)
+    rendered = {}
+    if structured:
+        left, right = render_structured_proofs(rag, idx)
+        rendered = {"control": left, "rag": right}
+        if not control:
+            control = {**rag, "answer": rag["direct_draft"]}
+    control_annotations: Dict[int, List[Dict[str, str]]] = {}
+    rag_annotations: Dict[int, List[Dict[str, str]]] = {}
+    pair_links: List[Dict[str, Any]] = []
 
     def result_column(label: str, out: Optional[Dict[str, Any]], css_class: str, annotations: Dict[int, List[Dict[str, str]]]) -> str:
         answer = out.get("answer", "") if out else "[missing]"
@@ -398,15 +557,9 @@ def render_pair(
             <h3>{escape(label)}</h3>
             <button class="copy-btn" data-copy="{escape(answer)}">Copy raw</button>
           </div>
-          <div class="prompt-box">
-            <div class="small-title">Prompt</div>
-            <div class="prompt-text">{render_text(prompt)}</div>
-          </div>
           <div class="meta-row">{output_meta(out)}</div>
           {f'<div class="error-box">{escape(error)}</div>' if error else ''}
-          {render_evaluation_summary(evaluation) if label == 'Library-RAG' else ''}
-          {('<div class="nodes-box"><div class="small-title">Retrieved nodes</div>' + render_nodes(out.get('retrieved_nodes')) + '</div>') if label == 'Library-RAG' and out else ''}
-          <div class="answer-box">{render_answer_blocks(answer, linked_annotations=annotations)}</div>
+          <div class="answer-box">{rendered.get(css_class, render_answer_blocks(answer))}</div>
         </section>
         """
 
@@ -416,6 +569,11 @@ def render_pair(
         <h2>{idx}. {escape(input_title(item))}</h2>
         <div class="case-id"><code>{escape(iid)}</code></div>
       </div>
+      <div class="prompt-box global-prompt">
+        <div class="small-title">Prompt</div>
+        <div class="prompt-text">{render_text(prompt)}</div>
+      </div>
+      {('<div class="comparison-toolbar"><span>Blue: original strategy steps</span><span>Green: elaborated</span><span>Grey: compressed or omitted</span><label><input class="annotation-toggle" type="checkbox" checked> Strategy annotations</label></div>' if structured else '')}
       <div class="split" data-pair-links='{escape(json.dumps(pair_links, ensure_ascii=False))}'>
         <svg class="link-layer" aria-hidden="true"></svg>
         {result_column('Control', control, 'control', control_annotations)}
@@ -425,16 +583,23 @@ def render_pair(
     """
 
 
-def make_html(run_dir: Path, inputs: List[Dict[str, Any]], outputs: List[Dict[str, Any]], evaluations: List[Dict[str, Any]]) -> str:
+def make_html(
+    run_dir: Path,
+    inputs: List[Dict[str, Any]],
+    outputs: List[Dict[str, Any]],
+    evaluations: List[Dict[str, Any]],
+    cleaned_prompts: List[Dict[str, Any]],
+) -> str:
     grouped = group_outputs(outputs)
     evaluations_by_input = {str(e.get("input_id")): e for e in evaluations if e.get("input_id")}
+    cleaned_prompts_by_input = {str(e.get("input_id")): e for e in cleaned_prompts if e.get("input_id")}
     nav = []
     cases = []
     for idx, item in enumerate(inputs, start=1):
         iid = input_id(item, idx)
         title = input_title(item)
         nav.append(f"<a href='#case-{escape(iid)}'>{idx}. {escape(title)}</a>")
-        cases.append(render_pair(item, idx, grouped, evaluations_by_input))
+        cases.append(render_pair(item, idx, grouped, evaluations_by_input, cleaned_prompts_by_input))
 
     return f"""<!doctype html>
 <html lang="en">
@@ -467,9 +632,10 @@ def make_html(run_dir: Path, inputs: List[Dict[str, Any]], outputs: List[Dict[st
     .case-title h2 {{ margin:0; font-size:20px; }}
     .case-id {{ color:var(--muted); font-size:12px; }}
     .split {{ display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:start; position:relative; }}
-    .link-layer {{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:2; overflow:visible; }}
+    .link-layer {{ position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:4; overflow:visible; }}
     .link-layer path {{ stroke:#94a3b8; stroke-width:2; fill:none; opacity:.28; }}
     .link-layer path.active {{ stroke:#2563eb; stroke-width:4; opacity:.92; }}
+    .link-layer path.locked {{ stroke:#1d4ed8; stroke-width:5; opacity:1; }}
     .result-col {{ background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:13px; min-width:0; box-shadow:0 1px 5px rgba(15,23,42,.05); position:relative; z-index:3; }}
     .result-col.control {{ border-top:5px solid #6366f1; }}
     .result-col.rag {{ border-top:5px solid #06b6d4; }}
@@ -487,7 +653,9 @@ def make_html(run_dir: Path, inputs: List[Dict[str, Any]], outputs: List[Dict[st
     .answer-block {{ white-space:pre-wrap; margin:0 0 10px; padding:6px 0; }}
     .answer-block.annotated {{ background:#fffbeb; border-left:4px solid #f59e0b; padding:9px 10px; border-radius:8px; }}
     .answer-block.link-hover {{ outline:3px solid rgba(37,99,235,.35); background:#eff6ff; }}
+    .answer-block.link-locked {{ outline:4px solid rgba(37,99,235,.55); background:#dbeafe; }}
     .eval-note.link-hover {{ outline:2px solid rgba(37,99,235,.35); }}
+    .eval-note.link-locked {{ outline:3px solid rgba(37,99,235,.55); }}
     .eval-summary {{ border:1px solid #c7d2fe; background:#eef2ff; color:#312e81; border-radius:10px; padding:10px; margin:8px 0; }}
     .eval-overall {{ margin-top:6px; font-size:13px; line-height:1.45; }}
     .eval-note {{ white-space:normal; border-radius:10px; padding:10px; margin:-3px 0 12px 14px; font-size:13px; line-height:1.45; }}
@@ -500,10 +668,26 @@ def make_html(run_dir: Path, inputs: List[Dict[str, Any]], outputs: List[Dict[st
     pre {{ background:#0f172a; color:#e5e7eb; padding:10px; border-radius:9px; overflow:auto; }}
     .strategy-card {{ white-space:normal; margin:10px 0; padding:10px 12px; border-radius:12px; border:1px solid #bfdbfe; border-left:5px solid #2563eb; background:#eff6ff; color:#1e3a8a; }}
     .strategy-card.new {{ border-color:#fed7aa; border-left-color:#f97316; background:#fff7ed; color:#7c2d12; }}
+    .proof-highlight {{ white-space:pre-wrap; margin:6px 0; padding:4px 6px; border-radius:6px; border-left:4px solid transparent; }}
+    .proof-highlight.elaborated {{ background:#ecfdf5; border-left-color:#16a34a; }}
+    .proof-highlight.omitted {{ background:#f3f4f6; border-left-color:#6b7280; color:#374151; font-style:italic; }}
+    .proof-highlight.control-ref {{ background:#eff6ff; border-left-color:#2563eb; color:#1e3a8a; }}
     .strategy-card-title {{ font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.04em; margin-bottom:5px; }}
     .strategy-card-meta {{ font-size:12px; font-weight:800; margin-bottom:5px; }}
     .strategy-card-body {{ font-size:13px; line-height:1.45; }}
     .muted {{ color:var(--muted); }}
+    .comparison-toolbar {{ display:flex; flex-wrap:wrap; gap:14px; font-size:12px; color:#475569; margin:12px 0; align-items:center; }}
+    .comparison-toolbar label {{ margin-left:auto; cursor:pointer; }}
+    .structured-answer > .proof-highlight {{ display:block; margin:6px 0; font-style:normal; }}
+    .strategy-annotation {{ display:block; white-space:normal; font-size:12px; line-height:1.5; color:#475569; border-left:2px solid #cbd5e1; padding:6px 10px; margin:4px 0 12px; }}
+    .strategy-annotation strong, .strategy-annotation span {{ display:block; }}
+    .hide-annotations .strategy-annotation {{ display:none; }}
+    .pair-jump {{ display:block; width:fit-content; font:600 11px/1.5 -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; color:#1d4ed8; margin-top:6px; text-decoration:none; }}
+    .pair-jump:hover {{ text-decoration:underline; }}
+    .omission-line {{ display:block; height:14px; border-top:3px solid #9ca3af; margin:12px 0 0; }}
+    .linked-block {{ cursor:pointer; scroll-margin-top:110px; }}
+    .case {{ scroll-margin-top:95px; }}
+    mjx-container[display="true"] {{ overflow-x:auto; overflow-y:hidden; max-width:100%; }}
     @media (max-width: 980px) {{ .layout {{ grid-template-columns:1fr; }} nav {{ position:static; height:auto; border-right:0; border-bottom:1px solid var(--border); }} .split {{ grid-template-columns:1fr; }} }}
   </style>
 </head>
@@ -533,7 +717,7 @@ def make_html(run_dir: Path, inputs: List[Dict[str, Any]], outputs: List[Dict[st
     }});
 
     function pairsFor(el) {{
-      return (el.getAttribute('data-pairs') || '').split(/\s+/).filter(Boolean);
+      return (el.getAttribute('data-pairs') || '').split(/\\s+/).filter(Boolean);
     }}
 
     function drawLinksForSplit(split) {{
@@ -569,10 +753,38 @@ def make_html(run_dir: Path, inputs: List[Dict[str, Any]], outputs: List[Dict[st
       }}
     }}
 
+    let lockedPair = null;
+
+    function elementsForPair(pair) {{
+      return document.querySelectorAll(`[data-pairs~="${{CSS.escape(pair)}}"], [data-pair="${{CSS.escape(pair)}}"]`);
+    }}
+
     function setPairActive(pair, active) {{
-      document.querySelectorAll(`[data-pairs~="${{CSS.escape(pair)}}"], [data-pair="${{CSS.escape(pair)}}"]`).forEach(el => {{
+      if (lockedPair === pair && !active) return;
+      elementsForPair(pair).forEach(el => {{
         el.classList.toggle('link-hover', active);
         el.classList.toggle('active', active);
+      }});
+    }}
+
+    function clearLockedPair() {{
+      if (!lockedPair) return;
+      elementsForPair(lockedPair).forEach(el => {{
+        el.classList.remove('link-locked', 'locked', 'link-hover', 'active');
+      }});
+      lockedPair = null;
+    }}
+
+    function lockPair(pair) {{
+      if (!pair) return;
+      if (lockedPair === pair) {{
+        clearLockedPair();
+        return;
+      }}
+      clearLockedPair();
+      lockedPair = pair;
+      elementsForPair(pair).forEach(el => {{
+        el.classList.add('link-locked', 'locked', 'link-hover', 'active');
       }});
     }}
 
@@ -582,11 +794,37 @@ def make_html(run_dir: Path, inputs: List[Dict[str, Any]], outputs: List[Dict[st
         const getPairs = () => el.hasAttribute('data-pair') ? [el.getAttribute('data-pair')] : pairsFor(el);
         el.addEventListener('mouseenter', () => getPairs().forEach(pair => pair && setPairActive(pair, true)));
         el.addEventListener('mouseleave', () => getPairs().forEach(pair => pair && setPairActive(pair, false)));
+        el.addEventListener('click', (event) => {{
+          event.stopPropagation();
+          const pair = getPairs()[0];
+          if (pair) lockPair(pair);
+        }});
+      }});
+      document.addEventListener('click', () => clearLockedPair());
+      document.addEventListener('keydown', (event) => {{
+        if (event.key === 'Escape') clearLockedPair();
       }});
     }}
 
-    window.addEventListener('load', setupLinkedHover);
-    window.addEventListener('resize', () => document.querySelectorAll('.split').forEach(drawLinksForSplit));
+    document.querySelectorAll('.annotation-toggle').forEach(toggle => {{
+      toggle.addEventListener('change', () => {{
+        const article = toggle.closest('.case');
+        article.classList.toggle('hide-annotations', !toggle.checked);
+        article.querySelectorAll('.split').forEach(drawLinksForSplit);
+      }});
+    }});
+    window.addEventListener('load', () => {{
+      setupLinkedHover();
+      if (window.MathJax && MathJax.startup && MathJax.startup.promise) {{
+        MathJax.startup.promise.then(() => document.querySelectorAll('.split').forEach(drawLinksForSplit));
+      }}
+      const observer = new ResizeObserver(() => document.querySelectorAll('.split').forEach(drawLinksForSplit));
+      document.querySelectorAll('.result-col').forEach(el => observer.observe(el));
+    }});
+    window.addEventListener('resize', () => {{
+      document.querySelectorAll('.split').forEach(drawLinksForSplit);
+      if (lockedPair) elementsForPair(lockedPair).forEach(el => el.classList.add("link-locked", "locked", "active"));
+    }});
   </script>
 </body>
 </html>
@@ -606,6 +844,7 @@ def main() -> int:
     inputs_path = run_dir / "inputs.jsonl"
     outputs_path = run_dir / "outputs.jsonl"
     evaluations_path = run_dir / "evaluation.jsonl"
+    prompt_cleaning_path = run_dir / "prompt_cleaning.jsonl"
     if not inputs_path.exists():
         raise FileNotFoundError(f"Missing inputs.jsonl in {run_dir}")
     if not outputs_path.exists():
@@ -614,11 +853,13 @@ def main() -> int:
     inputs = read_jsonl(inputs_path)
     outputs = read_jsonl(outputs_path)
     evaluations = read_jsonl(evaluations_path)
+    cleaned_prompts = read_jsonl(prompt_cleaning_path)
     output_path = args.output or (run_dir / "comparison_viewer.html")
-    output_path.write_text(make_html(run_dir, inputs, outputs, evaluations), encoding="utf-8")
+    output_path.write_text(make_html(run_dir, inputs, outputs, evaluations, cleaned_prompts), encoding="utf-8")
     print(f"Read inputs: {len(inputs)}")
     print(f"Read outputs: {len(outputs)}")
     print(f"Read evaluations: {len(evaluations)}")
+    print(f"Read cleaned prompts: {len(cleaned_prompts)}")
     print(f"Wrote visualizer: {output_path}")
     print(f"Open with: open {output_path}")
     return 0

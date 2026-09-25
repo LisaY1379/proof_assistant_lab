@@ -197,19 +197,15 @@ def build_user_message(item: Dict[str, Any]) -> str:
     return "Can you prove this theorem? " + statement
 
 
-def call_condition(
+def _call_model_with_retry(
     *,
     agent: Any,
-    condition: str,
-    item: Dict[str, Any],
+    messages: List[Dict[str, str]],
     model: str,
     reasoning_effort: Optional[str],
     max_completion_tokens: int,
     temperature: float,
-    sleep_seconds: float,
-) -> Dict[str, Any]:
-    message = build_user_message(item)
-    messages, selected_nodes = agent.build_messages(condition, message, history=[])
+) -> tuple[str, float]:
     started = time.time()
     answer = agent.call_openai_chat(
         api_key=agent.os.environ.get("OPENAI_API_KEY", "").strip(),
@@ -234,9 +230,56 @@ def call_condition(
             reasoning_effort=reasoning_effort,
         )
         elapsed += time.time() - started_retry
+    return answer, elapsed
+
+
+def call_condition(
+    *,
+    agent: Any,
+    condition: str,
+    item: Dict[str, Any],
+    model: str,
+    reasoning_effort: Optional[str],
+    max_completion_tokens: int,
+    temperature: float,
+    sleep_seconds: float,
+    direct_draft: Optional[str] = None,
+) -> Dict[str, Any]:
+    message = build_user_message(item)
+    selected_nodes: List[Dict[str, Any]] = []
+    rag_direct_draft = direct_draft
+
+    annotated_control: Optional[str] = None
+    initial_revised: Optional[str] = None
+
+    pipeline = {}
+    elapsed = 0.0
+    def call_model(messages):
+        nonlocal elapsed
+        answer, duration = _call_model_with_retry(
+            agent=agent, messages=messages, model=model,
+            reasoning_effort=reasoning_effort,
+            max_completion_tokens=max_completion_tokens, temperature=temperature,
+        )
+        elapsed += duration
+        if not answer.strip():
+            raise RuntimeError("Empty model response after retry")
+        return answer
+
+    if condition == "library_rag":
+        if not rag_direct_draft:
+            rag_direct_draft = call_model(agent.build_control_messages(message, []))
+        pipeline = agent.run_library_pipeline(message, rag_direct_draft, call_model)
+        answer = pipeline["answer"]
+        annotated_control = pipeline["annotated_control"]
+        initial_revised = pipeline["initial_revised"]
+        selected_nodes = pipeline["retrieved_nodes"]
+    else:
+        answer = call_model(agent.build_control_messages(message, []))
     if sleep_seconds > 0:
         time.sleep(sleep_seconds)
     return {
+        **pipeline,
         "input_id": input_id(item),
         "dataset": input_dataset(item),
         "name": input_title(item),
@@ -247,6 +290,9 @@ def call_condition(
         "max_completion_tokens": max_completion_tokens,
         "created_at": now_iso(),
         "elapsed_seconds": round(elapsed, 3),
+        "direct_draft": rag_direct_draft if condition == "library_rag" else None,
+        "annotated_control": annotated_control,
+        "initial_revised": initial_revised,
         "answer": answer,
         "retrieved_nodes": [
             {
@@ -346,6 +392,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--inputs", type=Path, required=True, help="Input theorem/problem JSONL file.")
     parser.add_argument("--output-root", type=Path, default=DEFAULT_OUTPUT_ROOT)
     parser.add_argument("--run-name", default=None, help="Optional run directory name. Defaults to timestamp.")
+    parser.add_argument("--resume", action="store_true", help="Skip completed conditions in the named run; retry errors or empty answers.")
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--model", default=DEFAULT_MODEL)
     parser.add_argument("--reasoning-effort", choices=["none", "low", "medium", "high"], default=DEFAULT_REASONING_EFFORT)
@@ -354,7 +401,24 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--sleep", type=float, default=0.0)
     parser.add_argument("--conditions", nargs="+", choices=["control", "library_rag"], default=["control", "library_rag"])
     parser.add_argument("--dry-run", action="store_true")
-    return parser.parse_args()
+    args = parser.parse_args()
+    if args.resume and not args.run_name:
+        parser.error("--resume requires --run-name to identify the existing run")
+    return args
+
+
+def successful_output(out: Dict[str, Any]) -> bool:
+    return not out.get("error") and bool(str(out.get("answer") or "").strip())
+
+
+def select_checkpoints(rows: List[Dict[str, Any]]) -> Dict[tuple[str, str], Dict[str, Any]]:
+    selected = {}
+    for out in rows:
+        key = (str(out.get("input_id")), str(out.get("condition")))
+        # A later failed attempt must not erase an earlier successful result.
+        if key not in selected or successful_output(out) or not successful_output(selected[key]):
+            selected[key] = out
+    return selected
 
 
 def main() -> int:
@@ -366,13 +430,15 @@ def main() -> int:
         raise RuntimeError("OPENAI_API_KEY missing or placeholder. Set .env or export it before running.")
 
     inputs = read_jsonl(args.inputs)
+    inputs = [dict(item, id=input_id(item, i)) for i, item in enumerate(inputs, 1)]
+    if len({input_id(item) for item in inputs}) != len(inputs):
+        raise ValueError("Input IDs must be unique")
     if args.limit is not None:
         inputs = inputs[: args.limit]
     if not inputs:
         raise RuntimeError("No input records to process.")
 
     run_dir = args.output_root / (args.run_name or run_id())
-    run_dir.mkdir(parents=True, exist_ok=True)
     outputs_path = run_dir / "outputs.jsonl"
     report_md_path = run_dir / "report.md"
     report_html_path = run_dir / "report.html"
@@ -390,8 +456,26 @@ def main() -> int:
         "max_completion_tokens": args.max_completion_tokens,
         "strategy_graph": str(agent.GRAPH_PATH.relative_to(PROJECT_ROOT)) if agent.GRAPH_PATH.exists() else str(agent.GRAPH_PATH),
     }
-    write_json(metadata_path, metadata)
-    write_jsonl(inputs_copy_path, inputs)
+    checkpoints = {}
+    if outputs_path.exists():
+        if not args.resume:
+            raise RuntimeError("This run already has outputs. Use --resume or a new --run-name.")
+        checkpoints = select_checkpoints(read_jsonl(outputs_path))
+    if args.resume and metadata_path.exists():
+        previous = json.loads(metadata_path.read_text(encoding="utf-8"))
+        for key in ("model", "temperature", "reasoning_effort", "max_completion_tokens", "strategy_graph"):
+            if previous.get(key) != metadata.get(key):
+                raise ValueError(f"Cannot resume with changed {key}; use the original settings or a new run name")
+        metadata["created_at"] = previous.get("created_at", metadata["created_at"])
+        metadata["resumed_at"] = now_iso()
+    stored_inputs = read_jsonl(inputs_copy_path) if args.resume and inputs_copy_path.exists() else []
+    merged_inputs = {input_id(item, i): item for i, item in enumerate(stored_inputs, 1)}
+    for item in inputs:
+        iid = input_id(item)
+        if iid in merged_inputs and build_user_message(merged_inputs[iid]) != build_user_message(item):
+            raise ValueError(f"The prompt for {iid} changed; use a new run name")
+        merged_inputs[iid] = item
+    metadata["input_count"] = len(merged_inputs)
 
     print(f"Run directory: {run_dir}")
     print(f"Inputs: {len(inputs)}")
@@ -400,16 +484,29 @@ def main() -> int:
 
     if args.dry_run:
         print("Dry run: no API calls.")
-        for item in inputs[:5]:
-            print(f"- {input_id(item)}: {input_title(item)}")
+        for item in inputs:
+            for condition in sorted(set(args.conditions), key=lambda c: c != "control"):
+                done = successful_output(checkpoints.get((input_id(item), condition), {}))
+                print(f"- {input_id(item)} / {condition}: {'skip (completed)' if done else 'pending'}")
         return 0
 
     reasoning_effort = None if args.reasoning_effort == "none" else args.reasoning_effort
-    all_outputs: List[Dict[str, Any]] = []
+    write_json(metadata_path, metadata)
+    write_jsonl(inputs_copy_path, merged_inputs.values())
+    if args.resume and outputs_path.exists():
+        # Normalize duplicate attempts so reports/viewers see one result per condition.
+        write_jsonl(outputs_path, checkpoints.values())
 
     for idx, item in enumerate(inputs, start=1):
         print(f"[{idx}/{len(inputs)}] {input_id(item, idx)} — {input_title(item)}")
-        for condition in args.conditions:
+        iid = input_id(item)
+        previous_control = checkpoints.get((iid, "control"), {})
+        direct_draft_for_rag = str(previous_control["answer"]) if successful_output(previous_control) else None
+        for condition in sorted(set(args.conditions), key=lambda c: c != "control"):
+            key = (iid, condition)
+            if successful_output(checkpoints.get(key, {})):
+                print(f"  - {condition}: skipped (completed)", flush=True)
+                continue
             print(f"  - {condition}", flush=True)
             try:
                 out = call_condition(
@@ -421,6 +518,7 @@ def main() -> int:
                     max_completion_tokens=args.max_completion_tokens,
                     temperature=args.temperature,
                     sleep_seconds=args.sleep,
+                    direct_draft=direct_draft_for_rag,
                 )
             except Exception as exc:  # noqa: BLE001
                 out = {
@@ -438,11 +536,28 @@ def main() -> int:
                     "retrieved_nodes": [],
                 }
             append_jsonl(outputs_path, out)
-            all_outputs.append(out)
+            checkpoints[key] = out
+            if condition == "control" and out.get("answer"):
+                direct_draft_for_rag = str(out.get("answer") or "")
 
-    report_md = make_report_md(inputs, all_outputs, metadata)
+    all_outputs = list(checkpoints.values())
+    write_jsonl(outputs_path, all_outputs)
+    report_md = make_report_md(list(merged_inputs.values()), all_outputs, metadata)
     report_md_path.write_text(report_md, encoding="utf-8")
-    report_html_path.write_text(markdown_to_simple_html(report_md), encoding="utf-8")
+    # Both entry points use the same sidebar + side-by-side visualizer.
+    viewer_path = PROJECT_ROOT / "tools" / "visualize_control_vs_rag_results.py"
+    spec = importlib.util.spec_from_file_location("batch_results_viewer", viewer_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Could not load visualizer: {viewer_path}")
+    viewer = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(viewer)
+    report_html = viewer.make_html(
+        run_dir.resolve(), list(merged_inputs.values()), all_outputs,
+        viewer.read_jsonl(run_dir / "evaluation.jsonl"),
+        viewer.read_jsonl(run_dir / "prompt_cleaning.jsonl"),
+    )
+    report_html_path.write_text(report_html, encoding="utf-8")
+    (run_dir / "comparison_viewer.html").write_text(report_html, encoding="utf-8")
     print(f"Wrote outputs: {outputs_path}")
     print(f"Wrote Markdown report: {report_md_path}")
     print(f"Wrote HTML report: {report_html_path}")

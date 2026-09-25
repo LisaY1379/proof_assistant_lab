@@ -1,0 +1,686 @@
+<!doctype html>
+<html><head><meta charset='utf-8'><title>Control vs RAG Report</title>
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; line-height: 1.55; max-width: 1100px; margin: 32px auto; padding: 0 18px; color: #111827; }
+code { background: #f1f5f9; padding: 2px 4px; border-radius: 4px; }
+h1,h2,h3 { color: #1e3a8a; }
+</style></head><body><h1>Control vs Library-RAG Batch Experiment<br>
+<br>
+#<h1>Metadata<br>
+<br>
+- **created_at**: `2026-09-25T06:05:29.101853+00:00`<br>
+- **input_path**: `data/test/high_dimensional_probability/test_01/data.json`<br>
+- **input_count**: `1`<br>
+- **conditions**: `[&#x27;control&#x27;, &#x27;library_rag&#x27;]`<br>
+- **model**: `gpt-5.6-sol`<br>
+- **temperature**: `1.0`<br>
+- **reasoning_effort**: `high`<br>
+- **max_completion_tokens**: `4000`<br>
+- **strategy_graph**: `data/train/general/strategy_hierarchy.json`<br>
+<br>
+#<h1>theorem_6_2_2 — Theorem 6.2.2 (Hanson-Wright inequality)<br>
+<br>
+Dataset: `high_dimensional_probability`<br>
+<br>
+##<h1>Input statement<br>
+<br>
+Theorem 6.2.2 (Hanson-Wright inequality). Let A be an n × n matrix. Let X =<br>
+(X1 , . . . , Xn ) ∈ Rn be a random vector with independent, mean-zero, subgaussian<br>
+coordinates. Then, for every t ≥ 0, we have<br>
+                                               h             t2       t i<br>
+         P |X T AX − E X T AX| ≥ t ≤ 2 exp − c min<br>
+            <br>
+                                                                 2<br>
+                                                                   ,        ,<br>
+                                                          K 4 ∥A∥F K 2 ∥A∥<br>
+where K = maxi ∥Xi ∥ψ2 .<br>
+<br>
+Our<br>
+<br>
+##<h1>Task<br>
+<br>
+Explain the proof strategy and give a proof plan. Identify the main mathematical methods used.<br>
+<br>
+##<h1>Control output<br>
+<br>
+Let \(\|\cdot\|\) denote the operator norm. Throughout, \(c,C&gt;0\) denote universal constants whose values may change from line to line.<br>
+<br>
+We use the following standard consequences of subgaussianity:<br>
+<br>
+1. If \(Z_i\) are independent, mean-zero, and \(\|Z_i\|_{\psi_2}\le K\), then<br>
+   \[<br>
+   \mathbb E\exp\left(s\sum_i v_iZ_i\right)<br>
+   \le \exp\big(C s^2K^2\|v\|_2^2\big).<br>
+   \tag{1}<br>
+   \]<br>
+2. If \(\|Z\|_{\psi_2}\le K\), then<br>
+   \[<br>
+   \|Z^2-\mathbb EZ^2\|_{\psi_1}\le CK^2.<br>
+   \tag{2}<br>
+   \]<br>
+   Consequently, for independent centered subexponential \(Y_i\) with<br>
+   \(\|Y_i\|_{\psi_1}\le K^2\),<br>
+   \[<br>
+   \mathbb E\exp\left(\lambda\sum_i a_iY_i\right)<br>
+   \le \exp\left(C\lambda^2K^4\sum_i a_i^2\right)<br>
+   \tag{3}<br>
+   \]<br>
+   whenever<br>
+   \[<br>
+   |\lambda|\le \frac{c}{K^2\max_i|a_i|}.<br>
+   \]<br>
+<br>
+##<h1>1. Reduction to the symmetric case<br>
+<br>
+Set<br>
+\[<br>
+B=\frac{A+A^T}{2}.<br>
+\]<br>
+Then \(x^TAx=x^TBx\) for every \(x\), and<br>
+\[<br>
+\|B\|\le \|A\|,\qquad \|B\|_F\le \|A\|_F.<br>
+\]<br>
+Thus it suffices to prove the result when \(A\) is symmetric.<br>
+<br>
+Write<br>
+\[<br>
+X^TAX-\mathbb EX^TAX=D+S,<br>
+\]<br>
+where<br>
+\[<br>
+D=\sum_{i=1}^n a_{ii}\big(X_i^2-\mathbb EX_i^2\big),<br>
+\qquad<br>
+S=\sum_{i\ne j}a_{ij}X_iX_j.<br>
+\]<br>
+Independence and mean-zero imply \(\mathbb ES=0\).<br>
+<br>
+##<h1>2. The diagonal part<br>
+<br>
+By (2)–(3),<br>
+\[<br>
+\mathbb E e^{\lambda D}<br>
+\le<br>
+\exp\left(C\lambda^2K^4\sum_i a_{ii}^2\right)<br>
+\le<br>
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)<br>
+\tag{4}<br>
+\]<br>
+provided<br>
+\[<br>
+|\lambda|<br>
+\le \frac{c}{K^2\max_i|a_{ii}|}<br>
+\le \frac{c}{K^2\|A\|}.<br>
+\tag{5}<br>
+\]<br>
+<br>
+##<h1>3. The off-diagonal part<br>
+<br>
+We prove<br>
+\[<br>
+\mathbb E e^{\lambda S}<br>
+\le<br>
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)<br>
+\tag{6}<br>
+\]<br>
+whenever<br>
+\[<br>
+|\lambda|\le \frac{c}{K^2\|A\|}.<br>
+\tag{7}<br>
+\]<br>
+<br>
+Let \(\delta_1,\dots,\delta_n\) be independent Bernoulli random variables with<br>
+\(\mathbb P(\delta_i=1)=1/2\), independent of \(X\). Define<br>
+\[<br>
+S_\delta=\sum_{i,j}\delta_i(1-\delta_j)a_{ij}X_iX_j.<br>
+\]<br>
+Since \(\mathbb E_\delta[\delta_i(1-\delta_j)]=1/4\) for \(i\ne j\),<br>
+\[<br>
+S=4\mathbb E_\delta S_\delta.<br>
+\]<br>
+Convexity of the exponential gives<br>
+\[<br>
+\mathbb Ee^{\lambda S}<br>
+\le<br>
+\mathbb E_\delta\mathbb E_Xe^{4\lambda S_\delta}.<br>
+\tag{8}<br>
+\]<br>
+<br>
+Fix \(\delta\), and let<br>
+\[<br>
+\Lambda=\{i:\delta_i=1\}.<br>
+\]<br>
+Then<br>
+\[<br>
+S_\delta=X_\Lambda^TBX_{\Lambda^c},<br>
+\]<br>
+where \(B=A_{\Lambda,\Lambda^c}\) is the corresponding rectangular block.<br>
+<br>
+Conditioning on \(X_{\Lambda^c}\) and using (1),<br>
+\[<br>
+\mathbb E_{X_\Lambda}<br>
+ \exp\big(4\lambda X_\Lambda^TBX_{\Lambda^c}\big)<br>
+\le<br>
+\exp\left(C\lambda^2K^2\|BX_{\Lambda^c}\|_2^2\right).<br>
+\tag{9}<br>
+\]<br>
+<br>
+We next bound the expectation of the right-hand side. For \(\eta\ge0\) and a standard Gaussian vector \(g\),<br>
+\[<br>
+e^{\eta\|z\|_2^2}<br>
+=<br>
+\mathbb E_g e^{\sqrt{2\eta}\langle g,z\rangle}.<br>
+\]<br>
+Using this identity and then (1),<br>
+\[<br>
+\begin{aligned}<br>
+\mathbb E_Xe^{\eta\|BX\|_2^2}<br>
+&amp;=\mathbb E_g\mathbb E_X<br>
+   e^{\sqrt{2\eta}\langle B^Tg,X\rangle}\\<br>
+&amp;\le<br>
+\mathbb E_g<br>
+   e^{C\eta K^2\|B^Tg\|_2^2}.<br>
+\end{aligned}<br>
+\tag{10}<br>
+\]<br>
+<br>
+For any matrix \(B\), the Gaussian quadratic-form calculation gives<br>
+\[<br>
+\mathbb E_g e^{\theta\|B^Tg\|_2^2}<br>
+\le<br>
+\exp\big(C\theta\|B\|_F^2\big)<br>
+\tag{11}<br>
+\]<br>
+provided \(\theta\|B\|^2\le c\). Indeed, writing \(s_k\) for the singular values of \(B\), the left side equals<br>
+\[<br>
+\prod_k(1-2\theta s_k^2)^{-1/2}.<br>
+\]<br>
+<br>
+Taking \(\eta=C\lambda^2K^2\) in (10) therefore gives<br>
+\[<br>
+\mathbb E_X e^{C\lambda^2K^2\|BX\|_2^2}<br>
+\le<br>
+\exp\left(C\lambda^2K^4\|B\|_F^2\right)<br>
+\tag{12}<br>
+\]<br>
+provided<br>
+\[<br>
+|\lambda|\le \frac{c}{K^2\|B\|}.<br>
+\]<br>
+Since \(B=P_\Lambda AP_{\Lambda^c}\),<br>
+\[<br>
+\|B\|\le \|A\|,<br>
+\qquad<br>
+\|B\|_F\le \|A\|_F.<br>
+\]<br>
+Combining (8), (9), and (12) proves (6).<br>
+<br>
+##<h1>4. MGF of the full quadratic form<br>
+<br>
+Let<br>
+\[<br>
+Y=X^TAX-\mathbb EX^TAX=D+S.<br>
+\]<br>
+The variables \(D\) and \(S\) need not be independent, but Cauchy–Schwarz, together with (4) and (6), yields<br>
+\[<br>
+\begin{aligned}<br>
+\mathbb Ee^{\lambda Y}<br>
+&amp;\le<br>
+\big(\mathbb Ee^{2\lambda D}\big)^{1/2}<br>
+\big(\mathbb Ee^{2\lambda S}\big)^{1/2}\\<br>
+&amp;\le<br>
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)<br>
+\end{aligned}<br>
+\tag{13}<br>
+\]<br>
+whenever<br>
+\[<br>
+|\lambda|\le \frac{c}{K^2\|A\|}.<br>
+\tag{14}<br>
+\]<br>
+<br>
+For \(0\le\lambda\le c/(K^2\|A\|)\), Chernoff’s bound gives<br>
+\[<br>
+\mathbb P(Y\ge t)<br>
+\le<br>
+\exp\left(<br>
+-\lambda t+C\lambda^2K^4\|A\|_F^2<br>
+\right).<br>
+\]<br>
+Optimizing over the permitted \(\lambda\), namely taking \(\lambda\) comparable to<br>
+\[<br>
+\min\left\{<br>
+\frac{t}{K^4\|A\|_F^2},<br>
+\frac{1}{K^2\|A\|}<br>
+\right\},<br>
+\]<br>
+gives<br>
+\[<br>
+\mathbb P(Y\ge t)<br>
+\le<br>
+\exp\left[<br>
+-c\min\left(<br>
+\frac{t^2}{K^4\|A\|_F^2},<br>
+\frac{t}{K^2\|A\|}<br>
+\right)<br>
+\right].<br>
+\]<br>
+Applying the same argument to \(-Y\) and taking a union bound proves<br>
+\[<br>
+\boxed{<br>
+\mathbb P\left(<br>
+\left|X^TAX-\mathbb EX^TAX\right|\ge t<br>
+\right)<br>
+\le<br>
+2\exp\left[<br>
+-c\min\left(<br>
+\frac{t^2}{K^4\|A\|_F^2},<br>
+\frac{t}{K^2\|A\|}<br>
+\right)<br>
+\right].<br>
+}<br>
+\]<br>
+<br>
+This is the Hanson–Wright inequality.<br>
+<br>
+##<h1>Library-RAG output<br>
+<br>
+Let \(\|\cdot\|\) denote the operator norm. Throughout, \(c,C&gt;0\) denote universal constants whose values may change from line to line.<br>
+<br>
+We use the following standard consequences of subgaussianity:<br>
+<br>
+1. If \(Z_i\) are independent, mean-zero, and \(\|Z_i\|_{\psi_2}\le K\), then<br>
+   \[<br>
+   \mathbb E\exp\left(s\sum_i v_iZ_i\right)<br>
+   \le \exp\big(C s^2K^2\|v\|_2^2\big).<br>
+   \tag{1}<br>
+   \]<br>
+Annotation: This linear-form MGF bound follows by factoring the exponential moment across independent coordinates.<br>
+<br>
+2. If \(\|Z\|_{\psi_2}\le K\), then<br>
+   \[<br>
+   \|Z^2-\mathbb EZ^2\|_{\psi_1}\le CK^2.<br>
+   \tag{2}<br>
+   \]<br>
+   Consequently, for independent centered subexponential \(Y_i\) with<br>
+   \(\|Y_i\|_{\psi_1}\le K^2\),<br>
+   \[<br>
+   \mathbb E\exp\left(\lambda\sum_i a_iY_i\right)<br>
+   \le \exp\left(C\lambda^2K^4\sum_i a_i^2\right)<br>
+   \tag{3}<br>
+   \]<br>
+   whenever<br>
+   \[<br>
+   |\lambda|\le \frac{c}{K^2\max_i|a_i|}.<br>
+   \]<br>
+Annotation: This passage converts subgaussian control into a local exponential-moment bound for weighted subexponential sums.<br>
+<br>
+##<h1>1. Reduction to the symmetric case<br>
+<br>
+Set<br>
+\[<br>
+B=\frac{A+A^T}{2}.<br>
+\]<br>
+Then \(x^TAx=x^TBx\) for every \(x\), and<br>
+\[<br>
+\|B\|\le \|A\|,\qquad \|B\|_F\le \|A\|_F.<br>
+\]<br>
+Thus it suffices to prove the result when \(A\) is symmetric.<br>
+Annotation: The quadratic form is canonically rewritten using the symmetric part of \(A\) while preserving the required norm bounds.<br>
+<br>
+Write<br>
+\[<br>
+X^TAX-\mathbb EX^TAX=D+S,<br>
+\]<br>
+where<br>
+\[<br>
+D=\sum_{i=1}^n a_{ii}\big(X_i^2-\mathbb EX_i^2\big),<br>
+\qquad<br>
+S=\sum_{i\ne j}a_{ij}X_iX_j.<br>
+\]<br>
+Independence and mean-zero imply \(\mathbb ES=0\).<br>
+Annotation: This critical decomposition separates the directly subexponential diagonal terms from the dependent bilinear terms, a strategy absent from the retrieved library.<br>
+<br>
+##<h1>2. The diagonal part<br>
+<br>
+[CONTROL_SECTION: p1 | diagonal MGF parameter range]<br>
+By (2)–(3),<br>
+\[<br>
+\mathbb E e^{\lambda D}<br>
+\le<br>
+\exp\left(C\lambda^2K^4\sum_i a_{ii}^2\right)<br>
+\le<br>
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)<br>
+\tag{4}<br>
+\]<br>
+provided<br>
+\[<br>
+|\lambda|<br>
+\le \frac{c}{K^2\max_i|a_{ii}|}<br>
+\le \frac{c}{K^2\|A\|}.<br>
+\tag{5}<br>
+\]<br>
+Annotation: The diagonal contribution is controlled by applying the weighted subexponential MGF bound in its permitted parameter range.<br>
+[/CONTROL_SECTION]<br>
+[RAG_OMITTED_SECTION: p1 | diagonal MGF parameter range]<br>
+By (2)–(3),<br>
+\[<br>
+\mathbb E e^{\lambda D}<br>
+\le<br>
+\exp\left(C\lambda^2K^4\sum_i a_{ii}^2\right)<br>
+\le<br>
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)<br>
+\tag{4}<br>
+\]<br>
+whenever<br>
+\[<br>
+|\lambda|\le \frac{c}{K^2\max_i|a_{ii}|}.<br>
+\]<br>
+Since \(\max_i|a_{ii}|\le \|A\|\), it is sufficient to impose the smaller range<br>
+\[<br>
+|\lambda|\le \frac{c}{K^2\|A\|}.<br>
+\tag{5}<br>
+\]<br>
+[/RAG_OMITTED_SECTION]<br>
+<br>
+##<h1>3. The off-diagonal part<br>
+<br>
+We prove<br>
+\[<br>
+\mathbb E e^{\lambda S}<br>
+\le<br>
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)<br>
+\tag{6}<br>
+\]<br>
+whenever<br>
+\[<br>
+|\lambda|\le \frac{c}{K^2\|A\|}.<br>
+\tag{7}<br>
+\]<br>
+<br>
+[CONTROL_SECTION: p2 | Random-partition decoupling of off-diagonal interactions]<br>
+Let \(\delta_1,\dots,\delta_n\) be independent Bernoulli random variables with<br>
+\(\mathbb P(\delta_i=1)=1/2\), independent of \(X\). Define<br>
+\[<br>
+S_\delta=\sum_{i,j}\delta_i(1-\delta_j)a_{ij}X_iX_j.<br>
+\]<br>
+Since \(\mathbb E_\delta[\delta_i(1-\delta_j)]=1/4\) for \(i\ne j\),<br>
+\[<br>
+S=4\mathbb E_\delta S_\delta.<br>
+\]<br>
+Annotation: The random cut converts the coupled off-diagonal quadratic form into an average of bilinear forms on disjoint coordinate sets, a critical decoupling strategy absent from the library.<br>
+[/CONTROL_SECTION]<br>
+[RAG_ELABORATED_SECTION: p2 | Random-partition decoupling of off-diagonal interactions]<br>
+Let \(\delta_1,\dots,\delta_n\) be independent Bernoulli random variables with<br>
+\(\mathbb P(\delta_i=1)=1/2\), independent of \(X\). Define<br>
+\[<br>
+S_\delta=\sum_{i,j}\delta_i(1-\delta_j)a_{ij}X_iX_j.<br>
+\]<br>
+For \(i=j\), \(\delta_i(1-\delta_i)=0\), while for \(i\ne j\), independence gives<br>
+\[<br>
+\mathbb E_\delta\big[\delta_i(1-\delta_j)\big]<br>
+=\mathbb E\delta_i\,\mathbb E(1-\delta_j)=\frac14.<br>
+\]<br>
+Therefore, pointwise in \(X\),<br>
+\[<br>
+\mathbb E_\delta S_\delta<br>
+=\frac14\sum_{i\ne j}a_{ij}X_iX_j<br>
+=\frac14S,<br>
+\]<br>
+and hence<br>
+\[<br>
+S=4\mathbb E_\delta S_\delta.<br>
+\]<br>
+For each fixed realization of \(\delta\), the two coordinate sets selected by<br>
+\(\delta_i=1\) and \(\delta_j=0\) are disjoint; the corresponding subvectors of<br>
+\(X\) are therefore independent.<br>
+[/RAG_ELABORATED_SECTION]<br>
+<br>
+Convexity of the exponential gives<br>
+\[<br>
+\mathbb Ee^{\lambda S}<br>
+\le<br>
+\mathbb E_\delta\mathbb E_Xe^{4\lambda S_\delta}.<br>
+\tag{8}<br>
+\]<br>
+Annotation: Jensen’s inequality moves the random-partition average outside the convex exponential.<br>
+<br>
+Fix \(\delta\), and let<br>
+\[<br>
+\Lambda=\{i:\delta_i=1\}.<br>
+\]<br>
+Then<br>
+\[<br>
+S_\delta=X_\Lambda^TBX_{\Lambda^c},<br>
+\]<br>
+where \(B=A_{\Lambda,\Lambda^c}\) is the corresponding rectangular block.<br>
+<br>
+Conditioning on \(X_{\Lambda^c}\) and using (1),<br>
+\[<br>
+\mathbb E_{X_\Lambda}<br>
+ \exp\big(4\lambda X_\Lambda^TBX_{\Lambda^c}\big)<br>
+\le<br>
+\exp\left(C\lambda^2K^2\|BX_{\Lambda^c}\|_2^2\right).<br>
+\tag{9}<br>
+\]<br>
+Annotation: Conditioning isolates an independent coordinate block so that the tensorized subgaussian linear-form MGF bound applies.<br>
+<br>
+[CONTROL_SECTION: p2 | Gaussian linearization of a squared Euclidean norm]<br>
+We next bound the expectation of the right-hand side. For \(\eta\ge0\) and a standard Gaussian vector \(g\),<br>
+\[<br>
+e^{\eta\|z\|_2^2}<br>
+=<br>
+\mathbb E_g e^{\sqrt{2\eta}\langle g,z\rangle}.<br>
+\]<br>
+Using this identity and then (1),<br>
+\[<br>
+\begin{aligned}<br>
+\mathbb E_Xe^{\eta\|BX\|_2^2}<br>
+&amp;=\mathbb E_g\mathbb E_X<br>
+   e^{\sqrt{2\eta}\langle B^Tg,X\rangle}\\<br>
+&amp;\le<br>
+\mathbb E_g<br>
+   e^{C\eta K^2\|B^Tg\|_2^2}.<br>
+\end{aligned}<br>
+\tag{10}<br>
+\]<br>
+Annotation: The auxiliary Gaussian identity linearizes the squared norm and is the critical bridge to a tractable Gaussian quadratic MGF, but it is absent from the library.<br>
+[/CONTROL_SECTION]<br>
+[RAG_ELABORATED_SECTION: p2 | Gaussian linearization of a squared Euclidean norm]<br>
+We next bound the expectation of the right-hand side. Let \(g\) be a standard Gaussian vector of the appropriate dimension, independent of \(X\). For each fixed \(z\),<br>
+\[<br>
+\langle g,z\rangle\sim N(0,\|z\|_2^2),<br>
+\]<br>
+so the Gaussian MGF formula gives, for \(\eta\ge0\),<br>
+\[<br>
+\mathbb E_g e^{\sqrt{2\eta}\langle g,z\rangle}<br>
+=<br>
+\exp\left(\frac{2\eta}{2}\|z\|_2^2\right)<br>
+=e^{\eta\|z\|_2^2}.<br>
+\]<br>
+Applying this identity with \(z=BX\), and then using Tonelli’s theorem and the<br>
+linear-form estimate (1) conditionally on \(g\), yields<br>
+\[<br>
+\begin{aligned}<br>
+\mathbb E_Xe^{\eta\|BX\|_2^2}<br>
+&amp;=\mathbb E_X\mathbb E_g<br>
+   e^{\sqrt{2\eta}\langle g,BX\rangle}\\<br>
+&amp;=\mathbb E_g\mathbb E_X<br>
+   e^{\sqrt{2\eta}\langle B^Tg,X\rangle}\\<br>
+&amp;\le<br>
+\mathbb E_g<br>
+   e^{C\eta K^2\|B^Tg\|_2^2}.<br>
+\end{aligned}<br>
+\tag{10}<br>
+\]<br>
+[/RAG_ELABORATED_SECTION]<br>
+<br>
+[CONTROL_SECTION: p2 | Singular-value evaluation of a Gaussian quadratic MGF]<br>
+For any matrix \(B\), the Gaussian quadratic-form calculation gives<br>
+\[<br>
+\mathbb E_g e^{\theta\|B^Tg\|_2^2}<br>
+\le<br>
+\exp\big(C\theta\|B\|_F^2\big)<br>
+\tag{11}<br>
+\]<br>
+provided \(\theta\|B\|^2\le c\). Indeed, writing \(s_k\) for the singular values of \(B\), the left side equals<br>
+\[<br>
+\prod_k(1-2\theta s_k^2)^{-1/2}.<br>
+\]<br>
+Annotation: Diagonalizing through singular values supplies both the Frobenius-norm exponent and operator-norm admissibility condition, a specialized strategy not represented in the library.<br>
+[/CONTROL_SECTION]<br>
+[RAG_ELABORATED_SECTION: p2 | Singular-value evaluation of a Gaussian quadratic MGF]<br>
+For any matrix \(B\) and \(\theta\ge0\), let \(s_k\) denote the singular values of<br>
+\(B\). By the singular value decomposition and rotational invariance of the<br>
+standard Gaussian distribution,<br>
+\[<br>
+\|B^Tg\|_2^2\stackrel{d}{=}\sum_k s_k^2g_k^2,<br>
+\]<br>
+where the \(g_k\) are independent \(N(0,1)\) variables. Thus, provided<br>
+\(2\theta s_k^2&lt;1\) for every \(k\),<br>
+\[<br>
+\mathbb E_g e^{\theta\|B^Tg\|_2^2}<br>
+=<br>
+\prod_k\mathbb E e^{\theta s_k^2g_k^2}<br>
+=<br>
+\prod_k(1-2\theta s_k^2)^{-1/2}.<br>
+\]<br>
+If \(\theta\|B\|^2\le c\) for a sufficiently small universal \(c\), then<br>
+\(2\theta s_k^2\le 1/2\). Using<br>
+\(-\log(1-u)\le Cu\) for \(0\le u\le1/2\), we obtain<br>
+\[<br>
+\begin{aligned}<br>
+\log\mathbb E_g e^{\theta\|B^Tg\|_2^2}<br>
+&amp;=-\frac12\sum_k\log(1-2\theta s_k^2)\\<br>
+&amp;\le C\theta\sum_k s_k^2<br>
+=C\theta\|B\|_F^2.<br>
+\end{aligned}<br>
+\]<br>
+Exponentiating gives<br>
+\[<br>
+\mathbb E_g e^{\theta\|B^Tg\|_2^2}<br>
+\le<br>
+\exp\big(C\theta\|B\|_F^2\big).<br>
+\tag{11}<br>
+\]<br>
+[/RAG_ELABORATED_SECTION]<br>
+<br>
+[CONTROL_SECTION: u1 | routine norm and parameter check]<br>
+Taking \(\eta=C\lambda^2K^2\) in (10) therefore gives<br>
+\[<br>
+\mathbb E_X e^{C\lambda^2K^2\|BX\|_2^2}<br>
+\le<br>
+\exp\left(C\lambda^2K^4\|B\|_F^2\right)<br>
+\tag{12}<br>
+\]<br>
+provided<br>
+\[<br>
+|\lambda|\le \frac{c}{K^2\|B\|}.<br>
+\]<br>
+Since \(B=P_\Lambda AP_{\Lambda^c}\),<br>
+\[<br>
+\|B\|\le \|A\|,<br>
+\qquad<br>
+\|B\|_F\le \|A\|_F.<br>
+\]<br>
+Combining (8), (9), and (12) proves (6).<br>
+[/CONTROL_SECTION]<br>
+[RAG_OMITTED_SECTION: u1 | routine norm and parameter check]<br>
+Applying (10)–(11) with \(\eta=C\lambda^2K^2\), and using<br>
+\(\|A_{\Lambda,\Lambda^c}\|\le\|A\|\) and<br>
+\(\|A_{\Lambda,\Lambda^c}\|_F\le\|A\|_F\), gives<br>
+\[<br>
+\mathbb E_X e^{C\lambda^2K^2\|BX\|_2^2}<br>
+\le<br>
+\exp\left(C\lambda^2K^4\|B\|_F^2\right)<br>
+\tag{12}<br>
+\]<br>
+uniformly for \(|\lambda|\le c/(K^2\|A\|)\). Together with (8)–(9), this proves (6).<br>
+[/RAG_OMITTED_SECTION]<br>
+<br>
+##<h1>4. MGF of the full quadratic form<br>
+<br>
+Let<br>
+\[<br>
+Y=X^TAX-\mathbb EX^TAX=D+S.<br>
+\]<br>
+The variables \(D\) and \(S\) need not be independent, but Cauchy–Schwarz, together with (4) and (6), yields<br>
+\[<br>
+\begin{aligned}<br>
+\mathbb Ee^{\lambda Y}<br>
+&amp;\le<br>
+\big(\mathbb Ee^{2\lambda D}\big)^{1/2}<br>
+\big(\mathbb Ee^{2\lambda S}\big)^{1/2}\\<br>
+&amp;\le<br>
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)<br>
+\end{aligned}<br>
+\tag{13}<br>
+\]<br>
+whenever<br>
+\[<br>
+|\lambda|\le \frac{c}{K^2\|A\|}.<br>
+\tag{14}<br>
+\]<br>
+Annotation: Cauchy–Schwarz combines the two component MGF estimates without requiring independence and produces an MGF bound for the full form.<br>
+<br>
+For \(0\le\lambda\le c/(K^2\|A\|)\), Chernoff’s bound gives<br>
+\[<br>
+\mathbb P(Y\ge t)<br>
+\le<br>
+\exp\left(<br>
+-\lambda t+C\lambda^2K^4\|A\|_F^2<br>
+\right).<br>
+\]<br>
+Optimizing over the permitted \(\lambda\), namely taking \(\lambda\) comparable to<br>
+\[<br>
+\min\left\{<br>
+\frac{t}{K^4\|A\|_F^2},<br>
+\frac{1}{K^2\|A\|}<br>
+\right\},<br>
+\]<br>
+gives<br>
+\[<br>
+\mathbb P(Y\ge t)<br>
+\le<br>
+\exp\left[<br>
+-c\min\left(<br>
+\frac{t^2}{K^4\|A\|_F^2},<br>
+\frac{t}{K^2\|A\|}<br>
+\right)<br>
+\right].<br>
+\]<br>
+Annotation: Exponential Markov inequality followed by optimization of the MGF parameter yields the two-regime upper-tail bound.<br>
+<br>
+Applying the same argument to \(-Y\) and taking a union bound proves<br>
+\[<br>
+\boxed{<br>
+\mathbb P\left(<br>
+\left|X^TAX-\mathbb EX^TAX\right|\ge t<br>
+\right)<br>
+\le<br>
+2\exp\left[<br>
+-c\min\left(<br>
+\frac{t^2}{K^4\|A\|_F^2},<br>
+\frac{t}{K^2\|A\|}<br>
+\right)<br>
+\right].<br>
+}<br>
+\]<br>
+Annotation: A union bound combines the upper and lower one-sided estimates into the stated two-sided inequality.<br>
+<br>
+This is the Hanson–Wright inequality.<br>
+<br>
+##<h1>Retrieved strategy nodes<br>
+<br>
+- `sub_independence_tensorization` — **Independence, tensorization, and union bounds**: Factor quantities using independence, tensorize information, and upgrade pointwise bounds to simultaneous bounds by a union bound.<br>
+- `family_standard_theorem_reduction` — **Reduction to a standard theorem**: Modify domains and regularity hypotheses so that a known theorem applies directly.<br>
+- `sub_exponential_concentration` — **Exponential-moment and concentration arguments**: Apply exponential Markov inequalities, control moment-generating functions, and optimize parameters to derive tail bounds.<br>
+- `sub_convexity_variational` — **Convexity and variational arguments**: Use Jensen&#x27;s inequality, convex combinations, first-order optimality, or comparison with feasible competitors.<br>
+- `sub_covering_volumetric` — **Covering-net and volumetric arguments**: Replace continuous suprema by maxima over finite epsilon-nets and bound net sizes through packing and volume comparison.<br>
+- `sub_partition_refinement` — **Partition and refinement arguments**: Control meshes and subintervals, construct common refinements, and decompose coarse partitions into fine pieces.<br>
+- `sub_testing_information` — **Testing and information-theoretic reductions**: Reduce estimation to hypothesis testing and control testing error using divergence or mutual-information inequalities.<br>
+- `sub_canonical_rewriting` — **Canonical rewriting**: Rewrite abstract distances, norms, slopes, interval interiors, and formal-series expressions in concrete canonical forms.<br>
+- `sub_riemann_modulus_control` — **Modulus-of-continuity control of Riemann sums**: Control tag changes using a modulus of continuity and sum local errors to prove convergence and partition independence.<br>
+- `family_probability_information` — **Probability, concentration, and information methods**: Probabilistic proof methods based on exponential moments, tails, independence, union bounds, and information-theoretic reductions.<br>
+<br>
+---<br>
+</body></html>
