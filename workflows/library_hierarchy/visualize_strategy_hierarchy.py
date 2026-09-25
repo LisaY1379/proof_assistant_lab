@@ -138,7 +138,7 @@ def edge_color(relation: str) -> str:
     return "#64748b"
 
 
-def render_html(graph: Dict[str, Any], output: Path) -> None:
+def render_html(graph: Dict[str, Any], output: Path, *, proof_references=None, proof_graphs=None) -> None:
     metadata = graph.get("metadata", {}) if isinstance(graph.get("metadata"), dict) else {}
     nodes = [n for n in graph.get("nodes", []) if isinstance(n, dict)]
     edges = [e for e in graph.get("edges", []) if isinstance(e, dict)]
@@ -342,6 +342,10 @@ def render_html(graph: Dict[str, Any], output: Path) -> None:
 </body>
 </html>
 '''
+    if proof_references:
+        payload = json.dumps({"proofs": proof_references, "graphs": proof_graphs or {}}, ensure_ascii=False).replace("<", "\\u003c").replace("&", "\\u0026")
+        script = Path(__file__).with_name("proof_reference.js").read_text(encoding="utf-8")
+        page = page.replace("</body>", '<script id="proof-reference-data" type="application/json">' + payload + '</script><script>' + script + '</script></body>')
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(page, encoding="utf-8")
 

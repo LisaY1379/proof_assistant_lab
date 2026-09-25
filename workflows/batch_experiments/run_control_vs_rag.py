@@ -551,6 +551,7 @@ def main() -> int:
         raise RuntimeError(f"Could not load visualizer: {viewer_path}")
     viewer = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(viewer)
+    viewer.write_graph_reference_page(all_outputs, run_dir / "strategy_hierarchy_graph.html")
     report_html = viewer.make_html(
         run_dir.resolve(), list(merged_inputs.values()), all_outputs,
         viewer.read_jsonl(run_dir / "evaluation.jsonl"),

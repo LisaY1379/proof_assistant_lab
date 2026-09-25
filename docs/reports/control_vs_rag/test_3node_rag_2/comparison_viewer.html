@@ -73,6 +73,7 @@
     .strategy-card-meta { font-size:12px; font-weight:800; margin-bottom:5px; }
     .strategy-card-body { font-size:13px; line-height:1.45; }
     .muted { color:var(--muted); }
+    .graph-reference { display:inline-block; margin-top:10px; padding:7px 12px; border-radius:8px; background:#e0e7ff; color:#3730a3; font-size:13px; font-weight:700; text-decoration:none; }
     .comparison-toolbar { display:flex; flex-wrap:wrap; gap:14px; font-size:12px; color:#475569; margin:12px 0; align-items:center; }
     .comparison-toolbar label { margin-left:auto; cursor:pointer; }
     .structured-answer > .proof-highlight { display:block; margin:6px 0; font-style:normal; }
@@ -111,6 +112,7 @@ Theorem 6.2.2 (Hanson–Wright inequality). Let \(A\) be an \(n\times n\) matrix
 \le 2\exp\!\left[-c\min\!\left\{\frac{t^2}{K^4\lVert A\rVert_F^2},\frac{t}{K^2\lVert A\rVert}\right\}\right],
 \]
 where \(K=\max_i\lVert X_i\rVert_{\psi_2}\).</div>
+        <a class="graph-reference" href="strategy_hierarchy_graph.html#proof=theorem_6_2_2" target="_blank" rel="noopener">Graph reference ↗</a>
       </div>
       <div class="comparison-toolbar"><span>Blue: original strategy steps</span><span>Green: elaborated</span><span>Grey: compressed or omitted</span><label><input class="annotation-toggle" type="checkbox" checked> Strategy annotations</label></div>
       <div class="split" data-pair-links='[]'>
@@ -401,7 +403,7 @@ since \(x^TAx=x^TA_sx\). Moreover,
 \qquad
 \|A_s\|_F\le \|A\|_F.
 \]
-Thus we assume from now on that \(A\) is symmetric.</span><span class="strategy-annotation"><strong>Library strategy: Symmetric-part reduction</strong><span>Uses invariance of the quadratic form and norm domination to reduce to the canonical symmetric case. The reduction is concise, correct, and preserves both norm scales in the theorem.</span></span>
+Thus we assume from now on that \(A\) is symmetric.</span><span class="strategy-annotation"><strong>Library strategy: Normalization, invariance, and symmetry</strong><span>Uses invariance of the quadratic form and norm domination to reduce to the canonical symmetric case. The reduction is concise, correct, and preserves both norm scales in the theorem.</span></span>
 
 <span class="proof-highlight answer-block control-ref" id="case1-p2-control">Write
 \[
@@ -414,7 +416,7 @@ D=\sum_i a_{ii}(X_i^2-\mathbb EX_i^2),
 Z=\sum_{i\ne j}a_{ij}X_iX_j.
 \]
 Here we used independence and mean zero to get
-\(\mathbb EX_iX_j=0\) for \(i\ne j\).</span><span class="strategy-annotation"><strong>Library strategy: Diagonal/off-diagonal decomposition</strong><span>Splits the centered quadratic form into components requiring different concentration arguments. This essential decomposition clearly identifies the two terms requiring different MGF arguments.</span></span>
+\(\mathbb EX_iX_j=0\) for \(i\ne j\).</span><span class="strategy-annotation"><strong>Library strategy: Error decomposition and balancing</strong><span>Splits the centered quadratic form into components requiring different concentration arguments. This essential decomposition clearly identifies the two terms requiring different MGF arguments.</span></span>
 
 ### 1. The diagonal part
 
@@ -434,7 +436,7 @@ we obtain
 for
 \[
 |\lambda|\le \frac{c}{K^2\|A\|}.
-\]</span><span class="strategy-annotation"><strong>Library strategy: Bernstein MGF control</strong><span>Applies exponential-moment concentration for independent centered subexponential squares to handle the diagonal term. The Bernstein MGF application and the required Frobenius and operator norm estimates are already concise.</span></span>
+\]</span><span class="strategy-annotation"><strong>Library strategy: Exponential-moment and concentration arguments</strong><span>Applies exponential-moment concentration for independent centered subexponential squares to handle the diagonal term. The Bernstein MGF application and the required Frobenius and operator norm estimates are already concise.</span></span>
 
 ### 2. The off-diagonal part
 
@@ -462,7 +464,7 @@ Z=4\mathbb E_\delta Z_\delta.
 \le
 \mathbb E_\delta\mathbb E_X e^{4\lambda Z_\delta}.
 \tag{4}
-\]</span><span class="strategy-annotation"><strong>Library strategy: Jensen transfer to decoupled MGFs</strong><span>Uses convexity of the exponential to pass from the averaged decoupling identity to an average of tractable exponential moments. This is the exact convexity step needed to transfer the MGF to the decoupled forms.</span></span>
+\]</span><span class="strategy-annotation"><strong>Library strategy: Convexity and variational arguments</strong><span>Uses convexity of the exponential to pass from the averaged decoupling identity to an average of tractable exponential moments. This is the exact convexity step needed to transfer the MGF to the decoupled forms.</span></span>
 
 <span class="proof-highlight answer-block control-ref" id="case1-p6-control">Fix \(\Lambda\), and write
 \[
@@ -475,7 +477,7 @@ Then \(Z_\delta=x^TBy\), and \(x,y\) are independent. Conditioning on \(x\) and 
 \le
 \exp\!\left(C\lambda^2K^2\|B^Tx\|_2^2\right).
 \tag{5}
-\]</span><span class="strategy-annotation"><strong>Library strategy: Conditional factorization across independent blocks</strong><span>Conditions on one coordinate block so the bilinear form becomes a linear subgaussian form in the independent second block. The conditioning argument correctly reduces the bilinear form to a linear subgaussian MGF.</span></span>
+\]</span><span class="strategy-annotation"><strong>Library strategy: Independence, tensorization, and union bounds</strong><span>Conditions on one coordinate block so the bilinear form becomes a linear subgaussian form in the independent second block. The conditioning argument correctly reduces the bilinear form to a linear subgaussian MGF.</span></span>
 
 <span class="proof-highlight answer-block control-ref linked-block" id="case1-p7-control" data-pairs="case1-p7">Let \(g\) be a standard Gaussian vector in \(\mathbb R^{|\Lambda^c|}\). By the Gaussian identity
 \[
@@ -514,7 +516,7 @@ For \(u\|B\|^2\le c\), the inequality
 =
 \exp\!\left(Cu\|B\|_F^2\right).
 \tag{7}
-\]</span><span class="strategy-annotation"><strong>Library strategy: Spectral evaluation of a Gaussian quadratic MGF</strong><span>Diagonalizes through the singular values of the block matrix, yielding the operator-norm admissible range and Frobenius-norm variance scale. The singular-value calculation efficiently yields both the admissible operator-norm range and the Frobenius scale.</span></span>
+\]</span><span class="strategy-annotation"><strong>Library strategy: Orthogonality, projection, and spectral arguments</strong><span>Diagonalizes through the singular values of the block matrix, yielding the operator-norm admissible range and Frobenius-norm variance scale. The singular-value calculation efficiently yields both the admissible operator-norm range and the Frobenius scale.</span></span>
 <span class="proof-highlight answer-block control-ref linked-block" id="case1-c1-control" data-pairs="case1-c1">Using \(u=C\lambda^2K^4\), as well as
 \[
 \|B\|\le\|A\|,
@@ -550,7 +552,7 @@ provided
 whenever
 \[
 |\lambda|\le \frac{c}{K^2\|A\|}.
-\]</span><span class="strategy-annotation"><strong>Library strategy: Cauchy–Schwarz MGF recombination</strong><span>Combines the two component MGF bounds without incorrectly assuming that the diagonal and off-diagonal parts are independent. This correctly recombines dependent terms; the factor two is absorbed by shrinking the universal admissible constant.</span></span>
+\]</span><span class="strategy-annotation"><strong>Library strategy: Algebraic, order, and norm estimates</strong><span>Combines the two component MGF bounds without incorrectly assuming that the diagonal and off-diagonal parts are independent. This correctly recombines dependent terms; the factor two is absorbed by shrinking the universal admissible constant.</span></span>
 
 Set
 \[
@@ -578,8 +580,8 @@ gives
 \frac{t}{K^2\|A\|}
 \right)
 \right].
-\]</span><span class="strategy-annotation"><strong>Library strategy: Chernoff optimization under a restricted MGF range</strong><span>Optimizes the exponential Markov bound, with the unconstrained and boundary choices producing the quadratic and linear tail regimes. The restricted Chernoff optimization correctly produces the quadratic and linear deviation regimes.</span></span>
-<span class="proof-highlight answer-block control-ref" id="case1-p11-control">Applying the same argument to \(-Y\) and taking a union bound proves</span><span class="strategy-annotation"><strong>Library strategy: Two-sided reduction and union bound</strong><span>Obtains the lower tail from the negative MGF and combines both one-sided events into the stated absolute-deviation bound. The MGF estimate holds for both signs of the parameter, so this concise two-sided conclusion is justified.</span></span>
+\]</span><span class="strategy-annotation"><strong>Library strategy: Exponential-moment and concentration arguments</strong><span>Optimizes the exponential Markov bound, with the unconstrained and boundary choices producing the quadratic and linear tail regimes. The restricted Chernoff optimization correctly produces the quadratic and linear deviation regimes.</span></span>
+<span class="proof-highlight answer-block control-ref" id="case1-p11-control">Applying the same argument to \(-Y\) and taking a union bound proves</span><span class="strategy-annotation"><strong>Library strategy: Independence, tensorization, and union bounds</strong><span>Obtains the lower tail from the negative MGF and combines both one-sided events into the stated absolute-deviation bound. The MGF estimate holds for both signs of the parameter, so this concise two-sided conclusion is justified.</span></span>
 \[
 \boxed{
 \mathbb P\!\left(
@@ -1095,6 +1097,7 @@ Then, for every positive integer \(m\),
 \mathbb{E}\lVert\Sigma_m-\Sigma\rVert
 \le CK^2\left(\sqrt{\frac{n}{m}}+\frac{n}{m}\right)\lVert\Sigma\rVert.
 \]</div>
+        <a class="graph-reference" href="strategy_hierarchy_graph.html#proof=theorem_4_7_1" target="_blank" rel="noopener">Graph reference ↗</a>
       </div>
       <div class="comparison-toolbar"><span>Blue: original strategy steps</span><span>Green: elaborated</span><span>Grey: compressed or omitted</span><label><input class="annotation-toggle" type="checkbox" checked> Strategy annotations</label></div>
       <div class="split" data-pair-links='[]'>
@@ -1278,7 +1281,7 @@ Bernstein’s inequality therefore gives
 \le
 2\exp\left[-cm\min\left(\frac{t^2}{K^4},\frac{t}{K^2}\right)\right].
 \tag{1}
-\]</span><span class="strategy-annotation"><strong>Library strategy: Subexponential Bernstein concentration</strong><span>Converts squared subgaussian marginals into centered subexponential variables and applies Bernstein’s inequality to obtain fixed-direction quadratic-form concentration. This is a concise and correct application of the standard subgaussian-square and Bernstein inequalities.</span></span>
+\]</span><span class="strategy-annotation"><strong>Library strategy: Exponential-moment and concentration arguments</strong><span>Converts squared subgaussian marginals into centered subexponential variables and applies Bernstein’s inequality to obtain fixed-direction quadratic-form concentration. This is a concise and correct application of the standard subgaussian-square and Bernstein inequalities.</span></span>
 
 <span class="proof-highlight answer-block control-ref" id="case2-p2-control">Let \(\mathcal N\) be a \(1/4\)-net of \(S^{r-1}\) with
 \[
@@ -1287,7 +1290,7 @@ Bernstein’s inequality therefore gives
 For every symmetric matrix \(A\),
 \[
 \|A\|\le 2\max_{x\in\mathcal N}|x^\top Ax|.
-\]</span><span class="strategy-annotation"><strong>Library strategy: Finite-net discretization of the operator norm</strong><span>Replaces the supremum of the quadratic form over the sphere by a maximum over a volumetrically bounded finite net. The net size and quadratic-form discretization are both stated sharply and succinctly.</span></span>
+\]</span><span class="strategy-annotation"><strong>Library strategy: Covering-net and volumetric arguments</strong><span>Replaces the supremum of the quadratic form over the sphere by a maximum over a volumetrically bounded finite net. The net size and quadratic-form discretization are both stated sharply and succinctly.</span></span>
 <span class="proof-highlight answer-block control-ref" id="case2-p3-control">Thus, by (1) and the union bound,
 \[
 \mathbb P\{\|A\|&gt;2t\}
@@ -1295,7 +1298,7 @@ For every symmetric matrix \(A\),
 2\exp\left[
 Cr-cm\min\left(\frac{t^2}{K^4},\frac{t}{K^2}\right)
 \right].
-\]</span><span class="strategy-annotation"><strong>Library strategy: Union bound over the net</strong><span>Upgrades fixed-direction concentration to simultaneous control on all net points, with the net cardinality contributing the entropy term \(Cr\). This necessary union-bound step is already minimal and correctly accounts for net entropy.</span></span>
+\]</span><span class="strategy-annotation"><strong>Library strategy: Independence, tensorization, and union bounds</strong><span>Upgrades fixed-direction concentration to simultaneous control on all net points, with the net cardinality contributing the entropy term \(Cr\). This necessary union-bound step is already minimal and correctly accounts for net entropy.</span></span>
 Consequently, for every \(u\ge0\), with probability at least \(1-2e^{-u}\),
 \[
 \|A\|
@@ -1311,7 +1314,7 @@ CK^2\left(
 \le
 CK^2\left(\sqrt{\frac rm}+\frac rm\right).
 \tag{3}
-\]</span><span class="strategy-annotation"><strong>Library strategy: Tail-to-expectation conversion</strong><span>Integrates the high-probability estimate to obtain the required expected operator-norm bound. Tail integration is a standard library step, and the resulting expectation bound is correct.</span></span>
+\]</span><span class="strategy-annotation"><strong>Library strategy: Tail integration and moment estimates</strong><span>Integrates the high-probability estimate to obtain the required expected operator-norm bound. Tail integration is a standard library step, and the resulting expectation bound is correct.</span></span>
 
 ### Reduction to the isotropic case
 
@@ -1319,7 +1322,7 @@ CK^2\left(\sqrt{\frac rm}+\frac rm\right).
 \[
 \mathbb E\langle X,v\rangle^2=v^\top\Sigma v=0,
 \]
-so \(X\in S\) almost surely.</span><span class="strategy-annotation"><strong>Library strategy: Restriction to the covariance range</strong><span>Uses the kernel–range spectral decomposition to remove null directions, which is essential when \(\Sigma\) is singular. This concise restriction handles singular covariance matrices and justifies whitening on the covariance range.</span></span>
+so \(X\in S\) almost surely.</span><span class="strategy-annotation"><strong>Library strategy: Orthogonality, projection, and spectral arguments</strong><span>Uses the kernel–range spectral decomposition to remove null directions, which is essential when \(\Sigma\) is singular. This concise restriction handles singular covariance matrices and justifies whitening on the covariance range.</span></span>
 
 <span class="proof-highlight answer-block control-ref" id="case2-p6-control">On \(S\), define
 \[
@@ -1338,7 +1341,7 @@ Moreover, for every \(y\in S\),
 &amp;=K\|y\|_2.
 \end{aligned}
 \]
-Thus \(Y\) satisfies the isotropic assumptions above.</span><span class="strategy-annotation"><strong>Library strategy: Whitening reduction</strong><span>Normalizes the covariance to the identity on its range and verifies that the relative subgaussian hypothesis is preserved. The whitening argument correctly verifies both isotropy and preservation of the relative subgaussian condition.</span></span>
+Thus \(Y\) satisfies the isotropic assumptions above.</span><span class="strategy-annotation"><strong>Library strategy: Normalization, invariance, and symmetry</strong><span>Normalizes the covariance to the identity on its range and verifies that the relative subgaussian hypothesis is preserved. The whitening argument correctly verifies both isotropy and preservation of the relative subgaussian condition.</span></span>
 
 <span class="proof-highlight answer-block control-ref" id="case2-p7-control">Writing \(Y_i=\Sigma^{-1/2}X_i\), we have
 \[
@@ -1366,7 +1369,7 @@ Applying (3) and using \(r\le n\), we obtain
 \le
 CK^2\left(\sqrt{\frac nm}+\frac nm\right)\|\Sigma\|
 }.
-\]</span><span class="strategy-annotation"><strong>Library strategy: Transfer back from isotropic coordinates</strong><span>Conjugates the isotropic estimation error by \(\Sigma^{1/2}\), controls the resulting norm by \(\|\Sigma\|\), and transfers the isotropic bound to the original covariance. This correctly transfers the isotropic estimate back to the original coordinates and completes the proof.</span></span>
+\]</span><span class="strategy-annotation"><strong>Library strategy: Normalization, invariance, and symmetry</strong><span>Conjugates the isotropic estimation error by \(\Sigma^{1/2}\), controls the resulting norm by \(\|\Sigma\|\), and transfers the isotropic bound to the original covariance. This correctly transfers the isotropic estimate back to the original coordinates and completes the proof.</span></span>
 Here \(C&gt;0\) is an absolute constant.</div></div>
         </section>
         
@@ -1661,6 +1664,7 @@ By definition of the empirical measure (Section 8.2.3), the population average i
 =\left(\frac{1}{n}\sum_{i=1}^{n}\bigl((f-g)(X_i)\bigr)^2\right)^{1/2},\tag{8.32}
 \]
 where \(X_i\) are independent, identically distributed copies of \(X\).</div>
+        <a class="graph-reference" href="strategy_hierarchy_graph.html#proof=lemma_8_3_14" target="_blank" rel="noopener">Graph reference ↗</a>
       </div>
       <div class="comparison-toolbar"><span>Blue: original strategy steps</span><span>Green: elaborated</span><span>Grey: compressed or omitted</span><label><input class="annotation-toggle" type="checkbox" checked> Strategy annotations</label></div>
       <div class="split" data-pair-links='[]'>
@@ -1753,7 +1757,7 @@ On the other hand,
 \right)\\
 &amp;=\exp\left(-\frac{9}{128}n\varepsilon^4\right).
 \end{aligned}
-\]</span><span class="strategy-annotation"><strong>Library strategy: Hoeffding concentration for each fixed pair</strong><span>Applies a bounded-variable exponential tail inequality to turn the population separation into an exponentially small probability that one fixed pair loses empirical separation. The fixed-pair Hoeffding estimate is concise, correctly uses the range length 4, and supplies the needed exponential rate.</span></span>
+\]</span><span class="strategy-annotation"><strong>Library strategy: Exponential-moment and concentration arguments</strong><span>Applies a bounded-variable exponential tail inequality to turn the population separation into an exponentially small probability that one fixed pair loses empirical separation. The fixed-pair Hoeffding estimate is concise, correctly uses the range length 4, and supplies the needed exponential rate.</span></span>
 
 <span class="proof-highlight answer-block control-ref" id="case3-p2-control">There are at most \(m^2\) ordered pairs of distinct functions. Therefore, by the union bound,
 \[
@@ -1761,7 +1765,7 @@ On the other hand,
 \|f-g\|_{L_2(\mu_n)}\le \frac{\varepsilon}{2}\right\}
 \le
 m^2\exp\left(-\frac{9}{128}n\varepsilon^4\right).
-\]</span><span class="strategy-annotation"><strong>Library strategy: Union bound over the finite function class</strong><span>Upgrades the fixed-pair concentration estimate to simultaneous empirical separation of every pair by summing over at most \(m^2\) failure events. The union-bound step is already brief and correctly upgrades the fixed-pair estimate to simultaneous separation.</span></span>
+\]</span><span class="strategy-annotation"><strong>Library strategy: Independence, tensorization, and union bounds</strong><span>Upgrades the fixed-pair concentration estimate to simultaneous empirical separation of every pair by summing over at most \(m^2\) failure events. The union-bound step is already brief and correctly upgrades the fixed-pair estimate to simultaneous separation.</span></span>
 
 <span class="proof-highlight answer-block control-ref linked-block" id="case3-c2-control" data-pairs="case3-c2">If
 \[
@@ -1894,6 +1898,7 @@ Consequently,
 \[
 \mathbb{E}\sup_{t\in T}X_t\le\mathbb{E}\sup_{t\in T}Y_t.\tag{7.5}
 \]</div>
+        <a class="graph-reference" href="strategy_hierarchy_graph.html#proof=theorem_7_2_2" target="_blank" rel="noopener">Graph reference ↗</a>
       </div>
       <div class="comparison-toolbar"><span>Blue: original strategy steps</span><span>Green: elaborated</span><span>Grey: compressed or omitted</span><label><input class="annotation-toggle" type="checkbox" checked> Strategy annotations</label></div>
       <div class="split" data-pair-links='[]'>
@@ -2111,7 +2116,7 @@ and define
 \[
 h_\varepsilon(x_1,\dots,x_n)
 =\prod_{k=1}^n g_\varepsilon(x_k).
-\]</span><span class="strategy-annotation"><strong>Library strategy: Smooth product approximation of an orthant indicator</strong><span>Constructs a tunable smooth surrogate for the event that every coordinate is at most r; the product form is chosen to expose mixed derivatives with the required sign. The explicit smooth product approximation is concise and necessary for both the derivative-sign argument and the limiting orthant event.</span></span>
+\]</span><span class="strategy-annotation"><strong>Library strategy: Explicit construction and parameter choice</strong><span>Constructs a tunable smooth surrogate for the event that every coordinate is at most r; the product form is chosen to expose mixed derivatives with the required sign. The explicit smooth product approximation is concise and necessary for both the derivative-sign argument and the limiting orthant event.</span></span>
 <span class="proof-highlight answer-block control-ref" id="case4-p3-control">For \(i\ne j\),
 \[
 \partial_{ij}h_\varepsilon(x)
@@ -2123,7 +2128,7 @@ because \(g_\varepsilon&#x27;\le0\). The diagonal terms in (1) vanish since
 \(A_{ii}-B_{ii}=0\), while all off-diagonal terms are nonnegative. Hence
 \[
 \frac{d}{du}\mathbb E h_\varepsilon(Z(u))\ge0.
-\]</span><span class="strategy-annotation"><strong>Library strategy: Derivative-sign monotonicity</strong><span>Matches the nonnegative covariance differences with nonnegative mixed derivatives, while equal variances cancel diagonal terms, proving monotonicity along the interpolation. This is the essential sign computation linking the covariance assumptions to monotonicity, and it is already concise and complete.</span></span>
+\]</span><span class="strategy-annotation"><strong>Library strategy: Derivative-sign arguments</strong><span>Matches the nonnegative covariance differences with nonnegative mixed derivatives, while equal variances cancel diagonal terms, proving monotonicity along the interpolation. This is the essential sign computation linking the covariance assumptions to monotonicity, and it is already concise and complete.</span></span>
 <span class="proof-highlight answer-block control-ref" id="case4-p4-control">Evaluating at \(u=0\) and \(u=1\),
 \[
 \mathbb E h_\varepsilon(X)
@@ -2136,7 +2141,7 @@ Letting \(\varepsilon\downarrow0\) and using bounded convergence yields
 \ge
 \mathbb P\left\{\max_{1\le i\le n}Y_i\le r\right\}.
 \tag{2}
-\]</span><span class="strategy-annotation"><strong>Library strategy: Transfer of comparison through a dominated approximation limit</strong><span>Evaluates the monotone interpolation at its endpoints and passes the comparison from bounded smooth approximants to the lower-orthant probabilities. The endpoint evaluation and bounded-convergence passage are both necessary and stated efficiently.</span></span>
+\]</span><span class="strategy-annotation"><strong>Library strategy: Comparison, domination, and squeezing</strong><span>Evaluates the monotone interpolation at its endpoints and passes the comparison from bounded smooth approximants to the lower-orthant probabilities. The endpoint evaluation and bounded-convergence passage are both necessary and stated efficiently.</span></span>
 
 Thus the maximum of the \(X_i\)&#x27;s is stochastically smaller than the maximum of the \(Y_i\)&#x27;s.
 
@@ -2154,7 +2159,7 @@ Set
 M_n^X=\max_{1\le k\le n}X_{t_k},
 \qquad
 M_n^Y=\max_{1\le k\le n}Y_{t_k}.
-\]</span><span class="strategy-annotation"><strong>Library strategy: Separable reduction to finite-dimensional maxima</strong><span>Uses separability to replace the arbitrary index set by an increasing sequence of finite subsets to which the finite-dimensional result applies. This standard separable reduction is needed to extend the finite-dimensional result and is already concise.</span></span>
+\]</span><span class="strategy-annotation"><strong>Library strategy: Reduction to a standard theorem</strong><span>Uses separability to replace the arbitrary index set by an increasing sequence of finite subsets to which the finite-dimensional result applies. This standard separable reduction is needed to extend the finite-dimensional result and is already concise.</span></span>
 <span class="proof-highlight answer-block control-ref" id="case4-p6-control">By (2),
 \[
 \mathbb P\{M_n^X\le r\}\ge \mathbb P\{M_n^Y\le r\}.
@@ -2166,13 +2171,13 @@ continuity of probability from above gives
 \ge
 \mathbb P\left\{\sup_{t\in T}Y_t\le r\right\}.
 \tag{3}
-\]</span><span class="strategy-annotation"><strong>Library strategy: Monotone finite-maximum approximation</strong><span>Passes the finite-dimensional distribution comparison to the supremum using increasing maxima and continuity of probability for the resulting decreasing events. The passage uses the decreasing events generated by increasing finite maxima and correctly transfers the comparison to the supremum.</span></span>
+\]</span><span class="strategy-annotation"><strong>Library strategy: Monotone sequences, limsup, and subsequences</strong><span>Passes the finite-dimensional distribution comparison to the supremum using increasing maxima and continuity of probability for the resulting decreasing events. The passage uses the decreasing events generated by increasing finite maxima and correctly transfers the comparison to the supremum.</span></span>
 <span class="proof-highlight answer-block control-ref" id="case4-p7-control">Taking left limits in \(r\), we obtain, for every \(\tau\in\mathbb R\),
 \[
 \mathbb P\left\{\sup_{t\in T}X_t\ge\tau\right\}
 \le
 \mathbb P\left\{\sup_{t\in T}Y_t\ge\tau\right\}.
-\]</span><span class="strategy-annotation"><strong>Library strategy: Boundary recovery by monotone threshold limits</strong><span>Approaches τ from below so that the strict upper-tail events decrease to the closed event {sup≥τ}, which handles possible atoms at the threshold. Taking left limits is necessary to obtain the closed upper-tail event even when the supremum has an atom at the threshold.</span></span>
+\]</span><span class="strategy-annotation"><strong>Library strategy: Monotone sequences, limsup, and subsequences</strong><span>Approaches τ from below so that the strict upper-tail events decrease to the closed event {sup≥τ}, which handles possible atoms at the threshold. Taking left limits is necessary to obtain the closed upper-tail event even when the supremum has an atom at the threshold.</span></span>
 This is the claimed stochastic domination.
 
 ### 3. Comparison of expectations
@@ -2199,7 +2204,7 @@ U^-\le X_{t_0}^-,
 \qquad
 V^-\le Y_{t_0}^-,
 \]
-so both negative parts are integrable; the positive parts may be infinite, in which case the inequality is understood in the extended sense.</span><span class="strategy-annotation"><strong>Library strategy: Transfer of stochastic order to expectations by truncation</strong><span>Tests stochastic domination with bounded increasing truncations and uses integrability of the negative parts to pass to possibly extended expectations. The truncation argument correctly handles possibly infinite positive expectations while controlling the negative parts, so no further detail is needed.</span></span> Therefore
+so both negative parts are integrable; the positive parts may be infinite, in which case the inequality is understood in the extended sense.</span><span class="strategy-annotation"><strong>Library strategy: Comparison, domination, and squeezing</strong><span>Tests stochastic domination with bounded increasing truncations and uses integrability of the negative parts to pass to possibly extended expectations. The truncation argument correctly handles possibly infinite positive expectations while controlling the negative parts, so no further detail is needed.</span></span> Therefore
 \[
 \boxed{\mathbb E\sup_{t\in T}X_t
 \le
@@ -2528,6 +2533,7 @@ Lemma 2.7.8 (Centering). Any subgaussian random variable \(X\) satisfies
 \[
 \lVert X-\mathbb{E}X\rVert_{\psi_2}\le C\lVert X\rVert_{\psi_2}.
 \]</div>
+        <a class="graph-reference" href="strategy_hierarchy_graph.html#proof=lemma_2_7_8" target="_blank" rel="noopener">Graph reference ↗</a>
       </div>
       <div class="comparison-toolbar"><span>Blue: original strategy steps</span><span>Green: elaborated</span><span>Grey: compressed or omitted</span><label><input class="annotation-toggle" type="checkbox" checked> Strategy annotations</label></div>
       <div class="split" data-pair-links='[]'>
@@ -2586,13 +2592,13 @@ Hence the theorem holds with the absolute constant \(C=2\).">Copy raw</button>
 <span class="proof-highlight answer-block control-ref" id="case5-p1-control">Set \(K=\|X\|_{\psi_2}\). More precisely, take any \(t&gt;K\) such that
 \[
 \mathbb E e^{X^2/t^2}\le 2.
-\]</span><span class="strategy-annotation"><strong>Library strategy: Near-infimum admissible parameter</strong><span>Works with an admissible scale arbitrarily close to the infimum defining the subgaussian norm. Correctly selects admissible scales arbitrarily close to the defining infimum.</span></span>
+\]</span><span class="strategy-annotation"><strong>Library strategy: Supremum, infimum, and extremal arguments</strong><span>Works with an admissible scale arbitrarily close to the infimum defining the subgaussian norm. Correctly selects admissible scales arbitrarily close to the defining infimum.</span></span>
 <span class="proof-highlight answer-block control-ref" id="case5-p2-control">By Jensen’s inequality,
 \[
 e^{(\mathbb EX)^2/t^2}
 \le \mathbb E e^{X^2/t^2}
 \le 2.
-\]</span><span class="strategy-annotation"><strong>Library strategy: Jensen&#x27;s inequality</strong><span>Uses convexity of the exponential composed with the square to control the deterministic mean by the exponential moment of X. This concise Jensen step correctly controls the deterministic mean term.</span></span>
+\]</span><span class="strategy-annotation"><strong>Library strategy: Convexity and variational arguments</strong><span>Uses convexity of the exponential composed with the square to control the deterministic mean by the exponential moment of X. This concise Jensen step correctly controls the deterministic mean term.</span></span>
 <span class="proof-highlight answer-block control-ref" id="case5-p3-control">Using \((X-\mathbb EX)^2\le 2X^2+2(\mathbb EX)^2\), we obtain
 \[
 \begin{aligned}
@@ -2606,16 +2612,16 @@ e^{(\mathbb EX)^2/t^2}
 &amp;\le \sqrt2\,\sqrt2=2,
 \end{aligned}
 \]
-where the second factor is bounded using Cauchy–Schwarz (or concavity of \(u^{1/2}\)).</span><span class="strategy-annotation"><strong>Library strategy: Exponential-moment domination</strong><span>Dominates the centered square by separate random and deterministic terms, then transfers the known exponential-moment bound using Cauchy–Schwarz/concavity. This is the central exponential-moment estimate, and all constants and inequalities are correct.</span></span>
+where the second factor is bounded using Cauchy–Schwarz (or concavity of \(u^{1/2}\)).</span><span class="strategy-annotation"><strong>Library strategy: Comparison, domination, and squeezing</strong><span>Dominates the centered square by separate random and deterministic terms, then transfers the known exponential-moment bound using Cauchy–Schwarz/concavity. This is the central exponential-moment estimate, and all constants and inequalities are correct.</span></span>
 
 <span class="proof-highlight answer-block control-ref" id="case5-p4-control">Thus \(2t\) is admissible in the definition of \(\|X-\mathbb EX\|_{\psi_2}\), so
 \[
 \|X-\mathbb EX\|_{\psi_2}\le 2t.
-\]</span><span class="strategy-annotation"><strong>Library strategy: Verify an admissible Orlicz scale</strong><span>Converts the exponential-moment estimate directly into a norm bound through the defining infimum. Correctly translates the moment estimate into the Orlicz-norm bound.</span></span>
+\]</span><span class="strategy-annotation"><strong>Library strategy: Definitional unfolding</strong><span>Converts the exponential-moment estimate directly into a norm bound through the defining infimum. Correctly translates the moment estimate into the Orlicz-norm bound.</span></span>
 <span class="proof-highlight answer-block control-ref" id="case5-p5-control">Letting \(t\downarrow K\) gives
 \[
 \boxed{\|X-\mathbb EX\|_{\psi_2}\le 2\|X\|_{\psi_2}}.
-\]</span><span class="strategy-annotation"><strong>Library strategy: Pass the bound to the infimum</strong><span>Takes admissible scales down to the defining infimum and passes the uniform inequality to the limit. Correctly passes from admissible scales to the defining infimum and concludes with C=2.</span></span>
+\]</span><span class="strategy-annotation"><strong>Library strategy: Limit laws, squeezing, and uniqueness</strong><span>Takes admissible scales down to the defining infimum and passes the uniform inequality to the limit. Correctly passes from admissible scales to the defining infimum and concludes with C=2.</span></span>
 Hence the theorem holds with the absolute constant \(C=2\).</div></div>
         </section>
         

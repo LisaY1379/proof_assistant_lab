@@ -22,6 +22,9 @@ Open after generating:
 from __future__ import annotations
 
 import argparse
+import copy
+import importlib.util
+from urllib.parse import quote
 import html
 import json
 import re
@@ -462,6 +465,60 @@ def output_meta(out: Optional[Dict[str, Any]]) -> str:
     return "".join(bits)
 
 
+def library_graph_for(out):
+    graph = out.get("library_graph")
+    if isinstance(graph, dict) and isinstance(graph.get("nodes"), list):
+        return graph
+    path = PROJECT_ROOT / "data" / "train" / "general" / "strategy_hierarchy.json"
+    if not path.exists():
+        raise FileNotFoundError(f"Cannot resolve original library names: {path}")
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def canonical_output(out):
+    """Resolve library headings by ID, including results generated before this fix."""
+    if not isinstance(out.get("annotated_control"), dict):
+        return out
+    result = copy.deepcopy(out)
+    graph = library_graph_for(result)
+    labels = {n["id"]: n["label"] for n in graph["nodes"]}
+    for span in result["annotated_control"].get("highlights", []) + result.get("changes", []):
+        if span.get("kind") == "library":
+            if span.get("node_id") not in labels:
+                raise ValueError(f"Unknown library strategy: {span.get('node_id')}")
+            span["strategy"] = labels[span["node_id"]]
+    return result
+
+
+def graph_reference_link(iid):
+    return "strategy_hierarchy_graph.html#proof=" + quote(str(iid), safe="")
+
+
+def write_graph_reference_page(outputs, output_path):
+    references = {}
+    graphs = {}
+    for raw in outputs:
+        if not isinstance(raw.get("annotated_control"), dict):
+            continue
+        out = canonical_output(raw)
+        graph = library_graph_for(out)
+        # Keep a separate snapshot per proof if the library changed between runs.
+        iid = str(out["input_id"])
+        graphs[iid] = graph
+        references[iid] = {"title": out.get("name") or iid, "steps": [
+            {"id": h["id"], "node_id": h.get("node_id", ""), "kind": h["kind"],
+             "label": h["strategy"], "annotation": h["annotation"]}
+            for h in sorted(out["annotated_control"].get("highlights", []), key=lambda h: h["start"])
+        ]}
+    if not references:
+        return
+    path = PROJECT_ROOT / "workflows" / "library_hierarchy" / "visualize_strategy_hierarchy.py"
+    spec = importlib.util.spec_from_file_location("proof_graph_viewer", path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    module.render_html(next(iter(graphs.values())), output_path, proof_references=references, proof_graphs=graphs)
+
+
 def render_structured_proofs(rag: Dict[str, Any], case_index: int) -> tuple[str, str]:
     """Use exact original offsets, never fuzzy quote matching, for the new pipeline."""
     proof = str(rag.get("direct_draft") or "")
@@ -572,6 +629,7 @@ def render_pair(
       <div class="prompt-box global-prompt">
         <div class="small-title">Prompt</div>
         <div class="prompt-text">{render_text(prompt)}</div>
+        {(f'<a class="graph-reference" href="{escape(graph_reference_link(iid))}" target="_blank" rel="noopener">Graph reference ↗</a>' if structured else '')}
       </div>
       {('<div class="comparison-toolbar"><span>Blue: original strategy steps</span><span>Green: elaborated</span><span>Grey: compressed or omitted</span><label><input class="annotation-toggle" type="checkbox" checked> Strategy annotations</label></div>' if structured else '')}
       <div class="split" data-pair-links='{escape(json.dumps(pair_links, ensure_ascii=False))}'>
@@ -590,7 +648,7 @@ def make_html(
     evaluations: List[Dict[str, Any]],
     cleaned_prompts: List[Dict[str, Any]],
 ) -> str:
-    grouped = group_outputs(outputs)
+    grouped = group_outputs([canonical_output(out) for out in outputs])
     evaluations_by_input = {str(e.get("input_id")): e for e in evaluations if e.get("input_id")}
     cleaned_prompts_by_input = {str(e.get("input_id")): e for e in cleaned_prompts if e.get("input_id")}
     nav = []
@@ -676,6 +734,7 @@ def make_html(
     .strategy-card-meta {{ font-size:12px; font-weight:800; margin-bottom:5px; }}
     .strategy-card-body {{ font-size:13px; line-height:1.45; }}
     .muted {{ color:var(--muted); }}
+    .graph-reference {{ display:inline-block; margin-top:10px; padding:7px 12px; border-radius:8px; background:#e0e7ff; color:#3730a3; font-size:13px; font-weight:700; text-decoration:none; }}
     .comparison-toolbar {{ display:flex; flex-wrap:wrap; gap:14px; font-size:12px; color:#475569; margin:12px 0; align-items:center; }}
     .comparison-toolbar label {{ margin-left:auto; cursor:pointer; }}
     .structured-answer > .proof-highlight {{ display:block; margin:6px 0; font-style:normal; }}
@@ -855,6 +914,7 @@ def main() -> int:
     evaluations = read_jsonl(evaluations_path)
     cleaned_prompts = read_jsonl(prompt_cleaning_path)
     output_path = args.output or (run_dir / "comparison_viewer.html")
+    write_graph_reference_page(outputs, output_path.parent / "strategy_hierarchy_graph.html")
     output_path.write_text(make_html(run_dir, inputs, outputs, evaluations, cleaned_prompts), encoding="utf-8")
     print(f"Read inputs: {len(inputs)}")
     print(f"Read outputs: {len(outputs)}")
