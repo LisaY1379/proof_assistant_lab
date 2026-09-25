@@ -1,0 +1,2 @@
+{"id":"demo_compactness","dataset":"demo","name":"Compactness proof plan","statement":"Let K be a compact subset of a metric space and let f : K → ℝ be continuous. Show that f attains a maximum on K.","task":"Explain a proof plan and the key proof strategies for this theorem."}
+{"id":"demo_gaussian_tail","dataset":"demo","name":"Gaussian tail bound","statement":"For Z ∼ N(0,1), prove an upper tail bound of the form P(Z ≥ t) ≤ C t^{-1} exp(-t^2/2) for t > 0.","task":"Explain the main proof strategy and how one would prove the bound."}

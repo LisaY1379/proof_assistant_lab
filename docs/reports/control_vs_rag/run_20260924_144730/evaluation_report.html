@@ -1,0 +1,345 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Evaluation Report</title>
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 1100px; margin: 32px auto; padding: 0 18px; line-height: 1.55; color: #111827; }
+h1,h2,h3 { color: #1e3a8a; }
+code { background: #f1f5f9; padding: 2px 4px; border-radius: 4px; }
+strong { color: #111827; }
+</style></head><body><h1>Evaluation Report: Elaborate Critical Steps, Omit Trivial Steps</h1><br>
+<br>
+Criterion: <strong>elaborate on critical steps, omit trivial steps</strong><br>
+<br>
+<h2>Summary</h2><br>
+<br>
+- Evaluated items: 5<br>
+- Average control score: 4.60/5<br>
+- Average Library-RAG score: 4.80/5<br>
+- Winners: {&#x27;tie&#x27;: 4, &#x27;library_rag&#x27;: 1}<br>
+<br>
+<h2>1. Theorem 6.2.2 (Hanson-Wright inequality)</h2><br>
+<br>
+ID: <code>theorem_6_2_2</code><br>
+<br>
+<h3>Statement</h3><br>
+<br>
+Theorem 6.2.2 (Hanson-Wright inequality). Let A be an n × n matrix. Let X =<br>
+(X1 , . . . , Xn ) ∈ Rn be a random vector with independent, mean-zero, subgaussian<br>
+coordinates. Then, for every t ≥ 0, we have<br>
+                                               h             t2       t i<br>
+         P |X T AX − E X T AX| ≥ t ≤ 2 exp − c min<br>
+            <br>
+                                                                 2<br>
+                                                                   ,        ,<br>
+                                                          K 4 ∥A∥F K 2 ∥A∥<br>
+where K = maxi ∥Xi ∥ψ2 .<br>
+<br>
+Our<br>
+<br>
+<h3>Scores</h3><br>
+<br>
+- Control: <strong>5 / 5</strong><br>
+- Library-RAG: <strong>5 / 5</strong><br>
+- Winner: <strong>tie</strong><br>
+- Confidence: <code>high</code><br>
+<br>
+<h3>Library-RAG overall assessment</h3><br>
+<br>
+The RAG proof is rigorous and especially clear on decoupling, Gaussian linearization, and Laplace optimization. It improves the final MGF-based combination, but adds a somewhat redundant preliminary lemma and uses an imprecise constant in the Gaussian linearization equality.<br>
+<br>
+<h3>Where the Library-RAG response worked</h3><br>
+<br>
+- <strong>Section/quote:</strong> Replacing A by A_s = (A + A^T)/2 preserves x^T A x and does not increase the operator or Frobenius norm.<br>
+  - Why it worked: The RAG passage is as concise as the control and gives exactly the facts needed for the reduction without dwelling on routine algebra.<br>
+- <strong>Section/quote:</strong> The centered quadratic form is decomposed as D = Σ_i a_ii(X_i² − E X_i²) and S = Σ_{i≠j} a_ij X_i X_j, with E S = 0 by independence and centering.<br>
+  - Why it worked: This keeps the routine decomposition short while identifying the essential reason the off-diagonal part is already centered.<br>
+- <strong>Section/quote:</strong> The Bernoulli partition defines T_δ = Σ_{i∈Λ,j∉Λ} a_ij X_i X_j, proves S = 4 E_δ T_δ, and then uses convexity to obtain E exp(λS) ≤ E_δ E_X exp(4λT_δ).<br>
+  - Why it worked: The RAG version clearly explains the decisive purpose of the partition: it turns the quadratic chaos into a bilinear form whose two coordinate blocks are independent.<br>
+- <strong>Section/quote:</strong> After conditioning on x, the proof applies the scalar subgaussian MGF coordinatewise, then evaluates E_g exp(θ‖Bg‖²) through the singular values and the bound −log(1−u) ≤ 2u.<br>
+  - Why it worked: The RAG proof places the Gaussian calculation directly where it is needed and explicitly connects the admissible range to both ‖B‖ and ‖B‖_F, making this critical estimate easy to follow.<br>
+- <strong>Section/quote:</strong> Cauchy–Schwarz combines the local MGF bounds for D and S without assuming independence, and λ = min{t/(2CV), L/2} is analyzed separately in the quadratic and linear regimes.<br>
+  - Why it worked: The RAG approach is more coherent: it directly obtains an MGF for the whole centered form, avoids the prefactor-adjustment argument, and explains why each branch of the optimizing parameter gives the claimed minimum.<br>
+<br>
+<h3>Where the Library-RAG response needs improvement</h3><br>
+<br>
+- <strong>Section/quote:</strong> With s = C|λ|K, the proof states an equality rewriting exp(Cλ²K²‖B^T x‖²) as a Gaussian expectation.<br>
+  - Issue: The RAG equality uses a generic constant C where an exact parameter is required. Changing absolute constants is harmless for inequalities, but not literally for the displayed equality.<br>
+  - Suggested revision: Write the preceding exponent as αλ²K²‖B^T x‖² and choose s = √(2α)|λ|K exactly; constants may be renamed only after the equality.<br>
+- <strong>Section/quote:</strong> The opening lists three standard ψ₂ and ψ₁ consequences and says that all follow directly by expanding the exponential and using moment bounds.<br>
+  - Issue: The third preliminary MGF lemma is useful but partly duplicates later work, while the one-sentence derivation is too compressed to justify its admissible λ-range. This spends space without elaborating the delicate point.<br>
+  - Suggested revision: State the local subexponential MGF estimate as a standard Bernstein lemma with its centeredness and λ-range, or prove the local-radius estimate explicitly; omit the vague sentence about direct expansion.<br>
+- <strong>Section/quote:</strong> Cauchy–Schwarz applies the estimates at 2λ and concludes that the whole-form MGF bound holds for |λ| ≤ c/(K²‖A‖).<br>
+  - Issue: The RAG proof implicitly shrinks the admissible absolute constant so that 2λ remains in the ranges of both component MGF estimates.<br>
+  - Suggested revision: Add a short phrase such as &#x27;after decreasing the absolute constant c so that 2|λ| is admissible in both bounds.&#x27;<br>
+<br>
+<h3>Critical steps to elaborate</h3><br>
+<br>
+- Why the Bernoulli partition gives S = 4E_δT_δ and makes the two factors conditionally independent<br>
+- How Gaussian linearization and the singular-value product yield the local quadratic MGF bound<br>
+- Why the operator norm determines the admissible λ-range while the Frobenius norm determines the quadratic MGF scale<br>
+- How the two choices of the Laplace parameter produce the quadratic and linear tail regimes<br>
+- How Cauchy–Schwarz combines D and S despite their dependence<br>
+<br>
+<h3>Trivial steps to omit/compress</h3><br>
+<br>
+- Routine verification that the skew-symmetric part contributes zero<br>
+- Repeated restatement of absolute-constant conventions<br>
+- Mechanical norm comparisons for coordinate submatrices once the projection representation is given<br>
+- Routine algebra after substituting the optimized Laplace parameter<br>
+- Broad claims that standard MGF facts follow by expansion unless the relevant convergence range is actually shown<br>
+<br>
+<h3>Control comparison notes</h3><br>
+<br>
+The control is already highly effective and slightly more economical in its preliminaries. The RAG proof improves the final synthesis and optimization explanation, while the control is more exact in its Gaussian identity and avoids the hidden 2λ admissibility adjustment.<br>
+<br>
+---<br>
+<br>
+<h2>2. Theorem 4.7.1 (Covariance estimation)</h2><br>
+<br>
+ID: <code>theorem_4_7_1</code><br>
+<br>
+<h3>Statement</h3><br>
+<br>
+Theorem 4.7.1 (Covariance estimation). Let X be a subgaussian random vector<br>
+in Rn . More specifically, assume that there exists K ≥ 1 such that13<br>
+                       ∥⟨X, x⟩∥ψ2 ≤ K∥⟨X, x⟩∥L2           for any x ∈ Rn .                   (4.29)<br>
+Then, for every positive integer m, we have<br>
+                                          r n   n<br>
+                                        2<br>
+                      E∥Σm − Σ∥ ≤ CK           +    ∥Σ∥.<br>
+                                            m m<br>
+<br>
+<h3>Scores</h3><br>
+<br>
+- Control: <strong>4 / 5</strong><br>
+- Library-RAG: <strong>4 / 5</strong><br>
+- Winner: <strong>tie</strong><br>
+- Confidence: <code>high</code><br>
+<br>
+<h3>Library-RAG overall assessment</h3><br>
+<br>
+The Library-RAG proof is correct and well organized, with a slightly clearer whitening calculation, but it compresses the crucial tail-integration step just as much as control and adds a few dispensable summary sentences.<br>
+<br>
+<h3>Where the Library-RAG response worked</h3><br>
+<br>
+- <strong>Section/quote:</strong> The RAG proof defines Z_i(u)=⟨Y_i,u⟩²−1, bounds its ψ₁ norm by CK², and then states the two-regime Bernstein tail.<br>
+  - Why it worked: Introducing Z_i(u) isolates the centered scalar variables and makes the decisive probabilistic reduction slightly easier to follow without adding much routine detail.<br>
+- <strong>Section/quote:</strong> For u in E, the RAG proof explicitly computes the L² norm after whitening as (uᵀΣ_E^{-1/2}Σ_EΣ_E^{-1/2}u)^{1/2}=‖u‖₂.<br>
+  - Why it worked: This elaborates the essential verification that whitening preserves the required subgaussian-to-L² comparison, which is necessary before the isotropic lemma can be applied.<br>
+- <strong>Section/quote:</strong> The RAG proof explains that if v lies in ker(Σ), then ⟨X,v⟩=0 almost surely, and that applying this to a basis of ker(Σ) yields X in range(Σ) almost surely.<br>
+  - Why it worked: The basis argument resolves the otherwise implicit issue of obtaining one probability-one event for the whole kernel, while remaining concise.<br>
+<br>
+<h3>Where the Library-RAG response needs improvement</h3><br>
+<br>
+- <strong>Section/quote:</strong> Applying (1) to all u in the net, taking a union bound, and integrating the resulting tail estimate gives the expected maximum bound.<br>
+  - Issue: Both proofs compress a critical entropy-versus-concentration calculation. The appearance of the two terms K²√(log|N|/m) and K²log|N|/m is asserted rather than explained.<br>
+  - Suggested revision: Display the union-bound tail with the added log|N| term, identify the threshold t₀ comparable to K²(√(log|N|/m)+log|N|/m), and briefly invoke E W=∫₀∞P(W&gt;t)dt to obtain the expectation.<br>
+- <strong>Section/quote:</strong> After proving the net inequality, the RAG proof adds: &#x27;This rewrites the spectral norm of a symmetric matrix as a supremum of concrete quadratic forms.&#x27;<br>
+  - Issue: The extra sentence merely restates what the displayed formulas already show and does not clarify a difficult point.<br>
+  - Suggested revision: Delete the summary sentence and proceed directly from the proved net inequality to B=M−I_r.<br>
+- <strong>Section/quote:</strong> The RAG proof separately states the isotropic lemma and repeats its target estimate before beginning the proof.<br>
+  - Issue: The lemma packaging is reasonable, but in this short proof it repeats the target and marginally increases setup without explaining a critical move.<br>
+  - Suggested revision: Either begin the isotropic proof directly, as control does, or retain the lemma but shorten its statement and avoid repeating the same estimate again before the reduction.<br>
+<br>
+<h3>Critical steps to elaborate</h3><br>
+<br>
+- Derive the expected maximum over the net from the Bernstein tail, including how the Gaussian and exponential regimes produce the square-root and linear entropy terms.<br>
+- Explain the epsilon-net inequality that transfers scalar quadratic-form bounds to the operator norm.<br>
+- Verify that whitening on range(Σ) gives isotropy and preserves the subgaussian hypothesis.<br>
+- Relate the whitened empirical covariance back to Σ_m−Σ by conjugation and the operator-norm bound.<br>
+<br>
+<h3>Trivial steps to omit/compress</h3><br>
+<br>
+- Repeated statements of the isotropic lemma&#x27;s target estimate.<br>
+- Summary sentences that merely paraphrase the immediately preceding displayed identity.<br>
+- Routine final substitutions of r≤n once the dimension-r estimate is established.<br>
+<br>
+<h3>Control comparison notes</h3><br>
+<br>
+The responses are mathematically equivalent and nearly identical in explanatory allocation. RAG improves the whitening and kernel-range justifications, but control is slightly leaner, and neither explains the crucial tail integration adequately.<br>
+<br>
+---<br>
+<br>
+<h2>3. Lemma 8.3.14 (Dimension reduction)</h2><br>
+<br>
+ID: <code>lemma_8_3_14</code><br>
+<br>
+<h3>Statement</h3><br>
+<br>
+Lemma 8.3.14 (Dimension reduction). Let F be a finite class of Boolean func-<br>
+tions on a domain Ω with a probability measure µ on it. Assume that all functions<br>
+in F are ε-separated, that is<br>
+                    ∥f − g∥L2 (µ) &gt; ε     for all distinct f, g ∈ F.<br>
+If n ≥ Cε−4 log|F |, then the empirical measure µn satisfies the following with<br>
+probability at least 0.99:<br>
+                  ∥f − g∥L2 (µn ) &gt; ε/2    for all distinct f, g ∈ F.<br>
+  By definition of empirical measure (see Section 8.2.3), ∥f − g∥L2 (µn ) is the same<br>
+as (8.31) but with the population average replaced by the sample average:<br>
+                                      1 Xn                1/2<br>
+                    ∥f − g∥L2 (µn ) =        (f − g)(Xi )2      ,               (8.32)<br>
+                                       n i=1<br>
+where Xi are i.i.d. copies of X.<br>
+<br>
+<h3>Scores</h3><br>
+<br>
+- Control: <strong>5 / 5</strong><br>
+- Library-RAG: <strong>5 / 5</strong><br>
+- Winner: <strong>tie</strong><br>
+- Confidence: <code>high</code><br>
+<br>
+<h3>Library-RAG overall assessment</h3><br>
+<br>
+The Library-RAG proof is correct, focused, and well balanced. It clearly develops the empirical-mean reduction, the fixed-pair Hoeffding estimate, and the union bound, while handling both Boolean conventions more coherently than control. Its only notable weakness is minor repetition about constants and conventions.<br>
+<br>
+<h3>Where the Library-RAG response worked</h3><br>
+<br>
+- <strong>Section/quote:</strong> The RAG proof defines Y_i=(f(X_i)-g(X_i))^2 and p_{f,g}=E Y_i, identifies p_{f,g}&gt;epsilon^2, and writes the squared empirical norm as the sample average of the Y_i.<br>
+  - Why it worked: The RAG passage makes the decisive reduction to concentration especially explicit by naming the population mean p_{f,g}; routine algebra remains concise.<br>
+- <strong>Section/quote:</strong> The RAG proof treats both Boolean conventions, uses an interval of length at most 4, shows that the bad event forces a downward deviation exceeding 3epsilon^2/4, and applies Hoeffding to obtain exp(-9n epsilon^4/128).<br>
+  - Why it worked: This passage improves the organization by addressing the range needed for Hoeffding exactly where the inequality is applied. It also displays how the interval length enters the exponent, which is the main technical estimate.<br>
+- <strong>Section/quote:</strong> The RAG proof counts fewer than m^2 ordered pairs and applies a union bound to obtain m^2 exp(-9n epsilon^4/128).<br>
+  - Why it worked: The passage gives exactly the information needed to upgrade the fixed-pair estimate to simultaneous control, without overexplaining the routine union-bound mechanics.<br>
+<br>
+<h3>Where the Library-RAG response needs improvement</h3><br>
+<br>
+- <strong>Section/quote:</strong> The conclusion repeats that C=128 works and then again states that the {0,1}-valued convention permits C=8.<br>
+  - Issue: Because the RAG proof already discussed both conventions before applying Hoeffding, repeating the convention-dependent constants at the end is mildly redundant.<br>
+  - Suggested revision: End after stating that C=128 is a universal choice, or state both convention-dependent constants only once near the Hoeffding calculation.<br>
+<br>
+<h3>Critical steps to elaborate</h3><br>
+<br>
+- Squaring the empirical norm and reducing failure to a lower-tail deviation of size at least 3epsilon^2/4.<br>
+- Checking the bounded interval required by Hoeffding and showing how its length determines the exponent.<br>
+- Using the union bound and choosing n so that the simultaneous failure probability is below 0.01.<br>
+<br>
+<h3>Trivial steps to omit/compress</h3><br>
+<br>
+- Repeated statements of the convention-dependent constants after they have already been established.<br>
+- Generic commentary that merely restates that the norm comparison is now an empirical-average problem.<br>
+<br>
+<h3>Control comparison notes</h3><br>
+<br>
+The proofs have essentially the same strong structure and level of detail. RAG improves the placement of the Boolean-range discussion, while control avoids repeating that discussion because its alternative convention appears only as a final caveat.<br>
+<br>
+---<br>
+<br>
+<h2>4. Theorem 7.2.2 (Slepian inequality). Let (Xt )t∈T and (Yt)</h2><br>
+<br>
+ID: <code>theorem_7_2_2</code><br>
+<br>
+<h3>Statement</h3><br>
+<br>
+Theorem 7.2.2 (Slepian inequality). Let (Xt )t∈T and (Yt )t∈T be two mean-zero<br>
+Gaussian processes. Assume that for all t, s ∈ T , we have<br>
+                E Xt2 = E Yt2     and     E(Xt − Xs )2 ≤ E(Yt − Ys )2 .      (7.3)<br>
+Then supt∈T Xt is stochastically dominated by supt∈T Yt : for every τ ∈ R, we have<br>
+                          n          o   n          o<br>
+                         P sup Xt ≥ τ ≤ P sup Yt ≥ τ .                       (7.4)<br>
+                            t∈T                   t∈T<br>
+<br>
+Consequently,<br>
+                                  E sup Xt ≤ E sup Yt .                      (7.5)<br>
+                                    t∈T          t∈T<br>
+<br>
+  We now prepare for the<br>
+<br>
+<h3>Scores</h3><br>
+<br>
+- Control: <strong>4 / 5</strong><br>
+- Library-RAG: <strong>5 / 5</strong><br>
+- Winner: <strong>library_rag</strong><br>
+- Confidence: <code>high</code><br>
+<br>
+<h3>Library-RAG overall assessment</h3><br>
+<br>
+The RAG proof better explains the decisive Gaussian interpolation identity and replaces the control&#x27;s more cumbersome smoothing limit with a direct bounded-convergence argument. It is mathematically sound and well organized, though the expectation comparison and nonseparability counterexample are more detailed than necessary.<br>
+<br>
+<h3>Where the Library-RAG response worked</h3><br>
+<br>
+- <strong>Section/quote:</strong> The finite-dimensional argument is the essential part; the general separable case follows by approximation with finite subsets.<br>
+  - Why it worked: This gives a concise roadmap centered on the genuinely decisive finite-dimensional comparison without prematurely adding routine limiting details.<br>
+- <strong>Section/quote:</strong> Expanding E(X_i-X_j)^2 and using equality of diagonal variances gives A_ij ≥ B_ij for i ≠ j.<br>
+  - Why it worked: Like the control, the RAG response isolates exactly the covariance ordering required later and does not burden this short reduction with unnecessary algebra.<br>
+- <strong>Section/quote:</strong> Differentiating E f(Z(u)) and applying Gaussian integration by parts to the X- and Y-terms yields one half the sum of (B_ij-A_ij)E[∂_ij f(Z(u))]; singular covariances are handled by adding δI and passing to the limit.<br>
+  - Why it worked: The interpolation derivative is the central theorem-specific move. RAG improves on control by identifying the integration-by-parts formula that produces it and addressing singular covariance matrices, while remaining concise.<br>
+- <strong>Section/quote:</strong> The smooth product cutoff f_ε converges pointwise to the indicator of {max_i x_i ≤ a}; bounded convergence transfers the interpolated inequality directly to the orthant probabilities.<br>
+  - Why it worked: RAG uses a cutoff chosen to have the correct value on the boundary, so bounded convergence applies directly. This both clarifies the critical limiting step and removes the control&#x27;s auxiliary Gaussian variables and continuity-point detour.<br>
+- <strong>Section/quote:</strong> For countable T, M_X,n and M_Y,n increase to the respective suprema, while the events {M_X,n ≤ a} and {M_Y,n ≤ a} decrease to the corresponding supremum events.<br>
+  - Why it worked: The RAG passage explicitly connects monotonicity of the maxima to the opposite monotonicity of the events, which is the small but essential point needed to pass the finite-dimensional comparison to countable T.<br>
+<br>
+<h3>Where the Library-RAG response needs improvement</h3><br>
+<br>
+- <strong>Section/quote:</strong> The response derives separate positive- and negative-tail inequalities, writes both tail-integral formulas, and then compares E U^+, E V^+, E U^-, and E V^-.<br>
+  - Issue: The RAG argument is correct and more explicit, but this consequence of first-order stochastic domination is routine compared with the interpolation step. The separate tail calculations receive more space than their conceptual importance warrants.<br>
+  - Suggested revision: State that stochastic domination implies the inequality for bounded increasing truncations, note briefly that U^- and V^- are integrable because each supremum dominates a fixed Gaussian coordinate, and pass to the limit.<br>
+- <strong>Section/quote:</strong> The technical qualification constructs X_t(ω)=1_{ω=t} and Y_t=0 to show that arbitrary nonseparable versions can have different pointwise suprema despite identical finite-dimensional laws.<br>
+  - Issue: The counterexample is valid and informative, but it is peripheral to the proof and occupies substantial space after the argument is complete. Relative to the stated criterion, the control handles this qualification more efficiently.<br>
+  - Suggested revision: Retain a one-sentence separability warning in the main proof and move the explicit counterexample to an optional remark.<br>
+<br>
+<h3>Critical steps to elaborate</h3><br>
+<br>
+- Why Gaussian integration by parts yields the covariance-interpolation derivative.<br>
+- Why the covariance and mixed-derivative signs force monotonicity of the smoothed orthant probability.<br>
+- Why the smooth cutoff converges to the closed-orthant indicator even at boundary points.<br>
+- How finite maxima pass to the supremum through decreasing events.<br>
+<br>
+<h3>Trivial steps to omit/compress</h3><br>
+<br>
+- The full positive- and negative-tail calculation for the standard expectation consequence.<br>
+- Repeated announcements that the general case follows from finite subsets.<br>
+- The detailed nonseparable counterexample in the main proof.<br>
+<br>
+<h3>Control comparison notes</h3><br>
+<br>
+The control is already strong and concise, but it leaves the decisive interpolation formula largely unexplained and uses a longer smoothing-limit route. RAG improves those central steps, at the cost of extra detail in the routine expectation consequence and technical caveat.<br>
+<br>
+---<br>
+<br>
+<h2>5. Lemma 2.7.8 (Centering)</h2><br>
+<br>
+ID: <code>lemma_2_7_8</code><br>
+<br>
+<h3>Statement</h3><br>
+<br>
+Lemma 2.7.8 (Centering). Any subgaussian random variable X satisfies<br>
+                                    ∥X − E X∥ψ2 ≤ C∥X∥ψ2 .<br>
+<br>
+<h3>Scores</h3><br>
+<br>
+- Control: <strong>5 / 5</strong><br>
+- Library-RAG: <strong>5 / 5</strong><br>
+- Winner: <strong>tie</strong><br>
+- Confidence: <code>high</code><br>
+<br>
+<h3>Library-RAG overall assessment</h3><br>
+<br>
+The RAG proof is correct and gives a transparent direct exponential-moment argument. It elaborates the decisive centering estimate well, though it is slightly longer than the control and contains a minor routine integrability aside.<br>
+<br>
+<h3>Where the Library-RAG response worked</h3><br>
+<br>
+- <strong>Section/quote:</strong> The proof unfolds the Luxemburg definition and says that it suffices to transfer an exponential-moment bound from X to X − EX.<br>
+  - Why it worked: The RAG opening keeps the definitional material brief while clearly identifying the concrete estimate that the proof must establish.<br>
+- <strong>Section/quote:</strong> Using (X − m)^2 ≤ 2X^2 + 2m^2, the proof factors the centered exponential moment and then bounds both factors by √2 using Jensen and a square-root moment estimate.<br>
+  - Why it worked: This directly exposes the critical scale choice: the denominator 4s^2 produces two half-strength exponential moments, each bounded by √2, so their product is at most 2. It also avoids leaving the triangle inequality as an asserted norm property.<br>
+<br>
+<h3>Where the Library-RAG response needs improvement</h3><br>
+<br>
+- <strong>Section/quote:</strong> In particular, X belongs to L2, so m := EX is well-defined.<br>
+  - Issue: This is a routine side justification rather than a critical part of the centering estimate, and it momentarily interrupts the main argument.<br>
+  - Suggested revision: Compress it into the setup, for example: &#x27;Let m = EX, which is finite by the exponential-moment assumption.&#x27;<br>
+<br>
+<h3>Critical steps to elaborate</h3><br>
+<br>
+- Choosing the scale 2s and using (X − m)^2 ≤ 2X^2 + 2m^2 to split the centered exponential moment.<br>
+- Using Jensen to control the deterministic mean factor and concavity or Hölder to control the half-strength exponential moment.<br>
+<br>
+<h3>Trivial steps to omit/compress</h3><br>
+<br>
+- The standalone observation that exponential integrability implies X is in L2.<br>
+- Repeated concluding statements after the boxed norm inequality.<br>
+<br>
+<h3>Control comparison notes</h3><br>
+<br>
+The control is slightly more economical and elegant because it uses the Luxemburg triangle inequality. The RAG proof is more explicit about the critical exponential-moment transfer. Both allocate detail effectively and prove the same constant C = 2.<br>
+<br>
+---<br>
+</body></html>

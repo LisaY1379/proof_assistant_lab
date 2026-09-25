@@ -1,0 +1,3214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Control vs Library-RAG Visualizer</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']], processEscapes: true },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <style>
+    :root { --bg:#f8fafc; --panel:#fff; --border:#dbe3ef; --text:#111827; --muted:#64748b; --blue:#1d4ed8; --cyan:#155e75; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; }
+    header { position: sticky; top:0; z-index:10; background:#0f172a; color:white; padding:16px 22px; box-shadow:0 2px 10px rgba(15,23,42,.18); }
+    header h1 { margin:0 0 4px; font-size:22px; }
+    header .sub { color:#cbd5e1; font-size:13px; }
+    .layout { display:grid; grid-template-columns:260px 1fr; gap:0; }
+    nav { position:sticky; top:72px; align-self:start; height:calc(100vh - 72px); overflow:auto; padding:14px; border-right:1px solid var(--border); background:white; }
+    nav h2 { font-size:12px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin:0 0 10px; }
+    nav a { display:block; padding:8px 9px; border-radius:8px; color:#1e3a8a; text-decoration:none; font-size:13px; line-height:1.25; }
+    nav a:hover { background:#eff6ff; }
+    main { padding:18px; min-width:0; }
+    .case { margin:0 0 26px; }
+    .case-title { display:flex; justify-content:space-between; align-items:end; gap:10px; margin:0 0 10px; }
+    .case-title h2 { margin:0; font-size:20px; }
+    .case-id { color:var(--muted); font-size:12px; }
+    .split { display:grid; grid-template-columns:1fr 1fr; gap:14px; align-items:start; position:relative; }
+    .link-layer { position:absolute; inset:0; width:100%; height:100%; pointer-events:none; z-index:2; overflow:visible; }
+    .link-layer path { stroke:#94a3b8; stroke-width:2; fill:none; opacity:.28; }
+    .link-layer path.active { stroke:#2563eb; stroke-width:4; opacity:.92; }
+    .result-col { background:var(--panel); border:1px solid var(--border); border-radius:14px; padding:13px; min-width:0; box-shadow:0 1px 5px rgba(15,23,42,.05); position:relative; z-index:3; }
+    .result-col.control { border-top:5px solid #6366f1; }
+    .result-col.rag { border-top:5px solid #06b6d4; }
+    .col-header { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    .col-header h3 { margin:0 0 8px; color:#111827; }
+    .copy-btn { border:0; border-radius:999px; padding:5px 9px; background:#eef2ff; color:#3730a3; font-weight:800; cursor:pointer; }
+    .prompt-box, .nodes-box { border:1px solid #e2e8f0; background:#f8fafc; border-radius:10px; padding:10px; margin:8px 0; }
+    .small-title { font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); margin-bottom:5px; }
+    .prompt-text { white-space:pre-wrap; font-size:13px; line-height:1.45; max-height:220px; overflow:auto; }
+    .meta-row { margin:8px 0; }
+    .meta-pill { display:inline-block; margin:2px 4px 2px 0; padding:4px 7px; border-radius:999px; background:#e0f2fe; color:#155e75; font-size:11px; font-weight:800; }
+    .meta-pill.error { background:#fee2e2; color:#991b1b; }
+    .node-chip { display:inline-block; margin:3px 4px 0 0; padding:4px 7px; border-radius:999px; background:#ecfeff; color:#155e75; font-size:11px; }
+    .answer-box { line-height:1.55; font-size:14px; overflow-wrap:anywhere; }
+    .answer-block { white-space:pre-wrap; margin:0 0 10px; padding:6px 0; }
+    .answer-block.annotated { background:#fffbeb; border-left:4px solid #f59e0b; padding:9px 10px; border-radius:8px; }
+    .answer-block.link-hover { outline:3px solid rgba(37,99,235,.35); background:#eff6ff; }
+    .eval-note.link-hover { outline:2px solid rgba(37,99,235,.35); }
+    .eval-summary { border:1px solid #c7d2fe; background:#eef2ff; color:#312e81; border-radius:10px; padding:10px; margin:8px 0; }
+    .eval-overall { margin-top:6px; font-size:13px; line-height:1.45; }
+    .eval-note { white-space:normal; border-radius:10px; padding:10px; margin:-3px 0 12px 14px; font-size:13px; line-height:1.45; }
+    .eval-note.worked { background:#ecfdf5; border:1px solid #bbf7d0; color:#14532d; }
+    .eval-note.improve { background:#fff7ed; border:1px solid #fed7aa; color:#7c2d12; }
+    .eval-note.linked { background:#f8fafc; border:1px solid #cbd5e1; color:#334155; }
+    .eval-note-title { font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:.05em; margin-bottom:5px; }
+    .error-box { border:1px solid #fecaca; background:#fef2f2; color:#991b1b; border-radius:9px; padding:9px; margin:8px 0; white-space:pre-wrap; }
+    code { background:#f1f5f9; padding:1px 4px; border-radius:4px; }
+    pre { background:#0f172a; color:#e5e7eb; padding:10px; border-radius:9px; overflow:auto; }
+    .strategy-card { white-space:normal; margin:10px 0; padding:10px 12px; border-radius:12px; border:1px solid #bfdbfe; border-left:5px solid #2563eb; background:#eff6ff; color:#1e3a8a; }
+    .strategy-card.new { border-color:#fed7aa; border-left-color:#f97316; background:#fff7ed; color:#7c2d12; }
+    .strategy-card-title { font-size:12px; font-weight:900; text-transform:uppercase; letter-spacing:.04em; margin-bottom:5px; }
+    .strategy-card-meta { font-size:12px; font-weight:800; margin-bottom:5px; }
+    .strategy-card-body { font-size:13px; line-height:1.45; }
+    .muted { color:var(--muted); }
+    @media (max-width: 980px) { .layout { grid-template-columns:1fr; } nav { position:static; height:auto; border-right:0; border-bottom:1px solid var(--border); } .split { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Control vs Library-RAG Visualizer</h1>
+    <div class="sub">Run: <code>reports/control_vs_rag/run_20260924_144730</code></div>
+  </header>
+  <div class="layout">
+    <nav><h2>Cases</h2><a href='#case-theorem_6_2_2'>1. Theorem 6.2.2 (Hanson-Wright inequality)</a><a href='#case-theorem_4_7_1'>2. Theorem 4.7.1 (Covariance estimation)</a><a href='#case-lemma_8_3_14'>3. Lemma 8.3.14 (Dimension reduction)</a><a href='#case-theorem_7_2_2'>4. Theorem 7.2.2 (Slepian inequality). Let (Xt )t∈T and (Yt)</a><a href='#case-lemma_2_7_8'>5. Lemma 2.7.8 (Centering)</a></nav>
+    <main>
+    <article class="case" id="case-theorem_6_2_2">
+      <div class="case-title">
+        <h2>1. Theorem 6.2.2 (Hanson-Wright inequality)</h2>
+        <div class="case-id"><code>theorem_6_2_2</code></div>
+      </div>
+      <div class="split" data-pair-links='[{&quot;pair_id&quot;: &quot;pair_1&quot;, &quot;control_idx&quot;: 13, &quot;rag_idx&quot;: 8, &quot;judgment&quot;: &quot;worked_well&quot;}, {&quot;pair_id&quot;: &quot;pair_2&quot;, &quot;control_idx&quot;: 13, &quot;rag_idx&quot;: 12, &quot;judgment&quot;: &quot;worked_well&quot;}, {&quot;pair_id&quot;: &quot;pair_3&quot;, &quot;control_idx&quot;: 12, &quot;rag_idx&quot;: 16, &quot;judgment&quot;: &quot;worked_well&quot;}, {&quot;pair_id&quot;: &quot;pair_4&quot;, &quot;control_idx&quot;: 7, &quot;rag_idx&quot;: 4, &quot;judgment&quot;: &quot;worked_well&quot;}, {&quot;pair_id&quot;: &quot;pair_5&quot;, &quot;control_idx&quot;: 12, &quot;rag_idx&quot;: 25, &quot;judgment&quot;: &quot;worked_well&quot;}, {&quot;pair_id&quot;: &quot;pair_6&quot;, &quot;control_idx&quot;: 8, &quot;rag_idx&quot;: 21, &quot;judgment&quot;: &quot;needs_improvement&quot;}, {&quot;pair_id&quot;: &quot;pair_7&quot;, &quot;control_idx&quot;: 5, &quot;rag_idx&quot;: 3, &quot;judgment&quot;: &quot;needs_improvement&quot;}, {&quot;pair_id&quot;: &quot;pair_8&quot;, &quot;control_idx&quot;: 5, &quot;rag_idx&quot;: 28, &quot;judgment&quot;: &quot;needs_improvement&quot;}]'>
+        <svg class="link-layer" aria-hidden="true"></svg>
+        
+        <section class="result-col control">
+          <div class="col-header">
+            <h3>Control</h3>
+            <button class="copy-btn" data-copy="Let \(c,C&gt;0\) denote absolute constants whose values may change from line to line.
+
+Set
+\[
+A_{\mathrm s}=\frac{A+A^{T}}2.
+\]
+Since \(x^{T}Ax=x^{T}A_{\mathrm s}x\),
+\[
+\|A_{\mathrm s}\|\le \|A\|,
+\qquad
+\|A_{\mathrm s}\|_{F}\le \|A\|_{F}.
+\]
+Thus it suffices to prove the result for symmetric \(A\).
+
+We use the standard subgaussian facts
+\[
+\mathbb E e^{sX_i}\le e^{Cs^{2}K^{2}},
+\qquad
+\|X_i^{2}-\mathbb EX_i^{2}\|_{\psi _1}\le CK^{2}.
+\]
+
+### 1. The diagonal part
+
+Write
+\[
+X^{T}AX-\mathbb EX^{T}AX=D+S,
+\]
+where
+\[
+D=\sum_{i=1}^{n}a_{ii}\bigl(X_i^{2}-\mathbb EX_i^{2}\bigr),
+\qquad
+S=\sum_{i\ne j}a_{ij}X_iX_j.
+\]
+Here we used independence and \(\mathbb EX_i=0\), which give
+\(\mathbb E X_iX_j=0\) for \(i\ne j\).
+
+The summands in \(D\) are independent, centered, and satisfy
+\[
+\left\|a_{ii}(X_i^{2}-\mathbb EX_i^{2})\right\|_{\psi _1}
+ \le CK^{2}|a_{ii}|.
+\]
+Bernstein’s inequality for sums of independent subexponential variables therefore gives
+\[
+\mathbb P\{|D|\ge u\}
+ \le
+2\exp\left[
+-c\min\left(
+\frac{u^{2}}{K^{4}\sum_i a_{ii}^{2}},
+\frac{u}{K^{2}\max_i|a_{ii}|}
+\right)\right].
+\]
+Because
+\[
+\sum_i a_{ii}^{2}\le \|A\|_{F}^{2},
+\qquad
+\max_i|a_{ii}|\le \|A\|,
+\]
+we obtain
+\[
+\mathbb P\{|D|\ge u\}
+ \le
+2\exp\left[
+-c\min\left(
+\frac{u^{2}}{K^{4}\|A\|_{F}^{2}},
+\frac{u}{K^{2}\|A\|}
+\right)\right].
+\tag{1}
+\]
+
+### 2. An exponential-moment estimate
+
+We first record an auxiliary estimate. Let \(Y\) have independent, mean-zero coordinates satisfying
+\(\|Y_i\|_{\psi _2}\le K\), and let \(B\) be deterministic. Then
+\[
+\mathbb E\exp\bigl(s\|BY\|_{2}^{2}\bigr)
+ \le
+\exp\bigl(CsK^{2}\|B\|_{F}^{2}\bigr),
+\tag{2}
+\]
+provided
+\[
+0\le s\le \frac{c}{K^{2}\|B\|^{2}}.
+\tag{3}
+\]
+
+Indeed, for a standard Gaussian vector \(g\), independent of \(Y\),
+\[
+e^{s\|BY\|_{2}^{2}}
+ =
+\mathbb E_g\exp\bigl(\sqrt{2s}\,\langle g,BY\rangle\bigr).
+\]
+Conditioning on \(g\) and using independence and subgaussianity of the coordinates of \(Y\),
+\[
+\mathbb E_Y
+ \exp\bigl(\sqrt{2s}\,\langle B^{T}g,Y\rangle\bigr)
+ \le
+\exp\bigl(CsK^{2}\|B^{T}g\|_{2}^{2}\bigr).
+\]
+If \(\sigma_k\) are the singular values of \(B\), the remaining Gaussian expectation is
+\[
+\prod_k\left(1-C&#x27;sK^{2}\sigma_k^{2}\right)^{-1/2}.
+\]
+Under condition (3), using \(-\log(1-x)\le Cx\) for sufficiently small \(x\), this is at most
+\[
+\exp\left(CsK^{2}\sum_k\sigma_k^{2}\right)
+ =
+\exp\left(CsK^{2}\|B\|_{F}^{2}\right).
+\]
+This proves (2).
+
+### 3. The off-diagonal part
+
+We prove that
+\[
+\mathbb E e^{\lambda S}
+ \le
+\exp\bigl(C\lambda^{2}K^{4}\|A\|_{F}^{2}\bigr)
+\tag{4}
+\]
+whenever
+\[
+|\lambda|\le \frac{c}{K^{2}\|A\|}.
+\tag{5}
+\]
+
+Let \(\delta_1,\ldots,\delta_n\) be independent Bernoulli random variables with
+\(\mathbb P(\delta_i=1)=1/2\), independent of \(X\), and define
+\[
+S_\delta
+ =
+\sum_{i,j}\delta_i(1-\delta_j)a_{ij}X_iX_j.
+\]
+For \(i\ne j\),
+\[
+\mathbb E_\delta[\delta_i(1-\delta_j)]=\frac14,
+\]
+while the diagonal terms vanish. Hence
+\[
+S=4\mathbb E_\delta S_\delta.
+\]
+By convexity,
+\[
+\mathbb E_X e^{\lambda S}
+\le
+\mathbb E_\delta\mathbb E_X e^{4\lambda S_\delta}.
+\tag{6}
+\]
+
+Fix \(\delta\) and let
+\[
+I=\{i:\delta_i=1\}.
+\]
+Then
+\[
+S_\delta=X_I^{T}A_{I,I^c}X_{I^c}.
+\]
+Conditioning on \(X_I\) and using the subgaussian moment-generating bound for the independent coordinates of \(X_{I^c}\),
+\[
+\mathbb E_{X_{I^c}}
+ e^{4\lambda X_I^{T}A_{I,I^c}X_{I^c}}
+\le
+\exp\left(
+C\lambda^{2}K^{2}
+\|A_{I,I^c}^{T}X_I\|_{2}^{2}
+\right).
+\]
+Apply (2) with
+\[
+s=C\lambda^{2}K^{2},
+\qquad
+B=A_{I,I^c}^{T}.
+\]
+Since
+\[
+\|B\|\le \|A\|,
+\qquad
+\|B\|_{F}\le \|A\|_{F},
+\]
+condition (3) follows from (5), and therefore
+\[
+\mathbb E_X e^{4\lambda S_\delta}
+ \le
+\exp\bigl(C\lambda^{2}K^{4}\|A\|_{F}^{2}\bigr).
+\]
+Together with (6), this proves (4).
+
+For \(u\ge0\), Chernoff’s inequality gives, for every
+\(0\le\lambda\le c/(K^{2}\|A\|)\),
+\[
+\mathbb P\{S\ge u\}
+ \le
+\exp\left(
+-\lambda u+C\lambda^{2}K^{4}\|A\|_{F}^{2}
+\right).
+\]
+Choosing
+\[
+\lambda
+ =
+c\min\left\{
+\frac{u}{K^{4}\|A\|_{F}^{2}},
+\frac1{K^{2}\|A\|}
+\right\},
+\]
+with \(c\) sufficiently small, yields
+\[
+\mathbb P\{S\ge u\}
+ \le
+\exp\left[
+-c\min\left(
+\frac{u^{2}}{K^{4}\|A\|_{F}^{2}},
+\frac{u}{K^{2}\|A\|}
+\right)\right].
+\]
+Applying the same argument to \(-S\),
+\[
+\mathbb P\{|S|\ge u\}
+ \le
+2\exp\left[
+-c\min\left(
+\frac{u^{2}}{K^{4}\|A\|_{F}^{2}},
+\frac{u}{K^{2}\|A\|}
+\right)\right].
+\tag{7}
+\]
+
+### 4. Completion
+
+By the triangle inequality,
+\[
+\mathbb P\{|D+S|\ge t\}
+ \le
+\mathbb P\{|D|\ge t/2\}
+ +
+\mathbb P\{|S|\ge t/2\}.
+\]
+Using (1) and (7),
+\[
+\mathbb P\{|D+S|\ge t\}
+ \le
+4\exp\left[
+-c\min\left(
+\frac{t^{2}}{K^{4}\|A\|_{F}^{2}},
+\frac{t}{K^{2}\|A\|}
+\right)\right].
+\]
+Finally, by reducing the absolute constant \(c\), the prefactor \(4\) can be replaced by \(2\): combine this estimate with the trivial bound that probabilities are at most \(1\). Thus
+\[
+\boxed{
+\mathbb P\left\{
+\left|X^{T}AX-\mathbb EX^{T}AX\right|\ge t
+\right\}
+\le
+2\exp\left[
+-c\min\left(
+\frac{t^{2}}{K^{4}\|A\|_{F}^{2}},
+\frac{t}{K^{2}\|A\|}
+\right)\right].
+}
+\]
+This is the Hanson–Wright inequality.">Copy raw</button>
+          </div>
+          <div class="prompt-box">
+            <div class="small-title">Prompt</div>
+            <div class="prompt-text">Can you prove this theorem? Theorem 6.2.2 (Hanson-Wright inequality). Let A be an n × n matrix. Let X =
+(X1 , . . . , Xn ) ∈ Rn be a random vector with independent, mean-zero, subgaussian
+coordinates. Then, for every t ≥ 0, we have
+                                               h             t2       t i
+         P |X T AX − E X T AX| ≥ t ≤ 2 exp − c min
+            
+                                                                 2
+                                                                   ,        ,
+                                                          K 4 ∥A∥F K 2 ∥A∥
+where K = maxi ∥Xi ∥ψ2 .
+
+Our</div>
+          </div>
+          <div class="meta-row"><span class='meta-pill'>model: gpt-5.6-sol</span><span class='meta-pill'>reasoning effort: high</span><span class='meta-pill'>max completion tokens: 4000</span><span class='meta-pill'>elapsed seconds: 103.461</span></div>
+          
+          
+          
+          <div class="answer-box"><div class="answer-block" data-block-index="0">Let \(c,C&gt;0\) denote absolute constants whose values may change from line to line.</div><div class="answer-block" data-block-index="1">Set
+\[
+A_{\mathrm s}=\frac{A+A^{T}}2.
+\]
+Since \(x^{T}Ax=x^{T}A_{\mathrm s}x\),
+\[
+\|A_{\mathrm s}\|\le \|A\|,
+\qquad
+\|A_{\mathrm s}\|_{F}\le \|A\|_{F}.
+\]
+Thus it suffices to prove the result for symmetric \(A\).</div><div class="answer-block" data-block-index="2">We use the standard subgaussian facts
+\[
+\mathbb E e^{sX_i}\le e^{Cs^{2}K^{2}},
+\qquad
+\|X_i^{2}-\mathbb EX_i^{2}\|_{\psi _1}\le CK^{2}.
+\]</div><div class="answer-block" data-block-index="3">### 1. The diagonal part</div><div class="answer-block" data-block-index="4">Write
+\[
+X^{T}AX-\mathbb EX^{T}AX=D+S,
+\]
+where
+\[
+D=\sum_{i=1}^{n}a_{ii}\bigl(X_i^{2}-\mathbb EX_i^{2}\bigr),
+\qquad
+S=\sum_{i\ne j}a_{ij}X_iX_j.
+\]
+Here we used independence and \(\mathbb EX_i=0\), which give
+\(\mathbb E X_iX_j=0\) for \(i\ne j\).</div><div class="answer-block annotated linked-block" data-block-index="5" data-pairs="pair_7 pair_8">The summands in \(D\) are independent, centered, and satisfy
+\[
+\left\|a_{ii}(X_i^{2}-\mathbb EX_i^{2})\right\|_{\psi _1}
+ \le CK^{2}|a_{ii}|.
+\]
+Bernstein’s inequality for sums of independent subexponential variables therefore gives
+\[
+\mathbb P\{|D|\ge u\}
+ \le
+2\exp\left[
+-c\min\left(
+\frac{u^{2}}{K^{4}\sum_i a_{ii}^{2}},
+\frac{u}{K^{2}\max_i|a_{ii}|}
+\right)\right].
+\]
+Because
+\[
+\sum_i a_{ii}^{2}\le \|A\|_{F}^{2},
+\qquad
+\max_i|a_{ii}|\le \|A\|,
+\]
+we obtain
+\[
+\mathbb P\{|D|\ge u\}
+ \le
+2\exp\left[
+-c\min\left(
+\frac{u^{2}}{K^{4}\|A\|_{F}^{2}},
+\frac{u}{K^{2}\|A\|}
+\right)\right].
+\tag{1}
+\]</div><div class="eval-note linked" data-pair="pair_7"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> Three preliminary MGF facts are followed by a broad claim that they follow directly from moment expansion.</div><div><strong>Comparison:</strong> The RAG preliminary material is slightly more verbose yet less precise about the local subexponential MGF estimate.</div></div><div class="eval-note linked" data-pair="pair_8"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> Cauchy–Schwarz uses the component estimates at 2λ without explicitly shrinking the admissible range.</div><div><strong>Comparison:</strong> A one-line constant adjustment would make the RAG combination fully explicit.</div></div><div class="answer-block" data-block-index="6">### 2. An exponential-moment estimate</div><div class="answer-block annotated linked-block" data-block-index="7" data-pairs="pair_4">We first record an auxiliary estimate. Let \(Y\) have independent, mean-zero coordinates satisfying
+\(\|Y_i\|_{\psi _2}\le K\), and let \(B\) be deterministic. Then
+\[
+\mathbb E\exp\bigl(s\|BY\|_{2}^{2}\bigr)
+ \le
+\exp\bigl(CsK^{2}\|B\|_{F}^{2}\bigr),
+\tag{2}
+\]
+provided
+\[
+0\le s\le \frac{c}{K^{2}\|B\|^{2}}.
+\tag{3}
+\]</div><div class="eval-note linked" data-pair="pair_4"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> The proof linearizes the squared norm with a Gaussian and controls the resulting Gaussian quadratic MGF by singular values.</div><div><strong>Comparison:</strong> The RAG proof contextualizes this critical calculation well, although one parameter should be made exact.</div></div><div class="answer-block annotated linked-block" data-block-index="8" data-pairs="pair_6">Indeed, for a standard Gaussian vector \(g\), independent of \(Y\),
+\[
+e^{s\|BY\|_{2}^{2}}
+ =
+\mathbb E_g\exp\bigl(\sqrt{2s}\,\langle g,BY\rangle\bigr).
+\]
+Conditioning on \(g\) and using independence and subgaussianity of the coordinates of \(Y\),
+\[
+\mathbb E_Y
+ \exp\bigl(\sqrt{2s}\,\langle B^{T}g,Y\rangle\bigr)
+ \le
+\exp\bigl(CsK^{2}\|B^{T}g\|_{2}^{2}\bigr).
+\]
+If \(\sigma_k\) are the singular values of \(B\), the remaining Gaussian expectation is
+\[
+\prod_k\left(1-C&#x27;sK^{2}\sigma_k^{2}\right)^{-1/2}.
+\]
+Under condition (3), using \(-\log(1-x)\le Cx\) for sufficiently small \(x\), this is at most
+\[
+\exp\left(CsK^{2}\sum_k\sigma_k^{2}\right)
+ =
+\exp\left(CsK^{2}\|B\|_{F}^{2}\right).
+\]
+This proves (2).</div><div class="eval-note linked" data-pair="pair_6"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> The Gaussian identity is invoked with s = C|λ|K while retaining an equality.</div><div><strong>Comparison:</strong> The RAG argument is conceptually right but should not use a floating absolute constant inside an exact equality.</div></div><div class="answer-block" data-block-index="9">### 3. The off-diagonal part</div><div class="answer-block" data-block-index="10">We prove that
+\[
+\mathbb E e^{\lambda S}
+ \le
+\exp\bigl(C\lambda^{2}K^{4}\|A\|_{F}^{2}\bigr)
+\tag{4}
+\]
+whenever
+\[
+|\lambda|\le \frac{c}{K^{2}\|A\|}.
+\tag{5}
+\]</div><div class="answer-block" data-block-index="11">Let \(\delta_1,\ldots,\delta_n\) be independent Bernoulli random variables with
+\(\mathbb P(\delta_i=1)=1/2\), independent of \(X\), and define
+\[
+S_\delta
+ =
+\sum_{i,j}\delta_i(1-\delta_j)a_{ij}X_iX_j.
+\]
+For \(i\ne j\),
+\[
+\mathbb E_\delta[\delta_i(1-\delta_j)]=\frac14,
+\]
+while the diagonal terms vanish. Hence
+\[
+S=4\mathbb E_\delta S_\delta.
+\]
+By convexity,
+\[
+\mathbb E_X e^{\lambda S}
+\le
+\mathbb E_\delta\mathbb E_X e^{4\lambda S_\delta}.
+\tag{6}
+\]</div><div class="answer-block annotated linked-block" data-block-index="12" data-pairs="pair_3 pair_5">Fix \(\delta\) and let
+\[
+I=\{i:\delta_i=1\}.
+\]
+Then
+\[
+S_\delta=X_I^{T}A_{I,I^c}X_{I^c}.
+\]
+Conditioning on \(X_I\) and using the subgaussian moment-generating bound for the independent coordinates of \(X_{I^c}\),
+\[
+\mathbb E_{X_{I^c}}
+ e^{4\lambda X_I^{T}A_{I,I^c}X_{I^c}}
+\le
+\exp\left(
+C\lambda^{2}K^{2}
+\|A_{I,I^c}^{T}X_I\|_{2}^{2}
+\right).
+\]
+Apply (2) with
+\[
+s=C\lambda^{2}K^{2},
+\qquad
+B=A_{I,I^c}^{T}.
+\]
+Since
+\[
+\|B\|\le \|A\|,
+\qquad
+\|B\|_{F}\le \|A\|_{F},
+\]
+condition (3) follows from (5), and therefore
+\[
+\mathbb E_X e^{4\lambda S_\delta}
+ \le
+\exp\bigl(C\lambda^{2}K^{4}\|A\|_{F}^{2}\bigr).
+\]
+Together with (6), this proves (4).</div><div class="eval-note linked" data-pair="pair_3"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> A Bernoulli partition yields S = 4E_δT_δ and Jensen converts this into an MGF bound for the decoupled form.</div><div><strong>Comparison:</strong> The RAG presentation makes the role of the random partition particularly transparent.</div></div><div class="eval-note linked" data-pair="pair_5"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> The whole-form MGF is obtained by Cauchy–Schwarz and optimized with λ = min{t/(2CV), L/2}.</div><div><strong>Comparison:</strong> The RAG route gives a cleaner final synthesis and more explicitly explains the two concentration regimes.</div></div><div class="answer-block annotated linked-block" data-block-index="13" data-pairs="pair_1 pair_2">For \(u\ge0\), Chernoff’s inequality gives, for every
+\(0\le\lambda\le c/(K^{2}\|A\|)\),
+\[
+\mathbb P\{S\ge u\}
+ \le
+\exp\left(
+-\lambda u+C\lambda^{2}K^{4}\|A\|_{F}^{2}
+\right).
+\]
+Choosing
+\[
+\lambda
+ =
+c\min\left\{
+\frac{u}{K^{4}\|A\|_{F}^{2}},
+\frac1{K^{2}\|A\|}
+\right\},
+\]
+with \(c\) sufficiently small, yields
+\[
+\mathbb P\{S\ge u\}
+ \le
+\exp\left[
+-c\min\left(
+\frac{u^{2}}{K^{4}\|A\|_{F}^{2}},
+\frac{u}{K^{2}\|A\|}
+\right)\right].
+\]
+Applying the same argument to \(-S\),
+\[
+\mathbb P\{|S|\ge u\}
+ \le
+2\exp\left[
+-c\min\left(
+\frac{u^{2}}{K^{4}\|A\|_{F}^{2}},
+\frac{u}{K^{2}\|A\|}
+\right)\right].
+\tag{7}
+\]</div><div class="eval-note linked" data-pair="pair_1"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> Replacing A by its symmetric part preserves the quadratic form and decreases the relevant norms.</div><div><strong>Comparison:</strong> Both proofs handle this routine reduction concisely and correctly.</div></div><div class="eval-note linked" data-pair="pair_2"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> The centered form is split into a diagonal centered-square sum D and an off-diagonal sum S.</div><div><strong>Comparison:</strong> The RAG passage retains the control&#x27;s efficient decomposition without unnecessary detail.</div></div><div class="answer-block" data-block-index="14">### 4. Completion</div><div class="answer-block" data-block-index="15">By the triangle inequality,
+\[
+\mathbb P\{|D+S|\ge t\}
+ \le
+\mathbb P\{|D|\ge t/2\}
+ +
+\mathbb P\{|S|\ge t/2\}.
+\]
+Using (1) and (7),
+\[
+\mathbb P\{|D+S|\ge t\}
+ \le
+4\exp\left[
+-c\min\left(
+\frac{t^{2}}{K^{4}\|A\|_{F}^{2}},
+\frac{t}{K^{2}\|A\|}
+\right)\right].
+\]
+Finally, by reducing the absolute constant \(c\), the prefactor \(4\) can be replaced by \(2\): combine this estimate with the trivial bound that probabilities are at most \(1\). Thus
+\[
+\boxed{
+\mathbb P\left\{
+\left|X^{T}AX-\mathbb EX^{T}AX\right|\ge t
+\right\}
+\le
+2\exp\left[
+-c\min\left(
+\frac{t^{2}}{K^{4}\|A\|_{F}^{2}},
+\frac{t}{K^{2}\|A\|}
+\right)\right].
+}
+\]
+This is the Hanson–Wright inequality.</div></div>
+        </section>
+        
+        
+        <section class="result-col rag">
+          <div class="col-header">
+            <h3>Library-RAG</h3>
+            <button class="copy-btn" data-copy="## Proof
+
+Write \(\|\cdot\|\) for the operator norm and \(\|\cdot\|_F\) for the Frobenius norm. All constants \(c,C&gt;0\) below are absolute and may change from line to line.
+
+We use the following standard consequences of the \(\psi_2\)-norm:
+
+1. If \(\mathbb EZ=0\) and \(\|Z\|_{\psi_2}\le K\), then
+   \[
+   \mathbb E e^{sZ}\le e^{Cs^2K^2},\qquad s\in\mathbb R.
+   \tag{1}
+   \]
+2. The centered square is subexponential:
+   \[
+   \|Z^2-\mathbb EZ^2\|_{\psi_1}\le CK^2.
+   \tag{2}
+   \]
+3. Consequently, if \(Y_i\) are independent, centered, and
+   \(\|Y_i\|_{\psi_1}\le K^2\), then for any scalars \(b_i\),
+   \[
+   \mathbb E\exp\left(\lambda\sum_i b_iY_i\right)
+   \le
+   \exp\left(C\lambda^2K^4\sum_i b_i^2\right)
+   \tag{3}
+   \]
+   whenever
+   \[
+   |\lambda|\le \frac{c}{K^2\max_i|b_i|}.
+   \]
+These follow directly by expanding the exponential and using the moment bounds
+\((\mathbb E|Z|^p)^{1/p}\le CK\sqrt p\) and
+\((\mathbb E|Y_i|^p)^{1/p}\le CK^2p\).
+
+The proof will establish a quadratic bound for the moment-generating function and then optimize the exponential Markov inequality.
+
+[NEW_STRATEGY: Laplace-transform concentration]
+Why this is new: The retrieved hierarchy does not explicitly include deriving concentration tails from a locally quadratic moment-generating-function bound and optimizing the Laplace parameter.
+[/NEW_STRATEGY]
+
+### 1. Reduction to symmetric matrices
+
+Let
+\[
+A_s=\frac{A+A^T}{2}.
+\]
+Since the skew-symmetric part contributes nothing,
+\[
+x^TAx=x^TA_sx
+\]
+for every \(x\in\mathbb R^n\). Moreover,
+\[
+\|A_s\|\le \|A\|,
+\qquad
+\|A_s\|_F\le \|A\|_F.
+\]
+It is therefore enough to prove the result for symmetric \(A\).
+
+[STRATEGY: family_standard_theorem_reduction | Reduction to a standard theorem]
+Derived according to this strategy: Replacing \(A\) by its symmetric part preserves the quadratic form while only decreasing the norms appearing in the desired estimate.
+[/STRATEGY]
+
+Henceforth assume \(A=A^T\).
+
+### 2. Diagonal part
+
+Decompose
+\[
+X^TAX-\mathbb EX^TAX=D+S,
+\]
+where
+\[
+D=\sum_{i=1}^n a_{ii}\bigl(X_i^2-\mathbb EX_i^2\bigr),
+\qquad
+S=\sum_{i\ne j}a_{ij}X_iX_j.
+\tag{4}
+\]
+Here \(\mathbb ES=0\), since \(X_i\) and \(X_j\) are independent and centered whenever \(i\ne j\).
+
+[STRATEGY: sub_canonical_rewriting | Canonical rewriting]
+Derived according to this strategy: The centered quadratic form is rewritten canonically as a diagonal sum of centered squares plus an off-diagonal bilinear sum.
+[/STRATEGY]
+
+By (2)–(3),
+\[
+\mathbb Ee^{\lambda D}
+\le
+\exp\left(C\lambda^2K^4\sum_i a_{ii}^2\right)
+\le
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)
+\tag{5}
+\]
+provided
+\[
+|\lambda|\le \frac{c}{K^2\max_i|a_{ii}|}.
+\]
+Because \(A\) is symmetric,
+\[
+\max_i|a_{ii}|\le \|A\|,
+\]
+so (5) holds whenever
+\[
+|\lambda|\le \frac{c}{K^2\|A\|}.
+\tag{6}
+\]
+
+### 3. Off-diagonal part: random decoupling
+
+Let \(\delta_1,\dots,\delta_n\) be independent Bernoulli random variables with
+\(\mathbb P(\delta_i=1)=1/2\), independent of \(X\), and put
+\[
+\Lambda=\{i:\delta_i=1\}.
+\]
+For fixed \(X\), define
+\[
+T_\delta=\sum_{i\in\Lambda,\ j\notin\Lambda}a_{ij}X_iX_j.
+\]
+Since \(\mathbb E_\delta[\delta_i(1-\delta_j)]=1/4\) for \(i\ne j\),
+\[
+S=4\,\mathbb E_\delta T_\delta.
+\tag{7}
+\]
+
+[STRATEGY: family_explicit_construction | Explicit construction and parameter choice]
+Derived according to this strategy: An independent Bernoulli partition is constructed explicitly to separate the two factors in each off-diagonal product.
+[/STRATEGY]
+
+By convexity of the exponential and (7),
+\[
+\mathbb Ee^{\lambda S}
+\le
+\mathbb E_\delta\mathbb E_Xe^{4\lambda T_\delta}.
+\tag{8}
+\]
+
+[NEW_STRATEGY: Random-partition decoupling]
+Why this is new: The off-diagonal quadratic chaos is converted into a conditionally linear bilinear form using a random partition, a method not represented among the retrieved nodes.
+[/NEW_STRATEGY]
+
+Fix \(\Lambda\), and write
+\[
+B=A_{\Lambda,\Lambda^c},\qquad
+x=X_\Lambda,\qquad y=X_{\Lambda^c}.
+\]
+Then \(T_\delta=x^TBy\). Conditional on \(x\), the entries of \(y\) are independent, centered, and subgaussian. Applying (1) coordinatewise gives
+\[
+\begin{aligned}
+\mathbb E_y e^{4\lambda x^TBy}
+&amp;=
+\prod_{j\in\Lambda^c}
+\mathbb E\exp\left(
+4\lambda X_j\sum_{i\in\Lambda}a_{ij}X_i
+\right)\\
+&amp;\le
+\exp\left(C\lambda^2K^2\|B^Tx\|_2^2\right).
+\end{aligned}
+\tag{9}
+\]
+
+### 4. Gaussian linearization
+
+Let \(g\sim N(0,I_{\Lambda^c})\), independently of everything else. The Gaussian identity
+\[
+\mathbb E_g e^{s\langle g,v\rangle}
+=e^{s^2\|v\|_2^2/2}
+\tag{10}
+\]
+allows us, with \(s=C|\lambda|K\), to rewrite the right-hand side of (9) as a Gaussian expectation. Thus
+\[
+\begin{aligned}
+\mathbb E_x
+\exp\left(C\lambda^2K^2\|B^Tx\|_2^2\right)
+&amp;=
+\mathbb E_g\mathbb E_x
+\exp\left(s\langle x,Bg\rangle\right)\\
+&amp;\le
+\mathbb E_g
+\exp\left(C\lambda^2K^4\|Bg\|_2^2\right),
+\end{aligned}
+\tag{11}
+\]
+where the last inequality again follows from (1), now applied to the independent coordinates of \(x\).
+
+[NEW_STRATEGY: Gaussian linearization of a squared norm]
+Why this is new: An auxiliary Gaussian vector converts an exponential of a squared norm into an exponential of a linear form, permitting a second use of scalar subgaussian estimates.
+[/NEW_STRATEGY]
+
+Let \(s_1,\dots,s_r\) be the singular values of \(B\). For \(\theta\ge0\) satisfying \(2\theta\|B\|^2&lt;1\),
+\[
+\begin{aligned}
+\mathbb E_g e^{\theta\|Bg\|_2^2}
+&amp;=\prod_{k=1}^r(1-2\theta s_k^2)^{-1/2}.
+\end{aligned}
+\]
+If \(2\theta\|B\|^2\le 1/2\), then using
+\(-\log(1-u)\le 2u\) for \(0\le u\le1/2\),
+\[
+\mathbb E_g e^{\theta\|Bg\|_2^2}
+\le
+\exp\left(C\theta\sum_{k=1}^rs_k^2\right)
+=
+\exp\left(C\theta\|B\|_F^2\right).
+\tag{12}
+\]
+Because \(B=P_\Lambda AP_{\Lambda^c}\),
+\[
+\|B\|\le\|A\|,
+\qquad
+\|B\|_F\le\|A\|_F.
+\tag{13}
+\]
+Taking \(\theta=C\lambda^2K^4\) in (12), equations (8)–(13) give
+\[
+\mathbb Ee^{\lambda S}
+\le
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)
+\tag{14}
+\]
+whenever
+\[
+|\lambda|\le \frac{c}{K^2\|A\|}.
+\tag{15}
+\]
+
+### 5. Moment-generating function of the whole quadratic form
+
+Although \(D\) and \(S\) need not be independent, Cauchy–Schwarz, (5), and (14) imply
+\[
+\begin{aligned}
+\mathbb E e^{\lambda(D+S)}
+&amp;\le
+\bigl(\mathbb Ee^{2\lambda D}\bigr)^{1/2}
+\bigl(\mathbb Ee^{2\lambda S}\bigr)^{1/2}\\
+&amp;\le
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)
+\end{aligned}
+\tag{16}
+\]
+for
+\[
+|\lambda|\le \frac{c}{K^2\|A\|}.
+\tag{17}
+\]
+
+Put
+\[
+Q=X^TAX-\mathbb EX^TAX,\qquad
+V=K^4\|A\|_F^2,\qquad
+L=\frac{c}{K^2\|A\|}.
+\]
+For \(0\le\lambda\le L\), Markov&#x27;s inequality and (16) give
+\[
+\mathbb P(Q\ge t)
+\le
+\exp(-\lambda t+C\lambda^2V).
+\tag{18}
+\]
+
+Choose
+\[
+\lambda=\min\left\{\frac{t}{2CV},\,\frac L2\right\}.
+\tag{19}
+\]
+If the first term is selected, (18) gives an exponent bounded above by
+\(-ct^2/V\). If the second is selected, the condition selecting it ensures that the quadratic term is dominated by a constant fraction of \(\lambda t\), and hence the exponent is bounded above by \(-cLt\). Therefore
+\[
+\mathbb P(Q\ge t)
+\le
+\exp\left[
+-c\min\left(
+\frac{t^2}{K^4\|A\|_F^2},
+\frac{t}{K^2\|A\|}
+\right)
+\right].
+\tag{20}
+\]
+
+[STRATEGY: family_explicit_construction | Explicit construction and parameter choice]
+Derived according to this strategy: The Laplace parameter is chosen explicitly as the smaller of the quadratic-regime optimizer and the largest admissible linear-regime scale.
+[/STRATEGY]
+
+Applying the same argument to \(-Q\) and taking a union bound yields
+\[
+\boxed{
+\mathbb P\left(
+\left|X^TAX-\mathbb EX^TAX\right|\ge t
+\right)
+\le
+2\exp\left[
+-c\min\left(
+\frac{t^2}{K^4\|A\|_F^2},
+\frac{t}{K^2\|A\|}
+\right)
+\right].
+}
+\]
+This is the Hanson–Wright inequality. \(\square\)">Copy raw</button>
+          </div>
+          <div class="prompt-box">
+            <div class="small-title">Prompt</div>
+            <div class="prompt-text">Can you prove this theorem? Theorem 6.2.2 (Hanson-Wright inequality). Let A be an n × n matrix. Let X =
+(X1 , . . . , Xn ) ∈ Rn be a random vector with independent, mean-zero, subgaussian
+coordinates. Then, for every t ≥ 0, we have
+                                               h             t2       t i
+         P |X T AX − E X T AX| ≥ t ≤ 2 exp − c min
+            
+                                                                 2
+                                                                   ,        ,
+                                                          K 4 ∥A∥F K 2 ∥A∥
+where K = maxi ∥Xi ∥ψ2 .
+
+Our</div>
+          </div>
+          <div class="meta-row"><span class='meta-pill'>model: gpt-5.6-sol</span><span class='meta-pill'>reasoning effort: high</span><span class='meta-pill'>max completion tokens: 4000</span><span class='meta-pill'>elapsed seconds: 150.631</span></div>
+          
+          
+    <div class="eval-summary">
+      <div class="small-title">AI evaluation of Library-RAG</div>
+      <span class="meta-pill">control: 5/5</span>
+      <span class="meta-pill">rag: 5/5</span>
+      <span class="meta-pill">winner: tie</span>
+      <div class="eval-overall">The RAG proof is rigorous and especially clear on decoupling, Gaussian linearization, and Laplace optimization. It improves the final MGF-based combination, but adds a somewhat redundant preliminary lemma and uses an imprecise constant in the Gaussian linearization equality.</div>
+    </div>
+    
+          <div class="nodes-box"><div class="small-title">Retrieved nodes</div><span class='node-chip'><code>family_standard_theorem_reduction</code> · Reduction to a standard theorem</span><span class='node-chip'><code>sub_intermediate_value</code> · Intermediate Value Theorem</span><span class='node-chip'><code>sub_fundamental_theorem_calculus</code> · Fundamental Theorem of Calculus</span><span class='node-chip'><code>sub_canonical_rewriting</code> · Canonical rewriting</span><span class='node-chip'><code>family_explicit_construction</code> · Explicit construction and parameter choice</span><span class='node-chip'><code>sub_order_completeness</code> · Suprema, infima, and order completeness</span><span class='node-chip'><code>family_limits_completeness</code> · Limit, sequence, and completeness methods</span><span class='node-chip'><code>sub_sequence_completeness</code> · Sequence and completeness methods</span><span class='node-chip'><code>sub_mean_value_theorems</code> · Fermat, Rolle, and Mean Value Theorems</span><span class='node-chip'><code>sub_taylor_remainder</code> · Taylor expansion with remainder</span></div>
+          <div class="answer-box"><div class="answer-block" data-block-index="0">## Proof</div><div class="answer-block" data-block-index="1">Write \(\|\cdot\|\) for the operator norm and \(\|\cdot\|_F\) for the Frobenius norm. All constants \(c,C&gt;0\) below are absolute and may change from line to line.</div><div class="answer-block" data-block-index="2">We use the following standard consequences of the \(\psi_2\)-norm:</div><div class="answer-block annotated linked-block" data-block-index="3" data-pairs="pair_7">1. If \(\mathbb EZ=0\) and \(\|Z\|_{\psi_2}\le K\), then
+   \[
+   \mathbb E e^{sZ}\le e^{Cs^2K^2},\qquad s\in\mathbb R.
+   \tag{1}
+   \]
+2. The centered square is subexponential:
+   \[
+   \|Z^2-\mathbb EZ^2\|_{\psi_1}\le CK^2.
+   \tag{2}
+   \]
+3. Consequently, if \(Y_i\) are independent, centered, and
+   \(\|Y_i\|_{\psi_1}\le K^2\), then for any scalars \(b_i\),
+   \[
+   \mathbb E\exp\left(\lambda\sum_i b_iY_i\right)
+   \le
+   \exp\left(C\lambda^2K^4\sum_i b_i^2\right)
+   \tag{3}
+   \]
+   whenever
+   \[
+   |\lambda|\le \frac{c}{K^2\max_i|b_i|}.
+   \]
+These follow directly by expanding the exponential and using the moment bounds
+\((\mathbb E|Z|^p)^{1/p}\le CK\sqrt p\) and
+\((\mathbb E|Y_i|^p)^{1/p}\le CK^2p\).</div><div class="eval-note improve" data-pair="pair_7"><div class="eval-note-title">Linked evaluation: needs improvement</div><div><strong>Related strategy block:</strong> Laplace-transform concentration</div><div><strong>Corresponding control section:</strong> The control states two standard facts and handles the diagonal term through Bernstein&#x27;s inequality.</div><div><strong>Comparison:</strong> The RAG preliminary material is slightly more verbose yet less precise about the local subexponential MGF estimate.</div></div><div class="answer-block annotated linked-block" data-block-index="4" data-pairs="pair_4">The proof will establish a quadratic bound for the moment-generating function and then optimize the exponential Markov inequality.</div><div class="eval-note worked" data-pair="pair_4"><div class="eval-note-title">Linked evaluation: worked well</div><div><strong>Related strategy block:</strong> Gaussian linearization of a squared norm</div><div><strong>Corresponding control section:</strong> The control proves the same calculation earlier as a general auxiliary estimate.</div><div><strong>Comparison:</strong> The RAG proof contextualizes this critical calculation well, although one parameter should be made exact.</div></div><div class="answer-block" data-block-index="5"><div class="strategy-card new"><div class="strategy-card-title">Proposed new strategy</div><div class="strategy-card-meta">Laplace-transform concentration</div><div class="strategy-card-body">Why this is new: The retrieved hierarchy does not explicitly include deriving concentration tails from a locally quadratic moment-generating-function bound and optimizing the Laplace parameter.</div></div></div><div class="answer-block" data-block-index="6">### 1. Reduction to symmetric matrices</div><div class="answer-block" data-block-index="7">Let
+\[
+A_s=\frac{A+A^T}{2}.
+\]
+Since the skew-symmetric part contributes nothing,
+\[
+x^TAx=x^TA_sx
+\]
+for every \(x\in\mathbb R^n\). Moreover,
+\[
+\|A_s\|\le \|A\|,
+\qquad
+\|A_s\|_F\le \|A\|_F.
+\]
+It is therefore enough to prove the result for symmetric \(A\).</div><div class="answer-block annotated linked-block" data-block-index="8" data-pairs="pair_1"><div class="strategy-card"><div class="strategy-card-title">Library strategy reference</div><div class="strategy-card-meta">family_standard_theorem_reduction · Reduction to a standard theorem</div><div class="strategy-card-body">Derived according to this strategy: Replacing \(A\) by its symmetric part preserves the quadratic form while only decreasing the norms appearing in the desired estimate.</div></div></div><div class="eval-note worked" data-pair="pair_1"><div class="eval-note-title">Linked evaluation: worked well</div><div><strong>Related strategy block:</strong> Reduction to a standard theorem</div><div><strong>Corresponding control section:</strong> The control makes the same symmetric-part reduction with the same norm comparisons.</div><div><strong>Comparison:</strong> Both proofs handle this routine reduction concisely and correctly.</div></div><div class="answer-block" data-block-index="9">Henceforth assume \(A=A^T\).</div><div class="answer-block" data-block-index="10">### 2. Diagonal part</div><div class="answer-block" data-block-index="11">Decompose
+\[
+X^TAX-\mathbb EX^TAX=D+S,
+\]
+where
+\[
+D=\sum_{i=1}^n a_{ii}\bigl(X_i^2-\mathbb EX_i^2\bigr),
+\qquad
+S=\sum_{i\ne j}a_{ij}X_iX_j.
+\tag{4}
+\]
+Here \(\mathbb ES=0\), since \(X_i\) and \(X_j\) are independent and centered whenever \(i\ne j\).</div><div class="answer-block annotated linked-block" data-block-index="12" data-pairs="pair_2"><div class="strategy-card"><div class="strategy-card-title">Library strategy reference</div><div class="strategy-card-meta">sub_canonical_rewriting · Canonical rewriting</div><div class="strategy-card-body">Derived according to this strategy: The centered quadratic form is rewritten canonically as a diagonal sum of centered squares plus an off-diagonal bilinear sum.</div></div></div><div class="eval-note worked" data-pair="pair_2"><div class="eval-note-title">Linked evaluation: worked well</div><div><strong>Related strategy block:</strong> Canonical rewriting</div><div><strong>Corresponding control section:</strong> The control uses the same D + S decomposition and the same centering argument.</div><div><strong>Comparison:</strong> The RAG passage retains the control&#x27;s efficient decomposition without unnecessary detail.</div></div><div class="answer-block" data-block-index="13">By (2)–(3),
+\[
+\mathbb Ee^{\lambda D}
+\le
+\exp\left(C\lambda^2K^4\sum_i a_{ii}^2\right)
+\le
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)
+\tag{5}
+\]
+provided
+\[
+|\lambda|\le \frac{c}{K^2\max_i|a_{ii}|}.
+\]
+Because \(A\) is symmetric,
+\[
+\max_i|a_{ii}|\le \|A\|,
+\]
+so (5) holds whenever
+\[
+|\lambda|\le \frac{c}{K^2\|A\|}.
+\tag{6}
+\]</div><div class="answer-block" data-block-index="14">### 3. Off-diagonal part: random decoupling</div><div class="answer-block" data-block-index="15">Let \(\delta_1,\dots,\delta_n\) be independent Bernoulli random variables with
+\(\mathbb P(\delta_i=1)=1/2\), independent of \(X\), and put
+\[
+\Lambda=\{i:\delta_i=1\}.
+\]
+For fixed \(X\), define
+\[
+T_\delta=\sum_{i\in\Lambda,\ j\notin\Lambda}a_{ij}X_iX_j.
+\]
+Since \(\mathbb E_\delta[\delta_i(1-\delta_j)]=1/4\) for \(i\ne j\),
+\[
+S=4\,\mathbb E_\delta T_\delta.
+\tag{7}
+\]</div><div class="answer-block annotated linked-block" data-block-index="16" data-pairs="pair_3"><div class="strategy-card"><div class="strategy-card-title">Library strategy reference</div><div class="strategy-card-meta">family_explicit_construction · Explicit construction and parameter choice</div><div class="strategy-card-body">Derived according to this strategy: An independent Bernoulli partition is constructed explicitly to separate the two factors in each off-diagonal product.</div></div></div><div class="eval-note worked" data-pair="pair_3"><div class="eval-note-title">Linked evaluation: worked well</div><div><strong>Related strategy block:</strong> Explicit construction and parameter choice; Random-partition decoupling</div><div><strong>Corresponding control section:</strong> The control derives the same identity and Jensen bound using S_δ.</div><div><strong>Comparison:</strong> The RAG presentation makes the role of the random partition particularly transparent.</div></div><div class="answer-block" data-block-index="17">By convexity of the exponential and (7),
+\[
+\mathbb Ee^{\lambda S}
+\le
+\mathbb E_\delta\mathbb E_Xe^{4\lambda T_\delta}.
+\tag{8}
+\]</div><div class="answer-block" data-block-index="18"><div class="strategy-card new"><div class="strategy-card-title">Proposed new strategy</div><div class="strategy-card-meta">Random-partition decoupling</div><div class="strategy-card-body">Why this is new: The off-diagonal quadratic chaos is converted into a conditionally linear bilinear form using a random partition, a method not represented among the retrieved nodes.</div></div></div><div class="answer-block" data-block-index="19">Fix \(\Lambda\), and write
+\[
+B=A_{\Lambda,\Lambda^c},\qquad
+x=X_\Lambda,\qquad y=X_{\Lambda^c}.
+\]
+Then \(T_\delta=x^TBy\). Conditional on \(x\), the entries of \(y\) are independent, centered, and subgaussian. Applying (1) coordinatewise gives
+\[
+\begin{aligned}
+\mathbb E_y e^{4\lambda x^TBy}
+&amp;=
+\prod_{j\in\Lambda^c}
+\mathbb E\exp\left(
+4\lambda X_j\sum_{i\in\Lambda}a_{ij}X_i
+\right)\\
+&amp;\le
+\exp\left(C\lambda^2K^2\|B^Tx\|_2^2\right).
+\end{aligned}
+\tag{9}
+\]</div><div class="answer-block" data-block-index="20">### 4. Gaussian linearization</div><div class="answer-block annotated linked-block" data-block-index="21" data-pairs="pair_6">Let \(g\sim N(0,I_{\Lambda^c})\), independently of everything else. The Gaussian identity
+\[
+\mathbb E_g e^{s\langle g,v\rangle}
+=e^{s^2\|v\|_2^2/2}
+\tag{10}
+\]
+allows us, with \(s=C|\lambda|K\), to rewrite the right-hand side of (9) as a Gaussian expectation. Thus
+\[
+\begin{aligned}
+\mathbb E_x
+\exp\left(C\lambda^2K^2\|B^Tx\|_2^2\right)
+&amp;=
+\mathbb E_g\mathbb E_x
+\exp\left(s\langle x,Bg\rangle\right)\\
+&amp;\le
+\mathbb E_g
+\exp\left(C\lambda^2K^4\|Bg\|_2^2\right),
+\end{aligned}
+\tag{11}
+\]
+where the last inequality again follows from (1), now applied to the independent coordinates of \(x\).</div><div class="eval-note improve" data-pair="pair_6"><div class="eval-note-title">Linked evaluation: needs improvement</div><div><strong>Related strategy block:</strong> Gaussian linearization of a squared norm</div><div><strong>Corresponding control section:</strong> The control uses the exact coefficient √(2s) in the Gaussian identity.</div><div><strong>Comparison:</strong> The RAG argument is conceptually right but should not use a floating absolute constant inside an exact equality.</div></div><div class="answer-block" data-block-index="22"><div class="strategy-card new"><div class="strategy-card-title">Proposed new strategy</div><div class="strategy-card-meta">Gaussian linearization of a squared norm</div><div class="strategy-card-body">Why this is new: An auxiliary Gaussian vector converts an exponential of a squared norm into an exponential of a linear form, permitting a second use of scalar subgaussian estimates.</div></div></div><div class="answer-block" data-block-index="23">Let \(s_1,\dots,s_r\) be the singular values of \(B\). For \(\theta\ge0\) satisfying \(2\theta\|B\|^2&lt;1\),
+\[
+\begin{aligned}
+\mathbb E_g e^{\theta\|Bg\|_2^2}
+&amp;=\prod_{k=1}^r(1-2\theta s_k^2)^{-1/2}.
+\end{aligned}
+\]
+If \(2\theta\|B\|^2\le 1/2\), then using
+\(-\log(1-u)\le 2u\) for \(0\le u\le1/2\),
+\[
+\mathbb E_g e^{\theta\|Bg\|_2^2}
+\le
+\exp\left(C\theta\sum_{k=1}^rs_k^2\right)
+=
+\exp\left(C\theta\|B\|_F^2\right).
+\tag{12}
+\]
+Because \(B=P_\Lambda AP_{\Lambda^c}\),
+\[
+\|B\|\le\|A\|,
+\qquad
+\|B\|_F\le\|A\|_F.
+\tag{13}
+\]
+Taking \(\theta=C\lambda^2K^4\) in (12), equations (8)–(13) give
+\[
+\mathbb Ee^{\lambda S}
+\le
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)
+\tag{14}
+\]
+whenever
+\[
+|\lambda|\le \frac{c}{K^2\|A\|}.
+\tag{15}
+\]</div><div class="answer-block" data-block-index="24">### 5. Moment-generating function of the whole quadratic form</div><div class="answer-block annotated linked-block" data-block-index="25" data-pairs="pair_5">Although \(D\) and \(S\) need not be independent, Cauchy–Schwarz, (5), and (14) imply
+\[
+\begin{aligned}
+\mathbb E e^{\lambda(D+S)}
+&amp;\le
+\bigl(\mathbb Ee^{2\lambda D}\bigr)^{1/2}
+\bigl(\mathbb Ee^{2\lambda S}\bigr)^{1/2}\\
+&amp;\le
+\exp\left(C\lambda^2K^4\|A\|_F^2\right)
+\end{aligned}
+\tag{16}
+\]
+for
+\[
+|\lambda|\le \frac{c}{K^2\|A\|}.
+\tag{17}
+\]</div><div class="eval-note worked" data-pair="pair_5"><div class="eval-note-title">Linked evaluation: worked well</div><div><strong>Related strategy block:</strong> Laplace-transform concentration; Explicit construction and parameter choice</div><div><strong>Corresponding control section:</strong> The control combines separate D and S tails by a union bound and then adjusts the prefactor.</div><div><strong>Comparison:</strong> The RAG route gives a cleaner final synthesis and more explicitly explains the two concentration regimes.</div></div><div class="answer-block" data-block-index="26">Put
+\[
+Q=X^TAX-\mathbb EX^TAX,\qquad
+V=K^4\|A\|_F^2,\qquad
+L=\frac{c}{K^2\|A\|}.
+\]
+For \(0\le\lambda\le L\), Markov&#x27;s inequality and (16) give
+\[
+\mathbb P(Q\ge t)
+\le
+\exp(-\lambda t+C\lambda^2V).
+\tag{18}
+\]</div><div class="answer-block" data-block-index="27">Choose
+\[
+\lambda=\min\left\{\frac{t}{2CV},\,\frac L2\right\}.
+\tag{19}
+\]
+If the first term is selected, (18) gives an exponent bounded above by
+\(-ct^2/V\). If the second is selected, the condition selecting it ensures that the quadratic term is dominated by a constant fraction of \(\lambda t\), and hence the exponent is bounded above by \(-cLt\). Therefore
+\[
+\mathbb P(Q\ge t)
+\le
+\exp\left[
+-c\min\left(
+\frac{t^2}{K^4\|A\|_F^2},
+\frac{t}{K^2\|A\|}
+\right)
+\right].
+\tag{20}
+\]</div><div class="answer-block annotated linked-block" data-block-index="28" data-pairs="pair_8"><div class="strategy-card"><div class="strategy-card-title">Library strategy reference</div><div class="strategy-card-meta">family_explicit_construction · Explicit construction and parameter choice</div><div class="strategy-card-body">Derived according to this strategy: The Laplace parameter is chosen explicitly as the smaller of the quadratic-regime optimizer and the largest admissible linear-regime scale.</div></div></div><div class="eval-note improve" data-pair="pair_8"><div class="eval-note-title">Linked evaluation: needs improvement</div><div><strong>Related strategy block:</strong> Laplace-transform concentration</div><div><strong>Corresponding control section:</strong> The control combines component tails and therefore does not need to check an MGF range at 2λ.</div><div><strong>Comparison:</strong> A one-line constant adjustment would make the RAG combination fully explicit.</div></div><div class="answer-block" data-block-index="29">Applying the same argument to \(-Q\) and taking a union bound yields
+\[
+\boxed{
+\mathbb P\left(
+\left|X^TAX-\mathbb EX^TAX\right|\ge t
+\right)
+\le
+2\exp\left[
+-c\min\left(
+\frac{t^2}{K^4\|A\|_F^2},
+\frac{t}{K^2\|A\|}
+\right)
+\right].
+}
+\]
+This is the Hanson–Wright inequality. \(\square\)</div></div>
+        </section>
+        
+      </div>
+    </article>
+    
+    <article class="case" id="case-theorem_4_7_1">
+      <div class="case-title">
+        <h2>2. Theorem 4.7.1 (Covariance estimation)</h2>
+        <div class="case-id"><code>theorem_4_7_1</code></div>
+      </div>
+      <div class="split" data-pair-links='[{&quot;pair_id&quot;: &quot;pair_1&quot;, &quot;control_idx&quot;: 5, &quot;rag_idx&quot;: 4, &quot;judgment&quot;: &quot;worked_well&quot;}, {&quot;pair_id&quot;: &quot;pair_2&quot;, &quot;control_idx&quot;: 0, &quot;rag_idx&quot;: 6, &quot;judgment&quot;: &quot;worked_well&quot;}, {&quot;pair_id&quot;: &quot;pair_3&quot;, &quot;control_idx&quot;: 7, &quot;rag_idx&quot;: 10, &quot;judgment&quot;: &quot;worked_well&quot;}, {&quot;pair_id&quot;: &quot;pair_4&quot;, &quot;control_idx&quot;: 0, &quot;rag_idx&quot;: 5, &quot;judgment&quot;: &quot;needs_improvement&quot;}, {&quot;pair_id&quot;: &quot;pair_5&quot;, &quot;control_idx&quot;: 5, &quot;rag_idx&quot;: 6, &quot;judgment&quot;: &quot;needs_improvement&quot;}, {&quot;pair_id&quot;: &quot;pair_6&quot;, &quot;control_idx&quot;: 1, &quot;rag_idx&quot;: 2, &quot;judgment&quot;: &quot;needs_improvement&quot;}]'>
+        <svg class="link-layer" aria-hidden="true"></svg>
+        
+        <section class="result-col control">
+          <div class="col-header">
+            <h3>Control</h3>
+            <button class="copy-btn" data-copy="Let \(X_1,\dots,X_m\) be independent copies of \(X\), and write
+\[
+\Sigma=\mathbb E(XX^\top),\qquad
+\Sigma_m=\frac1m\sum_{i=1}^m X_iX_i^\top .
+\]
+(If covariance is defined in the centered sense, apply this to the centered vector.)
+
+We first prove the isotropic case.
+
+### Isotropic case
+
+Suppose \(Y\in\mathbb R^r\) satisfies
+\[
+\mathbb E YY^\top=I_r,
+\qquad
+\|\langle Y,u\rangle\|_{\psi_2}\le K\|u\|_2
+\quad\text{for all }u\in\mathbb R^r.
+\]
+Let \(Y_1,\dots,Y_m\) be independent copies and set
+\[
+B=\frac1m\sum_{i=1}^m Y_iY_i^\top-I_r.
+\]
+
+Choose a \(1/4\)-net \(\mathcal N\) of \(S^{r-1}\) with
+\[
+|\mathcal N|\le 9^r.
+\]
+For every symmetric matrix \(A\), the standard net argument gives
+\[
+\|A\|\le 2\max_{u\in\mathcal N}|u^\top Au|.
+\]
+Indeed, if \(x\in S^{r-1}\) and \(u\in\mathcal N\) satisfies
+\(\|x-u\|_2\le 1/4\), then
+\[
+|x^\top Ax-u^\top Au|
+ \le 2\|x-u\|_2\|A\|
+ \le \frac12\|A\|.
+\]
+
+Fix \(u\in\mathcal N\). Since \(Y\) is isotropic,
+\[
+\mathbb E\langle Y,u\rangle^2=1.
+\]
+Moreover, the square of a subgaussian random variable is subexponential, so
+\[
+\big\|\langle Y,u\rangle^2-1\big\|_{\psi_1}
+ \le C\|\langle Y,u\rangle\|_{\psi_2}^2
+ \le CK^2.
+\]
+Bernstein&#x27;s inequality therefore yields, for every \(t\ge0\),
+\[
+\mathbb P\left\{
+\left|\frac1m\sum_{i=1}^m
+\big(\langle Y_i,u\rangle^2-1\big)\right|&gt;t
+\right\}
+\le
+2\exp\left[-cm\min\left(\frac{t^2}{K^4},\frac{t}{K^2}\right)\right].
+\]
+Taking a union bound over \(\mathcal N\) and integrating the resulting tail gives
+\[
+\mathbb E\max_{u\in\mathcal N}|u^\top Bu|
+ \le CK^2\left(\sqrt{\frac{\log |\mathcal N|}{m}}
+                  +\frac{\log |\mathcal N|}{m}\right).
+\]
+Since \(\log|\mathcal N|\le Cr\), the net inequality implies
+\[
+\mathbb E\|B\|
+\le CK^2\left(\sqrt{\frac rm}+\frac rm\right).
+\tag{1}
+\]
+
+### Reduction to the isotropic case
+
+Let \(H=\operatorname{range}(\Sigma)\) and \(r=\dim H\le n\). If \(v\in\ker\Sigma\), then
+\[
+\mathbb E\langle X,v\rangle^2=v^\top\Sigma v=0,
+\]
+so \(\langle X,v\rangle=0\) almost surely. Thus \(X\in H\) almost surely.
+
+If \(r=0\), then \(X=0\) almost surely and the claim is immediate. Otherwise, define on \(H\)
+\[
+Y=\Sigma^{-1/2}X,
+\]
+where the inverse is taken only on \(H\). Then
+\[
+\mathbb E YY^\top=I_H.
+\]
+Furthermore, for \(u\in H\), assumption (4.29) gives
+\[
+\begin{aligned}
+\|\langle Y,u\rangle\|_{\psi_2}
+&amp;=\|\langle X,\Sigma^{-1/2}u\rangle\|_{\psi_2}\\
+&amp;\le K\|\langle X,\Sigma^{-1/2}u\rangle\|_{L^2}\\
+&amp;=K\|u\|_2.
+\end{aligned}
+\]
+Thus \(Y\) satisfies the isotropic assumptions in dimension \(r\).
+
+Writing \(Y_i=\Sigma^{-1/2}X_i\), we have
+\[
+\Sigma_m-\Sigma
+=
+\Sigma^{1/2}
+\left(\frac1m\sum_{i=1}^mY_iY_i^\top-I_H\right)
+\Sigma^{1/2}.
+\]
+Consequently,
+\[
+\|\Sigma_m-\Sigma\|
+\le
+\|\Sigma\|
+\left\|\frac1m\sum_{i=1}^mY_iY_i^\top-I_H\right\|.
+\]
+Applying (1) and using \(r\le n\), we conclude that
+\[
+\boxed{
+\mathbb E\|\Sigma_m-\Sigma\|
+\le
+CK^2\left(\sqrt{\frac nm}+\frac nm\right)\|\Sigma\|
+}.
+\]
+Here \(C&gt;0\) is an absolute constant.">Copy raw</button>
+          </div>
+          <div class="prompt-box">
+            <div class="small-title">Prompt</div>
+            <div class="prompt-text">Can you prove this theorem? Theorem 4.7.1 (Covariance estimation). Let X be a subgaussian random vector
+in Rn . More specifically, assume that there exists K ≥ 1 such that13
+                       ∥⟨X, x⟩∥ψ2 ≤ K∥⟨X, x⟩∥L2           for any x ∈ Rn .                   (4.29)
+Then, for every positive integer m, we have
+                                          r n   n
+                                        2
+                      E∥Σm − Σ∥ ≤ CK           +    ∥Σ∥.
+                                            m m</div>
+          </div>
+          <div class="meta-row"><span class='meta-pill'>model: gpt-5.6-sol</span><span class='meta-pill'>reasoning effort: high</span><span class='meta-pill'>max completion tokens: 4000</span><span class='meta-pill'>elapsed seconds: 39.59</span></div>
+          
+          
+          
+          <div class="answer-box"><div class="answer-block annotated linked-block" data-block-index="0" data-pairs="pair_2 pair_4">Let \(X_1,\dots,X_m\) be independent copies of \(X\), and write
+\[
+\Sigma=\mathbb E(XX^\top),\qquad
+\Sigma_m=\frac1m\sum_{i=1}^m X_iX_i^\top .
+\]
+(If covariance is defined in the centered sense, apply this to the centered vector.)</div><div class="eval-note linked" data-pair="pair_2"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> Compute the whitened L² norm through uᵀΣ_E^{-1/2}Σ_EΣ_E^{-1/2}u.</div><div><strong>Comparison:</strong> RAG more explicitly verifies the critical hypothesis needed for the isotropic reduction.</div></div><div class="eval-note linked" data-pair="pair_4"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> A union bound and integration of the resulting tail are said to give the expected maximum estimate.</div><div><strong>Comparison:</strong> RAG does not improve control&#x27;s main explanatory gap in deriving the expected net maximum.</div></div><div class="answer-block annotated linked-block" data-block-index="1" data-pairs="pair_6">We first prove the isotropic case.</div><div class="eval-note linked" data-pair="pair_6"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> The isotropic result is first restated as a separate lemma with the full target bound.</div><div><strong>Comparison:</strong> The lemma packaging adds mild repetition without adding substantive explanation.</div></div><div class="answer-block" data-block-index="2">### Isotropic case</div><div class="answer-block" data-block-index="3">Suppose \(Y\in\mathbb R^r\) satisfies
+\[
+\mathbb E YY^\top=I_r,
+\qquad
+\|\langle Y,u\rangle\|_{\psi_2}\le K\|u\|_2
+\quad\text{for all }u\in\mathbb R^r.
+\]
+Let \(Y_1,\dots,Y_m\) be independent copies and set
+\[
+B=\frac1m\sum_{i=1}^m Y_iY_i^\top-I_r.
+\]</div><div class="answer-block" data-block-index="4">Choose a \(1/4\)-net \(\mathcal N\) of \(S^{r-1}\) with
+\[
+|\mathcal N|\le 9^r.
+\]
+For every symmetric matrix \(A\), the standard net argument gives
+\[
+\|A\|\le 2\max_{u\in\mathcal N}|u^\top Au|.
+\]
+Indeed, if \(x\in S^{r-1}\) and \(u\in\mathcal N\) satisfies
+\(\|x-u\|_2\le 1/4\), then
+\[
+|x^\top Ax-u^\top Au|
+ \le 2\|x-u\|_2\|A\|
+ \le \frac12\|A\|.
+\]</div><div class="answer-block annotated linked-block" data-block-index="5" data-pairs="pair_1 pair_5">Fix \(u\in\mathcal N\). Since \(Y\) is isotropic,
+\[
+\mathbb E\langle Y,u\rangle^2=1.
+\]
+Moreover, the square of a subgaussian random variable is subexponential, so
+\[
+\big\|\langle Y,u\rangle^2-1\big\|_{\psi_1}
+ \le C\|\langle Y,u\rangle\|_{\psi_2}^2
+ \le CK^2.
+\]
+Bernstein&#x27;s inequality therefore yields, for every \(t\ge0\),
+\[
+\mathbb P\left\{
+\left|\frac1m\sum_{i=1}^m
+\big(\langle Y_i,u\rangle^2-1\big)\right|&gt;t
+\right\}
+\le
+2\exp\left[-cm\min\left(\frac{t^2}{K^4},\frac{t}{K^2}\right)\right].
+\]
+Taking a union bound over \(\mathcal N\) and integrating the resulting tail gives
+\[
+\mathbb E\max_{u\in\mathcal N}|u^\top Bu|
+ \le CK^2\left(\sqrt{\frac{\log |\mathcal N|}{m}}
+                  +\frac{\log |\mathcal N|}{m}\right).
+\]
+Since \(\log|\mathcal N|\le Cr\), the net inequality implies
+\[
+\mathbb E\|B\|
+\le CK^2\left(\sqrt{\frac rm}+\frac rm\right).
+\tag{1}
+\]</div><div class="eval-note linked" data-pair="pair_1"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> Define Z_i(u)=⟨Y_i,u⟩²−1, bound ‖Z_i(u)‖_{ψ₁} by CK², and apply Bernstein.</div><div><strong>Comparison:</strong> RAG gives the centered scalar variables explicit notation, modestly improving the presentation of the key concentration step.</div></div><div class="eval-note linked" data-pair="pair_5"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> The proof adds that the net argument rewrites the spectral norm as a supremum of concrete quadratic forms.</div><div><strong>Comparison:</strong> RAG adds a redundant explanatory sentence where control is more economical.</div></div><div class="answer-block" data-block-index="6">### Reduction to the isotropic case</div><div class="answer-block annotated linked-block" data-block-index="7" data-pairs="pair_3">Let \(H=\operatorname{range}(\Sigma)\) and \(r=\dim H\le n\). If \(v\in\ker\Sigma\), then
+\[
+\mathbb E\langle X,v\rangle^2=v^\top\Sigma v=0,
+\]
+so \(\langle X,v\rangle=0\) almost surely. Thus \(X\in H\) almost surely.</div><div class="eval-note linked" data-pair="pair_3"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> Apply the zero-variance conclusion to a basis of ker(Σ) to show X lies in range(Σ) almost surely.</div><div><strong>Comparison:</strong> RAG concisely supplies the finite-basis justification behind the almost-sure range reduction.</div></div><div class="answer-block" data-block-index="8">If \(r=0\), then \(X=0\) almost surely and the claim is immediate. Otherwise, define on \(H\)
+\[
+Y=\Sigma^{-1/2}X,
+\]
+where the inverse is taken only on \(H\). Then
+\[
+\mathbb E YY^\top=I_H.
+\]
+Furthermore, for \(u\in H\), assumption (4.29) gives
+\[
+\begin{aligned}
+\|\langle Y,u\rangle\|_{\psi_2}
+&amp;=\|\langle X,\Sigma^{-1/2}u\rangle\|_{\psi_2}\\
+&amp;\le K\|\langle X,\Sigma^{-1/2}u\rangle\|_{L^2}\\
+&amp;=K\|u\|_2.
+\end{aligned}
+\]
+Thus \(Y\) satisfies the isotropic assumptions in dimension \(r\).</div><div class="answer-block" data-block-index="9">Writing \(Y_i=\Sigma^{-1/2}X_i\), we have
+\[
+\Sigma_m-\Sigma
+=
+\Sigma^{1/2}
+\left(\frac1m\sum_{i=1}^mY_iY_i^\top-I_H\right)
+\Sigma^{1/2}.
+\]
+Consequently,
+\[
+\|\Sigma_m-\Sigma\|
+\le
+\|\Sigma\|
+\left\|\frac1m\sum_{i=1}^mY_iY_i^\top-I_H\right\|.
+\]
+Applying (1) and using \(r\le n\), we conclude that
+\[
+\boxed{
+\mathbb E\|\Sigma_m-\Sigma\|
+\le
+CK^2\left(\sqrt{\frac nm}+\frac nm\right)\|\Sigma\|
+}.
+\]
+Here \(C&gt;0\) is an absolute constant.</div></div>
+        </section>
+        
+        
+        <section class="result-col rag">
+          <div class="col-header">
+            <h3>Library-RAG</h3>
+            <button class="copy-btn" data-copy="Let \(X_1,\dots,X_m\) be independent copies of \(X\), and write
+\[
+\Sigma=\mathbb E XX^{\mathsf T},
+\qquad
+\Sigma_m=\frac1m\sum_{i=1}^m X_iX_i^{\mathsf T}.
+\]
+We prove
+\[
+\mathbb E\|\Sigma_m-\Sigma\|
+ \le CK^2\left(\sqrt{\frac nm}+\frac nm\right)\|\Sigma\|.
+\]
+
+### 1. The isotropic case
+
+We first prove the following lemma.
+
+**Lemma.** Suppose \(Y\in\mathbb R^r\) is isotropic,
+\[
+\mathbb EYY^{\mathsf T}=I_r,
+\]
+and
+\[
+\|\langle Y,u\rangle\|_{\psi_2}\le K\|u\|_2
+\qquad (u\in\mathbb R^r).
+\]
+For independent copies \(Y_1,\dots,Y_m\),
+\[
+M:=\frac1m\sum_{i=1}^mY_iY_i^{\mathsf T}
+\]
+satisfies
+\[
+\mathbb E\|M-I_r\|
+ \le CK^2\left(\sqrt{\frac rm}+\frac rm\right).
+\]
+
+Fix \(u\in S^{r-1}\). Since \(Y\) is isotropic,
+\[
+\mathbb E\langle Y,u\rangle^2=1.
+\]
+Set
+\[
+Z_i(u):=\langle Y_i,u\rangle^2-1.
+\]
+The square of a subgaussian random variable is subexponential, so
+\[
+\|Z_i(u)\|_{\psi_1}
+ \le C\|\langle Y_i,u\rangle\|_{\psi_2}^2
+ \le CK^2.
+\]
+Bernstein’s inequality therefore gives, for every \(t\ge0\),
+\[
+\mathbb P\left\{
+ \left|\frac1m\sum_{i=1}^m Z_i(u)\right|&gt;t
+\right\}
+\le
+2\exp\left[-cm\min\left(\frac{t^2}{K^4},\frac{t}{K^2}\right)\right].
+\tag{1}
+\]
+[NEW_STRATEGY: Subgaussian-to-subexponential Bernstein concentration]
+Why this is new: The retrieved hierarchy does not include the Orlicz-norm conversion \(Z\mapsto Z^2-\mathbb EZ^2\) followed by Bernstein concentration, which is the key probabilistic step here.
+[/NEW_STRATEGY]
+
+Let \(\mathcal N\) be a \(1/4\)-net of \(S^{r-1}\) with
+\[
+|\mathcal N|\le 9^r.
+\]
+Applying (1) to all \(u\in\mathcal N\), taking a union bound, and integrating the resulting tail estimate gives
+\[
+\mathbb E\max_{u\in\mathcal N}
+\left|\frac1m\sum_{i=1}^m Z_i(u)\right|
+\le
+CK^2\left(
+ \sqrt{\frac{\log(2|\mathcal N|)}m}
+ +\frac{\log(2|\mathcal N|)}m
+\right).
+\]
+Since \(\log(2|\mathcal N|)\le Cr\),
+\[
+\mathbb E\max_{u\in\mathcal N}
+\left|u^{\mathsf T}(M-I_r)u\right|
+\le CK^2\left(\sqrt{\frac rm}+\frac rm\right).
+\tag{2}
+\]
+[NEW_STRATEGY: Epsilon-net discretization of operator norms]
+Why this is new: The retrieved hierarchy contains no covering-net method for reducing a supremum over the sphere to finitely many scalar concentration estimates.
+[/NEW_STRATEGY]
+
+For every symmetric \(r\times r\) matrix \(B\), the \(1/4\)-net approximation gives
+\[
+\|B\|
+=\sup_{u\in S^{r-1}}|u^{\mathsf T}Bu|
+\le 2\max_{u\in\mathcal N}|u^{\mathsf T}Bu|.
+\tag{3}
+\]
+Indeed, if \(\|x-y\|_2\le1/4\), then
+\[
+|x^{\mathsf T}Bx-y^{\mathsf T}By|
+ \le 2\|x-y\|_2\|B\|
+ \le \frac12\|B\|.
+\]
+Thus (3) follows by choosing \(x\) approximately maximizing the quadratic form. This rewrites the spectral norm of a symmetric matrix as a supremum of concrete quadratic forms.
+[STRATEGY: sub_canonical_rewriting | Canonical rewriting]
+Derived according to this strategy: The operator norm is rewritten as a supremum of quadratic forms, which can then be controlled on a finite net.
+[/STRATEGY]
+
+Taking \(B=M-I_r\) in (3) and using (2) proves the lemma:
+\[
+\mathbb E\|M-I_r\|
+\le CK^2\left(\sqrt{\frac rm}+\frac rm\right).
+\tag{4}
+\]
+
+### 2. Reduction of the general case to the isotropic case
+
+If \(\Sigma=0\), then
+\[
+\mathbb E\|X\|_2^2=\operatorname{tr}(\Sigma)=0,
+\]
+so \(X=0\) almost surely and the result is immediate.
+
+Suppose now that \(\Sigma\ne0\). Let
+\[
+E=\operatorname{range}(\Sigma),\qquad r=\dim E\le n.
+\]
+The random vector \(X\) belongs to \(E\) almost surely. Indeed, if \(v\in\ker(\Sigma)\), then
+\[
+\mathbb E\langle X,v\rangle^2=v^{\mathsf T}\Sigma v=0,
+\]
+so \(\langle X,v\rangle=0\) almost surely. Applying this to a basis of \(\ker(\Sigma)\) proves the assertion.
+
+The restriction \(\Sigma_E\) of \(\Sigma\) to \(E\) is positive definite. Define the whitened random vector
+\[
+Y:=\Sigma_E^{-1/2}X\in E\simeq\mathbb R^r.
+\]
+Then
+\[
+\mathbb EYY^{\mathsf T}
+ =\Sigma_E^{-1/2}\Sigma_E\Sigma_E^{-1/2}
+ =I_E,
+\]
+so \(Y\) is isotropic. Moreover, for every \(u\in E\),
+\[
+\begin{aligned}
+\|\langle Y,u\rangle\|_{\psi_2}
+&amp;=\|\langle X,\Sigma_E^{-1/2}u\rangle\|_{\psi_2}\\
+&amp;\le K\|\langle X,\Sigma_E^{-1/2}u\rangle\|_{L^2}\\
+&amp;=K\left(
+u^{\mathsf T}\Sigma_E^{-1/2}\Sigma_E\Sigma_E^{-1/2}u
+\right)^{1/2}\\
+&amp;=K\|u\|_2.
+\end{aligned}
+\]
+Thus the isotropic lemma applies to \(Y\). This whitening step reduces the general covariance matrix to the identity on its effective range.
+[STRATEGY: family_standard_theorem_reduction | Reduction to a standard theorem]
+Derived according to this strategy: Restricting to the range of \(\Sigma\) and applying \(\Sigma^{-1/2}\) transforms the problem into the already established isotropic case.
+[/STRATEGY]
+
+Let \(Y_i=\Sigma_E^{-1/2}X_i\) and
+\[
+M=\frac1m\sum_{i=1}^mY_iY_i^{\mathsf T}.
+\]
+On \(E\),
+\[
+\Sigma_m=\Sigma_E^{1/2}M\Sigma_E^{1/2},
+\qquad
+\Sigma=\Sigma_E^{1/2}I_E\Sigma_E^{1/2}.
+\]
+Consequently,
+\[
+\Sigma_m-\Sigma
+ =\Sigma_E^{1/2}(M-I_E)\Sigma_E^{1/2},
+\]
+and hence
+\[
+\|\Sigma_m-\Sigma\|
+\le \|\Sigma_E^{1/2}\|^2\|M-I_E\|
+=\|\Sigma\|\,\|M-I_E\|.
+\]
+Taking expectations and applying (4),
+\[
+\begin{aligned}
+\mathbb E\|\Sigma_m-\Sigma\|
+&amp;\le \|\Sigma\|\,
+CK^2\left(\sqrt{\frac rm}+\frac rm\right)\\
+&amp;\le CK^2\left(\sqrt{\frac nm}+\frac nm\right)\|\Sigma\|,
+\end{aligned}
+\]
+because \(r\le n\). This is the claimed estimate. \(\square\)">Copy raw</button>
+          </div>
+          <div class="prompt-box">
+            <div class="small-title">Prompt</div>
+            <div class="prompt-text">Can you prove this theorem? Theorem 4.7.1 (Covariance estimation). Let X be a subgaussian random vector
+in Rn . More specifically, assume that there exists K ≥ 1 such that13
+                       ∥⟨X, x⟩∥ψ2 ≤ K∥⟨X, x⟩∥L2           for any x ∈ Rn .                   (4.29)
+Then, for every positive integer m, we have
+                                          r n   n
+                                        2
+                      E∥Σm − Σ∥ ≤ CK           +    ∥Σ∥.
+                                            m m</div>
+          </div>
+          <div class="meta-row"><span class='meta-pill'>model: gpt-5.6-sol</span><span class='meta-pill'>reasoning effort: high</span><span class='meta-pill'>max completion tokens: 4000</span><span class='meta-pill'>elapsed seconds: 125.498</span></div>
+          
+          
+    <div class="eval-summary">
+      <div class="small-title">AI evaluation of Library-RAG</div>
+      <span class="meta-pill">control: 4/5</span>
+      <span class="meta-pill">rag: 4/5</span>
+      <span class="meta-pill">winner: tie</span>
+      <div class="eval-overall">The Library-RAG proof is correct and well organized, with a slightly clearer whitening calculation, but it compresses the crucial tail-integration step just as much as control and adds a few dispensable summary sentences.</div>
+    </div>
+    
+          <div class="nodes-box"><div class="small-title">Retrieved nodes</div><span class='node-chip'><code>family_standard_theorem_reduction</code> · Reduction to a standard theorem</span><span class='node-chip'><code>sub_intermediate_value</code> · Intermediate Value Theorem</span><span class='node-chip'><code>sub_fundamental_theorem_calculus</code> · Fundamental Theorem of Calculus</span><span class='node-chip'><code>sub_canonical_rewriting</code> · Canonical rewriting</span><span class='node-chip'><code>sub_order_completeness</code> · Suprema, infima, and order completeness</span><span class='node-chip'><code>family_limits_completeness</code> · Limit, sequence, and completeness methods</span><span class='node-chip'><code>sub_sequence_completeness</code> · Sequence and completeness methods</span><span class='node-chip'><code>sub_mean_value_theorems</code> · Fermat, Rolle, and Mean Value Theorems</span><span class='node-chip'><code>family_structural_foundations</code> · Cardinality, embeddings, and completion</span><span class='node-chip'><code>sub_ordered_field_constructions</code> · Ordered-field structure and canonical constructions</span></div>
+          <div class="answer-box"><div class="answer-block" data-block-index="0">Let \(X_1,\dots,X_m\) be independent copies of \(X\), and write
+\[
+\Sigma=\mathbb E XX^{\mathsf T},
+\qquad
+\Sigma_m=\frac1m\sum_{i=1}^m X_iX_i^{\mathsf T}.
+\]
+We prove
+\[
+\mathbb E\|\Sigma_m-\Sigma\|
+ \le CK^2\left(\sqrt{\frac nm}+\frac nm\right)\|\Sigma\|.
+\]</div><div class="answer-block" data-block-index="1">### 1. The isotropic case</div><div class="answer-block annotated linked-block" data-block-index="2" data-pairs="pair_6">We first prove the following lemma.</div><div class="eval-note improve" data-pair="pair_6"><div class="eval-note-title">Linked evaluation: needs improvement</div><div><strong>Corresponding control section:</strong> Control enters the isotropic proof directly.</div><div><strong>Comparison:</strong> The lemma packaging adds mild repetition without adding substantive explanation.</div></div><div class="answer-block" data-block-index="3"><strong>Lemma.</strong> Suppose \(Y\in\mathbb R^r\) is isotropic,
+\[
+\mathbb EYY^{\mathsf T}=I_r,
+\]
+and
+\[
+\|\langle Y,u\rangle\|_{\psi_2}\le K\|u\|_2
+\qquad (u\in\mathbb R^r).
+\]
+For independent copies \(Y_1,\dots,Y_m\),
+\[
+M:=\frac1m\sum_{i=1}^mY_iY_i^{\mathsf T}
+\]
+satisfies
+\[
+\mathbb E\|M-I_r\|
+ \le CK^2\left(\sqrt{\frac rm}+\frac rm\right).
+\]</div><div class="answer-block annotated linked-block" data-block-index="4" data-pairs="pair_1">Fix \(u\in S^{r-1}\). Since \(Y\) is isotropic,
+\[
+\mathbb E\langle Y,u\rangle^2=1.
+\]
+Set
+\[
+Z_i(u):=\langle Y_i,u\rangle^2-1.
+\]
+The square of a subgaussian random variable is subexponential, so
+\[
+\|Z_i(u)\|_{\psi_1}
+ \le C\|\langle Y_i,u\rangle\|_{\psi_2}^2
+ \le CK^2.
+\]
+Bernstein’s inequality therefore gives, for every \(t\ge0\),
+\[
+\mathbb P\left\{
+ \left|\frac1m\sum_{i=1}^m Z_i(u)\right|&gt;t
+\right\}
+\le
+2\exp\left[-cm\min\left(\frac{t^2}{K^4},\frac{t}{K^2}\right)\right].
+\tag{1}
+\]
+<div class="strategy-card new"><div class="strategy-card-title">Proposed new strategy</div><div class="strategy-card-meta">Subgaussian-to-subexponential Bernstein concentration</div><div class="strategy-card-body">Why this is new: The retrieved hierarchy does not include the Orlicz-norm conversion \(Z\mapsto Z^2-\mathbb EZ^2\) followed by Bernstein concentration, which is the key probabilistic step here.</div></div></div><div class="eval-note worked" data-pair="pair_1"><div class="eval-note-title">Linked evaluation: worked well</div><div><strong>Related strategy block:</strong> Subgaussian-to-subexponential Bernstein concentration</div><div><strong>Corresponding control section:</strong> Bound ‖⟨Y,u⟩²−1‖_{ψ₁} by CK² and apply Bernstein.</div><div><strong>Comparison:</strong> RAG gives the centered scalar variables explicit notation, modestly improving the presentation of the key concentration step.</div></div><div class="answer-block annotated linked-block" data-block-index="5" data-pairs="pair_4">Let \(\mathcal N\) be a \(1/4\)-net of \(S^{r-1}\) with
+\[
+|\mathcal N|\le 9^r.
+\]
+Applying (1) to all \(u\in\mathcal N\), taking a union bound, and integrating the resulting tail estimate gives
+\[
+\mathbb E\max_{u\in\mathcal N}
+\left|\frac1m\sum_{i=1}^m Z_i(u)\right|
+\le
+CK^2\left(
+ \sqrt{\frac{\log(2|\mathcal N|)}m}
+ +\frac{\log(2|\mathcal N|)}m
+\right).
+\]
+Since \(\log(2|\mathcal N|)\le Cr\),
+\[
+\mathbb E\max_{u\in\mathcal N}
+\left|u^{\mathsf T}(M-I_r)u\right|
+\le CK^2\left(\sqrt{\frac rm}+\frac rm\right).
+\tag{2}
+\]
+<div class="strategy-card new"><div class="strategy-card-title">Proposed new strategy</div><div class="strategy-card-meta">Epsilon-net discretization of operator norms</div><div class="strategy-card-body">Why this is new: The retrieved hierarchy contains no covering-net method for reducing a supremum over the sphere to finitely many scalar concentration estimates.</div></div></div><div class="eval-note improve" data-pair="pair_4"><div class="eval-note-title">Linked evaluation: needs improvement</div><div><strong>Related strategy block:</strong> Epsilon-net discretization of operator norms</div><div><strong>Corresponding control section:</strong> Control makes the same compressed union-bound-and-integration assertion.</div><div><strong>Comparison:</strong> RAG does not improve control&#x27;s main explanatory gap in deriving the expected net maximum.</div></div><div class="answer-block annotated linked-block" data-block-index="6" data-pairs="pair_2 pair_5">For every symmetric \(r\times r\) matrix \(B\), the \(1/4\)-net approximation gives
+\[
+\|B\|
+=\sup_{u\in S^{r-1}}|u^{\mathsf T}Bu|
+\le 2\max_{u\in\mathcal N}|u^{\mathsf T}Bu|.
+\tag{3}
+\]
+Indeed, if \(\|x-y\|_2\le1/4\), then
+\[
+|x^{\mathsf T}Bx-y^{\mathsf T}By|
+ \le 2\|x-y\|_2\|B\|
+ \le \frac12\|B\|.
+\]
+Thus (3) follows by choosing \(x\) approximately maximizing the quadratic form. This rewrites the spectral norm of a symmetric matrix as a supremum of concrete quadratic forms.
+<div class="strategy-card"><div class="strategy-card-title">Library strategy reference</div><div class="strategy-card-meta">sub_canonical_rewriting · Canonical rewriting</div><div class="strategy-card-body">Derived according to this strategy: The operator norm is rewritten as a supremum of quadratic forms, which can then be controlled on a finite net.</div></div></div><div class="eval-note worked" data-pair="pair_2"><div class="eval-note-title">Linked evaluation: worked well</div><div><strong>Related strategy block:</strong> Reduction to a standard theorem</div><div><strong>Corresponding control section:</strong> State directly that the whitened L² norm equals ‖u‖₂.</div><div><strong>Comparison:</strong> RAG more explicitly verifies the critical hypothesis needed for the isotropic reduction.</div></div><div class="eval-note improve" data-pair="pair_5"><div class="eval-note-title">Linked evaluation: needs improvement</div><div><strong>Related strategy block:</strong> Canonical rewriting</div><div><strong>Corresponding control section:</strong> Control proves the net inequality and immediately uses it.</div><div><strong>Comparison:</strong> RAG adds a redundant explanatory sentence where control is more economical.</div></div><div class="answer-block" data-block-index="7">Taking \(B=M-I_r\) in (3) and using (2) proves the lemma:
+\[
+\mathbb E\|M-I_r\|
+\le CK^2\left(\sqrt{\frac rm}+\frac rm\right).
+\tag{4}
+\]</div><div class="answer-block" data-block-index="8">### 2. Reduction of the general case to the isotropic case</div><div class="answer-block" data-block-index="9">If \(\Sigma=0\), then
+\[
+\mathbb E\|X\|_2^2=\operatorname{tr}(\Sigma)=0,
+\]
+so \(X=0\) almost surely and the result is immediate.</div><div class="answer-block annotated linked-block" data-block-index="10" data-pairs="pair_3">Suppose now that \(\Sigma\ne0\). Let
+\[
+E=\operatorname{range}(\Sigma),\qquad r=\dim E\le n.
+\]
+The random vector \(X\) belongs to \(E\) almost surely. Indeed, if \(v\in\ker(\Sigma)\), then
+\[
+\mathbb E\langle X,v\rangle^2=v^{\mathsf T}\Sigma v=0,
+\]
+so \(\langle X,v\rangle=0\) almost surely. Applying this to a basis of \(\ker(\Sigma)\) proves the assertion.</div><div class="eval-note worked" data-pair="pair_3"><div class="eval-note-title">Linked evaluation: worked well</div><div><strong>Related strategy block:</strong> Reduction to a standard theorem</div><div><strong>Corresponding control section:</strong> Infer directly that X lies in range(Σ) almost surely.</div><div><strong>Comparison:</strong> RAG concisely supplies the finite-basis justification behind the almost-sure range reduction.</div></div><div class="answer-block" data-block-index="11">The restriction \(\Sigma_E\) of \(\Sigma\) to \(E\) is positive definite. Define the whitened random vector
+\[
+Y:=\Sigma_E^{-1/2}X\in E\simeq\mathbb R^r.
+\]
+Then
+\[
+\mathbb EYY^{\mathsf T}
+ =\Sigma_E^{-1/2}\Sigma_E\Sigma_E^{-1/2}
+ =I_E,
+\]
+so \(Y\) is isotropic. Moreover, for every \(u\in E\),
+\[
+\begin{aligned}
+\|\langle Y,u\rangle\|_{\psi_2}
+&amp;=\|\langle X,\Sigma_E^{-1/2}u\rangle\|_{\psi_2}\\
+&amp;\le K\|\langle X,\Sigma_E^{-1/2}u\rangle\|_{L^2}\\
+&amp;=K\left(
+u^{\mathsf T}\Sigma_E^{-1/2}\Sigma_E\Sigma_E^{-1/2}u
+\right)^{1/2}\\
+&amp;=K\|u\|_2.
+\end{aligned}
+\]
+Thus the isotropic lemma applies to \(Y\). This whitening step reduces the general covariance matrix to the identity on its effective range.
+<div class="strategy-card"><div class="strategy-card-title">Library strategy reference</div><div class="strategy-card-meta">family_standard_theorem_reduction · Reduction to a standard theorem</div><div class="strategy-card-body">Derived according to this strategy: Restricting to the range of \(\Sigma\) and applying \(\Sigma^{-1/2}\) transforms the problem into the already established isotropic case.</div></div></div><div class="answer-block" data-block-index="12">Let \(Y_i=\Sigma_E^{-1/2}X_i\) and
+\[
+M=\frac1m\sum_{i=1}^mY_iY_i^{\mathsf T}.
+\]
+On \(E\),
+\[
+\Sigma_m=\Sigma_E^{1/2}M\Sigma_E^{1/2},
+\qquad
+\Sigma=\Sigma_E^{1/2}I_E\Sigma_E^{1/2}.
+\]
+Consequently,
+\[
+\Sigma_m-\Sigma
+ =\Sigma_E^{1/2}(M-I_E)\Sigma_E^{1/2},
+\]
+and hence
+\[
+\|\Sigma_m-\Sigma\|
+\le \|\Sigma_E^{1/2}\|^2\|M-I_E\|
+=\|\Sigma\|\,\|M-I_E\|.
+\]
+Taking expectations and applying (4),
+\[
+\begin{aligned}
+\mathbb E\|\Sigma_m-\Sigma\|
+&amp;\le \|\Sigma\|\,
+CK^2\left(\sqrt{\frac rm}+\frac rm\right)\\
+&amp;\le CK^2\left(\sqrt{\frac nm}+\frac nm\right)\|\Sigma\|,
+\end{aligned}
+\]
+because \(r\le n\). This is the claimed estimate. \(\square\)</div></div>
+        </section>
+        
+      </div>
+    </article>
+    
+    <article class="case" id="case-lemma_8_3_14">
+      <div class="case-title">
+        <h2>3. Lemma 8.3.14 (Dimension reduction)</h2>
+        <div class="case-id"><code>lemma_8_3_14</code></div>
+      </div>
+      <div class="split" data-pair-links='[{&quot;pair_id&quot;: &quot;pair_1&quot;, &quot;control_idx&quot;: 1, &quot;rag_idx&quot;: 2, &quot;judgment&quot;: &quot;worked_well&quot;}, {&quot;pair_id&quot;: &quot;pair_2&quot;, &quot;control_idx&quot;: 5, &quot;rag_idx&quot;: 4, &quot;judgment&quot;: &quot;worked_well&quot;}, {&quot;pair_id&quot;: &quot;pair_3&quot;, &quot;control_idx&quot;: 3, &quot;rag_idx&quot;: 5, &quot;judgment&quot;: &quot;worked_well&quot;}, {&quot;pair_id&quot;: &quot;pair_4&quot;, &quot;control_idx&quot;: 3, &quot;rag_idx&quot;: 7, &quot;judgment&quot;: &quot;needs_improvement&quot;}]'>
+        <svg class="link-layer" aria-hidden="true"></svg>
+        
+        <section class="result-col control">
+          <div class="col-header">
+            <h3>Control</h3>
+            <button class="copy-btn" data-copy="Let \(N=|F|\). If \(N\le 1\), the statement is vacuous, so assume \(N\ge 2\).
+
+Fix distinct \(f,g\in F\), and define
+\[
+Y_i=(f(X_i)-g(X_i))^2.
+\]
+Since \(f,g\) are Boolean-valued, \(0\le Y_i\le 1\), and
+\[
+\mathbb EY_i=\|f-g\|_{L_2(\mu)}^2&gt;\varepsilon^2.
+\]
+Moreover,
+\[
+\|f-g\|_{L_2(\mu_n)}^2=\frac1n\sum_{i=1}^nY_i.
+\]
+
+If \(\|f-g\|_{L_2(\mu_n)}\le \varepsilon/2\), then
+\[
+\frac1n\sum_{i=1}^nY_i\le \frac{\varepsilon^2}{4}.
+\]
+Consequently,
+\[
+\frac1n\sum_{i=1}^nY_i-\mathbb EY_i
+&lt;-\frac{3\varepsilon^2}{4}.
+\]
+Hoeffding&#x27;s inequality therefore gives
+\[
+\mathbb P\left\{
+\|f-g\|_{L_2(\mu_n)}\le\frac{\varepsilon}{2}
+\right\}
+\le
+\exp\left(-2n\left(\frac{3\varepsilon^2}{4}\right)^2\right)
+=
+\exp\left(-\frac98n\varepsilon^4\right).
+\]
+
+There are at most \(N^2\) ordered pairs of distinct functions. Thus, by the union bound,
+\[
+\begin{aligned}
+\mathbb P\left\{
+\exists f\ne g:\,
+\|f-g\|_{L_2(\mu_n)}\le\frac{\varepsilon}{2}
+\right\}
+&amp;\le
+N^2\exp\left(-\frac98n\varepsilon^4\right).
+\end{aligned}
+\]
+If
+\[
+n\ge 8\varepsilon^{-4}\log N,
+\]
+then
+\[
+N^2\exp\left(-\frac98n\varepsilon^4\right)
+\le N^2e^{-9\log N}
+=N^{-7}
+\le 2^{-7}&lt;0.01.
+\]
+Hence, with probability at least \(0.99\),
+\[
+\|f-g\|_{L_2(\mu_n)}&gt;\frac{\varepsilon}{2}
+\qquad\text{for every distinct }f,g\in F.
+\]
+
+Thus the lemma holds with a universal constant, for example \(C=8\).
+
+If “Boolean” means \(\{-1,1\}\)-valued rather than \(\{0,1\}\)-valued, then \(0\le Y_i\le4\), and the same proof works after increasing the universal constant \(C\), for instance to \(128\).">Copy raw</button>
+          </div>
+          <div class="prompt-box">
+            <div class="small-title">Prompt</div>
+            <div class="prompt-text">Can you prove this theorem? Lemma 8.3.14 (Dimension reduction). Let F be a finite class of Boolean func-
+tions on a domain Ω with a probability measure µ on it. Assume that all functions
+in F are ε-separated, that is
+                    ∥f − g∥L2 (µ) &gt; ε     for all distinct f, g ∈ F.
+If n ≥ Cε−4 log|F |, then the empirical measure µn satisfies the following with
+probability at least 0.99:
+                  ∥f − g∥L2 (µn ) &gt; ε/2    for all distinct f, g ∈ F.
+  By definition of empirical measure (see Section 8.2.3), ∥f − g∥L2 (µn ) is the same
+as (8.31) but with the population average replaced by the sample average:
+                                      1 Xn                1/2
+                    ∥f − g∥L2 (µn ) =        (f − g)(Xi )2      ,               (8.32)
+                                       n i=1
+where Xi are i.i.d. copies of X.</div>
+          </div>
+          <div class="meta-row"><span class='meta-pill'>model: gpt-5.6-sol</span><span class='meta-pill'>reasoning effort: high</span><span class='meta-pill'>max completion tokens: 4000</span><span class='meta-pill'>elapsed seconds: 21.227</span></div>
+          
+          
+          
+          <div class="answer-box"><div class="answer-block" data-block-index="0">Let \(N=|F|\). If \(N\le 1\), the statement is vacuous, so assume \(N\ge 2\).</div><div class="answer-block annotated linked-block" data-block-index="1" data-pairs="pair_1">Fix distinct \(f,g\in F\), and define
+\[
+Y_i=(f(X_i)-g(X_i))^2.
+\]
+Since \(f,g\) are Boolean-valued, \(0\le Y_i\le 1\), and
+\[
+\mathbb EY_i=\|f-g\|_{L_2(\mu)}^2&gt;\varepsilon^2.
+\]
+Moreover,
+\[
+\|f-g\|_{L_2(\mu_n)}^2=\frac1n\sum_{i=1}^nY_i.
+\]</div><div class="eval-note linked" data-pair="pair_1"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> Define Y_i and p_{f,g}, then identify the squared empirical norm with the sample average.</div><div><strong>Comparison:</strong> Both reductions are effective, while the RAG notation p_{f,g} makes the concentration target slightly clearer.</div></div><div class="answer-block" data-block-index="2">If \(\|f-g\|_{L_2(\mu_n)}\le \varepsilon/2\), then
+\[
+\frac1n\sum_{i=1}^nY_i\le \frac{\varepsilon^2}{4}.
+\]
+Consequently,
+\[
+\frac1n\sum_{i=1}^nY_i-\mathbb EY_i
+&lt;-\frac{3\varepsilon^2}{4}.
+\]
+Hoeffding&#x27;s inequality therefore gives
+\[
+\mathbb P\left\{
+\|f-g\|_{L_2(\mu_n)}\le\frac{\varepsilon}{2}
+\right\}
+\le
+\exp\left(-2n\left(\frac{3\varepsilon^2}{4}\right)^2\right)
+=
+\exp\left(-\frac98n\varepsilon^4\right).
+\]</div><div class="answer-block annotated linked-block" data-block-index="3" data-pairs="pair_3 pair_4">There are at most \(N^2\) ordered pairs of distinct functions. Thus, by the union bound,
+\[
+\begin{aligned}
+\mathbb P\left\{
+\exists f\ne g:\,
+\|f-g\|_{L_2(\mu_n)}\le\frac{\varepsilon}{2}
+\right\}
+&amp;\le
+N^2\exp\left(-\frac98n\varepsilon^4\right).
+\end{aligned}
+\]
+If
+\[
+n\ge 8\varepsilon^{-4}\log N,
+\]
+then
+\[
+N^2\exp\left(-\frac98n\varepsilon^4\right)
+\le N^2e^{-9\log N}
+=N^{-7}
+\le 2^{-7}&lt;0.01.
+\]
+Hence, with probability at least \(0.99\),
+\[
+\|f-g\|_{L_2(\mu_n)}&gt;\frac{\varepsilon}{2}
+\qquad\text{for every distinct }f,g\in F.
+\]</div><div class="eval-note linked" data-pair="pair_3"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> Count fewer than m^2 pairs and apply a union bound.</div><div><strong>Comparison:</strong> Both passages appropriately compress this standard but necessary globalization step.</div></div><div class="eval-note linked" data-pair="pair_4"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> Conclude with C=128 and repeat that the {0,1} convention allows C=8.</div><div><strong>Comparison:</strong> The RAG ending repeats information already integrated into its proof, whereas the control caveat supplies information not given earlier.</div></div><div class="answer-block" data-block-index="4">Thus the lemma holds with a universal constant, for example \(C=8\).</div><div class="answer-block annotated linked-block" data-block-index="5" data-pairs="pair_2">If “Boolean” means \(\{-1,1\}\)-valued rather than \(\{0,1\}\)-valued, then \(0\le Y_i\le4\), and the same proof works after increasing the universal constant \(C\), for instance to \(128\).</div><div class="eval-note linked" data-pair="pair_2"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> Use the common range bound 0&lt;=Y_i&lt;=4 and Hoeffding to derive exp(-9n epsilon^4/128).</div><div><strong>Comparison:</strong> RAG places the boundedness convention directly beside the critical concentration argument.</div></div></div>
+        </section>
+        
+        
+        <section class="result-col rag">
+          <div class="col-header">
+            <h3>Library-RAG</h3>
+            <button class="copy-btn" data-copy="### Proof
+
+Let \(m=|F|\). If \(m\le 1\), the conclusion is vacuous, so assume \(m\ge 2\).
+
+Fix distinct \(f,g\in F\), and define
+\[
+Y_i=(f(X_i)-g(X_i))^2,\qquad
+p_{f,g}=\mathbb E Y_i=\|f-g\|_{L_2(\mu)}^2.
+\]
+By the \(\varepsilon\)-separation assumption,
+\[
+p_{f,g}&gt;\varepsilon^2.
+\]
+Moreover,
+\[
+\|f-g\|_{L_2(\mu_n)}^2=\frac1n\sum_{i=1}^nY_i.
+\]
+Thus the desired norm comparison is equivalent to a lower bound on an empirical average.  
+[STRATEGY: family_definitional_reformulation | Definitional unfolding and equivalent reformulation]
+Derived according to this strategy: Squaring the \(L_2\)-norms turns the separation statement into a concentration problem for empirical means.
+[/STRATEGY]
+
+Boolean functions are bounded. Under the convention \(F\subseteq\{0,1\}^{\Omega}\), one has \(0\le Y_i\le1\); under the convention \(F\subseteq\{-1,1\}^{\Omega}\), one has \(0\le Y_i\le4\). We use the latter, more conservative bound, so the proof covers both conventions.
+
+For a fixed pair \(f\ne g\), the bad event is
+\[
+\|f-g\|_{L_2(\mu_n)}\le\frac{\varepsilon}{2},
+\]
+or equivalently,
+\[
+\frac1n\sum_{i=1}^nY_i\le\frac{\varepsilon^2}{4}.
+\]
+Since \(p_{f,g}&gt;\varepsilon^2\), this event implies
+\[
+\frac1n\sum_{i=1}^nY_i-p_{f,g}
+&lt;-\frac{3\varepsilon^2}{4}.
+\]
+The variables \(Y_i\) are independent and take values in an interval of length at most \(4\). Hence Hoeffding’s inequality gives
+\[
+\begin{aligned}
+\mathbb P\left(
+\|f-g\|_{L_2(\mu_n)}\le\frac{\varepsilon}{2}
+\right)
+&amp;\le
+\exp\left(
+-\frac{2n(3\varepsilon^2/4)^2}{4^2}
+\right)\\
+&amp;=
+\exp\left(-\frac{9}{128}n\varepsilon^4\right).
+\end{aligned}
+\]
+[STRATEGY: sub_exponential_concentration | Exponential-moment and concentration arguments]
+Derived according to this strategy: Hoeffding’s inequality converts boundedness and independence into an exponentially small lower-tail probability for each fixed pair.
+[/STRATEGY]
+
+There are fewer than \(m^2\) ordered pairs of distinct functions. Taking a union bound,
+\[
+\begin{aligned}
+\mathbb P\left(
+\exists f\ne g:\ 
+\|f-g\|_{L_2(\mu_n)}\le\frac{\varepsilon}{2}
+\right)
+&amp;\le
+m^2\exp\left(-\frac{9}{128}n\varepsilon^4\right).
+\end{aligned}
+\]
+[STRATEGY: family_probability_information | Probability, concentration, and information methods]
+Derived according to this strategy: A union bound upgrades the fixed-pair concentration estimate to simultaneous control over the finite class.
+[/STRATEGY]
+
+Now take \(C=128\). If
+\[
+n\ge128\,\varepsilon^{-4}\log m,
+\]
+then
+\[
+m^2\exp\left(-\frac{9}{128}n\varepsilon^4\right)
+\le m^2e^{-9\log m}
+=m^{-7}
+\le2^{-7}
+&lt;0.01.
+\]
+Consequently, with probability at least \(0.99\),
+\[
+\|f-g\|_{L_2(\mu_n)}&gt;\frac{\varepsilon}{2}
+\qquad\text{for every distinct }f,g\in F.
+\]
+
+Thus the lemma holds with an absolute constant, for example \(C=128\). If Boolean functions are specifically \(\{0,1\}\)-valued, the sharper bound \(0\le Y_i\le1\) allows \(C=8\). \(\square\)">Copy raw</button>
+          </div>
+          <div class="prompt-box">
+            <div class="small-title">Prompt</div>
+            <div class="prompt-text">Can you prove this theorem? Lemma 8.3.14 (Dimension reduction). Let F be a finite class of Boolean func-
+tions on a domain Ω with a probability measure µ on it. Assume that all functions
+in F are ε-separated, that is
+                    ∥f − g∥L2 (µ) &gt; ε     for all distinct f, g ∈ F.
+If n ≥ Cε−4 log|F |, then the empirical measure µn satisfies the following with
+probability at least 0.99:
+                  ∥f − g∥L2 (µn ) &gt; ε/2    for all distinct f, g ∈ F.
+  By definition of empirical measure (see Section 8.2.3), ∥f − g∥L2 (µn ) is the same
+as (8.31) but with the population average replaced by the sample average:
+                                      1 Xn                1/2
+                    ∥f − g∥L2 (µn ) =        (f − g)(Xi )2      ,               (8.32)
+                                       n i=1
+where Xi are i.i.d. copies of X.</div>
+          </div>
+          <div class="meta-row"><span class='meta-pill'>model: gpt-5.6-sol</span><span class='meta-pill'>reasoning effort: high</span><span class='meta-pill'>max completion tokens: 4000</span><span class='meta-pill'>elapsed seconds: 33.722</span></div>
+          
+          
+    <div class="eval-summary">
+      <div class="small-title">AI evaluation of Library-RAG</div>
+      <span class="meta-pill">control: 5/5</span>
+      <span class="meta-pill">rag: 5/5</span>
+      <span class="meta-pill">winner: tie</span>
+      <div class="eval-overall">The Library-RAG proof is correct, focused, and well balanced. It clearly develops the empirical-mean reduction, the fixed-pair Hoeffding estimate, and the union bound, while handling both Boolean conventions more coherently than control. Its only notable weakness is minor repetition about constants and conventions.</div>
+    </div>
+    
+          <div class="nodes-box"><div class="small-title">Retrieved nodes</div><span class='node-chip'><code>family_probability_information</code> · Probability, concentration, and information methods</span><span class='node-chip'><code>family_standard_theorem_reduction</code> · Reduction to a standard theorem</span><span class='node-chip'><code>sub_probabilistic_packing</code> · Probabilistic method and packing constructions</span><span class='node-chip'><code>sub_ordered_field_constructions</code> · Ordered-field structure and canonical constructions</span><span class='node-chip'><code>sub_testing_information</code> · Testing and information-theoretic reductions</span><span class='node-chip'><code>sub_exponential_concentration</code> · Exponential-moment and concentration arguments</span><span class='node-chip'><code>sub_tail_integration</code> · Tail integration and moment estimates</span><span class='node-chip'><code>sub_intermediate_value</code> · Intermediate Value Theorem</span><span class='node-chip'><code>sub_fundamental_theorem_calculus</code> · Fundamental Theorem of Calculus</span><span class='node-chip'><code>family_definitional_reformulation</code> · Definitional unfolding and equivalent reformulation</span></div>
+          <div class="answer-box"><div class="answer-block" data-block-index="0">### Proof</div><div class="answer-block" data-block-index="1">Let \(m=|F|\). If \(m\le 1\), the conclusion is vacuous, so assume \(m\ge 2\).</div><div class="answer-block annotated linked-block" data-block-index="2" data-pairs="pair_1">Fix distinct \(f,g\in F\), and define
+\[
+Y_i=(f(X_i)-g(X_i))^2,\qquad
+p_{f,g}=\mathbb E Y_i=\|f-g\|_{L_2(\mu)}^2.
+\]
+By the \(\varepsilon\)-separation assumption,
+\[
+p_{f,g}&gt;\varepsilon^2.
+\]
+Moreover,
+\[
+\|f-g\|_{L_2(\mu_n)}^2=\frac1n\sum_{i=1}^nY_i.
+\]
+Thus the desired norm comparison is equivalent to a lower bound on an empirical average.  
+<div class="strategy-card"><div class="strategy-card-title">Library strategy reference</div><div class="strategy-card-meta">family_definitional_reformulation · Definitional unfolding and equivalent reformulation</div><div class="strategy-card-body">Derived according to this strategy: Squaring the \(L_2\)-norms turns the separation statement into a concentration problem for empirical means.</div></div></div><div class="eval-note worked" data-pair="pair_1"><div class="eval-note-title">Linked evaluation: worked well</div><div><strong>Related strategy block:</strong> Definitional unfolding and equivalent reformulation</div><div><strong>Corresponding control section:</strong> Define Y_i, identify its expectation, and identify the squared empirical norm with the sample average.</div><div><strong>Comparison:</strong> Both reductions are effective, while the RAG notation p_{f,g} makes the concentration target slightly clearer.</div></div><div class="answer-block" data-block-index="3">Boolean functions are bounded. Under the convention \(F\subseteq\{0,1\}^{\Omega}\), one has \(0\le Y_i\le1\); under the convention \(F\subseteq\{-1,1\}^{\Omega}\), one has \(0\le Y_i\le4\). We use the latter, more conservative bound, so the proof covers both conventions.</div><div class="answer-block annotated linked-block" data-block-index="4" data-pairs="pair_2">For a fixed pair \(f\ne g\), the bad event is
+\[
+\|f-g\|_{L_2(\mu_n)}\le\frac{\varepsilon}{2},
+\]
+or equivalently,
+\[
+\frac1n\sum_{i=1}^nY_i\le\frac{\varepsilon^2}{4}.
+\]
+Since \(p_{f,g}&gt;\varepsilon^2\), this event implies
+\[
+\frac1n\sum_{i=1}^nY_i-p_{f,g}
+&lt;-\frac{3\varepsilon^2}{4}.
+\]
+The variables \(Y_i\) are independent and take values in an interval of length at most \(4\). Hence Hoeffding’s inequality gives
+\[
+\begin{aligned}
+\mathbb P\left(
+\|f-g\|_{L_2(\mu_n)}\le\frac{\varepsilon}{2}
+\right)
+&amp;\le
+\exp\left(
+-\frac{2n(3\varepsilon^2/4)^2}{4^2}
+\right)\\
+&amp;=
+\exp\left(-\frac{9}{128}n\varepsilon^4\right).
+\end{aligned}
+\]
+<div class="strategy-card"><div class="strategy-card-title">Library strategy reference</div><div class="strategy-card-meta">sub_exponential_concentration · Exponential-moment and concentration arguments</div><div class="strategy-card-body">Derived according to this strategy: Hoeffding’s inequality converts boundedness and independence into an exponentially small lower-tail probability for each fixed pair.</div></div></div><div class="eval-note worked" data-pair="pair_2"><div class="eval-note-title">Linked evaluation: worked well</div><div><strong>Related strategy block:</strong> Exponential-moment and concentration arguments</div><div><strong>Corresponding control section:</strong> Use 0&lt;=Y_i&lt;=1 for the main estimate and defer the {-1,1} case to a closing caveat.</div><div><strong>Comparison:</strong> RAG places the boundedness convention directly beside the critical concentration argument.</div></div><div class="answer-block annotated linked-block" data-block-index="5" data-pairs="pair_3">There are fewer than \(m^2\) ordered pairs of distinct functions. Taking a union bound,
+\[
+\begin{aligned}
+\mathbb P\left(
+\exists f\ne g:\ 
+\|f-g\|_{L_2(\mu_n)}\le\frac{\varepsilon}{2}
+\right)
+&amp;\le
+m^2\exp\left(-\frac{9}{128}n\varepsilon^4\right).
+\end{aligned}
+\]
+<div class="strategy-card"><div class="strategy-card-title">Library strategy reference</div><div class="strategy-card-meta">family_probability_information · Probability, concentration, and information methods</div><div class="strategy-card-body">Derived according to this strategy: A union bound upgrades the fixed-pair concentration estimate to simultaneous control over the finite class.</div></div></div><div class="eval-note worked" data-pair="pair_3"><div class="eval-note-title">Linked evaluation: worked well</div><div><strong>Related strategy block:</strong> Probability, concentration, and information methods</div><div><strong>Corresponding control section:</strong> Count at most N^2 pairs and apply a union bound.</div><div><strong>Comparison:</strong> Both passages appropriately compress this standard but necessary globalization step.</div></div><div class="answer-block" data-block-index="6">Now take \(C=128\). If
+\[
+n\ge128\,\varepsilon^{-4}\log m,
+\]
+then
+\[
+m^2\exp\left(-\frac{9}{128}n\varepsilon^4\right)
+\le m^2e^{-9\log m}
+=m^{-7}
+\le2^{-7}
+&lt;0.01.
+\]
+Consequently, with probability at least \(0.99\),
+\[
+\|f-g\|_{L_2(\mu_n)}&gt;\frac{\varepsilon}{2}
+\qquad\text{for every distinct }f,g\in F.
+\]</div><div class="answer-block annotated linked-block" data-block-index="7" data-pairs="pair_4">Thus the lemma holds with an absolute constant, for example \(C=128\). If Boolean functions are specifically \(\{0,1\}\)-valued, the sharper bound \(0\le Y_i\le1\) allows \(C=8\). \(\square\)</div><div class="eval-note improve" data-pair="pair_4"><div class="eval-note-title">Linked evaluation: needs improvement</div><div><strong>Corresponding control section:</strong> Conclude with C=8 and add the previously untreated {-1,1} convention as a caveat.</div><div><strong>Comparison:</strong> The RAG ending repeats information already integrated into its proof, whereas the control caveat supplies information not given earlier.</div></div></div>
+        </section>
+        
+      </div>
+    </article>
+    
+    <article class="case" id="case-theorem_7_2_2">
+      <div class="case-title">
+        <h2>4. Theorem 7.2.2 (Slepian inequality). Let (Xt )t∈T and (Yt)</h2>
+        <div class="case-id"><code>theorem_7_2_2</code></div>
+      </div>
+      <div class="split" data-pair-links='[{&quot;pair_id&quot;: &quot;pair_1&quot;, &quot;control_idx&quot;: 5, &quot;rag_idx&quot;: 0, &quot;judgment&quot;: &quot;worked_well&quot;}, {&quot;pair_id&quot;: &quot;pair_2&quot;, &quot;control_idx&quot;: 0, &quot;rag_idx&quot;: 2, &quot;judgment&quot;: &quot;worked_well&quot;}, {&quot;pair_id&quot;: &quot;pair_3&quot;, &quot;control_idx&quot;: 2, &quot;rag_idx&quot;: 5, &quot;judgment&quot;: &quot;worked_well&quot;}, {&quot;pair_id&quot;: &quot;pair_4&quot;, &quot;control_idx&quot;: 4, &quot;rag_idx&quot;: 8, &quot;judgment&quot;: &quot;worked_well&quot;}, {&quot;pair_id&quot;: &quot;pair_5&quot;, &quot;control_idx&quot;: 5, &quot;rag_idx&quot;: 11, &quot;judgment&quot;: &quot;worked_well&quot;}, {&quot;pair_id&quot;: &quot;pair_6&quot;, &quot;control_idx&quot;: 6, &quot;rag_idx&quot;: 15, &quot;judgment&quot;: &quot;needs_improvement&quot;}, {&quot;pair_id&quot;: &quot;pair_7&quot;, &quot;control_idx&quot;: 7, &quot;rag_idx&quot;: 17, &quot;judgment&quot;: &quot;needs_improvement&quot;}]'>
+        <svg class="link-layer" aria-hidden="true"></svg>
+        
+        <section class="result-col control">
+          <div class="col-header">
+            <h3>Control</h3>
+            <button class="copy-btn" data-copy="**Proof.** We first prove the result when \(T=\{1,\dots ,m\}\) is finite. Write
+\[
+A_{ij}=\mathbb E[X_iX_j],
+\qquad
+B_{ij}=\mathbb E[Y_iY_j].
+\]
+The assumptions imply
+\[
+A_{ii}=B_{ii}
+\]
+and, for \(i\neq j\),
+\[
+A_{ii}+A_{jj}-2A_{ij}
+ \le B_{ii}+B_{jj}-2B_{ij}.
+\]
+Hence
+\[
+A_{ij}\ge B_{ij}\qquad (i\neq j). \tag{1}
+\]
+
+Realize \(X\) and \(Y\) independently and, for \(u\in[0,1]\), set
+\[
+Z_u=\sqrt u\,X+\sqrt{1-u}\,Y.
+\]
+Then \(Z_u\) is centered Gaussian with covariance
+\[
+C_u=uA+(1-u)B.
+\]
+
+Fix \(a\in\mathbb R\) and \(\varepsilon&gt;0\). Let
+\[
+h(x)=\Phi\!\left(\frac{a-x}{\varepsilon}\right),
+\qquad
+f(x_1,\dots,x_m)=\prod_{i=1}^m h(x_i),
+\]
+where \(\Phi\) is the standard normal distribution function. The Gaussian interpolation identity gives
+\[
+\frac{d}{du}\mathbb E f(Z_u)
+ =\frac12\sum_{i,j=1}^m
+ (A_{ij}-B_{ij})\,
+ \mathbb E\big[\partial_{ij}f(Z_u)\big]. \tag{2}
+\]
+For \(i=j\), the coefficient in (2) is zero. For \(i\neq j\),
+\[
+\partial_{ij}f(x)
+ =h&#x27;(x_i)h&#x27;(x_j)\prod_{k\neq i,j}h(x_k)\ge 0,
+\]
+because \(h\ge0\) and \(h&#x27;\le0\). Together with (1), this shows
+\[
+\frac{d}{du}\mathbb E f(Z_u)\ge0.
+\]
+Consequently,
+\[
+\mathbb E f(X)\ge \mathbb E f(Y). \tag{3}
+\]
+
+Let \(g_1,\dots,g_m\) be independent standard Gaussians, independent of everything else. Conditioning on \(X\),
+\[
+\mathbb E f(X)
+ =\mathbb P\!\left(X_i+\varepsilon g_i\le a
+                   \text{ for every }i\right),
+\]
+and similarly for \(Y\). Thus (3) says
+\[
+\mathbb P\!\left(\max_i(X_i+\varepsilon g_i)\le a\right)
+\ge
+\mathbb P\!\left(\max_i(Y_i+\varepsilon g_i)\le a\right). \tag{4}
+\]
+
+As \(\varepsilon\downarrow0\),
+\[
+\max_i(X_i+\varepsilon g_i)\longrightarrow \max_iX_i,
+\qquad
+\max_i(Y_i+\varepsilon g_i)\longrightarrow \max_iY_i
+\]
+almost surely. Passing to the limit in (4), first at common continuity points of the two distribution functions and then at every \(a\) by right-continuity, yields
+\[
+\mathbb P\!\left(\max_iX_i\le a\right)
+\ge
+\mathbb P\!\left(\max_iY_i\le a\right)
+\qquad(a\in\mathbb R). \tag{5}
+\]
+Therefore
+\[
+\mathbb P\!\left(\max_iX_i\ge \tau\right)
+\le
+\mathbb P\!\left(\max_iY_i\ge \tau\right).
+\]
+Indeed, apply (5) at \(a\uparrow\tau\) and use
+\[
+\{\max_iX_i&lt;\tau\}
+ =\bigcup_{n\ge1}\{\max_iX_i\le\tau-1/n\}.
+\]
+
+For a countable index set \(T=\{t_1,t_2,\dots\}\), let
+\[
+M_{X,n}=\max_{1\le i\le n}X_{t_i},
+\qquad
+M_{Y,n}=\max_{1\le i\le n}Y_{t_i}.
+\]
+The finite-dimensional result gives
+\[
+\mathbb P(M_{X,n}\le a)\ge \mathbb P(M_{Y,n}\le a).
+\]
+Since
+\[
+M_{X,n}\uparrow \sup_{t\in T}X_t,
+\qquad
+M_{Y,n}\uparrow \sup_{t\in T}Y_t,
+\]
+continuity of probability for decreasing events gives
+\[
+\mathbb P\!\left(\sup_{t\in T}X_t\le a\right)
+\ge
+\mathbb P\!\left(\sup_{t\in T}Y_t\le a\right).
+\]
+The same argument as above proves
+\[
+\mathbb P\!\left(\sup_{t\in T}X_t\ge\tau\right)
+\le
+\mathbb P\!\left(\sup_{t\in T}Y_t\ge\tau\right).
+\]
+For a general separable process, choose a countable subset of \(T\) over which both suprema agree almost surely, reducing to the countable case.
+
+Finally, stochastic domination implies the expectation inequality. More explicitly, if
+\[
+M_X=\sup_{t\in T}X_t,\qquad M_Y=\sup_{t\in T}Y_t,
+\]
+then for every increasing bounded function \(\varphi\),
+\[
+\mathbb E\varphi(M_X)\le\mathbb E\varphi(M_Y).
+\]
+Approximating the identity function by increasing truncations gives
+\[
+\boxed{\mathbb E\sup_{t\in T}X_t
+       \le
+       \mathbb E\sup_{t\in T}Y_t.}
+\]
+The expectations may be interpreted as extended expectations; their negative parts are finite because, for any fixed \(t_0\),
+\[
+\sup_{t\in T}X_t\ge X_{t_0},
+\qquad
+\sup_{t\in T}Y_t\ge Y_{t_0}.
+\]
+
+Strictly speaking, for uncountable \(T\) one needs the usual measurability/separability assumption on the suprema. Without it, arbitrary nonseparable modifications can make the literal statement false even when all finite-dimensional distributions agree.">Copy raw</button>
+          </div>
+          <div class="prompt-box">
+            <div class="small-title">Prompt</div>
+            <div class="prompt-text">Can you prove this theorem? Theorem 7.2.2 (Slepian inequality). Let (Xt )t∈T and (Yt )t∈T be two mean-zero
+Gaussian processes. Assume that for all t, s ∈ T , we have
+                E Xt2 = E Yt2     and     E(Xt − Xs )2 ≤ E(Yt − Ys )2 .      (7.3)
+Then supt∈T Xt is stochastically dominated by supt∈T Yt : for every τ ∈ R, we have
+                          n          o   n          o
+                         P sup Xt ≥ τ ≤ P sup Yt ≥ τ .                       (7.4)
+                            t∈T                   t∈T
+
+Consequently,
+                                  E sup Xt ≤ E sup Yt .                      (7.5)
+                                    t∈T          t∈T
+
+  We now prepare for the</div>
+          </div>
+          <div class="meta-row"><span class='meta-pill'>model: gpt-5.6-sol</span><span class='meta-pill'>reasoning effort: high</span><span class='meta-pill'>max completion tokens: 4000</span><span class='meta-pill'>elapsed seconds: 129.433</span></div>
+          
+          
+          
+          <div class="answer-box"><div class="answer-block annotated linked-block" data-block-index="0" data-pairs="pair_2"><strong>Proof.</strong> We first prove the result when \(T=\{1,\dots ,m\}\) is finite. Write
+\[
+A_{ij}=\mathbb E[X_iX_j],
+\qquad
+B_{ij}=\mathbb E[Y_iY_j].
+\]
+The assumptions imply
+\[
+A_{ii}=B_{ii}
+\]
+and, for \(i\neq j\),
+\[
+A_{ii}+A_{jj}-2A_{ij}
+ \le B_{ii}+B_{jj}-2B_{ij}.
+\]
+Hence
+\[
+A_{ij}\ge B_{ij}\qquad (i\neq j). \tag{1}
+\]</div><div class="eval-note linked" data-pair="pair_2"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> Expanding E(X_i-X_j)^2 and using equality of diagonal variances gives A_ij ≥ B_ij for i ≠ j.</div><div><strong>Comparison:</strong> Both are appropriately concise, and RAG clearly identifies why the rewriting matters.</div></div><div class="answer-block" data-block-index="1">Realize \(X\) and \(Y\) independently and, for \(u\in[0,1]\), set
+\[
+Z_u=\sqrt u\,X+\sqrt{1-u}\,Y.
+\]
+Then \(Z_u\) is centered Gaussian with covariance
+\[
+C_u=uA+(1-u)B.
+\]</div><div class="answer-block annotated linked-block" data-block-index="2" data-pairs="pair_3">Fix \(a\in\mathbb R\) and \(\varepsilon&gt;0\). Let
+\[
+h(x)=\Phi\!\left(\frac{a-x}{\varepsilon}\right),
+\qquad
+f(x_1,\dots,x_m)=\prod_{i=1}^m h(x_i),
+\]
+where \(\Phi\) is the standard normal distribution function. The Gaussian interpolation identity gives
+\[
+\frac{d}{du}\mathbb E f(Z_u)
+ =\frac12\sum_{i,j=1}^m
+ (A_{ij}-B_{ij})\,
+ \mathbb E\big[\partial_{ij}f(Z_u)\big]. \tag{2}
+\]
+For \(i=j\), the coefficient in (2) is zero. For \(i\neq j\),
+\[
+\partial_{ij}f(x)
+ =h&#x27;(x_i)h&#x27;(x_j)\prod_{k\neq i,j}h(x_k)\ge 0,
+\]
+because \(h\ge0\) and \(h&#x27;\le0\). Together with (1), this shows
+\[
+\frac{d}{du}\mathbb E f(Z_u)\ge0.
+\]
+Consequently,
+\[
+\mathbb E f(X)\ge \mathbb E f(Y). \tag{3}
+\]</div><div class="eval-note linked" data-pair="pair_3"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> Differentiating E f(Z(u)) and applying Gaussian integration by parts to the X- and Y-terms yields one half the sum of (B_ij-A_ij)E[∂_ij f(Z(u))]; singular covariances are handled by adding δI and passing to the limit.</div><div><strong>Comparison:</strong> RAG gives needed support for the proof&#x27;s most critical identity rather than merely citing it.</div></div><div class="answer-block" data-block-index="3">Let \(g_1,\dots,g_m\) be independent standard Gaussians, independent of everything else. Conditioning on \(X\),
+\[
+\mathbb E f(X)
+ =\mathbb P\!\left(X_i+\varepsilon g_i\le a
+                   \text{ for every }i\right),
+\]
+and similarly for \(Y\). Thus (3) says
+\[
+\mathbb P\!\left(\max_i(X_i+\varepsilon g_i)\le a\right)
+\ge
+\mathbb P\!\left(\max_i(Y_i+\varepsilon g_i)\le a\right). \tag{4}
+\]</div><div class="answer-block annotated linked-block" data-block-index="4" data-pairs="pair_4">As \(\varepsilon\downarrow0\),
+\[
+\max_i(X_i+\varepsilon g_i)\longrightarrow \max_iX_i,
+\qquad
+\max_i(Y_i+\varepsilon g_i)\longrightarrow \max_iY_i
+\]
+almost surely. Passing to the limit in (4), first at common continuity points of the two distribution functions and then at every \(a\) by right-continuity, yields
+\[
+\mathbb P\!\left(\max_iX_i\le a\right)
+\ge
+\mathbb P\!\left(\max_iY_i\le a\right)
+\qquad(a\in\mathbb R). \tag{5}
+\]
+Therefore
+\[
+\mathbb P\!\left(\max_iX_i\ge \tau\right)
+\le
+\mathbb P\!\left(\max_iY_i\ge \tau\right).
+\]
+Indeed, apply (5) at \(a\uparrow\tau\) and use
+\[
+\{\max_iX_i&lt;\tau\}
+ =\bigcup_{n\ge1}\{\max_iX_i\le\tau-1/n\}.
+\]</div><div class="eval-note linked" data-pair="pair_4"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> The smooth product cutoff f_ε converges pointwise to the indicator of {max_i x_i ≤ a}; bounded convergence transfers the interpolated inequality directly to the orthant probabilities.</div><div><strong>Comparison:</strong> RAG&#x27;s direct cutoff limit is shorter and clearer than the control&#x27;s perturbation and continuity-point argument.</div></div><div class="answer-block annotated linked-block" data-block-index="5" data-pairs="pair_1 pair_5">For a countable index set \(T=\{t_1,t_2,\dots\}\), let
+\[
+M_{X,n}=\max_{1\le i\le n}X_{t_i},
+\qquad
+M_{Y,n}=\max_{1\le i\le n}Y_{t_i}.
+\]
+The finite-dimensional result gives
+\[
+\mathbb P(M_{X,n}\le a)\ge \mathbb P(M_{Y,n}\le a).
+\]
+Since
+\[
+M_{X,n}\uparrow \sup_{t\in T}X_t,
+\qquad
+M_{Y,n}\uparrow \sup_{t\in T}Y_t,
+\]
+continuity of probability for decreasing events gives
+\[
+\mathbb P\!\left(\sup_{t\in T}X_t\le a\right)
+\ge
+\mathbb P\!\left(\sup_{t\in T}Y_t\le a\right).
+\]
+The same argument as above proves
+\[
+\mathbb P\!\left(\sup_{t\in T}X_t\ge\tau\right)
+\le
+\mathbb P\!\left(\sup_{t\in T}Y_t\ge\tau\right).
+\]
+For a general separable process, choose a countable subset of \(T\) over which both suprema agree almost surely, reducing to the countable case.</div><div class="eval-note linked" data-pair="pair_1"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> The finite-dimensional argument is the essential part; the general separable case follows by approximation with finite subsets.</div><div><strong>Comparison:</strong> RAG supplies a concise roadmap that correctly emphasizes the finite-dimensional core.</div></div><div class="eval-note linked" data-pair="pair_5"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> For countable T, M_X,n and M_Y,n increase to the respective suprema, while the events {M_X,n ≤ a} and {M_Y,n ≤ a} decrease to the corresponding supremum events.</div><div><strong>Comparison:</strong> RAG makes the event-level monotonicity explicit without overexplaining the limiting argument.</div></div><div class="answer-block annotated linked-block" data-block-index="6" data-pairs="pair_6">Finally, stochastic domination implies the expectation inequality. More explicitly, if
+\[
+M_X=\sup_{t\in T}X_t,\qquad M_Y=\sup_{t\in T}Y_t,
+\]
+then for every increasing bounded function \(\varphi\),
+\[
+\mathbb E\varphi(M_X)\le\mathbb E\varphi(M_Y).
+\]
+Approximating the identity function by increasing truncations gives
+\[
+\boxed{\mathbb E\sup_{t\in T}X_t
+       \le
+       \mathbb E\sup_{t\in T}Y_t.}
+\]
+The expectations may be interpreted as extended expectations; their negative parts are finite because, for any fixed \(t_0\),
+\[
+\sup_{t\in T}X_t\ge X_{t_0},
+\qquad
+\sup_{t\in T}Y_t\ge Y_{t_0}.
+\]</div><div class="eval-note linked" data-pair="pair_6"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> The response derives separate positive- and negative-tail inequalities, writes both tail-integral formulas, and then compares E U^+, E V^+, E U^-, and E V^-.</div><div><strong>Comparison:</strong> RAG is rigorous but devotes excessive detail to a standard consequence that the control handles more economically.</div></div><div class="answer-block annotated linked-block" data-block-index="7" data-pairs="pair_7">Strictly speaking, for uncountable \(T\) one needs the usual measurability/separability assumption on the suprema. Without it, arbitrary nonseparable modifications can make the literal statement false even when all finite-dimensional distributions agree.</div><div class="eval-note linked" data-pair="pair_7"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> The technical qualification constructs X_t(ω)=1_{ω=t} and Y_t=0 to show that arbitrary nonseparable versions can have different pointwise suprema despite identical finite-dimensional laws.</div><div><strong>Comparison:</strong> The explicit counterexample is correct but peripheral; the control&#x27;s compact warning better fits the proof&#x27;s focus.</div></div></div>
+        </section>
+        
+        
+        <section class="result-col rag">
+          <div class="col-header">
+            <h3>Library-RAG</h3>
+            <button class="copy-btn" data-copy="Yes—under the standard assumption that the processes are separable, so their suprema are determined almost surely by countable subsets of \(T\). The finite-dimensional argument is the essential part; the general separable case follows by approximation with finite subsets.  
+[STRATEGY: family_standard_theorem_reduction | Reduction to a standard theorem]
+Derived according to this strategy: Reduce the process-level statement to a finite-dimensional Gaussian comparison, then recover the supremum by a countable limiting argument.
+[/STRATEGY]
+
+## 1. Rewrite the assumptions as a covariance ordering
+
+First suppose \(T=\{1,\dots,m\}\), and write
+\[
+A_{ij}=\mathbb E[X_iX_j],\qquad B_{ij}=\mathbb E[Y_iY_j].
+\]
+The equal-variance assumption says
+\[
+A_{ii}=B_{ii}.
+\]
+Moreover,
+\[
+\mathbb E(X_i-X_j)^2=A_{ii}+A_{jj}-2A_{ij},
+\]
+and similarly for \(Y\). Thus the increment assumption and equality of the diagonal variances give
+\[
+A_{ij}\ge B_{ij}\qquad(i\ne j).
+\]
+[STRATEGY: sub_canonical_rewriting | Canonical rewriting]
+Derived according to this strategy: Expanding the squared increments converts the variogram inequality into the off-diagonal covariance ordering needed for Gaussian interpolation.
+[/STRATEGY]
+
+## 2. Gaussian interpolation
+
+Take independent copies of the Gaussian vectors \(X=(X_1,\dots,X_m)\) and \(Y=(Y_1,\dots,Y_m)\), and define
+\[
+Z(u)=\sqrt{1-u}\,X+\sqrt u\,Y,\qquad 0\le u\le1.
+\]
+Its covariance matrix is
+\[
+C(u)=(1-u)A+uB.
+\]
+
+For a \(C^2\) function \(f:\mathbb R^m\to\mathbb R\) with bounded derivatives, Gaussian integration by parts gives
+\[
+\frac{d}{du}\mathbb E f(Z(u))
+   =\frac12\sum_{i,j=1}^m
+       (B_{ij}-A_{ij})\,
+       \mathbb E\big[\partial_{ij}f(Z(u))\big].
+\tag{1}
+\]
+Indeed, differentiating inside the expectation and applying
+\[
+\mathbb E[G_i\phi(G)]
+   =\sum_j\operatorname{Cov}(G_i,G_j)
+        \mathbb E[\partial_j\phi(G)]
+\]
+to the \(X\)- and \(Y\)-terms yields (1). This identity remains valid for singular covariance matrices, either directly or by adding \(\delta I\) and letting \(\delta\downarrow0\).
+
+[NEW_STRATEGY: Gaussian covariance interpolation and integration by parts]
+Why this is new: The retrieved strategies do not cover interpolation between Gaussian covariance matrices or the Gaussian integration-by-parts identity that turns covariance ordering into monotonicity of probabilities.
+[/NEW_STRATEGY]
+
+Fix \(a\in\mathbb R\). Choose a smooth nonincreasing function \(h:\mathbb R\to[0,1]\) such that
+\[
+h(r)=1\quad(r\le0),\qquad h(r)=0\quad(r\ge1).
+\]
+For \(\varepsilon&gt;0\), put
+\[
+f_\varepsilon(x_1,\dots,x_m)
+   =\prod_{i=1}^m h\left(\frac{x_i-a}{\varepsilon}\right).
+\]
+For \(i\ne j\),
+\[
+\partial_{ij}f_\varepsilon(x)
+ =\frac1{\varepsilon^2}
+   h&#x27;\left(\frac{x_i-a}{\varepsilon}\right)
+   h&#x27;\left(\frac{x_j-a}{\varepsilon}\right)
+   \prod_{k\ne i,j}
+   h\left(\frac{x_k-a}{\varepsilon}\right)
+ \ge0,
+\]
+because \(h&#x27;\le0\). On the other hand,
+\[
+B_{ii}-A_{ii}=0,\qquad B_{ij}-A_{ij}\le0\quad(i\ne j).
+\]
+Consequently, (1) gives
+\[
+\frac{d}{du}\mathbb E f_\varepsilon(Z(u))\le0.
+\]
+Since \(Z(0)=X\) and \(Z(1)=Y\) in distribution,
+\[
+\mathbb E f_\varepsilon(Y)\le \mathbb E f_\varepsilon(X).
+\tag{2}
+\]
+
+As \(\varepsilon\downarrow0\),
+\[
+f_\varepsilon(x)\longrightarrow
+\mathbf 1_{\{\max_i x_i\le a\}}.
+\]
+By bounded convergence, (2) therefore yields
+\[
+\mathbb P\left\{\max_iY_i\le a\right\}
+ \le
+\mathbb P\left\{\max_iX_i\le a\right\}.
+\tag{3}
+\]
+[STRATEGY: family_limits_completeness | Limit, sequence, and completeness methods]
+Derived according to this strategy: Smooth orthant indicators are sent to the exact indicator by a bounded pointwise limit, transferring the interpolated inequality to probabilities.
+[/STRATEGY]
+
+Equivalently,
+\[
+\mathbb P\left\{\max_iX_i&gt;a\right\}
+ \le
+\mathbb P\left\{\max_iY_i&gt;a\right\}.
+\tag{4}
+\]
+To obtain the stated version with \(\ge\), apply (4) at \(a=\tau-1/k\) and let \(k\to\infty\):
+\[
+\{\max_iX_i\ge\tau\}
+ =\bigcap_{k=1}^\infty
+   \{\max_iX_i&gt;\tau-1/k\}.
+\]
+Continuity of probability from above gives
+\[
+\mathbb P\left\{\max_iX_i\ge\tau\right\}
+ \le
+\mathbb P\left\{\max_iY_i\ge\tau\right\}.
+\tag{5}
+\]
+
+## 3. Passage to a general separable index set
+
+Suppose first that \(T=\{t_1,t_2,\dots\}\) is countable, and define
+\[
+M_{X,n}=\max_{1\le i\le n}X_{t_i},
+\qquad
+M_{Y,n}=\max_{1\le i\le n}Y_{t_i}.
+\]
+The finite-dimensional result gives, for every \(a\),
+\[
+\mathbb P(M_{X,n}\le a)\ge\mathbb P(M_{Y,n}\le a).
+\]
+Since
+\[
+M_{X,n}\uparrow \sup_{t\in T}X_t,
+\qquad
+M_{Y,n}\uparrow \sup_{t\in T}Y_t,
+\]
+we have
+\[
+\{M_{X,n}\le a\}\downarrow
+ \left\{\sup_{t\in T}X_t\le a\right\},
+\]
+and likewise for \(Y\). Letting \(n\to\infty\) therefore gives
+\[
+\mathbb P\left\{\sup_{t\in T}X_t\le a\right\}
+ \ge
+\mathbb P\left\{\sup_{t\in T}Y_t\le a\right\}.
+\]
+As above, replacing \(a\) by \(\tau-1/k\) and taking a limit proves
+\[
+\boxed{
+\mathbb P\left\{\sup_{t\in T}X_t\ge\tau\right\}
+\le
+\mathbb P\left\{\sup_{t\in T}Y_t\ge\tau\right\}.
+}
+\]
+[STRATEGY: sub_monotone_limsup_subsequence | Monotone sequences, limsup, and subsequences]
+Derived according to this strategy: The supremum over a countable index set is the monotone limit of finite maxima, allowing the finite-dimensional probability inequalities to pass to the full supremum.
+[/STRATEGY]
+
+For a separable process, there is a countable \(T_0\subseteq T\) such that almost surely
+\[
+\sup_{t\in T}X_t=\sup_{t\in T_0}X_t,
+\qquad
+\sup_{t\in T}Y_t=\sup_{t\in T_0}Y_t.
+\]
+Applying the countable result to \(T_0\) proves (7.4).
+
+## 4. Comparison of expectations
+
+Let
+\[
+U=\sup_{t\in T}X_t,\qquad V=\sup_{t\in T}Y_t.
+\]
+The stochastic domination implies
+\[
+\mathbb P(U&gt;u)\le\mathbb P(V&gt;u)
+\quad\text{and}\quad
+\mathbb P(U&lt;-u)\ge\mathbb P(V&lt;-u)
+\qquad(u\ge0).
+\]
+Choose any \(t_0\in T\). Since \(U\ge X_{t_0}\),
+\[
+U^-\le X_{t_0}^-,
+\]
+so \(\mathbb E U^-&lt;\infty\); similarly \(\mathbb E V^-&lt;\infty\). Using the tail formulas
+\[
+\mathbb E U^+=\int_0^\infty\mathbb P(U&gt;u)\,du,
+\qquad
+\mathbb E U^-=\int_0^\infty\mathbb P(U&lt;-u)\,du,
+\]
+we obtain
+\[
+\mathbb E U^+\le\mathbb E V^+,
+\qquad
+\mathbb E U^-\ge\mathbb E V^-.
+\]
+Hence, allowing the expectations to take the value \(+\infty\),
+\[
+\boxed{
+\mathbb E\sup_{t\in T}X_t
+\le
+\mathbb E\sup_{t\in T}Y_t.
+}
+\]
+
+[NEW_STRATEGY: Tail integration of stochastic domination]
+Why this is new: The retrieved nodes do not explicitly cover converting first-order stochastic domination into expectation comparison through positive- and negative-tail integrals.
+[/NEW_STRATEGY]
+
+### Technical qualification
+
+Some separability or essential-supremum convention is necessary. Without it, the statement is false for arbitrary index sets: on \([0,1]\) with Lebesgue measure, let
+\[
+X_t(\omega)=\mathbf 1_{\{\omega=t\}},\qquad Y_t(\omega)=0.
+\]
+Every finite-dimensional distribution of \(X\) is identically zero, so both are mean-zero Gaussian processes satisfying (7.3), but pointwise
+\[
+\sup_tX_t=1,\qquad \sup_tY_t=0.
+\]
+Standard formulations of Slepian’s inequality therefore assume finite/countable \(T\), separable processes, or suprema understood through countable/essential versions.">Copy raw</button>
+          </div>
+          <div class="prompt-box">
+            <div class="small-title">Prompt</div>
+            <div class="prompt-text">Can you prove this theorem? Theorem 7.2.2 (Slepian inequality). Let (Xt )t∈T and (Yt )t∈T be two mean-zero
+Gaussian processes. Assume that for all t, s ∈ T , we have
+                E Xt2 = E Yt2     and     E(Xt − Xs )2 ≤ E(Yt − Ys )2 .      (7.3)
+Then supt∈T Xt is stochastically dominated by supt∈T Yt : for every τ ∈ R, we have
+                          n          o   n          o
+                         P sup Xt ≥ τ ≤ P sup Yt ≥ τ .                       (7.4)
+                            t∈T                   t∈T
+
+Consequently,
+                                  E sup Xt ≤ E sup Yt .                      (7.5)
+                                    t∈T          t∈T
+
+  We now prepare for the</div>
+          </div>
+          <div class="meta-row"><span class='meta-pill'>model: gpt-5.6-sol</span><span class='meta-pill'>reasoning effort: high</span><span class='meta-pill'>max completion tokens: 4000</span><span class='meta-pill'>elapsed seconds: 181.849</span></div>
+          
+          
+    <div class="eval-summary">
+      <div class="small-title">AI evaluation of Library-RAG</div>
+      <span class="meta-pill">control: 4/5</span>
+      <span class="meta-pill">rag: 5/5</span>
+      <span class="meta-pill">winner: library_rag</span>
+      <div class="eval-overall">The RAG proof better explains the decisive Gaussian interpolation identity and replaces the control&#x27;s more cumbersome smoothing limit with a direct bounded-convergence argument. It is mathematically sound and well organized, though the expectation comparison and nonseparability counterexample are more detailed than necessary.</div>
+    </div>
+    
+          <div class="nodes-box"><div class="small-title">Retrieved nodes</div><span class='node-chip'><code>sub_order_completeness</code> · Suprema, infima, and order completeness</span><span class='node-chip'><code>family_standard_theorem_reduction</code> · Reduction to a standard theorem</span><span class='node-chip'><code>sub_intermediate_value</code> · Intermediate Value Theorem</span><span class='node-chip'><code>sub_fundamental_theorem_calculus</code> · Fundamental Theorem of Calculus</span><span class='node-chip'><code>sub_canonical_rewriting</code> · Canonical rewriting</span><span class='node-chip'><code>family_extremal_order</code> · Supremum, infimum, and extremal arguments</span><span class='node-chip'><code>family_limits_completeness</code> · Limit, sequence, and completeness methods</span><span class='node-chip'><code>sub_sequence_completeness</code> · Sequence and completeness methods</span><span class='node-chip'><code>sub_monotone_limsup_subsequence</code> · Monotone sequences, limsup, and subsequences</span><span class='node-chip'><code>sub_mean_value_theorems</code> · Fermat, Rolle, and Mean Value Theorems</span></div>
+          <div class="answer-box"><div class="answer-block annotated linked-block" data-block-index="0" data-pairs="pair_1">Yes—under the standard assumption that the processes are separable, so their suprema are determined almost surely by countable subsets of \(T\). The finite-dimensional argument is the essential part; the general separable case follows by approximation with finite subsets.  
+<div class="strategy-card"><div class="strategy-card-title">Library strategy reference</div><div class="strategy-card-meta">family_standard_theorem_reduction · Reduction to a standard theorem</div><div class="strategy-card-body">Derived according to this strategy: Reduce the process-level statement to a finite-dimensional Gaussian comparison, then recover the supremum by a countable limiting argument.</div></div></div><div class="eval-note worked" data-pair="pair_1"><div class="eval-note-title">Linked evaluation: worked well</div><div><strong>Related strategy block:</strong> Reduction to a standard theorem</div><div><strong>Corresponding control section:</strong> The control begins with the finite case, then separately treats countable T and finally reduces a general separable process to a countable subset.</div><div><strong>Comparison:</strong> RAG supplies a concise roadmap that correctly emphasizes the finite-dimensional core.</div></div><div class="answer-block" data-block-index="1">## 1. Rewrite the assumptions as a covariance ordering</div><div class="answer-block annotated linked-block" data-block-index="2" data-pairs="pair_2">First suppose \(T=\{1,\dots,m\}\), and write
+\[
+A_{ij}=\mathbb E[X_iX_j],\qquad B_{ij}=\mathbb E[Y_iY_j].
+\]
+The equal-variance assumption says
+\[
+A_{ii}=B_{ii}.
+\]
+Moreover,
+\[
+\mathbb E(X_i-X_j)^2=A_{ii}+A_{jj}-2A_{ij},
+\]
+and similarly for \(Y\). Thus the increment assumption and equality of the diagonal variances give
+\[
+A_{ij}\ge B_{ij}\qquad(i\ne j).
+\]
+<div class="strategy-card"><div class="strategy-card-title">Library strategy reference</div><div class="strategy-card-meta">sub_canonical_rewriting · Canonical rewriting</div><div class="strategy-card-body">Derived according to this strategy: Expanding the squared increments converts the variogram inequality into the off-diagonal covariance ordering needed for Gaussian interpolation.</div></div></div><div class="eval-note worked" data-pair="pair_2"><div class="eval-note-title">Linked evaluation: worked well</div><div><strong>Related strategy block:</strong> Canonical rewriting</div><div><strong>Corresponding control section:</strong> The control writes A_ii+A_jj-2A_ij ≤ B_ii+B_jj-2B_ij and concludes A_ij ≥ B_ij.</div><div><strong>Comparison:</strong> Both are appropriately concise, and RAG clearly identifies why the rewriting matters.</div></div><div class="answer-block" data-block-index="3">## 2. Gaussian interpolation</div><div class="answer-block" data-block-index="4">Take independent copies of the Gaussian vectors \(X=(X_1,\dots,X_m)\) and \(Y=(Y_1,\dots,Y_m)\), and define
+\[
+Z(u)=\sqrt{1-u}\,X+\sqrt u\,Y,\qquad 0\le u\le1.
+\]
+Its covariance matrix is
+\[
+C(u)=(1-u)A+uB.
+\]</div><div class="answer-block annotated linked-block" data-block-index="5" data-pairs="pair_3">For a \(C^2\) function \(f:\mathbb R^m\to\mathbb R\) with bounded derivatives, Gaussian integration by parts gives
+\[
+\frac{d}{du}\mathbb E f(Z(u))
+   =\frac12\sum_{i,j=1}^m
+       (B_{ij}-A_{ij})\,
+       \mathbb E\big[\partial_{ij}f(Z(u))\big].
+\tag{1}
+\]
+Indeed, differentiating inside the expectation and applying
+\[
+\mathbb E[G_i\phi(G)]
+   =\sum_j\operatorname{Cov}(G_i,G_j)
+        \mathbb E[\partial_j\phi(G)]
+\]
+to the \(X\)- and \(Y\)-terms yields (1). This identity remains valid for singular covariance matrices, either directly or by adding \(\delta I\) and letting \(\delta\downarrow0\).</div><div class="eval-note worked" data-pair="pair_3"><div class="eval-note-title">Linked evaluation: worked well</div><div><strong>Related strategy block:</strong> Gaussian covariance interpolation and integration by parts</div><div><strong>Corresponding control section:</strong> The control states the Gaussian interpolation identity directly: the derivative is one half the sum of (A_ij-B_ij)E[∂_ij f(Z_u)].</div><div><strong>Comparison:</strong> RAG gives needed support for the proof&#x27;s most critical identity rather than merely citing it.</div></div><div class="answer-block" data-block-index="6"><div class="strategy-card new"><div class="strategy-card-title">Proposed new strategy</div><div class="strategy-card-meta">Gaussian covariance interpolation and integration by parts</div><div class="strategy-card-body">Why this is new: The retrieved strategies do not cover interpolation between Gaussian covariance matrices or the Gaussian integration-by-parts identity that turns covariance ordering into monotonicity of probabilities.</div></div></div><div class="answer-block" data-block-index="7">Fix \(a\in\mathbb R\). Choose a smooth nonincreasing function \(h:\mathbb R\to[0,1]\) such that
+\[
+h(r)=1\quad(r\le0),\qquad h(r)=0\quad(r\ge1).
+\]
+For \(\varepsilon&gt;0\), put
+\[
+f_\varepsilon(x_1,\dots,x_m)
+   =\prod_{i=1}^m h\left(\frac{x_i-a}{\varepsilon}\right).
+\]
+For \(i\ne j\),
+\[
+\partial_{ij}f_\varepsilon(x)
+ =\frac1{\varepsilon^2}
+   h&#x27;\left(\frac{x_i-a}{\varepsilon}\right)
+   h&#x27;\left(\frac{x_j-a}{\varepsilon}\right)
+   \prod_{k\ne i,j}
+   h\left(\frac{x_k-a}{\varepsilon}\right)
+ \ge0,
+\]
+because \(h&#x27;\le0\). On the other hand,
+\[
+B_{ii}-A_{ii}=0,\qquad B_{ij}-A_{ij}\le0\quad(i\ne j).
+\]
+Consequently, (1) gives
+\[
+\frac{d}{du}\mathbb E f_\varepsilon(Z(u))\le0.
+\]
+Since \(Z(0)=X\) and \(Z(1)=Y\) in distribution,
+\[
+\mathbb E f_\varepsilon(Y)\le \mathbb E f_\varepsilon(X).
+\tag{2}
+\]</div><div class="answer-block annotated linked-block" data-block-index="8" data-pairs="pair_4">As \(\varepsilon\downarrow0\),
+\[
+f_\varepsilon(x)\longrightarrow
+\mathbf 1_{\{\max_i x_i\le a\}}.
+\]
+By bounded convergence, (2) therefore yields
+\[
+\mathbb P\left\{\max_iY_i\le a\right\}
+ \le
+\mathbb P\left\{\max_iX_i\le a\right\}.
+\tag{3}
+\]
+<div class="strategy-card"><div class="strategy-card-title">Library strategy reference</div><div class="strategy-card-meta">family_limits_completeness · Limit, sequence, and completeness methods</div><div class="strategy-card-body">Derived according to this strategy: Smooth orthant indicators are sent to the exact indicator by a bounded pointwise limit, transferring the interpolated inequality to probabilities.</div></div></div><div class="eval-note worked" data-pair="pair_4"><div class="eval-note-title">Linked evaluation: worked well</div><div><strong>Related strategy block:</strong> Limit, sequence, and completeness methods</div><div><strong>Corresponding control section:</strong> The control interprets its smoothing through independent Gaussian perturbations, lets the perturbed maxima converge almost surely, and then invokes continuity points followed by right-continuity.</div><div><strong>Comparison:</strong> RAG&#x27;s direct cutoff limit is shorter and clearer than the control&#x27;s perturbation and continuity-point argument.</div></div><div class="answer-block" data-block-index="9">Equivalently,
+\[
+\mathbb P\left\{\max_iX_i&gt;a\right\}
+ \le
+\mathbb P\left\{\max_iY_i&gt;a\right\}.
+\tag{4}
+\]
+To obtain the stated version with \(\ge\), apply (4) at \(a=\tau-1/k\) and let \(k\to\infty\):
+\[
+\{\max_iX_i\ge\tau\}
+ =\bigcap_{k=1}^\infty
+   \{\max_iX_i&gt;\tau-1/k\}.
+\]
+Continuity of probability from above gives
+\[
+\mathbb P\left\{\max_iX_i\ge\tau\right\}
+ \le
+\mathbb P\left\{\max_iY_i\ge\tau\right\}.
+\tag{5}
+\]</div><div class="answer-block" data-block-index="10">## 3. Passage to a general separable index set</div><div class="answer-block annotated linked-block" data-block-index="11" data-pairs="pair_5">Suppose first that \(T=\{t_1,t_2,\dots\}\) is countable, and define
+\[
+M_{X,n}=\max_{1\le i\le n}X_{t_i},
+\qquad
+M_{Y,n}=\max_{1\le i\le n}Y_{t_i}.
+\]
+The finite-dimensional result gives, for every \(a\),
+\[
+\mathbb P(M_{X,n}\le a)\ge\mathbb P(M_{Y,n}\le a).
+\]
+Since
+\[
+M_{X,n}\uparrow \sup_{t\in T}X_t,
+\qquad
+M_{Y,n}\uparrow \sup_{t\in T}Y_t,
+\]
+we have
+\[
+\{M_{X,n}\le a\}\downarrow
+ \left\{\sup_{t\in T}X_t\le a\right\},
+\]
+and likewise for \(Y\). Letting \(n\to\infty\) therefore gives
+\[
+\mathbb P\left\{\sup_{t\in T}X_t\le a\right\}
+ \ge
+\mathbb P\left\{\sup_{t\in T}Y_t\le a\right\}.
+\]
+As above, replacing \(a\) by \(\tau-1/k\) and taking a limit proves
+\[
+\boxed{
+\mathbb P\left\{\sup_{t\in T}X_t\ge\tau\right\}
+\le
+\mathbb P\left\{\sup_{t\in T}Y_t\ge\tau\right\}.
+}
+\]
+<div class="strategy-card"><div class="strategy-card-title">Library strategy reference</div><div class="strategy-card-meta">sub_monotone_limsup_subsequence · Monotone sequences, limsup, and subsequences</div><div class="strategy-card-body">Derived according to this strategy: The supremum over a countable index set is the monotone limit of finite maxima, allowing the finite-dimensional probability inequalities to pass to the full supremum.</div></div></div><div class="eval-note worked" data-pair="pair_5"><div class="eval-note-title">Linked evaluation: worked well</div><div><strong>Related strategy block:</strong> Monotone sequences, limsup, and subsequences</div><div><strong>Corresponding control section:</strong> The control defines the same finite maxima, notes that they increase to the suprema, and applies continuity of probability for decreasing events.</div><div><strong>Comparison:</strong> RAG makes the event-level monotonicity explicit without overexplaining the limiting argument.</div></div><div class="answer-block" data-block-index="12">For a separable process, there is a countable \(T_0\subseteq T\) such that almost surely
+\[
+\sup_{t\in T}X_t=\sup_{t\in T_0}X_t,
+\qquad
+\sup_{t\in T}Y_t=\sup_{t\in T_0}Y_t.
+\]
+Applying the countable result to \(T_0\) proves (7.4).</div><div class="answer-block" data-block-index="13">## 4. Comparison of expectations</div><div class="answer-block" data-block-index="14">Let
+\[
+U=\sup_{t\in T}X_t,\qquad V=\sup_{t\in T}Y_t.
+\]
+The stochastic domination implies
+\[
+\mathbb P(U&gt;u)\le\mathbb P(V&gt;u)
+\quad\text{and}\quad
+\mathbb P(U&lt;-u)\ge\mathbb P(V&lt;-u)
+\qquad(u\ge0).
+\]
+Choose any \(t_0\in T\). Since \(U\ge X_{t_0}\),
+\[
+U^-\le X_{t_0}^-,
+\]
+so \(\mathbb E U^-&lt;\infty\); similarly \(\mathbb E V^-&lt;\infty\). Using the tail formulas
+\[
+\mathbb E U^+=\int_0^\infty\mathbb P(U&gt;u)\,du,
+\qquad
+\mathbb E U^-=\int_0^\infty\mathbb P(U&lt;-u)\,du,
+\]
+we obtain
+\[
+\mathbb E U^+\le\mathbb E V^+,
+\qquad
+\mathbb E U^-\ge\mathbb E V^-.
+\]
+Hence, allowing the expectations to take the value \(+\infty\),
+\[
+\boxed{
+\mathbb E\sup_{t\in T}X_t
+\le
+\mathbb E\sup_{t\in T}Y_t.
+}
+\]</div><div class="answer-block annotated linked-block" data-block-index="15" data-pairs="pair_6"><div class="strategy-card new"><div class="strategy-card-title">Proposed new strategy</div><div class="strategy-card-meta">Tail integration of stochastic domination</div><div class="strategy-card-body">Why this is new: The retrieved nodes do not explicitly cover converting first-order stochastic domination into expectation comparison through positive- and negative-tail integrals.</div></div></div><div class="eval-note improve" data-pair="pair_6"><div class="eval-note-title">Linked evaluation: needs improvement</div><div><strong>Related strategy block:</strong> Tail integration of stochastic domination</div><div><strong>Corresponding control section:</strong> The control states that stochastic domination compares every increasing bounded function and obtains the expectation inequality by increasing truncations, adding only that the negative parts are finite.</div><div><strong>Comparison:</strong> RAG is rigorous but devotes excessive detail to a standard consequence that the control handles more economically.</div></div><div class="answer-block" data-block-index="16">### Technical qualification</div><div class="answer-block annotated linked-block" data-block-index="17" data-pairs="pair_7">Some separability or essential-supremum convention is necessary. Without it, the statement is false for arbitrary index sets: on \([0,1]\) with Lebesgue measure, let
+\[
+X_t(\omega)=\mathbf 1_{\{\omega=t\}},\qquad Y_t(\omega)=0.
+\]
+Every finite-dimensional distribution of \(X\) is identically zero, so both are mean-zero Gaussian processes satisfying (7.3), but pointwise
+\[
+\sup_tX_t=1,\qquad \sup_tY_t=0.
+\]
+Standard formulations of Slepian’s inequality therefore assume finite/countable \(T\), separable processes, or suprema understood through countable/essential versions.</div><div class="eval-note improve" data-pair="pair_7"><div class="eval-note-title">Linked evaluation: needs improvement</div><div><strong>Corresponding control section:</strong> The control gives one sentence warning that measurability or separability is needed and that nonseparable modifications can invalidate the literal statement.</div><div><strong>Comparison:</strong> The explicit counterexample is correct but peripheral; the control&#x27;s compact warning better fits the proof&#x27;s focus.</div></div></div>
+        </section>
+        
+      </div>
+    </article>
+    
+    <article class="case" id="case-lemma_2_7_8">
+      <div class="case-title">
+        <h2>5. Lemma 2.7.8 (Centering)</h2>
+        <div class="case-id"><code>lemma_2_7_8</code></div>
+      </div>
+      <div class="split" data-pair-links='[{&quot;pair_id&quot;: &quot;pair_1&quot;, &quot;control_idx&quot;: 0, &quot;rag_idx&quot;: 1, &quot;judgment&quot;: &quot;worked_well&quot;}, {&quot;pair_id&quot;: &quot;pair_2&quot;, &quot;control_idx&quot;: 1, &quot;rag_idx&quot;: 3, &quot;judgment&quot;: &quot;worked_well&quot;}, {&quot;pair_id&quot;: &quot;pair_3&quot;, &quot;control_idx&quot;: 1, &quot;rag_idx&quot;: 2, &quot;judgment&quot;: &quot;needs_improvement&quot;}]'>
+        <svg class="link-layer" aria-hidden="true"></svg>
+        
+        <section class="result-col control">
+          <div class="col-header">
+            <h3>Control</h3>
+            <button class="copy-btn" data-copy="Let  
+\[
+\|X\|_{\psi_2}:=\inf\left\{t&gt;0:\mathbb E\exp(X^2/t^2)\le 2\right\}.
+\]
+This is the Luxemburg norm associated with \(\psi_2(u)=e^{u^2}-1\), so it satisfies the triangle inequality.
+
+Set \(K=\|X\|_{\psi_2}\). For any \(t&gt;K\),
+\[
+\mathbb E e^{X^2/t^2}\le 2.
+\]
+Since \(x\mapsto e^{x^2/t^2}\) is convex, Jensen&#x27;s inequality gives
+\[
+e^{(\mathbb EX)^2/t^2}
+\le \mathbb E e^{X^2/t^2}
+\le 2.
+\]
+Hence
+\[
+|\mathbb EX|\le t\sqrt{\log 2}.
+\]
+For a constant \(a\),
+\[
+\|a\|_{\psi_2}=\frac{|a|}{\sqrt{\log 2}},
+\]
+and therefore \(\|\mathbb EX\|_{\psi_2}\le t\). Letting \(t\downarrow K\), we obtain
+\[
+\|\mathbb EX\|_{\psi_2}\le \|X\|_{\psi_2}.
+\]
+Finally, by the triangle inequality,
+\[
+\|X-\mathbb EX\|_{\psi_2}
+\le \|X\|_{\psi_2}+\|\mathbb EX\|_{\psi_2}
+\le 2\|X\|_{\psi_2}.
+\]
+Thus the claim holds, with \(C=2\) under this normalization of the \(\psi_2\)-norm.">Copy raw</button>
+          </div>
+          <div class="prompt-box">
+            <div class="small-title">Prompt</div>
+            <div class="prompt-text">Can you prove this theorem? Lemma 2.7.8 (Centering). Any subgaussian random variable X satisfies
+                                    ∥X − E X∥ψ2 ≤ C∥X∥ψ2 .</div>
+          </div>
+          <div class="meta-row"><span class='meta-pill'>model: gpt-5.6-sol</span><span class='meta-pill'>reasoning effort: high</span><span class='meta-pill'>max completion tokens: 4000</span><span class='meta-pill'>elapsed seconds: 26.111</span></div>
+          
+          
+          
+          <div class="answer-box"><div class="answer-block annotated linked-block" data-block-index="0" data-pairs="pair_1">Let  
+\[
+\|X\|_{\psi_2}:=\inf\left\{t&gt;0:\mathbb E\exp(X^2/t^2)\le 2\right\}.
+\]
+This is the Luxemburg norm associated with \(\psi_2(u)=e^{u^2}-1\), so it satisfies the triangle inequality.</div><div class="eval-note linked" data-pair="pair_1"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> Unfold the Luxemburg definition and reduce the claim to a centered exponential-moment estimate.</div><div><strong>Comparison:</strong> The RAG passage concisely turns the abstract norm claim into the concrete estimate used by its proof.</div></div><div class="answer-block annotated linked-block" data-block-index="1" data-pairs="pair_2 pair_3">Set \(K=\|X\|_{\psi_2}\). For any \(t&gt;K\),
+\[
+\mathbb E e^{X^2/t^2}\le 2.
+\]
+Since \(x\mapsto e^{x^2/t^2}\) is convex, Jensen&#x27;s inequality gives
+\[
+e^{(\mathbb EX)^2/t^2}
+\le \mathbb E e^{X^2/t^2}
+\le 2.
+\]
+Hence
+\[
+|\mathbb EX|\le t\sqrt{\log 2}.
+\]
+For a constant \(a\),
+\[
+\|a\|_{\psi_2}=\frac{|a|}{\sqrt{\log 2}},
+\]
+and therefore \(\|\mathbb EX\|_{\psi_2}\le t\). Letting \(t\downarrow K\), we obtain
+\[
+\|\mathbb EX\|_{\psi_2}\le \|X\|_{\psi_2}.
+\]
+Finally, by the triangle inequality,
+\[
+\|X-\mathbb EX\|_{\psi_2}
+\le \|X\|_{\psi_2}+\|\mathbb EX\|_{\psi_2}
+\le 2\|X\|_{\psi_2}.
+\]
+Thus the claim holds, with \(C=2\) under this normalization of the \(\psi_2\)-norm.</div><div class="eval-note linked" data-pair="pair_2"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> Factor the centered exponential moment after (X − m)^2 ≤ 2X^2 + 2m^2, then bound the two factors by √2.</div><div><strong>Comparison:</strong> RAG gives more explicit detail at the decisive moment-transfer step, while control gives a shorter norm-based reduction.</div></div><div class="eval-note linked" data-pair="pair_3"><div class="eval-note-title">Linked control section</div><div><strong>RAG section:</strong> In particular, X belongs to L2, so m := EX is well-defined.</div><div><strong>Comparison:</strong> RAG adds a correct but routine integrability aside that could be folded into the notation.</div></div></div>
+        </section>
+        
+        
+        <section class="result-col rag">
+          <div class="col-header">
+            <h3>Library-RAG</h3>
+            <button class="copy-btn" data-copy="### Proof
+
+Use the standard Luxemburg definition
+\[
+\|X\|_{\psi_2}
+:=\inf\left\{s&gt;0:\ \mathbb E\exp\!\left(\frac{X^2}{s^2}\right)\le 2\right\}.
+\]
+Thus it suffices to turn an exponential-moment bound for \(X\) into one for \(X-\mathbb EX\).
+[STRATEGY: family_definitional_reformulation | Definitional unfolding and equivalent reformulation]
+Derived according to this strategy: The abstract \(\psi_2\)-norm inequality is rewritten as an explicit exponential-moment estimate.
+[/STRATEGY]
+
+Fix any \(s&gt;0\) such that
+\[
+\mathbb E e^{X^2/s^2}\le 2.
+\]
+In particular, \(X\in L^2\), so \(m:=\mathbb EX\) is well-defined. Since
+\[
+(X-m)^2\le 2X^2+2m^2,
+\]
+we have
+\[
+\begin{aligned}
+\mathbb E\exp\!\left(\frac{(X-m)^2}{4s^2}\right)
+&amp;\le
+\exp\!\left(\frac{m^2}{2s^2}\right)
+\mathbb E\exp\!\left(\frac{X^2}{2s^2}\right).
+\end{aligned}
+\]
+
+Jensen’s inequality, applied to the convex function \(x\mapsto e^{x^2/s^2}\), gives
+\[
+e^{m^2/s^2}
+=e^{(\mathbb EX)^2/s^2}
+\le \mathbb E e^{X^2/s^2}\le 2,
+\]
+and hence
+\[
+e^{m^2/(2s^2)}\le \sqrt2.
+\]
+Also, by Cauchy–Schwarz (equivalently, concavity of the square root),
+\[
+\mathbb E e^{X^2/(2s^2)}
+\le \left(\mathbb E e^{X^2/s^2}\right)^{1/2}
+\le \sqrt2.
+\]
+Therefore
+\[
+\mathbb E\exp\!\left(\frac{(X-\mathbb EX)^2}{(2s)^2}\right)\le 2.
+\]
+[NEW_STRATEGY: Convexity and Hölder control of exponential moments]
+Why this is new: Jensen’s inequality and Cauchy–Schwarz are used to transfer an exponential-moment bound through centering, but no retrieved node specifically covers these probabilistic convexity estimates.
+[/NEW_STRATEGY]
+
+By the definition of the \(\psi_2\)-norm,
+\[
+\|X-\mathbb EX\|_{\psi_2}\le 2s.
+\]
+Taking the infimum over all admissible \(s\) yields
+\[
+\boxed{\|X-\mathbb EX\|_{\psi_2}\le 2\|X\|_{\psi_2}}.
+\]
+Thus the lemma holds with the universal constant \(C=2\) under this normalization of the \(\psi_2\)-norm.">Copy raw</button>
+          </div>
+          <div class="prompt-box">
+            <div class="small-title">Prompt</div>
+            <div class="prompt-text">Can you prove this theorem? Lemma 2.7.8 (Centering). Any subgaussian random variable X satisfies
+                                    ∥X − E X∥ψ2 ≤ C∥X∥ψ2 .</div>
+          </div>
+          <div class="meta-row"><span class='meta-pill'>model: gpt-5.6-sol</span><span class='meta-pill'>reasoning effort: high</span><span class='meta-pill'>max completion tokens: 4000</span><span class='meta-pill'>elapsed seconds: 34.369</span></div>
+          
+          
+    <div class="eval-summary">
+      <div class="small-title">AI evaluation of Library-RAG</div>
+      <span class="meta-pill">control: 5/5</span>
+      <span class="meta-pill">rag: 5/5</span>
+      <span class="meta-pill">winner: tie</span>
+      <div class="eval-overall">The RAG proof is correct and gives a transparent direct exponential-moment argument. It elaborates the decisive centering estimate well, though it is slightly longer than the control and contains a minor routine integrability aside.</div>
+    </div>
+    
+          <div class="nodes-box"><div class="small-title">Retrieved nodes</div><span class='node-chip'><code>family_standard_theorem_reduction</code> · Reduction to a standard theorem</span><span class='node-chip'><code>sub_intermediate_value</code> · Intermediate Value Theorem</span><span class='node-chip'><code>sub_fundamental_theorem_calculus</code> · Fundamental Theorem of Calculus</span><span class='node-chip'><code>sub_canonical_rewriting</code> · Canonical rewriting</span><span class='node-chip'><code>sub_mean_value_theorems</code> · Fermat, Rolle, and Mean Value Theorems</span><span class='node-chip'><code>sub_ordered_field_constructions</code> · Ordered-field structure and canonical constructions</span><span class='node-chip'><code>family_integral_calculus</code> · Integral-calculus arguments</span><span class='node-chip'><code>sub_cardinality_embeddings</code> · Cardinality and embedding arguments</span><span class='node-chip'><code>family_definitional_reformulation</code> · Definitional unfolding and equivalent reformulation</span><span class='node-chip'><code>family_normalization_symmetry</code> · Normalization, invariance, and symmetry</span></div>
+          <div class="answer-box"><div class="answer-block" data-block-index="0">### Proof</div><div class="answer-block annotated linked-block" data-block-index="1" data-pairs="pair_1">Use the standard Luxemburg definition
+\[
+\|X\|_{\psi_2}
+:=\inf\left\{s&gt;0:\ \mathbb E\exp\!\left(\frac{X^2}{s^2}\right)\le 2\right\}.
+\]
+Thus it suffices to turn an exponential-moment bound for \(X\) into one for \(X-\mathbb EX\).
+<div class="strategy-card"><div class="strategy-card-title">Library strategy reference</div><div class="strategy-card-meta">family_definitional_reformulation · Definitional unfolding and equivalent reformulation</div><div class="strategy-card-body">Derived according to this strategy: The abstract \(\psi_2\)-norm inequality is rewritten as an explicit exponential-moment estimate.</div></div></div><div class="eval-note worked" data-pair="pair_1"><div class="eval-note-title">Linked evaluation: worked well</div><div><strong>Related strategy block:</strong> Definitional unfolding and equivalent reformulation</div><div><strong>Corresponding control section:</strong> State the Luxemburg definition and invoke its triangle inequality.</div><div><strong>Comparison:</strong> The RAG passage concisely turns the abstract norm claim into the concrete estimate used by its proof.</div></div><div class="answer-block annotated linked-block" data-block-index="2" data-pairs="pair_3">Fix any \(s&gt;0\) such that
+\[
+\mathbb E e^{X^2/s^2}\le 2.
+\]
+In particular, \(X\in L^2\), so \(m:=\mathbb EX\) is well-defined. Since
+\[
+(X-m)^2\le 2X^2+2m^2,
+\]
+we have
+\[
+\begin{aligned}
+\mathbb E\exp\!\left(\frac{(X-m)^2}{4s^2}\right)
+&amp;\le
+\exp\!\left(\frac{m^2}{2s^2}\right)
+\mathbb E\exp\!\left(\frac{X^2}{2s^2}\right).
+\end{aligned}
+\]</div><div class="eval-note improve" data-pair="pair_3"><div class="eval-note-title">Linked evaluation: needs improvement</div><div><strong>Corresponding control section:</strong> The control introduces EX implicitly and moves immediately to Jensen&#x27;s inequality.</div><div><strong>Comparison:</strong> RAG adds a correct but routine integrability aside that could be folded into the notation.</div></div><div class="answer-block annotated linked-block" data-block-index="3" data-pairs="pair_2">Jensen’s inequality, applied to the convex function \(x\mapsto e^{x^2/s^2}\), gives
+\[
+e^{m^2/s^2}
+=e^{(\mathbb EX)^2/s^2}
+\le \mathbb E e^{X^2/s^2}\le 2,
+\]
+and hence
+\[
+e^{m^2/(2s^2)}\le \sqrt2.
+\]
+Also, by Cauchy–Schwarz (equivalently, concavity of the square root),
+\[
+\mathbb E e^{X^2/(2s^2)}
+\le \left(\mathbb E e^{X^2/s^2}\right)^{1/2}
+\le \sqrt2.
+\]
+Therefore
+\[
+\mathbb E\exp\!\left(\frac{(X-\mathbb EX)^2}{(2s)^2}\right)\le 2.
+\]
+<div class="strategy-card new"><div class="strategy-card-title">Proposed new strategy</div><div class="strategy-card-meta">Convexity and Hölder control of exponential moments</div><div class="strategy-card-body">Why this is new: Jensen’s inequality and Cauchy–Schwarz are used to transfer an exponential-moment bound through centering, but no retrieved node specifically covers these probabilistic convexity estimates.</div></div></div><div class="eval-note worked" data-pair="pair_2"><div class="eval-note-title">Linked evaluation: worked well</div><div><strong>Related strategy block:</strong> Convexity and Hölder control of exponential moments</div><div><strong>Corresponding control section:</strong> Bound the ψ2-norm of EX by Jensen and finish with the triangle inequality.</div><div><strong>Comparison:</strong> RAG gives more explicit detail at the decisive moment-transfer step, while control gives a shorter norm-based reduction.</div></div><div class="answer-block" data-block-index="4">By the definition of the \(\psi_2\)-norm,
+\[
+\|X-\mathbb EX\|_{\psi_2}\le 2s.
+\]
+Taking the infimum over all admissible \(s\) yields
+\[
+\boxed{\|X-\mathbb EX\|_{\psi_2}\le 2\|X\|_{\psi_2}}.
+\]
+Thus the lemma holds with the universal constant \(C=2\) under this normalization of the \(\psi_2\)-norm.</div></div>
+        </section>
+        
+      </div>
+    </article>
+    </main>
+  </div>
+  <script>
+    document.querySelectorAll('.copy-btn').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const raw = button.getAttribute('data-copy') || '';
+        try {
+          await navigator.clipboard.writeText(raw);
+          const old = button.textContent;
+          button.textContent = 'Copied';
+          setTimeout(() => button.textContent = old, 1200);
+        } catch (err) {
+          button.textContent = 'Copy failed';
+          setTimeout(() => button.textContent = 'Copy raw', 1200);
+        }
+      });
+    });
+
+    function pairsFor(el) {
+      return (el.getAttribute('data-pairs') || '').split(/\s+/).filter(Boolean);
+    }
+
+    function drawLinksForSplit(split) {
+      const svg = split.querySelector('.link-layer');
+      if (!svg) return;
+      svg.innerHTML = '';
+      const splitRect = split.getBoundingClientRect();
+      const blocks = Array.from(split.querySelectorAll('.linked-block'));
+      const pairToBlocks = new Map();
+      for (const block of blocks) {
+        for (const pair of pairsFor(block)) {
+          if (!pairToBlocks.has(pair)) pairToBlocks.set(pair, []);
+          pairToBlocks.get(pair).push(block);
+        }
+      }
+      for (const [pair, els] of pairToBlocks.entries()) {
+        if (els.length < 2) continue;
+        const control = els.find(e => e.closest('.result-col.control')) || els[0];
+        const rag = els.find(e => e.closest('.result-col.rag')) || els[1];
+        if (!control || !rag || control === rag) continue;
+        const a = control.getBoundingClientRect();
+        const b = rag.getBoundingClientRect();
+        const x1 = a.right - splitRect.left;
+        const y1 = a.top + a.height / 2 - splitRect.top;
+        const x2 = b.left - splitRect.left;
+        const y2 = b.top + b.height / 2 - splitRect.top;
+        const mid = (x1 + x2) / 2;
+        const d = `M ${x1} ${y1} C ${mid} ${y1}, ${mid} ${y2}, ${x2} ${y2}`;
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        path.setAttribute('d', d);
+        path.setAttribute('data-pair', pair);
+        svg.appendChild(path);
+      }
+    }
+
+    function setPairActive(pair, active) {
+      document.querySelectorAll(`[data-pairs~="${CSS.escape(pair)}"], [data-pair="${CSS.escape(pair)}"]`).forEach(el => {
+        el.classList.toggle('link-hover', active);
+        el.classList.toggle('active', active);
+      });
+    }
+
+    function setupLinkedHover() {
+      document.querySelectorAll('.split').forEach(drawLinksForSplit);
+      document.querySelectorAll('.linked-block, .eval-note[data-pair]').forEach(el => {
+        const getPairs = () => el.hasAttribute('data-pair') ? [el.getAttribute('data-pair')] : pairsFor(el);
+        el.addEventListener('mouseenter', () => getPairs().forEach(pair => pair && setPairActive(pair, true)));
+        el.addEventListener('mouseleave', () => getPairs().forEach(pair => pair && setPairActive(pair, false)));
+      });
+    }
+
+    window.addEventListener('load', setupLinkedHover);
+    window.addEventListener('resize', () => document.querySelectorAll('.split').forEach(drawLinksForSplit));
+  </script>
+</body>
+</html>

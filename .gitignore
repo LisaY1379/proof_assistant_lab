@@ -19,7 +19,7 @@ __pycache__/
 # External cloned repositories / raw third-party data
 external/
 
-prompts/
+test_temp/
 
 # Workflow backup files
 *.bak
