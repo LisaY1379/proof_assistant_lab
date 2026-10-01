@@ -24,7 +24,7 @@
     <div class="explorer-column">
     <section class="workspace" aria-label="Interactive proof map">
       <div class="map-toolbar">
-        <div class="legend"><span><i class="goal-dot"></i>Goal checkpoints</span><span><i class="progress-dot"></i>Established facts</span><span><i class="observation-dot"></i>Observations</span></div>
+        <div class="legend"><span><i class="goal-dot"></i>Goal checkpoints</span><span><i class="progress-dot"></i>Established facts</span><span><i class="observation-dot"></i>Observations</span><span><i class="inspiration-key"></i>Inspired by a goal</span></div>
         <div class="view-controls"><button id="jump-start">↑ Givens</button><button id="jump-goal">↓ Endpoint</button><button id="zoom-out" aria-label="Zoom out">−</button><button id="fit">Reset view</button><button id="zoom-in" aria-label="Zoom in">+</button></div>
       </div>
       <div id="viewport" class="viewport" aria-label="Proof graph. Use the zoom controls, scroll, or select a checkpoint.">
@@ -40,7 +40,7 @@
           <div id="meet-badge" hidden>THE TWO LAYERS MEET <span>The bound we derived is the bound we needed.</span></div>
         </div></div>
       </div>
-      <div class="map-pan-hint">Scroll down the map · tap a checkpoint for its reasoning.</div>
+      <div class="map-pan-hint">Observation arrows motivate moves; dotted links identify inspiring goals. Select a node for its reasoning.</div>
       <div class="transport">
         <div class="play-controls"><button id="restart" aria-label="Restart proof">↺</button><button id="undo" aria-label="Previous thinking step">←</button><button id="play" class="primary">▶ Play thinking order</button><select id="speed" aria-label="Playback speed"><option value="6500">Slow</option><option value="4300" selected>Normal</option><option value="2200">Fast</option></select></div>
         <div class="step-counter" id="step-counter" aria-live="polite">0 / 15 moves</div>

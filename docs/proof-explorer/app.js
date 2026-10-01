@@ -4,6 +4,9 @@
   const L=P.layout;
   const nodeById=Object.fromEntries(P.nodes.map(n=>[n.id,n]));
   const nodeEls=new Map(), edgeEls=new Map();
+  $('board').style.height=L.height+'px';
+  $('edges').style.height=L.height+'px';
+  $('edges').setAttribute('viewBox',`0 0 ${L.width} ${L.height}`);
   let history=[], cursor=0, selected='start', selectedNode=null, timer=null, playing=false;
   let zoom=1, clipTimers=[], clipRunning=false, fitted=true;
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');
@@ -44,15 +47,19 @@
       }
     }
   }
-  function nodeHeight(n){return n.kind==='given'?L.givenHeight:n.kind==='observation'?L.observationHeight:L.nodeHeight;}
+  function nodeHeight(n){return n.height??(n.kind==='given'?L.givenHeight:n.kind==='observation'?L.observationHeight:L.nodeHeight);}
   function point(id,side='center'){
     const n=nodeById[id], w=n.kind==='observation'?L.observationWidth:L.nodeWidth, h=nodeHeight(n);
     return {x:n.x+(side==='left'?0:side==='right'?w:w/2),y:n.y+(side==='top'?0:side==='bottom'?h:h/2)};
   }
   function curve(a,b){return `M ${a.x} ${a.y} C ${a.x} ${(a.y+b.y)/2}, ${b.x} ${(a.y+b.y)/2}, ${b.x} ${b.y}`;}
   function pathFor(from,to,type){
+    if(type==='inspiration'){
+      const source=nodeById[from],a=point(from,source.x<300?'right':'left'),b=point(to,'right');
+      return `M ${a.x} ${a.y} L 306 ${a.y} L 306 ${b.y} L ${b.x} ${b.y}`;
+    }
     // Route long side branches outside the cards they skip.
-    const sideRoutes={'independence:expanded':12,'centered:expanded':18,'subgaussian:linear':292,'expanded:decoupled':8,'linear:replaced':282,'diagonal:diagonal-goal':12};
+    const sideRoutes={'independence:expanded':12,'centered:expanded':18,'subgaussian:linear':292,'expanded:decoupled':8,'linear:replaced':282,'diagonal:diagonal-goal':12,'expanded:diagonal':18,'decoupled:replaced':18,'bounded:tail':18};
     const rail=sideRoutes[`${from}:${to}`];
     if(rail!==undefined){
       const side=rail<24?'left':'right',a=point(from,side),b=point(to,side);
@@ -63,10 +70,11 @@
   }
   for(const n of P.nodes){
     const b=document.createElement('button');b.className=`node ${n.kind}`;b.id=`node-${n.id}`;
-    b.style.left=n.x+'px';b.style.top=n.y+'px';b.hidden=true;b.type='button';
+    b.style.left=n.x+'px';b.style.top=n.y+'px';if(n.height)b.style.height=n.height+'px';b.hidden=true;b.type='button';
     for(const [cls,text] of [['node-kind',n.label],['node-title',n.title],['node-formula',n.formula]]){
       const s=document.createElement('span');s.className=cls;s.textContent=text;b.append(s);
     }
+    if(n.forwardObservation){const provenance=document.createElement('span');provenance.className='node-provenance';b.append(provenance);}
     b.setAttribute('aria-label',`${n.label}: ${n.title}. ${n.formula}`);
     b.addEventListener('click',()=>{stop();cancelClip();selected=n.id==='ultimate'&&done().includes('finish')?'finish':n.event;selectedNode=n.id;showDetails(P.byId[selected]||P.start);renderSelection();});
     $('nodes').append(b);nodeEls.set(n.id,b);
@@ -85,7 +93,10 @@
     $('detail-type').style.background=e.direction==='backward'?'var(--goal-bg)':'var(--progress-bg)';
     $('detail-type').style.color=e.direction==='backward'?'var(--goal)':'var(--progress)';
   }
-  function renderSelection(){for(const [id,el] of nodeEls){el.classList.toggle('selected',id===selectedNode);el.setAttribute('aria-pressed',String(id===selectedNode));}}
+  function renderSelection(){
+    const origin=P.observationOrigin(done(),selectedNode);
+    for(const [id,el] of nodeEls){el.classList.toggle('selected',id===selectedNode);el.classList.toggle('inspiring-goal',origin?.goal===id);el.setAttribute('aria-pressed',String(id===selectedNode));}
+  }
   function panTo(p){
     const v=$('viewport');
     v.scrollTo({left:Math.max(0,p.x*zoom-v.clientWidth/2),top:Math.max(0,p.y*zoom-v.clientHeight/2),behavior:reduced.matches?'instant':'smooth'});
@@ -101,14 +112,21 @@
       const el=nodeEls.get(n.id),wasVisible=!el.hidden;el.hidden=!visible.has(n.id);
       el.classList.toggle('achieved',achieved.has(n.id));
       el.classList.remove('new-node','delayed');
-      if(animate&&!wasVisible&&!el.hidden){el.classList.add('new-node');if(n.kind.startsWith('goal'))el.classList.add('delayed');}
+      if(animate&&!wasVisible&&!el.hidden){el.classList.add('new-node');if(n.kind.startsWith('goal')||(last.observationNode&&n.id===last.focus))el.classList.add('delayed');}
+      let provenance='';
+      if(n.forwardObservation){
+        const origin=P.observationOrigin(active,n.id);
+        provenance=origin?.kind==='goal'?`Inspired by: ${nodeById[origin.goal].title}`:'Discovery from the givens';
+        el.querySelector('.node-provenance').textContent=provenance;
+      }
       const suffix=achieved.has(n.id)?' — established':n.kind.startsWith('goal')?' — still required':'';
-      el.setAttribute('aria-label',`${n.label}: ${n.title}${suffix}. ${n.formula}`);
+      el.setAttribute('aria-label',`${n.label}: ${n.title}${suffix}. ${n.formula}${provenance?'. '+provenance:''}`);
     }
     for(const [from,to,type] of P.edges){
-      const el=edgeEls.get(`${from}:${to}`),show=visible.has(from)&&visible.has(to),was=el.style.display!=='none';
+      const el=edgeEls.get(`${from}:${to}`),show=P.edgeVisible([from,to,type],active),was=el.style.display!=='none';
       el.style.display=show?'':'none';el.classList.remove('new-edge');
-      if(animate&&show&&!was)el.classList.add('new-edge');
+      if(animate&&show&&!was){el.classList.add('new-edge');if(type==='motivation')el.classList.add('delayed');}
+      if(type==='inspiration')el.setAttribute('aria-label',`${nodeById[from].title} inspired ${nodeById[to].title}`);
     }
     $('initial-gap').hidden=cursor>0;
     $('step-counter').textContent=`${cursor} / ${P.events.length} moves`;
@@ -127,7 +145,11 @@
     moveRunner('goal-runner',active.includes('finish')?'ultimate':lastBack?.focus||'ultimate');
     selectedNode=last.focus||null;showDetails(last);renderSelection();renderJourney();
     $('board').classList.toggle('clip-complete',active.includes('finish'));
-    if(last.focus)panTo(point(last.focus));
+    if(last.focus){
+      const focus=point(last.focus);
+      if(last.observationNode)focus.y=(nodeById[last.observationNode].y+point(last.focus,'bottom').y)/2;
+      panTo(focus);
+    }
   }
   function renderJourney(){
     const list=$('journey-list');list.replaceChildren();
@@ -173,7 +195,7 @@
     $('meet-badge').firstChild.textContent='THE TWO LAYERS MEET ';
     $('meet-badge').querySelector('span').textContent='The bound we derived is the bound we needed.';
     const r=$('runner'),g=$('goal-runner');
-    const meeting={x:316,y:1210};
+    const meeting={x:316,y:(point('bounded').y+point('mgf').y)/2};
     const place=(el,p)=>{el.style.left=p.x+'px';el.style.top=p.y+'px';};
     const badge=$('meet-badge');
     badge.style.left='42px';badge.style.top=(meeting.y+35)+'px';
@@ -203,7 +225,7 @@
       },5400);
       later(()=>{
         advance('ultimate','finish');clipRunning=false;
-        badge.style.top='1810px';badge.hidden=false;
+        badge.style.top=(nodeById.ultimate.y-60)+'px';badge.hidden=false;
         badge.firstChild.textContent='PROOF COMPLETE ';
         badge.querySelector('span').textContent='Both branches support the original endpoint.';
       },6650);

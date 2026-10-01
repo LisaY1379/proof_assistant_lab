@@ -25,6 +25,21 @@
     ['bounded','progress',24,1270,'The meeting point','The MGF is established','MGF ≤ exp(CVλ²)','meet'],
     ['tail','progress',24,1550,'Parameter choice','Optimize the tail','Balance + cutoff','optimize']
   ].map(([id,kind,x,y,label,title,formula,event])=>({id,kind,x,y,label,title,formula,event}));
+  // Insert room for forward observations without changing the proof dependencies.
+  const observationRows=[520,670,820,970,1550];
+  const forwardObservations=[
+    {id:'o-bernstein',event:'bernstein',before:'diagonal',row:520,title:'Independent squares fit Bernstein.',formula:'Its quadratic and linear scales match the requested tail.',goals:['diagonal-goal','ultimate']},
+    {id:'o-linear',event:'linear',before:'linear',row:670,title:'Independence factors a linear MGF.',formula:'The given scalar bounds already control every fixed linear form.',goals:[]},
+    {id:'o-decouple',event:'decouple',before:'decoupled',row:820,title:'An independent copy can be held fixed.',formula:'This turns the cross terms into a conditional linear form.',goals:['mgf']},
+    {id:'o-replace',event:'replace',before:'replaced',row:970,title:'The conditional bound matches a Gaussian MGF.',formula:'Replace one vector at a time, then average the comparisons.',goals:['gaussian-goal','mgf']},
+    {id:'o-optimize',event:'optimize',before:'tail',row:1550,title:'Balancing helps only up to the cutoff.',formula:'Choose the smaller of the balancing scale and the allowed scale.',goals:['offtail']}
+  ];
+  for(const n of nodes)n.y+=200*observationRows.filter(row=>row<=n.y).length;
+  for(const o of forwardObservations)nodes.push({
+    id:o.id,kind:'observation',x:34,y:o.row+200*observationRows.filter(row=>row<o.row).length,
+    height:174,label:o.goals.length?'Observation · goal inspired':'Observation · discovery',
+    title:o.title,formula:o.formula,event:o.event,forwardObservation:true
+  });
   const edges = [
     ['ultimate','o-sign','observation'],['o-sign','upper','goal'],
     ['upper','o-split','observation'],['o-split','offtail','goal'],['o-split','diagonal-goal','goal'],
@@ -36,6 +51,10 @@
     ['decoupled','replaced','progress'],['replaced','computed','progress'],['computed','bounded','progress'],['bounded','tail','progress'],
     ['diagonal','diagonal-goal','match']
   ];
+  for(const o of forwardObservations){
+    edges.push([o.id,o.before,'motivation']);
+    for(const goal of o.goals)edges.push([goal,o.id,'inspiration']);
+  }
   const start = {
     id:'start',direction:'start',category:'Assumptions → open problem',title:'Three starting points. One distant goal.',
     summary:'At the beginning, the givens and the endpoint are deliberately separate. A = (aᵢⱼ) is a fixed real matrix. Q is the centered quadratic form; q is the desired tail exponent.',
@@ -62,6 +81,11 @@
     {id:'optimize',direction:'forward',deps:['meet'],add:['tail'],focus:'tail',category:'Strategic parameter choice → basic substitution',title:'Balance the exponent, respecting the cutoff.',summary:'Choose the smaller of the unconstrained balancing scale and an allowed MGF scale. Two different reasons for stopping λ produce the two tail regimes.',need:'Turn the exponential-moment estimate into the desired tail.',have:'ℙ(S ≥ t/2) ≤ exp(−λt/2 + CVλ²), for 0 < λ ≤ c₀/L.',observation:'The positive quadratic term must stay smaller than the negative linear term. Increasing λ helps only until balancing or the MGF cutoff stops us.',math:'λ = min{t/(4CV), c₀/(2L)}\nCVλ² ≤ λt/4\nℙ(S ≥ t/2) ≤ exp(−λt/4)\n≤ exp[−c min{t²/V, t/L}].',check:'If t/(4CV) is smaller, the exponent is quadratic in t. If the cutoff is smaller, it is linear in t. This explicitly discharges the off-diagonal tail goal.',tool:'Chernoff estimate already established; elementary parameter comparison.'},
     {id:'finish',direction:'forward',deps:['optimize','bernstein','sign','split'],add:[],focus:'ultimate',category:'Basic logic & constants after the strategic plan',title:'Both branches reach the original endpoint.',summary:'Combine the diagonal and off-diagonal tails. Apply the same result to −A and use the union bound. Every goal checkpoint is now supported.',need:'The original two-sided bound, with prefactor 2.',have:'Both upper-tail branches, the sign-reversal reduction, and unchanged matrix norms under A ↦ −A.',observation:'The only remaining mismatch is the prefactor: splitting terms and signs gives 4 instead of 2. Combining with the universal bound ℙ ≤ 1 absorbs it into a smaller exponent constant.',math:'ℙ(∣Q∣ ≥ t) ≤ min{1, 4 exp(−cq)}\n≤ 2 exp(−cq/2),   q = min{t²/V, t/L}.\nRename c/2 as c.',check:'For q ≤ 2log(2)/c the last expression is at least 1; for larger q the comparison with 4exp(−cq) holds. The theorem follows for all t; degenerate cases were handled at the start.',tool:'Union bound; the diagonal and off-diagonal bounds; elementary inequalities.'}
   ];
+  for(const o of forwardObservations){
+    const event=events.find(e=>e.id===o.event);
+    event.add.unshift(o.id);
+    event.observationNode=o.id;
+  }
   const byId = Object.fromEntries(events.map(e=>[e.id,e]));
   const initialNodes = nodes.filter(n=>n.event==='start').map(n=>n.id);
   function available(done, direction) {
@@ -69,6 +93,21 @@
     return events.filter(e=>!have.has(e.id) && (!direction || e.direction===direction) && e.deps.every(d=>have.has(d)));
   }
   function visible(done) {return new Set([...initialNodes,...done.flatMap(id=>byId[id].add)]);}
+  function observationOrigin(done,id){
+    const o=forwardObservations.find(o=>o.id===id);
+    if(!o)return null;
+    const at=done.indexOf(o.event);
+    if(at<0)return null;
+    // Only goals present before this move can have inspired it.
+    const prior=visible(done.slice(0,at));
+    const goal=o.goals.find(id=>prior.has(id));
+    return goal?{kind:'goal',goal}:{kind:'discovery'};
+  }
+  function edgeVisible(edge,done){
+    const [from,to,type]=edge,shown=visible(done);
+    if(!shown.has(from)||!shown.has(to))return false;
+    return type!=='inspiration'||observationOrigin(done,to)?.goal===from;
+  }
   function achieved(done) {
     const d = new Set(done), ids = [];
     if(d.has('bernstein')) ids.push('diagonal-goal');
@@ -78,8 +117,8 @@
     if(d.has('finish')) ids.push('upper','ultimate');
     return new Set(ids);
   }
-  const layout = {width:640,height:2030,nodeWidth:240,observationWidth:220,nodeHeight:110,observationHeight:120,givenHeight:62};
-  const api = {layout,nodes,edges,events,byId,start,initialNodes,available,visible,achieved};
+  const layout = {width:640,height:3030,nodeWidth:240,observationWidth:220,nodeHeight:110,observationHeight:120,givenHeight:62};
+  const api = {layout,nodes,edges,events,forwardObservations,observationOrigin,edgeVisible,byId,start,initialNodes,available,visible,achieved};
   if(typeof module==='object' && module.exports) module.exports=api;
   else root.HansonWright=api;
 })(typeof window==='undefined'?globalThis:window);

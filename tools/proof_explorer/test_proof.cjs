@@ -67,3 +67,42 @@ test('completion and availability recompute correctly after rewinding',()=>{
   assert.ok(P.available(before).some(e=>e.id==='meet'));
   assert.ok(!P.visible(before).has('bounded'));
 });
+
+test('forward strategic moves expose motivation separately from their deductions',()=>{
+  for(const e of P.events.filter(e=>e.direction==='forward'&&e.category.startsWith('Strategic'))){
+    const n=P.nodes.find(n=>n.id===e.observationNode);
+    assert.equal(n?.kind,'observation',e.id);
+    assert.ok(e.add.includes(n.id));
+    assert.ok(P.edges.some(([a,b,type])=>a===n.id&&b===e.focus&&type==='motivation'));
+  }
+  assert.deepEqual(P.observationOrigin(['linear'],'o-linear'),{kind:'discovery'});
+  assert.equal(P.edges.filter(e=>e[2]==='inspiration'&&P.edgeVisible(e,['linear'])).length,0);
+});
+
+test('an observation retains its original inspiring goal when later goals appear',()=>{
+  const route=['expand','bernstein','sign','split'];
+  assert.deepEqual(P.observationOrigin(route,'o-bernstein'),{kind:'goal',goal:'ultimate'});
+  assert.ok(P.edgeVisible(['ultimate','o-bernstein','inspiration'],route));
+  assert.ok(!P.edgeVisible(['diagonal-goal','o-bernstein','inspiration'],route));
+  const guided=['sign','expand','split','bernstein'];
+  assert.deepEqual(P.observationOrigin(guided,'o-bernstein'),{kind:'goal',goal:'diagonal-goal'});
+  assert.equal(P.observationOrigin(guided.slice(0,-1),'o-bernstein'),null);
+});
+
+test('replacement can be motivated by the MGF goal before a Gaussian goal is proposed',()=>{
+  const route=['sign','expand','split','exponential','linear','decouple','replace','gaussian'];
+  const prefix=[];
+  for(const id of route){assert.ok(P.available(prefix).some(e=>e.id===id));prefix.push(id);}
+  assert.deepEqual(P.observationOrigin(route,'o-replace'),{kind:'goal',goal:'mgf'});
+  assert.ok(!P.edgeVisible(['gaussian-goal','o-replace','inspiration'],route));
+  const guided=P.events.slice(0,P.events.indexOf(P.byId.replace)+1).map(e=>e.id);
+  assert.deepEqual(P.observationOrigin(guided,'o-replace'),{kind:'goal',goal:'gaussian-goal'});
+});
+
+test('the complete graph fits the board without overlapping cards',()=>{
+  const boxes=P.nodes.map(n=>({...n,w:n.kind==='observation'?P.layout.observationWidth:P.layout.nodeWidth,h:n.height??(n.kind==='given'?P.layout.givenHeight:n.kind==='observation'?P.layout.observationHeight:P.layout.nodeHeight)}));
+  for(const n of boxes){
+    assert.ok(n.x>=0&&n.y>=0&&n.x+n.w<=P.layout.width&&n.y+n.h<=P.layout.height,n.id);
+    for(const m of boxes){if(m.id===n.id)continue;assert.ok(n.x+n.w<=m.x||m.x+m.w<=n.x||n.y+n.h<=m.y||m.y+m.h<=n.y,`${n.id} overlaps ${m.id}`);}
+  }
+});

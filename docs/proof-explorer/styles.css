@@ -53,3 +53,10 @@ main{max-width:1920px}
 #meet-badge{width:540px;max-width:540px;padding:9px 13px}
 .view-controls{flex-wrap:wrap}
 .map-pan-hint{display:block;padding:6px 14px;font-size:11px;color:var(--muted);border-top:1px solid var(--line)}
+.node-provenance{display:block;margin-top:9px;padding-top:7px;border-top:1px solid var(--observation);font:10px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--observation)}
+.edge.inspiration{stroke:var(--observation);stroke-width:2;stroke-dasharray:1 6;stroke-linecap:round;marker-end:none;opacity:.8}
+.edge.motivation{stroke:var(--observation);stroke-width:1.8;opacity:.85}
+.edge.inspiration.new-edge{animation:arrive .5s ease;stroke-dasharray:1 6;stroke-dashoffset:0}
+.edge.delayed{animation-delay:.55s}
+.node.inspiring-goal{box-shadow:0 0 0 2px var(--observation)}
+.legend .inspiration-key{width:21px;height:0;border-top:2px dotted var(--observation);background:none;border-radius:0}
