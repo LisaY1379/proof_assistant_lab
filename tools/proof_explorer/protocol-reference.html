@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A working protocol for explaining mathematical proofs through goals, observations, strategic choices, and elementary verification.">
+  <title>Protocol reference · Proof Assistant Lab</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="protocol-reference.css">
+</head>
+<body class="protocol-page">
+  <a class="skip-link" href="#protocol-content">Skip to the protocol</a>
+  <main>
+    <header class="masthead">
+      <a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true">∴</span> PROOF ASSISTANT LAB</a>
+      <nav aria-label="Site navigation"><a href="index.html">Proof explorer</a><a href="protocol.html">Our protocol</a></nav>
+    </header>
+    <section class="protocol-intro">
+      <div class="eyebrow">WORKING SPECIFICATION · VERSION 0.1</div>
+      <h1>The formal reference.</h1>
+      <p class="lede">A mathematical proof explains why a conclusion follows. Our protocol adds a second responsibility: explain what made each strategic move a reasonable thing to try.</p>
+      <p>We record the goal, the available facts, the observation connecting them, and the verification. A move can be elementary and still be strategic. Its difficulty and its role are different questions.</p>
+      <div class="protocol-overview" aria-label="Three key concepts">
+        <div><span class="eyebrow">BASIC EXECUTION</span><p>Unpack a definition, perform a direct calculation, or apply an elementary logical rule.</p></div>
+        <div><span class="eyebrow">STRATEGIC CHOICE</span><p>Choose a useful representation, intermediate target, construction, or method.</p></div>
+        <div><span class="eyebrow">OBSERVATION</span><p>Identify the concrete relationship that motivates the choice.</p></div>
+      </div>
+    </section>
+    <div class="protocol-layout">
+      <nav class="protocol-toc" aria-label="Protocol contents">
+        <span class="eyebrow">IN THIS PROTOCOL</span>
+        <a href="#scope">01 · Scope & conventions</a>
+        <a href="#state">02 · State & two maps</a>
+        <a href="#basic">03 · Basic steps</a>
+        <a href="#strategic">04 · Strategic steps</a>
+        <a href="#observations">05 · Observations</a>
+        <a href="#goals">06 · Goal transformations</a>
+        <a href="#record">07 · The step record</a>
+        <a href="#examples">08 · Worked boundaries</a>
+        <a href="#completion">09 · A complete explanation</a>
+      </nav>
+      <article id="protocol-content" class="protocol-content">
+        <section id="scope">
+          <span class="eyebrow">01 / SCOPE</span><h2>What this specification defines</h2>
+          <p>This is an operational protocol for annotating and communicating proofs. Its core distinctions come from the project README and our worked decompositions. The explicit state model, rule names, and recording conventions below are a proposed formalization of those ideas.</p>
+          <div class="definition"><strong>Definition 1 — Classification is relative to a declared context.</strong> Before classifying a proof, declare its domains, definitions, elementary calculation rules, logical rules, and available toolkit results. A label describes the role of an action in that context, not a universal measure of human ingenuity.</div>
+          <p>“Basic” does not mean familiar, short, easy, or executable by software. “Strategic” does not mean difficult, novel, or historically original. A one-line factorization can be strategic; a long sequence of prescribed arithmetic can be basic.</p>
+          <p>Version 0.1 uses the rule inventory in §3 as its default. An extension must be named before it is used. If a displayed step hides several actions, split it before assigning labels. If the context or motivation is missing, mark the classification <strong>unresolved</strong> instead of inferring a strategy from the final formula alone.</p>
+        </section>
+        <section id="state">
+          <span class="eyebrow">02 / REPRESENTATION</span><h2>A state, a goal map, and a progress map</h2>
+          <div class="definition"><strong>Definition 2 — Proof state.</strong> A state consists of a scoped context Γ of assumptions and established facts, a set of open goals G, a declared toolkit T, and a dependency record. Every object has a domain; every fact records the assumptions under which it holds.</div>
+          <p><strong>The goal map</strong> starts at the ultimate claim and records what would suffice to establish it. <strong>The progress map</strong> starts at the givens and records justified deductions. The toolkit supplies the definitions, results, and methods that those deductions may call. Thus the progress map records uses of the toolkit; it is not the toolkit itself.</p>
+          <div class="map-explanation">
+            <div><span class="eyebrow">FORWARD / DERIVE</span><p>Established facts → justified new fact</p><code>Γ ⊢ F</code><p>Add F to the current context only after its justification is checked.</p></div>
+            <div><span class="eyebrow">BACKWARD / REDUCE</span><p>Current goal → sufficient obligations</p><code>Γ ⊢ (G₁ ∧ ··· ∧ Gₖ) ⇒ G</code><p>Record why solving the children will establish their parent. The children remain open.</p></div>
+          </div>
+          <p>The symbol Γ ⊢ F means that F is derivable under Γ using the declared rules and toolkit. For reductions introducing local assumptions or arbitrary variables, record each child’s own context rather than treating it as an unscoped conjunct.</p>
+          <p>Both directions may be basic or strategic. Their interleaving is a <strong>thinking sequence</strong>; the dependency maps describe logical support. An animation may show a plausible reconstruction of discovery, but must not present it as the historical sequence without evidence.</p>
+          <p>A newly proved lemma may enter T with a link to its proof. An externally assumed theorem must be named as such. Neither operation can silently promote an unproved claim into an established fact.</p>
+        </section>
+        <section id="basic">
+          <span class="eyebrow">03 / EXECUTION</span><h2>The three basic step types</h2>
+          <div class="definition"><strong>Definition 3 — Basic step.</strong> An action is basic when it is an instance of B-D, B-C, or B-L below, with its inputs and side conditions explicit, and it does not conceal an additional choice of representation, auxiliary object, intermediate goal, or method. A basic block is a finite sequence of such actions whose intermediate results can be exposed.</div>
+          <h3>B-D · Direct definition interpretation</h3>
+          <p>Unfold a declared definition on an object or property already present, or fold it after its defining conditions have been established. Rename bound variables to avoid capture when necessary.</p>
+          <p>Examples: interpreting “a is even” as ∃m ∈ ℤ, a = 2m; interpreting injectivity as an implication; replacing “G is a group” by the axioms in the declared group definition. With the convention that the operation must first be internal, the obligations are closure, associativity, identity, and inverses. If internality is already part of the given operation’s type, it is already satisfied.</p>
+          <h3>B-C · Direct elementary calculation</h3>
+          <p>The default operations are substitution using an established equality, exact arithmetic, evaluation of a supplied operation, expansion by distributivity or a declared power rule, and collection or cancellation of like terms. Reassociation, reordering, and cancellation require the relevant algebraic laws and side conditions.</p>
+          <p>Expansion and collection use the declared expanded form as their default direction. Searching for a useful factored form, a completed square, a change of variables, or an expression involving a newly introduced term is not part of that default calculation procedure.</p>
+          <p>Thus expanding (x − y)² into x² − 2xy + y² is B-C. Recognizing that a displayed polynomial should be represented by (x − y)² is a separate choice. Once the candidate has been chosen, expansion can verify it. Testing associativity by directly calculating both (ab)c and a(bc) is basic only when the supplied operation and these rules actually determine the calculation.</p>
+          <h3>B-L · Direct elementary logic</h3>
+          <p>The default rules are: extract or combine conjuncts; instantiate a universal statement; apply an implication to an established premise; substitute equals; introduce a fresh arbitrary variable of the required domain; introduce and discharge an implication’s assumption; name a fresh witness supplied by an existential assumption; introduce an existential conclusion using an established witness; and combine completed exhaustive cases.</p>
+          <p>Universal introduction requires that the variable remain arbitrary. A witness named from an existential assumption is local and fresh. A proposed witness for an existential goal requires a value, its domain, and verification of the target predicate. Completing a case argument requires a justification that its cases cover the domain.</p>
+          <p><strong>Direct matching convention.</strong> Instantiating an explicit implication with terms already supplied by its matching premise is B-L. For example, g(f(a)) = g(f(b)) supplies u = f(a), v = f(b) to the defining implication for injectivity of g. No new representation or auxiliary target is needed.</p>
+          <div class="note"><strong>Toolkit use is a separate annotation.</strong> An available theorem is not a fourth basic step type. A direct application after its premises are checked can be B-L, while finding that theorem useful can be strategic. Record the theorem and its hypotheses even when the application is basic; its own proof may be substantial.</div>
+        </section>
+        <section id="strategic">
+          <span class="eyebrow">04 / CHOICE</span><h2>What counts as strategic</h2>
+          <div class="definition"><strong>Definition 4 — Strategic step.</strong> Relative to the declared basic rules, a strategic step selects a candidate representation, intermediate obligation, auxiliary object, parameter, case partition, theorem, or proof method whose usefulness is inferred from a relationship between the current state, the goal, and the toolkit, rather than obtained by direct definition interpretation, canonical calculation, or direct logical matching.</div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>Strategic role</th><th>What is selected</th><th>Example</th></tr></thead>
+            <tbody>
+              <tr><td>Representation</td><td>A form exposing useful structure</td><td>Rewrite x² − 2xy + y² as (x − y)².</td></tr>
+              <tr><td>Goal planning</td><td>A useful intermediate claim or reduction</td><td>Seek an exponential-moment bound to obtain a tail bound.</td></tr>
+              <tr><td>Construction</td><td>A new witness, auxiliary object, or parameter</td><td>Choose k = m + n; introduce an independent copy X′.</td></tr>
+              <tr><td>Method or toolkit selection</td><td>A relevant method or result beyond a directly matching premise</td><td>Choose induction, or recognize that Bernstein’s inequality fits a sum.</td></tr>
+              <tr><td>Case selection</td><td>A partition useful for the current goal</td><td>Split by parity to locate an even factor in n(n + 1).</td></tr>
+            </tbody>
+          </table></div>
+          <p>These roles may overlap; they are descriptive tags, not mutually exclusive mathematical species. The principal distinction is the <strong>selection action</strong> versus its <strong>verification actions</strong>. A strategic candidate can be reasonable and still fail. Record it as exploratory until its validity and remaining obligations are established.</p>
+          <h3>Why “already specified” is not enough</h3>
+          <p>An author cannot erase a strategic step by writing “now factor” and then calling everything that follows basic. Record where the proposed representation or operation came from. If it was supplied by the problem or an earlier step, link to that instruction; otherwise record the observation motivating its selection here. Verification can then be basic without retrospectively making the choice basic.</p>
+          <p>A request to verify a supplied identity and a request to discover a useful identity are therefore different tasks, even when their final algebra is identical. Basic steps can occur anywhere in a proof, including after several strategic choices.</p>
+          <h3>A consistent classification procedure</h3>
+          <ol>
+            <li>Fix the state before the action and the declared basic rules. Separate a proposed choice from the argument checking it.</li>
+            <li>For an execution action, exhibit its B-D, B-C, or B-L rule and inputs. A finite sequence of such instances is a basic block.</li>
+            <li>For a selection action beyond those rules, identify the selected object or method and the relationship motivating it; label that action strategic.</li>
+            <li>If neither description is available, expand the omitted reasoning or leave the classification unresolved. Do not classify an unexplained jump as basic merely because its conclusion is correct.</li>
+          </ol>
+        </section>
+        <section id="observations">
+          <span class="eyebrow">05 / MOTIVATION</span><h2>An observation must identify a connection</h2>
+          <div class="definition"><strong>Definition 5 — Motivating observation.</strong> An observation names a relevant feature of the current state, a feature required by the goal or a candidate toolkit result, and the relationship that suggests a particular move. It explains the choice; it does not replace a proof of the chosen move.</div>
+          <ol>
+            <li><strong>Target:</strong> What form, property, or hypothesis do we need?</li>
+            <li><strong>Available feature:</strong> What concrete structure do the current expressions or assumptions expose?</li>
+            <li><strong>Connection:</strong> How would the proposed move use that feature to address the target?</li>
+          </ol>
+          <blockquote>“The goal asks for twice an integer. In 2m + 2n, both summands contain the required factor 2. Factoring out that shared 2 gives 2(m + n), suggesting the witness k = m + n.”</blockquote>
+          <p>“Factor the expression” states an action. “Use a clever trick” states neither the relevant feature nor the connection. The observation above makes the choice inspectable without claiming that it was the only possible choice.</p>
+          <p>Observations can also explain basic steps. In the injectivity example, the outer g in the equality matches the premise of g’s defining implication. This is direct logical matching, so the presence of an observation does not by itself imply strategy.</p>
+          <p>If an observation includes a mathematical assertion not yet established, verify that assertion or mark it as a conjecture. A motivation is never an extra assumption available to the proof.</p>
+        </section>
+        <section id="goals">
+          <span class="eyebrow">06 / BACKWARD REASONING</span><h2>Three different goal transformations</h2>
+          <div class="definition"><strong>Definition 6 — Goal decomposition.</strong> Replace G by explicitly related obligations. An AND node requires every child. An OR node permits a child that is itself sufficient. A case split requires all conditional branches and exhaustiveness. A scoped implication goal permits assuming its premise locally; that assumption must later be discharged.</div>
+          <p>Decomposition is basic when it directly unpacks a definition or logical connective. Choosing an induction scheme, an auxiliary lemma, or a useful case partition is strategic. In particular, an induction reduction must include its base, step, and the justification that the induction principle covers the claimed domain.</p>
+          <div class="definition"><strong>Definition 7 — Goal reinterpretation.</strong> Replace G by a newly represented target H chosen to connect the current state to the toolkit. Record the exact relation under the current context: Γ ⊢ G ⇔ H for an equivalent reformulation, or Γ ⊢ H ⇒ G for a sufficient-condition reduction. Its strategic content is why this target is useful. Equivalence must not be assumed.</div>
+          <div class="protocol-equation">For real x, y:<br>x² + y² ≥ 2xy ⇔ x² − 2xy + y² ≥ 0 ⇔ (x − y)² ≥ 0.</div>
+          <p>Moving to a difference and recognizing a square are the motivating choices. Subtraction and expansion verify the equivalences. Square nonnegativity supplies the final fact, which can then be carried back to the original goal.</p>
+          <div class="definition"><strong>Definition 8 — Sufficient-condition reduction.</strong> Replace G by an obligation H while recording Γ ⊢ H ⇒ G. The converse is not claimed. H may be stronger than G; proving H is enough, but failing to prove H does not refute G.</div>
+          <p>For Hanson–Wright, a suitable bound on an exponential moment over a specified parameter range supplies a tail bound through exponential Markov and a choice of parameter. This is a sufficient-condition reinterpretation; its precise relation must be recorded as <strong>sufficient</strong>, not equivalent.</p>
+          <p><strong>Side conditions travel with the edge.</strong> Multiplication by x preserves an inequality’s direction when x &gt; 0; division requires a nonzero denominator; an MGF estimate may hold only for a restricted parameter. A reduction that drops these conditions is not verified.</p>
+          <p>An infinite domain or unspecified variables can motivate a change of representation, but do not imply that a goal is unsolvable. For example, a universally quantified inequality is meaningful without knowing numerical values of x and y.</p>
+        </section>
+        <section id="record">
+          <span class="eyebrow">07 / ANNOTATION</span><h2>The record for each move</h2>
+          <p>Each move should be recoverable from the following fields. A compact basic step may cite its rule and inputs in one sentence. A strategic step must make its motivating connection explicit.</p>
+          <dl class="record-fields">
+            <dt>Identity & direction</dt><dd>A step identifier; forward deduction, backward reduction, or an exploratory proposal.</dd>
+            <dt>Context & target</dt><dd>The facts, domains, local assumptions, and goal available immediately before the move.</dd>
+            <dt>Classification</dt><dd>B-D, B-C, B-L, or strategic role(s). Split mixed choices and verification into linked substeps.</dd>
+            <dt>Observation</dt><dd>The target feature, available feature, and connection. For a basic step, a direct rule match suffices.</dd>
+            <dt>Selected move & provenance</dt><dd>The proposed expression, witness, method, or new obligation; where the choice came from.</dd>
+            <dt>Toolkit dependency</dt><dd>The exact definition, rule, or named result invoked, including its required hypotheses.</dd>
+            <dt>Verification & relation</dt><dd>The calculation or inference validating the move. For goals, label equivalence, sufficiency, AND, OR, or scoped reasoning.</dd>
+            <dt>Result & open obligations</dt><dd>What is now established, what remains to prove, and which earlier steps support it.</dd>
+          </dl>
+          <p>For a rejected attempt, keep its proposed connection and the reason it failed separate from established facts. A displayed shortcut may compress several verified actions, but must not obscure the strategic selection or an unproved dependency.</p>
+        </section>
+        <section id="examples">
+          <span class="eyebrow">08 / BOUNDARIES</span><h2>Classify actions, not just equations</h2>
+          <div class="table-wrap"><table>
+            <thead><tr><th>Action in context</th><th>Classification</th><th>Reason</th></tr></thead>
+            <tbody>
+              <tr><td>Interpret “a + b is even” as ∃k ∈ ℤ: a + b = 2k.</td><td>B-D</td><td>Direct expansion of the target definition.</td></tr>
+              <tr><td>Substitute a = 2m and b = 2n to get 2m + 2n.</td><td>B-C</td><td>Use established equalities.</td></tr>
+              <tr><td>Notice the common 2 and choose 2(m + n) to match 2k.</td><td>Strategic</td><td>Select a representation and a candidate witness.</td></tr>
+              <tr><td>Expand 2(m + n), verify m + n ∈ ℤ, and use the witness.</td><td>B-C, then B-L</td><td>Verify the choice; cite integer closure as a toolkit fact.</td></tr>
+              <tr><td>Choose x² + y² = (x − y)² + 2xy to expose a nonnegative term.</td><td>Strategic</td><td>The useful square is reverse-engineered from the target.</td></tr>
+              <tr><td>Check that identity by expanding its proposed right side.</td><td>B-C</td><td>Direct verification of an explicit candidate.</td></tr>
+              <tr><td>Choose even/odd cases to find an even factor in n(n + 1).</td><td>Strategic</td><td>Select a partition whose branches expose the needed factor.</td></tr>
+              <tr><td>Having proved both parity cases and exhaustiveness, conclude the statement for all integers.</td><td>B-L</td><td>Combine established cases.</td></tr>
+            </tbody>
+          </table></div>
+          <h3>A proof with no separate strategic step</h3>
+          <p>Suppose f: A → B and g: B → C are injective. Unpack the target, take arbitrary a, b ∈ A, and assume g(f(a)) = g(f(b)). Since f(a), f(b) ∈ B, the expanded injectivity of g yields f(a) = f(b). The expanded injectivity of f yields a = b. Discharge the assumption and generalize.</p>
+          <p>Under the default direct-matching convention, this sequence uses definitions and elementary logic throughout. The order is explained by the outer function in the current equality. No additional representation, auxiliary object, or goal is needed.</p>
+          <h3>A strategic move with a basic verification</h3>
+          <p>For x &gt; 0, consider x + 1/x ≥ 2. The reciprocal has denominator x, and the given positivity permits clearing it while preserving the inequality. That observation motivates the strategic choice to multiply by x. Computing the products and checking positivity are basic verification. Recognizing the resulting difference x² − 2x + 1 as (x − 1)² is another strategic choice, followed by basic expansion and application of square nonnegativity.</p>
+          <p>The classification does not depend on whether a reader recognizes the square instantly. Nor does it claim that every valid proof must use that representation.</p>
+        </section>
+        <section id="completion">
+          <span class="eyebrow">09 / COMPLETION</span><h2>When the explanation is complete</h2>
+          <p>The two maps meet when an established forward result satisfies an open goal under the same domain, assumptions, and side conditions. Matching surface notation is insufficient: parameter ranges, quantifiers, constants, and dependencies must also match or be connected by a verified inference.</p>
+          <ol>
+            <li>Every strategic choice used in the final argument has an explicit motivating observation and a completed verification. Unresolved explorations remain outside its chain of support.</li>
+            <li>Every basic step identifies a permitted rule and valid inputs; every toolkit call has its hypotheses checked.</li>
+            <li>Every goal edge records the correct logical relationship. All required branches and side conditions are discharged.</li>
+            <li>No open goal is used as an established fact, and no conclusion depends circularly on itself.</li>
+            <li>The ultimate claim follows from the original assumptions. A linear written proof can present the verified dependencies in a valid order.</li>
+          </ol>
+          <p>This protocol specifies what an explanation must expose. It does not yet supply a numerical measure of “strategic gap,” an automatic classifier, or a machine-checked foundation for every toolkit theorem. Those are separate research tasks. Its present commitment is a traceable distinction between <strong>why a move was selected</strong> and <strong>why that move is valid</strong>.</p>
+          <a class="protocol-cta" href="index.html">Explore the Hanson–Wright example →</a>
+        </section>
+      </article>
+    </div>
+    <footer class="protocol-footer"><p>Proof Assistant Lab · Working specification 0.1<br>Based on the project README and the elementary proof decompositions in observation_01.md. Formal recording conventions are proposed here for consistent annotation.</p><p><a href="index.html">Return to the proof explorer</a></p></footer>
+  </main>
+</body>
+</html>

@@ -31,7 +31,8 @@ After editing the explorer, run `python3 tools/proof_explorer/publish.py`, commi
 
 - `proof.js`: mathematical content, graph, prerequisites, and pure availability/goal-state functions.
 - `written-proof.js`: the linear proof and explicit mappings from thinking moves to written passages.
-- `protocol.html` and `protocol.css`: the protocol introduction, working definitions, classification rules, and boundary examples. Published at `protocol.html` and linked from the homepage.
+- `protocol.html`, `protocol.css`, and `protocol.js`: a nine-step introduction that builds the even-sum proof graph, introduces facts/goals/observations, and follows the basic-first priority order. Supports next/back, replay, step selection, and node inspection.
+- `protocol-reference.html` and `protocol-reference.css`: optional detailed definitions and boundary rules, linked from the walkthrough.
 - `app.js`: browser interaction, playback, and the connection animation.
 - `styles.css`: responsive light/dark presentation.
 - `test_proof.cjs`: prerequisite and completion checks, including every reachable proof state.

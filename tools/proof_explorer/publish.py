@@ -18,10 +18,10 @@ def main():
             raise RuntimeError("Unexpected existing homepage; inspect it before publishing.")
         shutil.copyfile(homepage, library)
 
-    filenames = ("styles.css", "protocol.css", "proof.js", "written-proof.js", "app.js")
+    filenames = ("styles.css", "protocol.css", "protocol.js", "protocol-reference.css", "proof.js", "written-proof.js", "app.js")
     for filename in filenames:
         shutil.copyfile(source / filename, assets / filename)
-    for page in ("index.html", "protocol.html"):
+    for page in ("index.html", "protocol.html", "protocol-reference.html"):
         html = (source / page).read_text()
         for filename in filenames:
             html = html.replace(f'"{filename}"', f'"proof-explorer/{filename}"')
