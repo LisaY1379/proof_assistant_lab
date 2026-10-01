@@ -31,6 +31,7 @@ After editing the explorer, run `python3 tools/proof_explorer/publish.py`, commi
 
 - `proof.js`: mathematical content, graph, prerequisites, and pure availability/goal-state functions.
 - `written-proof.js`: the linear proof and explicit mappings from thinking moves to written passages.
+- `protocol.html` and `protocol.css`: the protocol introduction, working definitions, classification rules, and boundary examples. Published at `protocol.html` and linked from the homepage.
 - `app.js`: browser interaction, playback, and the connection animation.
 - `styles.css`: responsive light/dark presentation.
 - `test_proof.cjs`: prerequisite and completion checks, including every reachable proof state.

@@ -18,17 +18,20 @@ def main():
             raise RuntimeError("Unexpected existing homepage; inspect it before publishing.")
         shutil.copyfile(homepage, library)
 
-    html = (source / "index.html").read_text()
-    for filename in ("styles.css", "proof.js", "written-proof.js", "app.js"):
+    filenames = ("styles.css", "protocol.css", "proof.js", "written-proof.js", "app.js")
+    for filename in filenames:
         shutil.copyfile(source / filename, assets / filename)
-        html = html.replace(f'"{filename}"', f'"proof-explorer/{filename}"')
-    if library.exists():
-        html = html.replace(
-            '<a href="#about">About this proof</a>',
-            '<nav aria-label="Site navigation"><a href="proof-strategy-viewer.html">Proof library</a>'
-            ' &nbsp; · &nbsp; <a href="#about">About this proof</a></nav>',
-        )
-    homepage.write_text(html)
+    for page in ("index.html", "protocol.html"):
+        html = (source / page).read_text()
+        for filename in filenames:
+            html = html.replace(f'"{filename}"', f'"proof-explorer/{filename}"')
+        if page == "index.html" and library.exists():
+            html = html.replace(
+                '<a href="protocol.html">Our protocol</a>',
+                '<a href="proof-strategy-viewer.html">Proof library</a> &nbsp; · &nbsp; '
+                '<a href="protocol.html">Our protocol</a>',
+            )
+        (docs / page).write_text(html)
     print(f"Built GitHub Pages homepage: {homepage}")
 
 
