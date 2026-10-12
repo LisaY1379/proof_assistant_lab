@@ -713,6 +713,23 @@ def handle_chat(payload: Dict[str, Any]) -> Dict[str, Any]:
     return result
 
 
+try:
+    from main.explorer_service import ExplorerService
+except ModuleNotFoundError:
+    from explorer_service import ExplorerService
+
+EXPLORERS = ExplorerService(PROJECT_ROOT, call_openai_chat, make_ssl_context, load_dotenv, DEFAULT_MODEL)
+EXPLORER_ASSETS = {
+    '/explorer': (MAIN_DIR / 'explorer/index.html', 'text/html'),
+    '/explorer/': (MAIN_DIR / 'explorer/index.html', 'text/html'),
+    '/explorer/app.js': (MAIN_DIR / 'explorer/app.js', 'text/javascript'),
+    '/explorer/styles.css': (MAIN_DIR / 'explorer/styles.css', 'text/css'),
+    '/explorer/base.css': (PROJECT_ROOT / 'tools/proof_explorer/styles.css', 'text/css'),
+    '/explorer/reader.css': (PROJECT_ROOT / 'tools/proof_explorer/proof-reader.css', 'text/css'),
+    '/explorer/example.json': (MAIN_DIR / 'explorer/example.json', 'application/json'),
+}
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = "ProofAssistantMainUI/0.1"
 
@@ -739,6 +756,16 @@ class Handler(BaseHTTPRequestHandler):
         if not require_basic_auth(self):
             return
         parsed = urllib.parse.urlparse(self.path)
+        if parsed.path in EXPLORER_ASSETS:
+            path, mime = EXPLORER_ASSETS[parsed.path]
+            self.send_text(path.read_text(encoding='utf-8'), mime+'; charset=utf-8')
+            return
+        if parsed.path.startswith('/api/explorers/'):
+            try:
+                self.send_json(EXPLORERS.get(parsed.path.rsplit('/', 1)[-1]))
+            except (ValueError, FileNotFoundError) as exc:
+                self.send_json({'error': str(exc)}, status=404)
+            return
         if parsed.path in {"/", "/index.html"}:
             self.send_text(INDEX_HTML.read_text(encoding="utf-8"))
             return
@@ -760,6 +787,24 @@ class Handler(BaseHTTPRequestHandler):
         if not require_basic_auth(self):
             return
         parsed = urllib.parse.urlparse(self.path)
+        if parsed.path in {'/api/explorers', '/api/explorers/import'} or re.fullmatch(r'/api/explorers/[a-f0-9]{32}/(stop|resume)', parsed.path):
+            try:
+                length = int(self.headers.get('Content-Length', '0'))
+                if not 0 < length <= 2_000_000:
+                    raise ValueError('Request must contain at most 2 MB of JSON')
+                payload = json.loads(self.rfile.read(length).decode('utf-8'))
+                if parsed.path.endswith('/stop'):
+                    result = EXPLORERS.stop(parsed.path.split('/')[-2])
+                elif parsed.path.endswith('/resume'):
+                    result = EXPLORERS.resume(parsed.path.split('/')[-2])
+                elif parsed.path.endswith('/import'):
+                    result = EXPLORERS.import_document(payload)
+                else:
+                    result = EXPLORERS.create(payload)
+                self.send_json(result)
+            except (ValueError, KeyError, TypeError, FileNotFoundError) as exc:
+                self.send_json({'error': str(exc)}, status=400)
+            return
         if parsed.path != "/api/chat":
             self.send_json({"error": f"Not found: {parsed.path}"}, status=404)
             return

@@ -1,0 +1,21 @@
+# Allow only the files needed by the hosted generator into its build context.
+**
+!requirements.txt
+!Dockerfile.render
+!main/
+!main/agent_server.py
+!main/explorer_server.py
+!main/explorer_service.py
+!main/explorer_pipeline.py
+!main/explorer_protocol.py
+!main/explorer/
+!main/explorer/index.html
+!main/explorer/app.js
+!main/explorer/styles.css
+!main/explorer/example.json
+!tools/
+!tools/proof_explorer/
+!tools/proof_explorer/styles.css
+!tools/proof_explorer/proof-reader.css
+!tools/proof_explorer/protocol-reference.html
+!tools/proof_explorer/protocol.html

@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: proof-explorer-generator
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile.render
+    healthCheckPath: /healthz
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: PROOF_AGENT_USERNAME
+        value: professor
+      - key: PROOF_AGENT_PASSWORD
+        generateValue: true
+      - key: PROOF_EXPLORER_EPHEMERAL
+        value: "true"
+      - key: PROOF_EXPLORER_DATA_DIR
+        value: /app/data/proof_explorers
