@@ -1,0 +1,49 @@
+[
+  {
+    "slug": "covariance",
+    "title": "Covariance estimation",
+    "input_id": "theorem_4_7_1",
+    "steps": 6,
+    "outcomes": {
+      "closed": 5,
+      "failed": 1,
+      "unresolved": 1
+    },
+    "source_sha256": "fd31fc10b3cbcf7a77a25405dff4322b5dcdcc2b18ad57c73fdbf386e167bc42"
+  },
+  {
+    "slug": "dimension-reduction",
+    "title": "Dimension reduction for Boolean functions",
+    "input_id": "lemma_8_3_14",
+    "steps": 4,
+    "outcomes": {
+      "closed": 3,
+      "failed": 2,
+      "unresolved": 1
+    },
+    "source_sha256": "d0a9a11fd723f4117a90955c23c68379a795b553e2adcc591f59d450dbead0a3"
+  },
+  {
+    "slug": "slepian",
+    "title": "Slepian’s inequality",
+    "input_id": "theorem_7_2_2",
+    "steps": 6,
+    "outcomes": {
+      "closed": 2,
+      "failed": 3,
+      "unresolved": 2
+    },
+    "source_sha256": "1d93202ba1ecd44dea9bab7e9fedac2504e3b35fb8c33be67a20fff2c4835789"
+  },
+  {
+    "slug": "centering",
+    "title": "Centering a subgaussian variable",
+    "input_id": "lemma_2_7_8",
+    "steps": 4,
+    "outcomes": {
+      "closed": 4,
+      "failed": 1
+    },
+    "source_sha256": "cd56baeee38c23cf21a1c952cadb219242594231aa4d6dab8cbc4af406d83bd5"
+  }
+]

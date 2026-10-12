@@ -1,0 +1,969 @@
+{
+  "schema_version": 1,
+  "title": "Dimension reduction for Boolean functions",
+  "statement": "Let F be a finite class of Boolean functions, pairwise ε-separated in \\(L_2(\\mu)\\), and let \\(\\mu_n=n^{-1}\\sum_i\\delta_{X_i}\\) for independent \\(X_i\\sim\\mu\\). For \\(n\\ge C\\varepsilon^{-4}\\log|F|\\), with probability at least 0.99 every distinct pair satisfies \\(\\|f-g\\|_{L_2(\\mu_n)}>\\varepsilon/2\\). The empty or singleton class has a vacuous conclusion.",
+  "original_proof": "Let \\(m=|F|\\). If \\(m\\le 1\\), the conclusion is vacuous, so assume \\(m\\ge 2\\).\n\nFix distinct \\(f,g\\in F\\), and define\n\\[\nY_i=(f(X_i)-g(X_i))^2.\n\\]\nDirectly, \\(0\\le Y_i\\le 4\\), \\(\\mathbb EY_i=\\|f-g\\|_{L_2(\\mu)}^2>\\varepsilon^2\\), and \\(\\|f-g\\|_{L_2(\\mu_n)}^2=n^{-1}\\sum_{i=1}^nY_i\\).\n\nThus, by Hoeffding’s inequality,\n\\[\n\\begin{aligned}\n\\mathbb P\\left\\{\\|f-g\\|_{L_2(\\mu_n)}\\le \\frac{\\varepsilon}{2}\\right\\}\n&=\\mathbb P\\left\\{\\frac1n\\sum_{i=1}^nY_i\\le \\frac{\\varepsilon^2}{4}\\right\\}\\\\\n&\\le\n\\mathbb P\\left\\{\\frac1n\\sum_{i=1}^nY_i-\\mathbb EY_i\n\\le -\\frac{3\\varepsilon^2}{4}\\right\\}\\\\\n&\\le \\exp\\left(\n-\\frac{2n(3\\varepsilon^2/4)^2}{4^2}\n\\right)\\\\\n&=\\exp\\left(-\\frac{9}{128}n\\varepsilon^4\\right).\n\\end{aligned}\n\\]\n\nThere are at most \\(m^2\\) ordered pairs of distinct functions. Therefore, by the union bound,\n\\[\n\\mathbb P\\left\\{\\exists f\\ne g:\\,\n\\|f-g\\|_{L_2(\\mu_n)}\\le \\frac{\\varepsilon}{2}\\right\\}\n\\le\nm^2\\exp\\left(-\\frac{9}{128}n\\varepsilon^4\\right).\n\\]\n\nIf \\(n\\ge 128\\,\\varepsilon^{-4}\\log m\\), then the right-hand side is at most \\(m^{-7}<0.01\\).\nConsequently, with probability at least \\(0.99\\),\n\\[\n\\|f-g\\|_{L_2(\\mu_n)}>\\frac{\\varepsilon}{2}\n\\qquad\\text{for every distinct }f,g\\in F.\n\\]\n\nThus the assertion holds for a universal constant \\(C\\) (for example, \\(C=128\\)). \\(\\square\\)",
+  "nodes": [
+    {
+      "id": "f0",
+      "kind": "fact",
+      "text": "F is a finite measurable Boolean class, ε>0, and distinct functions have population L₂ distance >ε. Xi are iid μ. The sample size is a positive integer; the budget is interpreted for |F|≥2, with smaller classes vacuous.",
+      "label": "Starting assumptions"
+    },
+    {
+      "id": "g0",
+      "kind": "goal",
+      "text": "Let F be a finite class of Boolean functions, pairwise ε-separated in \\(L_2(\\mu)\\), and let \\(\\mu_n=n^{-1}\\sum_i\\delta_{X_i}\\) for independent \\(X_i\\sim\\mu\\). For \\(n\\ge C\\varepsilon^{-4}\\log|F|\\), with probability at least 0.99 every distinct pair satisfies \\(\\|f-g\\|_{L_2(\\mu_n)}>\\varepsilon/2\\). The empty or singleton class has a vacuous conclusion.",
+      "label": "Theorem to prove"
+    },
+    {
+      "id": "f1",
+      "kind": "fact",
+      "text": "For each distinct pair f,g, iid \\(Y_i=(f(X_i)-g(X_i))^2\\) lie in [0,4], have mean >ε², and their average is the squared empirical distance.",
+      "label": "Encode pairwise distances by bounded samples"
+    },
+    {
+      "id": "o1",
+      "kind": "observation",
+      "text": "The target is a uniform assertion about empirical distances, and each squared distance is an average of bounded iid quantities.",
+      "label": "Why this move?"
+    },
+    {
+      "id": "gb",
+      "kind": "goal",
+      "text": "The probability of at least one bad distinct pair is at most .01, for m≥2 and the stated sample budget.",
+      "label": "All pairs succeed together"
+    },
+    {
+      "id": "f2",
+      "kind": "fact",
+      "text": "For each distinct pair, \\(P(\\|f-g\\|_{L_2(\\mu_n)}\\le\\varepsilon/2)\\le e^{-9n\\varepsilon^4/128}\\).",
+      "label": "Bound one bad pair"
+    },
+    {
+      "id": "o2",
+      "kind": "observation",
+      "text": "The gap between ε² and ε²/4 is a fixed downward deviation, so a one-sided bounded-variable inequality applies.",
+      "label": "Why this move?"
+    },
+    {
+      "id": "f3",
+      "kind": "fact",
+      "text": "\\(P(\\exists f\\ne g:\\|f-g\\|_{L_2(\\mu_n)}\\le\\varepsilon/2)\\le m^2 e^{-9n\\varepsilon^4/128}\\).",
+      "label": "Make the pairwise guarantee simultaneous"
+    },
+    {
+      "id": "o3",
+      "kind": "observation",
+      "text": "A finite class has finitely many bad events, and the conclusion is their simultaneous exclusion.",
+      "label": "Why this move?"
+    },
+    {
+      "id": "f4",
+      "kind": "fact",
+      "text": "With \\(n\\ge128\\varepsilon^{-4}\\log m\\), failure probability is at most m⁻⁷≤2⁻⁷<.01.",
+      "label": "Choose the budget and close"
+    },
+    {
+      "id": "o4",
+      "kind": "observation",
+      "text": "The logarithm of the number of pairs can be absorbed by increasing the scalar exponent.",
+      "label": "Why this move?"
+    }
+  ],
+  "initial_facts": [
+    "f0"
+  ],
+  "initial_goals": [
+    "g0"
+  ],
+  "steps": [
+    {
+      "id": "a1",
+      "title": "Encode pairwise distances by bounded samples",
+      "quote": "Let \\(m=|F|\\). If \\(m\\le 1\\), the conclusion is vacuous, so assume \\(m\\ge 2\\).\n\nFix distinct \\(f,g\\in F\\), and define\n\\[\nY_i=(f(X_i)-g(X_i))^2.\n\\]\nDirectly, \\(0\\le Y_i\\le 4\\), \\(\\mathbb EY_i=\\|f-g\\|_{L_2(\\mu)}^2>\\varepsilon^2\\), and \\(\\|f-g\\|_{L_2(\\mu_n)}^2=n^{-1}\\sum_{i=1}^nY_i\\).\n\n",
+      "uses": [
+        "f0"
+      ],
+      "adds": [
+        "f1"
+      ],
+      "opens": [
+        "gb"
+      ],
+      "closes": [
+        "g0"
+      ],
+      "observations": [
+        "o1"
+      ],
+      "motivated_by": [
+        "g0"
+      ],
+      "justification": "If the class has at most one element, there are no distinct pairs. Otherwise m≥2 and log m>0. For each fixed pair, the sample variables inherit independence from Xi. Boolean values differ by at most 2, so squaring bounds Yi by 4. The population and empirical L₂ definitions give the two identities. It is sufficient to bound the probability that any pair has empirical distance ≤ε/2 by .01; its complementary event is exactly the target.",
+      "observation": "The target is a uniform assertion about empirical distances, and each squared distance is an average of bounded iid quantities.",
+      "explanation": "If the class has at most one element, there are no distinct pairs. Otherwise m≥2 and log m>0. For each fixed pair, the sample variables inherit independence from Xi. Boolean values differ by at most 2, so squaring bounds Yi by 4. The population and empirical L₂ definitions give the two identities. It is sufficient to bound the probability that any pair has empirical distance ≤ε/2 by .01; its complementary event is exactly the target.",
+      "difficulty": "Choosing the squared-distance representation makes scalar concentration available. Pair selection is deterministic, not sample-adaptive.",
+      "short_version": "For each distinct pair f,g, iid \\(Y_i=(f(X_i)-g(X_i))^2\\) lie in [0,4], have mean >ε², and their average is the squared empirical distance.",
+      "protocol": {
+        "direction": "backward",
+        "context": "F is a finite measurable Boolean class, ε>0, and distinct functions have population L₂ distance >ε. Xi are iid μ. The sample size is a positive integer; the budget is interpreted for |F|≥2, with smaller classes vacuous.",
+        "target": "Let F be a finite class of Boolean functions, pairwise ε-separated in \\(L_2(\\mu)\\), and let \\(\\mu_n=n^{-1}\\sum_i\\delta_{X_i}\\) for independent \\(X_i\\sim\\mu\\). For \\(n\\ge C\\varepsilon^{-4}\\log|F|\\), with probability at least 0.99 every distinct pair satisfies \\(\\|f-g\\|_{L_2(\\mu_n)}>\\varepsilon/2\\). The empty or singleton class has a vacuous conclusion.",
+        "basic_progress": "Unfold the current target and the definitions in the preceding state. These identify the needed bound but do not select the method.",
+        "remaining_gap": "Choosing the squared-distance representation makes scalar concentration available. Pair selection is deterministic, not sample-adaptive.",
+        "observation": {
+          "target_feature": "Let F be a finite class of Boolean functions, pairwise ε-separated in \\(L_2(\\mu)\\), and let \\(\\mu_n=n^{-1}\\sum_i\\delta_{X_i}\\) for independent \\(X_i\\sim\\mu\\). For \\(n\\ge C\\varepsilon^{-4}\\log|F|\\), with probability at least 0.99 every distinct pair satisfies \\(\\|f-g\\|_{L_2(\\mu_n)}>\\varepsilon/2\\). The empty or singleton class has a vacuous conclusion.",
+          "available_feature": "F is a finite measurable Boolean class, ε>0, and distinct functions have population L₂ distance >ε. Xi are iid μ. The sample size is a positive integer; the budget is interpreted for |F|≥2, with smaller classes vacuous.",
+          "connection": "The target is a uniform assertion about empirical distances, and each squared distance is an average of bounded iid quantities."
+        },
+        "actions": [
+          {
+            "id": "u1",
+            "kind": "B-D",
+            "role": "execution",
+            "move": "Unfold the target as exclusion of all bad pair events. With at most one function there are no distinct pairs.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Unfold a declared definition.",
+            "inputs": "F is a finite measurable Boolean class, ε>0, and distinct functions have population L₂ distance >ε. Xi are iid μ. The sample size is a positive integer; the budget is interpreted for |F|≥2, with smaller classes vacuous.",
+            "toolkit_uses": [],
+            "verification": "Unfold the target as exclusion of all bad pair events. With at most one function there are no distinct pairs.",
+            "verifies": []
+          },
+          {
+            "id": "u2",
+            "kind": "strategic",
+            "role": "method / representation selection",
+            "move": "For a fixed distinct pair, choose Y_i=(f(X_i)−g(X_i))² so the empirical squared distance is a scalar average.",
+            "provenance": "The target is a uniform assertion about empirical distances, and each squared distance is an average of bounded iid quantities.",
+            "rule": "Select an auxiliary representation, parameter, method, or sufficient target beyond direct matching.",
+            "inputs": "F is a finite measurable Boolean class, ε>0, and distinct functions have population L₂ distance >ε. Xi are iid μ. The sample size is a positive integer; the budget is interpreted for |F|≥2, with smaller classes vacuous.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "Verification is in the following linked basic actions and the detailed derivation.",
+            "verifies": []
+          },
+          {
+            "id": "u3",
+            "kind": "B-C",
+            "role": "execution",
+            "move": "Boolean values imply 0≤Y_i≤4. Substitute the population and empirical L₂ definitions to obtain EY_i>ε² and squared empirical distance n⁻¹∑Y_i.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Substitute, expand, differentiate an explicitly supplied smooth formula, or perform scalar arithmetic; analytic limit rules are separate toolkit calls.",
+            "inputs": "F is a finite measurable Boolean class, ε>0, and distinct functions have population L₂ distance >ε. Xi are iid μ. The sample size is a positive integer; the budget is interpreted for |F|≥2, with smaller classes vacuous.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [
+              {
+                "id": "empirical",
+                "hypotheses_check": "f and g are bounded measurable Boolean functions, and Xi are iid μ."
+              }
+            ],
+            "verification": "Boolean values imply 0≤Y_i≤4. Substitute the population and empirical L₂ definitions to obtain EY_i>ε² and squared empirical distance n⁻¹∑Y_i.",
+            "verifies": [
+              "u2"
+            ]
+          },
+          {
+            "id": "u4",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "The samples make the Y_i independent. The event that no bad pair exists is exactly the asserted simultaneous separation; open its failure-probability goal.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "F is a finite measurable Boolean class, ε>0, and distinct functions have population L₂ distance >ε. Xi are iid μ. The sample size is a positive integer; the budget is interpreted for |F|≥2, with smaller classes vacuous.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "The samples make the Y_i independent. The event that no bad pair exists is exactly the asserted simultaneous separation; open its failure-probability goal.",
+            "verifies": []
+          }
+        ],
+        "relation": {
+          "kind": "sufficient",
+          "justification": "If the class has at most one element, there are no distinct pairs. Otherwise m≥2 and log m>0. For each fixed pair, the sample variables inherit independence from Xi. Boolean values differ by at most 2, so squaring bounds Yi by 4. The population and empirical L₂ definitions give the two identities. It is sufficient to bound the probability that any pair has empirical distance ≤ε/2 by .01; its complementary event is exactly the target.",
+          "side_conditions": "All conditional lemmas are universally quantified under their stated hypotheses; temporary vectors, thresholds, and parameters remain local. Boolean means values in {−1,1}; the same argument also covers {0,1}. μ_n is the empirical probability measure. m=|F|, while n is the number of samples."
+        },
+        "remaining_obligations": "The probability of at least one bad distinct pair is at most .01, for m≥2 and the stated sample budget."
+      },
+      "start": 0,
+      "end": 284
+    },
+    {
+      "id": "a2",
+      "title": "Bound one bad pair",
+      "quote": "Thus, by Hoeffding’s inequality,\n\\[\n\\begin{aligned}\n\\mathbb P\\left\\{\\|f-g\\|_{L_2(\\mu_n)}\\le \\frac{\\varepsilon}{2}\\right\\}\n&=\\mathbb P\\left\\{\\frac1n\\sum_{i=1}^nY_i\\le \\frac{\\varepsilon^2}{4}\\right\\}\\\\\n&\\le\n\\mathbb P\\left\\{\\frac1n\\sum_{i=1}^nY_i-\\mathbb EY_i\n\\le -\\frac{3\\varepsilon^2}{4}\\right\\}\\\\\n&\\le \\exp\\left(\n-\\frac{2n(3\\varepsilon^2/4)^2}{4^2}\n\\right)\\\\\n&=\\exp\\left(-\\frac{9}{128}n\\varepsilon^4\\right).\n\\end{aligned}\n\\]\n\n",
+      "uses": [
+        "f1"
+      ],
+      "adds": [
+        "f2"
+      ],
+      "opens": [],
+      "closes": [],
+      "observations": [
+        "o2"
+      ],
+      "motivated_by": [
+        "gb"
+      ],
+      "justification": "A bad pair has empirical squared distance at most ε²/4. Its mean is strictly greater than ε², so badness implies a negative deviation of at least 3ε²/4. Hoeffding with range length 4 yields exp(−2n(3ε²/4)²/16)=exp(−9nε⁴/128). Using a weak event for the larger deviation is valid despite the strict population separation.",
+      "observation": "The gap between ε² and ε²/4 is a fixed downward deviation, so a one-sided bounded-variable inequality applies.",
+      "explanation": "A bad pair has empirical squared distance at most ε²/4. Its mean is strictly greater than ε², so badness implies a negative deviation of at least 3ε²/4. Hoeffding with range length 4 yields exp(−2n(3ε²/4)²/16)=exp(−9nε⁴/128). Using a weak event for the larger deviation is valid despite the strict population separation.",
+      "difficulty": "Additive Hoeffding ignores that for Boolean functions the variance is tied to disagreement probability.",
+      "short_version": "For each distinct pair, \\(P(\\|f-g\\|_{L_2(\\mu_n)}\\le\\varepsilon/2)\\le e^{-9n\\varepsilon^4/128}\\).",
+      "protocol": {
+        "direction": "forward",
+        "context": "For each distinct pair f,g, iid \\(Y_i=(f(X_i)-g(X_i))^2\\) lie in [0,4], have mean >ε², and their average is the squared empirical distance.",
+        "target": "The probability of at least one bad distinct pair is at most .01, for m≥2 and the stated sample budget.",
+        "basic_progress": "Unfold the current target and the definitions in the preceding state. These identify the needed bound but do not select the method.",
+        "remaining_gap": "Additive Hoeffding ignores that for Boolean functions the variance is tied to disagreement probability.",
+        "observation": {
+          "target_feature": "The probability of at least one bad distinct pair is at most .01, for m≥2 and the stated sample budget.",
+          "available_feature": "For each distinct pair f,g, iid \\(Y_i=(f(X_i)-g(X_i))^2\\) lie in [0,4], have mean >ε², and their average is the squared empirical distance.",
+          "connection": "The gap between ε² and ε²/4 is a fixed downward deviation, so a one-sided bounded-variable inequality applies."
+        },
+        "actions": [
+          {
+            "id": "u1",
+            "kind": "B-C",
+            "role": "execution",
+            "move": "If the empirical squared distance is ≤ε²/4 and its mean is >ε², subtract the mean to get a deviation at most −3ε²/4.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Substitute, expand, differentiate an explicitly supplied smooth formula, or perform scalar arithmetic; analytic limit rules are separate toolkit calls.",
+            "inputs": "For each distinct pair f,g, iid \\(Y_i=(f(X_i)-g(X_i))^2\\) lie in [0,4], have mean >ε², and their average is the squared empirical distance.",
+            "toolkit_uses": [],
+            "verification": "If the empirical squared distance is ≤ε²/4 and its mean is >ε², subtract the mean to get a deviation at most −3ε²/4.",
+            "verifies": []
+          },
+          {
+            "id": "u2",
+            "kind": "strategic",
+            "role": "method / representation selection",
+            "move": "Select the one-sided Hoeffding inequality for independent variables in [0,4].",
+            "provenance": "The gap between ε² and ε²/4 is a fixed downward deviation, so a one-sided bounded-variable inequality applies.",
+            "rule": "Select an auxiliary representation, parameter, method, or sufficient target beyond direct matching.",
+            "inputs": "For each distinct pair f,g, iid \\(Y_i=(f(X_i)-g(X_i))^2\\) lie in [0,4], have mean >ε², and their average is the squared empirical distance.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "Verification is in the following linked basic actions and the detailed derivation.",
+            "verifies": []
+          },
+          {
+            "id": "u3",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "The independence and bounded range were proved for each fixed pair; instantiate Hoeffding with t=3ε²/4.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "For each distinct pair f,g, iid \\(Y_i=(f(X_i)-g(X_i))^2\\) lie in [0,4], have mean >ε², and their average is the squared empirical distance.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [
+              {
+                "id": "hoeffding",
+                "hypotheses_check": "Yi are independent in [0,4]; take t=3ε²/4>0."
+              }
+            ],
+            "verification": "The independence and bounded range were proved for each fixed pair; instantiate Hoeffding with t=3ε²/4.",
+            "verifies": [
+              "u2"
+            ]
+          },
+          {
+            "id": "u4",
+            "kind": "B-C",
+            "role": "execution",
+            "move": "Compute 2n(3ε²/4)²/4²=9nε⁴/128.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Substitute, expand, differentiate an explicitly supplied smooth formula, or perform scalar arithmetic; analytic limit rules are separate toolkit calls.",
+            "inputs": "For each distinct pair f,g, iid \\(Y_i=(f(X_i)-g(X_i))^2\\) lie in [0,4], have mean >ε², and their average is the squared empirical distance.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "Compute 2n(3ε²/4)²/4²=9nε⁴/128.",
+            "verifies": []
+          }
+        ],
+        "relation": {
+          "kind": "deduction",
+          "justification": "A bad pair has empirical squared distance at most ε²/4. Its mean is strictly greater than ε², so badness implies a negative deviation of at least 3ε²/4. Hoeffding with range length 4 yields exp(−2n(3ε²/4)²/16)=exp(−9nε⁴/128). Using a weak event for the larger deviation is valid despite the strict population separation.",
+          "side_conditions": "All conditional lemmas are universally quantified under their stated hypotheses; temporary vectors, thresholds, and parameters remain local. Boolean means values in {−1,1}; the same argument also covers {0,1}. μ_n is the empirical probability measure. m=|F|, while n is the number of samples."
+        },
+        "remaining_obligations": "The probability of at least one bad distinct pair is at most .01, for m≥2 and the stated sample budget."
+      },
+      "start": 284,
+      "end": 710
+    },
+    {
+      "id": "a3",
+      "title": "Make the pairwise guarantee simultaneous",
+      "quote": "There are at most \\(m^2\\) ordered pairs of distinct functions. Therefore, by the union bound,\n\\[\n\\mathbb P\\left\\{\\exists f\\ne g:\\,\n\\|f-g\\|_{L_2(\\mu_n)}\\le \\frac{\\varepsilon}{2}\\right\\}\n\\le\nm^2\\exp\\left(-\\frac{9}{128}n\\varepsilon^4\\right).\n\\]\n\n",
+      "uses": [
+        "f2"
+      ],
+      "adds": [
+        "f3"
+      ],
+      "opens": [],
+      "closes": [],
+      "observations": [
+        "o3"
+      ],
+      "motivated_by": [
+        "gb"
+      ],
+      "justification": "There are m(m−1) ordered distinct pairs, at most m². Sum the single-pair bound over this finite collection. The bad-pair events share the sample and are generally dependent; union bound does not need their independence. One may instead count unordered pairs and gain a harmless factor 2.",
+      "observation": "A finite class has finitely many bad events, and the conclusion is their simultaneous exclusion.",
+      "explanation": "There are m(m−1) ordered distinct pairs, at most m². Sum the single-pair bound over this finite collection. The bad-pair events share the sample and are generally dependent; union bound does not need their independence. One may instead count unordered pairs and gain a harmless factor 2.",
+      "difficulty": "This aggregation turns an exponential scalar tail into a logarithmic class-size budget.",
+      "short_version": "\\(P(\\exists f\\ne g:\\|f-g\\|_{L_2(\\mu_n)}\\le\\varepsilon/2)\\le m^2 e^{-9n\\varepsilon^4/128}\\).",
+      "protocol": {
+        "direction": "forward",
+        "context": "For each distinct pair, \\(P(\\|f-g\\|_{L_2(\\mu_n)}\\le\\varepsilon/2)\\le e^{-9n\\varepsilon^4/128}\\).",
+        "target": "The probability of at least one bad distinct pair is at most .01, for m≥2 and the stated sample budget.",
+        "basic_progress": "Unfold the current target and the definitions in the preceding state. These identify the needed bound but do not select the method.",
+        "remaining_gap": "This aggregation turns an exponential scalar tail into a logarithmic class-size budget.",
+        "observation": {
+          "target_feature": "The probability of at least one bad distinct pair is at most .01, for m≥2 and the stated sample budget.",
+          "available_feature": "For each distinct pair, \\(P(\\|f-g\\|_{L_2(\\mu_n)}\\le\\varepsilon/2)\\le e^{-9n\\varepsilon^4/128}\\).",
+          "connection": "A finite class has finitely many bad events, and the conclusion is their simultaneous exclusion."
+        },
+        "actions": [
+          {
+            "id": "u1",
+            "kind": "B-D",
+            "role": "execution",
+            "move": "The failure event is the finite union over distinct pairs.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Unfold a declared definition.",
+            "inputs": "For each distinct pair, \\(P(\\|f-g\\|_{L_2(\\mu_n)}\\le\\varepsilon/2)\\le e^{-9n\\varepsilon^4/128}\\).",
+            "toolkit_uses": [],
+            "verification": "The failure event is the finite union over distinct pairs.",
+            "verifies": []
+          },
+          {
+            "id": "u2",
+            "kind": "strategic",
+            "role": "method / representation selection",
+            "move": "Select the union bound rather than assuming independence of the bad-pair events.",
+            "provenance": "A finite class has finitely many bad events, and the conclusion is their simultaneous exclusion.",
+            "rule": "Select an auxiliary representation, parameter, method, or sufficient target beyond direct matching.",
+            "inputs": "For each distinct pair, \\(P(\\|f-g\\|_{L_2(\\mu_n)}\\le\\varepsilon/2)\\le e^{-9n\\varepsilon^4/128}\\).\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "Verification is in the following linked basic actions and the detailed derivation.",
+            "verifies": []
+          },
+          {
+            "id": "u3",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "Every pair obeys the same proved tail; summing at most m(m−1)≤m² probabilities gives the displayed uniform failure bound.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "For each distinct pair, \\(P(\\|f-g\\|_{L_2(\\mu_n)}\\le\\varepsilon/2)\\le e^{-9n\\varepsilon^4/128}\\).\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [
+              {
+                "id": "union",
+                "hypotheses_check": "The class is finite; every pair has the same uniform tail bound."
+              }
+            ],
+            "verification": "Every pair obeys the same proved tail; summing at most m(m−1)≤m² probabilities gives the displayed uniform failure bound.",
+            "verifies": [
+              "u2"
+            ]
+          }
+        ],
+        "relation": {
+          "kind": "deduction",
+          "justification": "There are m(m−1) ordered distinct pairs, at most m². Sum the single-pair bound over this finite collection. The bad-pair events share the sample and are generally dependent; union bound does not need their independence. One may instead count unordered pairs and gain a harmless factor 2.",
+          "side_conditions": "All conditional lemmas are universally quantified under their stated hypotheses; temporary vectors, thresholds, and parameters remain local. Boolean means values in {−1,1}; the same argument also covers {0,1}. μ_n is the empirical probability measure. m=|F|, while n is the number of samples."
+        },
+        "remaining_obligations": "The probability of at least one bad distinct pair is at most .01, for m≥2 and the stated sample budget."
+      },
+      "start": 710,
+      "end": 953
+    },
+    {
+      "id": "a4",
+      "title": "Choose the budget and close",
+      "quote": "If \\(n\\ge 128\\,\\varepsilon^{-4}\\log m\\), then the right-hand side is at most \\(m^{-7}<0.01\\).\nConsequently, with probability at least \\(0.99\\),\n\\[\n\\|f-g\\|_{L_2(\\mu_n)}>\\frac{\\varepsilon}{2}\n\\qquad\\text{for every distinct }f,g\\in F.\n\\]\n\nThus the assertion holds for a universal constant \\(C\\) (for example, \\(C=128\\)). \\(\\square\\)",
+      "uses": [
+        "f3"
+      ],
+      "adds": [
+        "f4"
+      ],
+      "opens": [],
+      "closes": [
+        "gb"
+      ],
+      "observations": [
+        "o4"
+      ],
+      "motivated_by": [
+        "gb"
+      ],
+      "justification": "Substituting nε⁴≥128log m into the exponent gives m²exp(−9log m)=m⁻⁷. Since m≥2, m⁻⁷≤1/128<.01. Outside the failure event every pair has strict empirical separation >ε/2. The vacuous m≤1 case was already settled. This matches the original quantifiers and closes the goal.",
+      "observation": "The logarithm of the number of pairs can be absorbed by increasing the scalar exponent.",
+      "explanation": "Substituting nε⁴≥128log m into the exponent gives m²exp(−9log m)=m⁻⁷. Since m≥2, m⁻⁷≤1/128<.01. Outside the failure event every pair has strict empirical separation >ε/2. The vacuous m≤1 case was already settled. This matches the original quantifiers and closes the goal.",
+      "difficulty": "This is arithmetic after concentration and aggregation, not evidence of a new bottleneck.",
+      "short_version": "With \\(n\\ge128\\varepsilon^{-4}\\log m\\), failure probability is at most m⁻⁷≤2⁻⁷<.01.",
+      "protocol": {
+        "direction": "meeting",
+        "context": "\\(P(\\exists f\\ne g:\\|f-g\\|_{L_2(\\mu_n)}\\le\\varepsilon/2)\\le m^2 e^{-9n\\varepsilon^4/128}\\).",
+        "target": "The probability of at least one bad distinct pair is at most .01, for m≥2 and the stated sample budget.",
+        "basic_progress": "Unfold the definitions and substitute the available facts. With \\(n\\ge128\\varepsilon^{-4}\\log m\\), failure probability is at most m⁻⁷≤2⁻⁷<.01.",
+        "remaining_gap": "This is arithmetic after concentration and aggregation, not evidence of a new bottleneck.",
+        "observation": {
+          "target_feature": "The probability of at least one bad distinct pair is at most .01, for m≥2 and the stated sample budget.",
+          "available_feature": "\\(P(\\exists f\\ne g:\\|f-g\\|_{L_2(\\mu_n)}\\le\\varepsilon/2)\\le m^2 e^{-9n\\varepsilon^4/128}\\).",
+          "connection": "The logarithm of the number of pairs can be absorbed by increasing the scalar exponent."
+        },
+        "actions": [
+          {
+            "id": "u1",
+            "kind": "B-C",
+            "role": "execution",
+            "move": "Substitute nε⁴≥128log m: m²exp(−9nε⁴/128)≤m⁻⁷≤2⁻⁷<.01.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Substitute, expand, differentiate an explicitly supplied smooth formula, or perform scalar arithmetic; analytic limit rules are separate toolkit calls.",
+            "inputs": "\\(P(\\exists f\\ne g:\\|f-g\\|_{L_2(\\mu_n)}\\le\\varepsilon/2)\\le m^2 e^{-9n\\varepsilon^4/128}\\).",
+            "toolkit_uses": [],
+            "verification": "Substitute nε⁴≥128log m: m²exp(−9nε⁴/128)≤m⁻⁷≤2⁻⁷<.01.",
+            "verifies": []
+          },
+          {
+            "id": "u2",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "Complement the failure event. Combine m≥2 with the already discharged vacuous case to establish every quantified pairwise conclusion.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "\\(P(\\exists f\\ne g:\\|f-g\\|_{L_2(\\mu_n)}\\le\\varepsilon/2)\\le m^2 e^{-9n\\varepsilon^4/128}\\).\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "Complement the failure event. Combine m≥2 with the already discharged vacuous case to establish every quantified pairwise conclusion.",
+            "verifies": []
+          }
+        ],
+        "relation": {
+          "kind": "meeting",
+          "justification": "Substituting nε⁴≥128log m into the exponent gives m²exp(−9log m)=m⁻⁷. Since m≥2, m⁻⁷≤1/128<.01. Outside the failure event every pair has strict empirical separation >ε/2. The vacuous m≤1 case was already settled. This matches the original quantifiers and closes the goal.",
+          "side_conditions": "All conditional lemmas are universally quantified under their stated hypotheses; temporary vectors, thresholds, and parameters remain local. Boolean means values in {−1,1}; the same argument also covers {0,1}. μ_n is the empirical probability measure. m=|F|, while n is the number of samples."
+        },
+        "remaining_obligations": "None: all required goals have been discharged under the original assumptions."
+      },
+      "start": 953,
+      "end": 1282
+    }
+  ],
+  "states": [
+    {
+      "id": "s0",
+      "have": [
+        "f0"
+      ],
+      "want": [
+        "g0"
+      ],
+      "action": null
+    },
+    {
+      "id": "s1",
+      "have": [
+        "f0",
+        "f1"
+      ],
+      "want": [
+        "gb"
+      ],
+      "action": "a1"
+    },
+    {
+      "id": "s2",
+      "have": [
+        "f0",
+        "f1",
+        "f2"
+      ],
+      "want": [
+        "gb"
+      ],
+      "action": "a2"
+    },
+    {
+      "id": "s3",
+      "have": [
+        "f0",
+        "f1",
+        "f2",
+        "f3"
+      ],
+      "want": [
+        "gb"
+      ],
+      "action": "a3"
+    },
+    {
+      "id": "s4",
+      "have": [
+        "f0",
+        "f1",
+        "f2",
+        "f3",
+        "f4"
+      ],
+      "want": [],
+      "action": "a4"
+    }
+  ],
+  "proof_edges": [
+    {
+      "from": "f0",
+      "to": "f1",
+      "action": "a1",
+      "kind": "deduction"
+    },
+    {
+      "from": "g0",
+      "to": "gb",
+      "action": "a1",
+      "kind": "reduction"
+    },
+    {
+      "from": "g0",
+      "to": "o1",
+      "action": "a1",
+      "kind": "inspiration"
+    },
+    {
+      "from": "o1",
+      "to": "f1",
+      "action": "a1",
+      "kind": "motivation"
+    },
+    {
+      "from": "o1",
+      "to": "gb",
+      "action": "a1",
+      "kind": "motivation"
+    },
+    {
+      "from": "o1",
+      "to": "g0",
+      "action": "a1",
+      "kind": "motivation"
+    },
+    {
+      "from": "f1",
+      "to": "f2",
+      "action": "a2",
+      "kind": "deduction"
+    },
+    {
+      "from": "gb",
+      "to": "o2",
+      "action": "a2",
+      "kind": "inspiration"
+    },
+    {
+      "from": "o2",
+      "to": "f2",
+      "action": "a2",
+      "kind": "motivation"
+    },
+    {
+      "from": "f2",
+      "to": "f3",
+      "action": "a3",
+      "kind": "deduction"
+    },
+    {
+      "from": "gb",
+      "to": "o3",
+      "action": "a3",
+      "kind": "inspiration"
+    },
+    {
+      "from": "o3",
+      "to": "f3",
+      "action": "a3",
+      "kind": "motivation"
+    },
+    {
+      "from": "f3",
+      "to": "f4",
+      "action": "a4",
+      "kind": "deduction"
+    },
+    {
+      "from": "f3",
+      "to": "gb",
+      "action": "a4",
+      "kind": "meeting"
+    },
+    {
+      "from": "f4",
+      "to": "gb",
+      "action": "a4",
+      "kind": "meeting"
+    },
+    {
+      "from": "gb",
+      "to": "o4",
+      "action": "a4",
+      "kind": "inspiration"
+    },
+    {
+      "from": "o4",
+      "to": "f4",
+      "action": "a4",
+      "kind": "motivation"
+    },
+    {
+      "from": "o4",
+      "to": "gb",
+      "action": "a4",
+      "kind": "motivation"
+    }
+  ],
+  "closure": true,
+  "ablations": {
+    "a1": {
+      "action": "a1",
+      "restriction": "Globally forbid the additive bounded-square route using centered Yi=(f−g)²−E(f−g)² and Hoeffding. Direct disagreement counts are permitted.",
+      "alternatives": [
+        {
+          "title": "Count Bernoulli disagreements",
+          "argument": "For {−1,1}-valued functions set p=μ(f≠g)>ε²/4 and S=∑ᵢ1{f(Xᵢ)≠g(Xᵢ)}. Bad empirical separation implies S≤nε²/16<np/4. The multiplicative Bernoulli lower tail with δ=3/4 gives probability ≤exp(−9np/32)≤exp(−9nε²/128). Summing over at most m² pairs gives m²exp(−9nε²/128). For m≥2 the nonvacuous range is ε<2. Thus n≥512 ε⁻⁴ log m makes this ≤m⁻⁷<.01. In fact n≥128 ε⁻²log m suffices. For {0,1} values replace S’s scaling by 1: p>ε² and ε<1 give at least as strong a conclusion. No additive Hoeffding bound is used.",
+          "outcome": "closed",
+          "cost": "Improves the sufficient sample size from ε⁻⁴ log m to ε⁻² log m. Uses Boolean structure rather than only boundedness; discovery cost is unmeasured.",
+          "route": [
+            {
+              "title": "Disagreements",
+              "have": "Each pair gives a Bernoulli count S with mean np.",
+              "want": "Bound a relative lower deviation."
+            },
+            {
+              "title": "Multiplicative tail",
+              "have": "P(bad pair)≤exp(−9nε²/128).",
+              "want": "Make every pair good."
+            },
+            {
+              "title": "Simultaneous separation",
+              "have": "Union bound and n≥512 ε⁻⁴log m imply probability ≥.99.",
+              "want": ""
+            }
+          ],
+          "origin": "literature_assisted",
+          "source_ids": [
+            "src1"
+          ],
+          "rejoin_state": null,
+          "adaptation": "The lower-tail Chernoff inequality was checked in the linked MIT notes. Its application to Boolean disagreement counts and constants below is our adaptation.",
+          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "id": "a1-alt1",
+          "research_exposed": true,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        }
+      ],
+      "research": {
+        "status": "curated_reference",
+        "sources": [
+          {
+            "id": "src1",
+            "title": "Cifuentes–Goemans, MIT 18.200: Chernoff bounds, Theorem 4 (lower tail)",
+            "url": "https://ocw.mit.edu/courses/18-200-principles-of-discrete-applied-mathematics-spring-2024/mit18_200_s24_lec_chernoff.pdf"
+          }
+        ],
+        "calls": [],
+        "summary": "The named source was opened and its lower-tail theorem checked during this build. No external model generation was used.",
+        "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+      },
+      "status": "reviewed",
+      "scope": "Global strategy ban; every alternative restarts from the original assumptions."
+    },
+    "a2": {
+      "action": "a2",
+      "restriction": "Globally forbid additive Hoeffding or an equivalent bound depending only on the range length. A mean-sensitive Bernoulli argument is allowed.",
+      "alternatives": [
+        {
+          "title": "Count Bernoulli disagreements",
+          "argument": "For {−1,1}-valued functions set p=μ(f≠g)>ε²/4 and S=∑ᵢ1{f(Xᵢ)≠g(Xᵢ)}. Bad empirical separation implies S≤nε²/16<np/4. The multiplicative Bernoulli lower tail with δ=3/4 gives probability ≤exp(−9np/32)≤exp(−9nε²/128). Summing over at most m² pairs gives m²exp(−9nε²/128). For m≥2 the nonvacuous range is ε<2. Thus n≥512 ε⁻⁴ log m makes this ≤m⁻⁷<.01. In fact n≥128 ε⁻²log m suffices. For {0,1} values replace S’s scaling by 1: p>ε² and ε<1 give at least as strong a conclusion. No additive Hoeffding bound is used.",
+          "outcome": "closed",
+          "cost": "Improves the sufficient sample size from ε⁻⁴ log m to ε⁻² log m. Uses Boolean structure rather than only boundedness; discovery cost is unmeasured.",
+          "route": [
+            {
+              "title": "Disagreements",
+              "have": "Each pair gives a Bernoulli count S with mean np.",
+              "want": "Bound a relative lower deviation."
+            },
+            {
+              "title": "Multiplicative tail",
+              "have": "P(bad pair)≤exp(−9nε²/128).",
+              "want": "Make every pair good."
+            },
+            {
+              "title": "Simultaneous separation",
+              "have": "Union bound and n≥512 ε⁻⁴log m imply probability ≥.99.",
+              "want": ""
+            }
+          ],
+          "origin": "literature_assisted",
+          "source_ids": [
+            "src1"
+          ],
+          "rejoin_state": null,
+          "adaptation": "The lower-tail Chernoff inequality was checked in the linked MIT notes. Its application to Boolean disagreement counts and constants below is our adaptation.",
+          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "id": "a2-alt1",
+          "research_exposed": true,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        },
+        {
+          "title": "Use only the second moment",
+          "argument": "For Yi∈[0,4], Var(Yi)≤4. Chebyshev gives P(bad pair)≤64/(9nε⁴). A union bound then gives at most 64m²/(9nε⁴), which would require n of order m²ε⁻⁴ for a .01 guarantee. At n=Cε⁻⁴log m this certificate does not approach .01 uniformly in m. The attempted proof fails to achieve the requested sample dependence; the actual probability need not be large.",
+          "outcome": "failed",
+          "cost": "Polynomial m² rather than log m in the sufficient budget; finite but too expensive for this theorem.",
+          "route": [
+            {
+              "title": "Variance bound",
+              "have": "Var(Yi)≤4.",
+              "want": "Control all pairs at the logarithmic budget."
+            },
+            {
+              "title": "Chebyshev certificate",
+              "have": "Failure≤64m²/(9nε⁴).",
+              "want": "The claimed sample-size guarantee is not established."
+            }
+          ],
+          "origin": "model_proposed",
+          "source_ids": [],
+          "rejoin_state": null,
+          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
+          "assessment": "This candidate does not establish the stated theorem under the restriction. This says nothing about all possible replacements.",
+          "id": "a2-alt2",
+          "research_exposed": true,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        }
+      ],
+      "research": {
+        "status": "curated_reference",
+        "sources": [
+          {
+            "id": "src1",
+            "title": "Cifuentes–Goemans, MIT 18.200: Chernoff bounds, Theorem 4 (lower tail)",
+            "url": "https://ocw.mit.edu/courses/18-200-principles-of-discrete-applied-mathematics-spring-2024/mit18_200_s24_lec_chernoff.pdf"
+          }
+        ],
+        "calls": [],
+        "summary": "The named source was opened and its lower-tail theorem checked during this build. No external model generation was used.",
+        "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+      },
+      "status": "reviewed",
+      "scope": "Global strategy ban; every alternative restarts from the original assumptions."
+    },
+    "a3": {
+      "action": "a3",
+      "restriction": "Globally forbid finite aggregation of pair events, including union bounds and Markov applied to their count (the same mechanism).",
+      "alternatives": [
+        {
+          "title": "Keep only the fixed-pair guarantee",
+          "argument": "Even if every fixed pair succeeds with probability .99, that does not imply simultaneous .99 success. In general N disjoint bad events of probability .01/N each have union probability .01; per-event information must be aggregated. Here pair events are dependent through the sample, so multiplying their success probabilities is also unjustified. A new uniform concentration theorem could replace the aggregation but is not proved by this proposal.",
+          "outcome": "failed",
+          "cost": "Skipping uniform control leaves the central quantifier unproved. Failure is logical, not an infinite computation.",
+          "route": [
+            {
+              "title": "One pair",
+              "have": "A deterministic pair has an exponentially small bad probability.",
+              "want": "Prove the assertion simultaneously for all pairs."
+            },
+            {
+              "title": "Quantifier mismatch",
+              "have": "No simultaneous guarantee follows from treating one pair alone.",
+              "want": "A valid uniform argument is still required."
+            }
+          ],
+          "origin": "model_proposed",
+          "source_ids": [],
+          "rejoin_state": null,
+          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
+          "assessment": "This candidate does not establish the stated theorem under the restriction. This says nothing about all possible replacements.",
+          "id": "a3-alt1",
+          "research_exposed": false,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        },
+        {
+          "title": "Seek a direct uniform empirical-process bound",
+          "argument": "A direct bound on the infimum of empirical distances over the class might control all pairs at once. This page has not derived its assumptions, constants or complexity without reusing finite event aggregation. It remains an open replacement in this restricted study.",
+          "outcome": "unresolved",
+          "cost": "A stronger toolkit would need a full proof or independently checked statement.",
+          "route": [
+            {
+              "title": "Uniform target",
+              "have": "All pairwise population distances exceed ε.",
+              "want": "Control their empirical infimum without finite event aggregation."
+            }
+          ],
+          "origin": "model_proposed",
+          "source_ids": [],
+          "rejoin_state": null,
+          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
+          "assessment": "This candidate does not establish the stated theorem under the restriction. This says nothing about all possible replacements.",
+          "id": "a3-alt2",
+          "research_exposed": false,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        }
+      ],
+      "research": {
+        "status": "not_performed",
+        "sources": [],
+        "calls": [],
+        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+      },
+      "status": "reviewed",
+      "scope": "Global strategy ban; every alternative restarts from the original assumptions."
+    },
+    "a4": {
+      "action": "a4",
+      "restriction": "Globally forbid selecting C=128 as the sufficient sample-size constant; keep the theorem’s unspecified universal C.",
+      "alternatives": [
+        {
+          "title": "Use unordered pairs and C=112",
+          "argument": "Using unordered pairs gives at most m(m−1)/2≤m²/2 events. With n≥112ε⁻⁴log m, Hoeffding gives failure ≤(1/2)m^(2−(9/128)112)=(1/2)m^(−47/8)≤(1/2)2^(−47/8)<.01. For m≤1 the conclusion is empty. This reproduces the theorem without selecting the original constant 128. It is only a constants-level replacement; concentration and finite aggregation are unchanged.",
+          "outcome": "closed",
+          "cost": "A modest constant change. This does not replace either concentration or the simultaneous-event mechanism.",
+          "route": [
+            {
+              "title": "Unordered pairs",
+              "have": "There are at most m²/2 bad events.",
+              "want": "Choose a universal constant."
+            },
+            {
+              "title": "Alternative arithmetic",
+              "have": "Failure≤(1/2)m^(−47/8)<.01 for C=112.",
+              "want": ""
+            }
+          ],
+          "origin": "model_proposed",
+          "source_ids": [],
+          "rejoin_state": null,
+          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
+          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "id": "a4-alt1",
+          "research_exposed": false,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        }
+      ],
+      "research": {
+        "status": "not_performed",
+        "sources": [],
+        "calls": [],
+        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+      },
+      "status": "reviewed",
+      "scope": "Global strategy ban; every alternative restarts from the original assumptions."
+    }
+  },
+  "research_records": {
+    "a1": {
+      "status": "curated_reference",
+      "sources": [
+        {
+          "id": "src1",
+          "title": "Cifuentes–Goemans, MIT 18.200: Chernoff bounds, Theorem 4 (lower tail)",
+          "url": "https://ocw.mit.edu/courses/18-200-principles-of-discrete-applied-mathematics-spring-2024/mit18_200_s24_lec_chernoff.pdf"
+        }
+      ],
+      "calls": [],
+      "summary": "The named source was opened and its lower-tail theorem checked during this build. No external model generation was used.",
+      "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+    },
+    "a2": {
+      "status": "curated_reference",
+      "sources": [
+        {
+          "id": "src1",
+          "title": "Cifuentes–Goemans, MIT 18.200: Chernoff bounds, Theorem 4 (lower tail)",
+          "url": "https://ocw.mit.edu/courses/18-200-principles-of-discrete-applied-mathematics-spring-2024/mit18_200_s24_lec_chernoff.pdf"
+        }
+      ],
+      "calls": [],
+      "summary": "The named source was opened and its lower-tail theorem checked during this build. No external model generation was used.",
+      "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+    },
+    "a3": {
+      "status": "not_performed",
+      "sources": [],
+      "calls": [],
+      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+    },
+    "a4": {
+      "status": "not_performed",
+      "sources": [],
+      "calls": [],
+      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+    }
+  },
+  "critical": {
+    "steps": [
+      "a2",
+      "a3"
+    ],
+    "rationale": "Exponential concentration and simultaneous control are the two structural moves. The literature-assisted Bernoulli alternative improves the ε rate, so additive Hoeffding is replaceable. Merely analyzing one pair or using Chebyshev does not meet the requested guarantee.",
+    "basis": "Editorial model assessment, not measured discovery difficulty."
+  },
+  "protocol": {
+    "version": "0.1",
+    "context": {
+      "domains": "F is a finite measurable Boolean class, ε>0, and distinct functions have population L₂ distance >ε. Xi are iid μ. The sample size is a positive integer; the budget is interpreted for |F|≥2, with smaller classes vacuous.",
+      "definitions": "Boolean means values in {−1,1}; the same argument also covers {0,1}. μ_n is the empirical probability measure. m=|F|, while n is the number of samples.",
+      "basic_rules": "Named B-C extension: differentiating an explicitly supplied elementary smooth formula by the product and chain rules; inverse Fourier transforms and analytic limit exchanges remain toolkit calls. B-D: unfold definitions. B-C: substitution, expansion and exact scalar/matrix arithmetic. B-L: instantiate a stated toolkit implication once its premises hold, use ordinary quantifier logic, and discharge local assumptions. Selecting a net, transform, test function or theorem is recorded separately as strategic.",
+      "toolkit": [
+        {
+          "id": "hoeffding",
+          "name": "Hoeffding lower tail",
+          "statement": "For independent \\(U_i\\in[a,b]\\), \\(P(n^{-1}\\sum(U_i-EU_i)\\le-t)\\le\\exp(-2nt^2/(b-a)^2)\\).",
+          "hypotheses": "Independent bounded real variables and t>0."
+        },
+        {
+          "id": "union",
+          "name": "Finite union bound",
+          "statement": "P(∪E_j)≤∑P(E_j).",
+          "hypotheses": "Finitely many measurable events; independence between events is not required."
+        },
+        {
+          "id": "empirical",
+          "name": "Empirical L₂ norm",
+          "statement": "\\(\\|f-g\\|_{L_2(\\mu_n)}^2=n^{-1}\\sum_i(f(X_i)-g(X_i))^2\\).",
+          "hypotheses": "Measurable functions and the empirical probability measure."
+        }
+      ]
+    },
+    "validation": "Annotation structure checked; classifications and mathematics require review.",
+    "reference": {
+      "version": "0.1",
+      "sources": [
+        "tools/proof_explorer/protocol-reference.html",
+        "tools/proof_explorer/protocol.html"
+      ],
+      "sha256": "10ce6d749f133fa8b2369803c823cded381de7a5eaae3d23b0413483d18cb3f4",
+      "text": "01 / SCOPE\nWhat this specification defines\nThis is an operational protocol for annotating and communicating proofs. Its core distinctions come from the project README and our worked decompositions. The explicit state model, rule names, and recording conventions below are a proposed formalization of those ideas.\nDefinition 1 — Classification is relative to a declared context.\nBefore classifying a proof, declare its domains, definitions, elementary calculation rules, logical rules, and available toolkit results. A label describes the role of an action in that context, not a universal measure of human ingenuity.\n“Basic” does not mean familiar, short, easy, or executable by software. “Strategic” does not mean difficult, novel, or historically original. A one-line factorization can be strategic; a long sequence of prescribed arithmetic can be basic.\nVersion 0.1 uses the rule inventory in §3 as its default. An extension must be named before it is used. If a displayed step hides several actions, split it before assigning labels. If the context or motivation is missing, mark the classification\nunresolved\ninstead of inferring a strategy from the final formula alone.\n02 / REPRESENTATION\nA state, a goal map, and a progress map\nDefinition 2 — Proof state.\nA state consists of a scoped context Γ of assumptions and established facts, a set of open goals G, a declared toolkit T, and a dependency record. Every object has a domain; every fact records the assumptions under which it holds.\nThe goal map\nstarts at the ultimate claim and records what would suffice to establish it.\nThe progress map\nstarts at the givens and records justified deductions. The toolkit supplies the definitions, results, and methods that those deductions may call. Thus the progress map records uses of the toolkit; it is not the toolkit itself.\nFORWARD / DERIVE\nEstablished facts → justified new fact\nΓ ⊢ F\nAdd F to the current context only after its justification is checked.\nBACKWARD / REDUCE\nCurrent goal → sufficient obligations\nΓ ⊢ (G₁ ∧ ··· ∧ Gₖ) ⇒ G\nRecord why solving the children will establish their parent. The children remain open.\nThe symbol Γ ⊢ F means that F is derivable under Γ using the declared rules and toolkit. For reductions introducing local assumptions or arbitrary variables, record each child’s own context rather than treating it as an unscoped conjunct.\nBoth directions may be basic or strategic. Their interleaving is a\nthinking sequence\n; the dependency maps describe logical support. An animation may show a plausible reconstruction of discovery, but must not present it as the historical sequence without evidence.\nA newly proved lemma may enter T with a link to its proof. An externally assumed theorem must be named as such. Neither operation can silently promote an unproved claim into an established fact.\n03 / EXECUTION\nThe three basic step types\nDefinition 3 — Basic step.\nAn action is basic when it is an instance of B-D, B-C, or B-L below, with its inputs and side conditions explicit, and it does not conceal an additional choice of representation, auxiliary object, intermediate goal, or method. A basic block is a finite sequence of such actions whose intermediate results can be exposed.\nB-D · Direct definition interpretation\nUnfold a declared definition on an object or property already present, or fold it after its defining conditions have been established. Rename bound variables to avoid capture when necessary.\nExamples: interpreting “a is even” as ∃m ∈ ℤ, a = 2m; interpreting injectivity as an implication; replacing “G is a group” by the axioms in the declared group definition. With the convention that the operation must first be internal, the obligations are closure, associativity, identity, and inverses. If internality is already part of the given operation’s type, it is already satisfied.\nB-C · Direct elementary calculation\nThe default operations are substitution using an established equality, exact arithmetic, evaluation of a supplied operation, expansion by distributivity or a declared power rule, and collection or cancellation of like terms. Reassociation, reordering, and cancellation require the relevant algebraic laws and side conditions.\nExpansion and collection use the declared expanded form as their default direction. Searching for a useful factored form, a completed square, a change of variables, or an expression involving a newly introduced term is not part of that default calculation procedure.\nThus expanding (x − y)² into x² − 2xy + y² is B-C. Recognizing that a displayed polynomial should be represented by (x − y)² is a separate choice. Once the candidate has been chosen, expansion can verify it. Testing associativity by directly calculating both (ab)c and a(bc) is basic only when the supplied operation and these rules actually determine the calculation.\nB-L · Direct elementary logic\nThe default rules are: extract or combine conjuncts; instantiate a universal statement; apply an implication to an established premise; substitute equals; introduce a fresh arbitrary variable of the required domain; introduce and discharge an implication’s assumption; name a fresh witness supplied by an existential assumption; introduce an existential conclusion using an established witness; and combine completed exhaustive cases.\nUniversal introduction requires that the variable remain arbitrary. A witness named from an existential assumption is local and fresh. A proposed witness for an existential goal requires a value, its domain, and verification of the target predicate. Completing a case argument requires a justification that its cases cover the domain.\nDirect matching convention.\nInstantiating an explicit implication with terms already supplied by its matching premise is B-L. For example, g(f(a)) = g(f(b)) supplies u = f(a), v = f(b) to the defining implication for injectivity of g. No new representation or auxiliary target is needed.\nToolkit use is a separate annotation.\nAn available theorem is not a fourth basic step type. A direct application after its premises are checked can be B-L, while finding that theorem useful can be strategic. Record the theorem and its hypotheses even when the application is basic; its own proof may be substantial.\n04 / CHOICE\nWhat counts as strategic\nDefinition 4 — Strategic step.\nRelative to the declared basic rules, a strategic step selects a candidate representation, intermediate obligation, auxiliary object, parameter, case partition, theorem, or proof method whose usefulness is inferred from a relationship between the current state, the goal, and the toolkit, rather than obtained by direct definition interpretation, canonical calculation, or direct logical matching.\nStrategic role\nWhat is selected\nExample\nRepresentation\nA form exposing useful structure\nRewrite x² − 2xy + y² as (x − y)².\nGoal planning\nA useful intermediate claim or reduction\nSeek an exponential-moment bound to obtain a tail bound.\nConstruction\nA new witness, auxiliary object, or parameter\nChoose k = m + n; introduce an independent copy X′.\nMethod or toolkit selection\nA relevant method or result beyond a directly matching premise\nChoose induction, or recognize that Bernstein’s inequality fits a sum.\nCase selection\nA partition useful for the current goal\nSplit by parity to locate an even factor in n(n + 1).\nThese roles may overlap; they are descriptive tags, not mutually exclusive mathematical species. The principal distinction is the\nselection action\nversus its\nverification actions\n. A strategic candidate can be reasonable and still fail. Record it as exploratory until its validity and remaining obligations are established.\nWhy “already specified” is not enough\nAn author cannot erase a strategic step by writing “now factor” and then calling everything that follows basic. Record where the proposed representation or operation came from. If it was supplied by the problem or an earlier step, link to that instruction; otherwise record the observation motivating its selection here. Verification can then be basic without retrospectively making the choice basic.\nA request to verify a supplied identity and a request to discover a useful identity are therefore different tasks, even when their final algebra is identical. Basic steps can occur anywhere in a proof, including after several strategic choices.\nA consistent classification procedure\nFix the state before the action and the declared basic rules. Separate a proposed choice from the argument checking it.\nFor an execution action, exhibit its B-D, B-C, or B-L rule and inputs. A finite sequence of such instances is a basic block.\nFor a selection action beyond those rules, identify the selected object or method and the relationship motivating it; label that action strategic.\nIf neither description is available, expand the omitted reasoning or leave the classification unresolved. Do not classify an unexplained jump as basic merely because its conclusion is correct.\n05 / MOTIVATION\nAn observation must identify a connection\nDefinition 5 — Motivating observation.\nAn observation names a relevant feature of the current state, a feature required by the goal or a candidate toolkit result, and the relationship that suggests a particular move. It explains the choice; it does not replace a proof of the chosen move.\nTarget:\nWhat form, property, or hypothesis do we need?\nAvailable feature:\nWhat concrete structure do the current expressions or assumptions expose?\nConnection:\nHow would the proposed move use that feature to address the target?\n“The goal asks for twice an integer. In 2m + 2n, both summands contain the required factor 2. Factoring out that shared 2 gives 2(m + n), suggesting the witness k = m + n.”\n“Factor the expression” states an action. “Use a clever trick” states neither the relevant feature nor the connection. The observation above makes the choice inspectable without claiming that it was the only possible choice.\nObservations can also explain basic steps. In the injectivity example, the outer g in the equality matches the premise of g’s defining implication. This is direct logical matching, so the presence of an observation does not by itself imply strategy.\nIf an observation includes a mathematical assertion not yet established, verify that assertion or mark it as a conjecture. A motivation is never an extra assumption available to the proof.\n06 / BACKWARD REASONING\nThree different goal transformations\nDefinition 6 — Goal decomposition.\nReplace G by explicitly related obligations. An AND node requires every child. An OR node permits a child that is itself sufficient. A case split requires all conditional branches and exhaustiveness. A scoped implication goal permits assuming its premise locally; that assumption must later be discharged.\nDecomposition is basic when it directly unpacks a definition or logical connective. Choosing an induction scheme, an auxiliary lemma, or a useful case partition is strategic. In particular, an induction reduction must include its base, step, and the justification that the induction principle covers the claimed domain.\nDefinition 7 — Goal reinterpretation.\nReplace G by a newly represented target H chosen to connect the current state to the toolkit. Record the exact relation under the current context: Γ ⊢ G ⇔ H for an equivalent reformulation, or Γ ⊢ H ⇒ G for a sufficient-condition reduction. Its strategic content is why this target is useful. Equivalence must not be assumed.\nFor real x, y:\nx² + y² ≥ 2xy ⇔ x² − 2xy + y² ≥ 0 ⇔ (x − y)² ≥ 0.\nMoving to a difference and recognizing a square are the motivating choices. Subtraction and expansion verify the equivalences. Square nonnegativity supplies the final fact, which can then be carried back to the original goal.\nDefinition 8 — Sufficient-condition reduction.\nReplace G by an obligation H while recording Γ ⊢ H ⇒ G. The converse is not claimed. H may be stronger than G; proving H is enough, but failing to prove H does not refute G.\nFor Hanson–Wright, a suitable bound on an exponential moment over a specified parameter range supplies a tail bound through exponential Markov and a choice of parameter. This is a sufficient-condition reinterpretation; its precise relation must be recorded as\nsufficient\n, not equivalent.\nSide conditions travel with the edge.\nMultiplication by x preserves an inequality’s direction when x > 0; division requires a nonzero denominator; an MGF estimate may hold only for a restricted parameter. A reduction that drops these conditions is not verified.\nAn infinite domain or unspecified variables can motivate a change of representation, but do not imply that a goal is unsolvable. For example, a universally quantified inequality is meaningful without knowing numerical values of x and y.\n07 / ANNOTATION\nThe record for each move\nEach move should be recoverable from the following fields. A compact basic step may cite its rule and inputs in one sentence. A strategic step must make its motivating connection explicit.\nIdentity & direction\nA step identifier; forward deduction, backward reduction, or an exploratory proposal.\nContext & target\nThe facts, domains, local assumptions, and goal available immediately before the move.\nClassification\nB-D, B-C, B-L, or strategic role(s). Split mixed choices and verification into linked substeps.\nObservation\nThe target feature, available feature, and connection. For a basic step, a direct rule match suffices.\nSelected move & provenance\nThe proposed expression, witness, method, or new obligation; where the choice came from.\nToolkit dependency\nThe exact definition, rule, or named result invoked, including its required hypotheses.\nVerification & relation\nThe calculation or inference validating the move. For goals, label equivalence, sufficiency, AND, OR, or scoped reasoning.\nResult & open obligations\nWhat is now established, what remains to prove, and which earlier steps support it.\nFor a rejected attempt, keep its proposed connection and the reason it failed separate from established facts. A displayed shortcut may compress several verified actions, but must not obscure the strategic selection or an unproved dependency.\n08 / BOUNDARIES\nClassify actions, not just equations\nAction in context\nClassification\nReason\nInterpret “a + b is even” as ∃k ∈ ℤ: a + b = 2k.\nB-D\nDirect expansion of the target definition.\nSubstitute a = 2m and b = 2n to get 2m + 2n.\nB-C\nUse established equalities.\nNotice the common 2 and choose 2(m + n) to match 2k.\nStrategic\nSelect a representation and a candidate witness.\nExpand 2(m + n), verify m + n ∈ ℤ, and use the witness.\nB-C, then B-L\nVerify the choice; cite integer closure as a toolkit fact.\nChoose x² + y² = (x − y)² + 2xy to expose a nonnegative term.\nStrategic\nThe useful square is reverse-engineered from the target.\nCheck that identity by expanding its proposed right side.\nB-C\nDirect verification of an explicit candidate.\nChoose even/odd cases to find an even factor in n(n + 1).\nStrategic\nSelect a partition whose branches expose the needed factor.\nHaving proved both parity cases and exhaustiveness, conclude the statement for all integers.\nB-L\nCombine established cases.\nA proof with no separate strategic step\nSuppose f: A → B and g: B → C are injective. Unpack the target, take arbitrary a, b ∈ A, and assume g(f(a)) = g(f(b)). Since f(a), f(b) ∈ B, the expanded injectivity of g yields f(a) = f(b). The expanded injectivity of f yields a = b. Discharge the assumption and generalize.\nUnder the default direct-matching convention, this sequence uses definitions and elementary logic throughout. The order is explained by the outer function in the current equality. No additional representation, auxiliary object, or goal is needed.\nA strategic move with a basic verification\nFor x > 0, consider x + 1/x ≥ 2. The reciprocal has denominator x, and the given positivity permits clearing it while preserving the inequality. That observation motivates the strategic choice to multiply by x. Computing the products and checking positivity are basic verification. Recognizing the resulting difference x² − 2x + 1 as (x − 1)² is another strategic choice, followed by basic expansion and application of square nonnegativity.\nThe classification does not depend on whether a reader recognizes the square instantly. Nor does it claim that every valid proof must use that representation.\n09 / COMPLETION\nWhen the explanation is complete\nThe two maps meet when an established forward result satisfies an open goal under the same domain, assumptions, and side conditions. Matching surface notation is insufficient: parameter ranges, quantifiers, constants, and dependencies must also match or be connected by a verified inference.\nEvery strategic choice used in the final argument has an explicit motivating observation and a completed verification. Unresolved explorations remain outside its chain of support.\nEvery basic step identifies a permitted rule and valid inputs; every toolkit call has its hypotheses checked.\nEvery goal edge records the correct logical relationship. All required branches and side conditions are discharged.\nNo open goal is used as an established fact, and no conclusion depends circularly on itself.\nThe ultimate claim follows from the original assumptions. A linear written proof can present the verified dependencies in a valid order.\nThis protocol specifies what an explanation must expose. It does not yet supply a numerical measure of “strategic gap,” an automatic classifier, or a machine-checked foundation for every toolkit theorem. Those are separate research tasks. Its present commitment is a traceable distinction between\nwhy a move was selected\nand\nwhy that move is valid\n.\nExplore the Hanson–Wright example →\n\nTHE PRIORITY RULE\nBasic first. Observe when blocked.\nUse direct definitions, calculations, and logic as far as they address the current goal. When they leave a gap, identify a relationship that suggests a new target. Verify the reduction, then return to basic steps. Repeat if another gap remains.\n“Stuck” is local to the current representation and allowed basic moves. It does not mean the theorem is unprovable. The observation proposes a route; verification establishes that it works.\nRead the finished proof\nSince a and b are even, write a = 2m and b = 2n for integers m,n. Then a + b = 2m + 2n = 2(m + n). Since m + n is an integer, a + b is even. □\nThe short proof compresses the choice of a useful representation. The graph exposes that choice and its motivation.\nThree node types, two directions\nFact:\nan assumption or a verified statement, with its domain and dependencies.\nGoal:\na statement still needed; it closes when verified facts establish it.\nObservation:\nan explicit match between a feature we have and a feature we need. It suggests a move but is not a proof edge.\nThe forward graph records deductions. The backward graph records sufficient obligations. Direction and node type are separate: basic steps can occur in either graph.\nRead the detailed definitions and boundary rules →"
+    }
+  },
+  "experiment": {
+    "input_id": "lemma_8_3_14",
+    "url": "https://lisay1379.github.io/proof_assistant_lab/reports/control_vs_rag/test_3node_rag_2/comparison_viewer.html#case-lemma_8_3_14",
+    "baseline": "Final Library-RAG answer",
+    "control_proof": "Let \\(m=|F|\\). If \\(m\\le 1\\), the conclusion is vacuous, so assume \\(m\\ge 2\\).\n\nFix distinct \\(f,g\\in F\\), and define\n\\[\nY_i=(f(X_i)-g(X_i))^2.\n\\]\nSince \\(f,g\\) are Boolean-valued, \\(0\\le Y_i\\le 4\\) under either standard convention \\(f:\\Omega\\to\\{0,1\\}\\) or \\(f:\\Omega\\to\\{-1,1\\}\\). Moreover,\n\\[\n\\mathbb EY_i=\\|f-g\\|_{L_2(\\mu)}^2>\\varepsilon^2.\n\\]\nOn the other hand,\n\\[\n\\|f-g\\|_{L_2(\\mu_n)}^2=\\frac1n\\sum_{i=1}^nY_i.\n\\]\n\nThus, by Hoeffding’s inequality,\n\\[\n\\begin{aligned}\n\\mathbb P\\left\\{\\|f-g\\|_{L_2(\\mu_n)}\\le \\frac{\\varepsilon}{2}\\right\\}\n&=\\mathbb P\\left\\{\\frac1n\\sum_{i=1}^nY_i\\le \\frac{\\varepsilon^2}{4}\\right\\}\\\\\n&\\le\n\\mathbb P\\left\\{\\frac1n\\sum_{i=1}^nY_i-\\mathbb EY_i\n\\le -\\frac{3\\varepsilon^2}{4}\\right\\}\\\\\n&\\le \\exp\\left(\n-\\frac{2n(3\\varepsilon^2/4)^2}{4^2}\n\\right)\\\\\n&=\\exp\\left(-\\frac{9}{128}n\\varepsilon^4\\right).\n\\end{aligned}\n\\]\n\nThere are at most \\(m^2\\) ordered pairs of distinct functions. Therefore, by the union bound,\n\\[\n\\mathbb P\\left\\{\\exists f\\ne g:\\,\n\\|f-g\\|_{L_2(\\mu_n)}\\le \\frac{\\varepsilon}{2}\\right\\}\n\\le\nm^2\\exp\\left(-\\frac{9}{128}n\\varepsilon^4\\right).\n\\]\n\nIf\n\\[\nn\\ge 128\\,\\varepsilon^{-4}\\log m,\n\\]\nthen the right-hand side is at most\n\\[\nm^2e^{-9\\log m}=m^{-7}\\le 2^{-7}<0.01.\n\\]\nConsequently, with probability at least \\(0.99\\),\n\\[\n\\|f-g\\|_{L_2(\\mu_n)}>\\frac{\\varepsilon}{2}\n\\qquad\\text{for every distinct }f,g\\in F.\n\\]\n\nThus the assertion holds for a universal constant \\(C\\) (for example, \\(C=128\\)). \\(\\square\\)",
+    "comparison_diff": "--- Control\n+++ Library-RAG\n@@ -4,14 +4,7 @@\n \\[\n Y_i=(f(X_i)-g(X_i))^2.\n \\]\n-Since \\(f,g\\) are Boolean-valued, \\(0\\le Y_i\\le 4\\) under either standard convention \\(f:\\Omega\\to\\{0,1\\}\\) or \\(f:\\Omega\\to\\{-1,1\\}\\). Moreover,\n-\\[\n-\\mathbb EY_i=\\|f-g\\|_{L_2(\\mu)}^2>\\varepsilon^2.\n-\\]\n-On the other hand,\n-\\[\n-\\|f-g\\|_{L_2(\\mu_n)}^2=\\frac1n\\sum_{i=1}^nY_i.\n-\\]\n+Directly, \\(0\\le Y_i\\le 4\\), \\(\\mathbb EY_i=\\|f-g\\|_{L_2(\\mu)}^2>\\varepsilon^2\\), and \\(\\|f-g\\|_{L_2(\\mu_n)}^2=n^{-1}\\sum_{i=1}^nY_i\\).\n \n Thus, by Hoeffding’s inequality,\n \\[\n@@ -36,14 +29,7 @@\n m^2\\exp\\left(-\\frac{9}{128}n\\varepsilon^4\\right).\n \\]\n \n-If\n-\\[\n-n\\ge 128\\,\\varepsilon^{-4}\\log m,\n-\\]\n-then the right-hand side is at most\n-\\[\n-m^2e^{-9\\log m}=m^{-7}\\le 2^{-7}<0.01.\n-\\]\n+If \\(n\\ge 128\\,\\varepsilon^{-4}\\log m\\), then the right-hand side is at most \\(m^{-7}<0.01\\).\n Consequently, with probability at least \\(0.99\\),\n \\[\n \\|f-g\\|_{L_2(\\mu_n)}>\\frac{\\varepsilon}{2}",
+    "model": "gpt-5.6-sol",
+    "source_sha256": "d0a9a11fd723f4117a90955c23c68379a795b553e2adcc591f59d450dbead0a3",
+    "note": "The original edition is the exact saved final Library-RAG answer. Expanded explanations, protocol annotations, and ablations were added for this collection; they were not produced by the original experiment. The existing Hanson–Wright explorer is a related reference proof, not necessarily this run’s exact answer."
+  },
+  "metadata": {
+    "origin": "Curated expansion of the saved Library-RAG proof. Alternatives are worked analyses, not logged discovery attempts.",
+    "authoring": "Local editorial reconstruction; no new external model-generation calls.",
+    "source_run": "test_3node_rag_2",
+    "slug": "dimension-reduction"
+  }
+}

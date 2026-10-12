@@ -1,0 +1,968 @@
+{
+  "schema_version": 1,
+  "title": "Centering a subgaussian variable",
+  "statement": "If X is a real subgaussian random variable, then \\(\\|X-\\mathbb EX\\|_{\\psi_2}\\le C\\|X\\|_{\\psi_2}\\). With the convention \\(\\|U\\|_{\\psi_2}=\\inf\\{t>0:E e^{U^2/t^2}\\le2\\}\\), the proof gives C=2.",
+  "original_proof": "Let the subgaussian norm be\n\\[\n\\|Y\\|_{\\psi_2}:=\\inf\\left\\{t>0:\\ \\mathbb E\\exp\\!\\left(\\frac{Y^2}{t^2}\\right)\\le 2\\right\\}.\n\\]\n\nSet \\(K=\\|X\\|_{\\psi_2}\\). More precisely, take any \\(t>K\\) such that\n\\[\n\\mathbb E e^{X^2/t^2}\\le 2.\n\\]\nBy Jensen’s inequality,\n\\[\ne^{(\\mathbb EX)^2/t^2}\n\\le \\mathbb E e^{X^2/t^2}\n\\le 2.\n\\]\nUsing \\((X-\\mathbb EX)^2\\le 2X^2+2(\\mathbb EX)^2\\), we obtain\n\\[\n\\begin{aligned}\n\\mathbb E\\exp\\left(\\frac{(X-\\mathbb EX)^2}{4t^2}\\right)\n&\\le\n\\exp\\left(\\frac{(\\mathbb EX)^2}{2t^2}\\right)\n\\mathbb E\\exp\\left(\\frac{X^2}{2t^2}\\right)\\\\\n&\\le\n\\left(e^{(\\mathbb EX)^2/t^2}\\right)^{1/2}\n\\left(\\mathbb E e^{X^2/t^2}\\right)^{1/2}\\\\\n&\\le \\sqrt2\\,\\sqrt2=2,\n\\end{aligned}\n\\]\nwhere the second factor is bounded using Cauchy–Schwarz (or concavity of \\(u^{1/2}\\)).\n\nThus \\(2t\\) is admissible in the definition of \\(\\|X-\\mathbb EX\\|_{\\psi_2}\\), so\n\\[\n\\|X-\\mathbb EX\\|_{\\psi_2}\\le 2t.\n\\]\nLetting \\(t\\downarrow K\\) gives\n\\[\n\\boxed{\\|X-\\mathbb EX\\|_{\\psi_2}\\le 2\\|X\\|_{\\psi_2}}.\n\\]\nHence the theorem holds with the absolute constant \\(C=2\\).",
+  "nodes": [
+    {
+      "id": "f0",
+      "kind": "fact",
+      "text": "X is a real random variable with finite ψ₂ norm K. Expectations are with respect to its probability law.",
+      "label": "Starting assumptions"
+    },
+    {
+      "id": "g0",
+      "kind": "goal",
+      "text": "If X is a real subgaussian random variable, then \\(\\|X-\\mathbb EX\\|_{\\psi_2}\\le C\\|X\\|_{\\psi_2}\\). With the convention \\(\\|U\\|_{\\psi_2}=\\inf\\{t>0:E e^{U^2/t^2}\\le2\\}\\), the proof gives C=2.",
+      "label": "Theorem to prove"
+    },
+    {
+      "id": "f1",
+      "kind": "fact",
+      "text": "For every t>K=‖X‖ψ₂, E exp(X²/t²)≤2, and X is integrable.",
+      "label": "Unpack the norm and choose an admissible scale"
+    },
+    {
+      "id": "o1",
+      "kind": "observation",
+      "text": "The conclusion is a norm inequality, whose definition asks for an admissible exponential-moment scale.",
+      "label": "Why this move?"
+    },
+    {
+      "id": "gm",
+      "kind": "goal",
+      "text": "For every t>K prove E exp((X−EX)²/(4t²))≤2, then infer the bound 2K.",
+      "label": "Centered exponential-moment bound"
+    },
+    {
+      "id": "f2",
+      "kind": "fact",
+      "text": "For every t>K, exp((EX)²/t²)≤2.",
+      "label": "Control the deterministic mean at the same scale"
+    },
+    {
+      "id": "o2",
+      "kind": "observation",
+      "text": "Centering subtracts a deterministic mean; convexity transfers the available exponential bound to that mean.",
+      "label": "Why this move?"
+    },
+    {
+      "id": "f3",
+      "kind": "fact",
+      "text": "For every t>K, E exp((X−EX)²/(4t²))≤2.",
+      "label": "Separate the two terms and bound the exponential moment"
+    },
+    {
+      "id": "o3",
+      "kind": "observation",
+      "text": "The centered square contains a cross term. A quadratic bound separates the random and deterministic contributions, leaving a half-strength exponential moment controlled by Cauchy–Schwarz.",
+      "label": "Why this move?"
+    },
+    {
+      "id": "f4",
+      "kind": "fact",
+      "text": "‖X−EX‖ψ₂≤2‖X‖ψ₂.",
+      "label": "Read off the norm and close"
+    },
+    {
+      "id": "o4",
+      "kind": "observation",
+      "text": "The forward moment bound is exactly the predicate in the norm definition, so the final goal is discharged by direct matching.",
+      "label": "Why this move?"
+    }
+  ],
+  "initial_facts": [
+    "f0"
+  ],
+  "initial_goals": [
+    "g0"
+  ],
+  "steps": [
+    {
+      "id": "a1",
+      "title": "Unpack the norm and choose an admissible scale",
+      "quote": "Let the subgaussian norm be\n\\[\n\\|Y\\|_{\\psi_2}:=\\inf\\left\\{t>0:\\ \\mathbb E\\exp\\!\\left(\\frac{Y^2}{t^2}\\right)\\le 2\\right\\}.\n\\]\n\nSet \\(K=\\|X\\|_{\\psi_2}\\). More precisely, take any \\(t>K\\) such that\n\\[\n\\mathbb E e^{X^2/t^2}\\le 2.\n\\]\n",
+      "uses": [
+        "f0"
+      ],
+      "adds": [
+        "f1"
+      ],
+      "opens": [
+        "gm"
+      ],
+      "closes": [
+        "g0"
+      ],
+      "observations": [
+        "o1"
+      ],
+      "motivated_by": [
+        "g0"
+      ],
+      "justification": "The admissible positive scales form an upper set, because increasing t decreases the integrand. Since K is its finite infimum, each t>K is admissible. Moreover e^u≥1+u implies E X²≤t², so X is integrable and its mean exists. The target is sufficiently reduced to showing E exp((X−EX)²/(4t²))≤2 for every t>K; this implies the norm bound 2t and hence 2K. This avoids assuming the infimum is attained.",
+      "observation": "The conclusion is a norm inequality, whose definition asks for an admissible exponential-moment scale.",
+      "explanation": "The admissible positive scales form an upper set, because increasing t decreases the integrand. Since K is its finite infimum, each t>K is admissible. Moreover e^u≥1+u implies E X²≤t², so X is integrable and its mean exists. The target is sufficiently reduced to showing E exp((X−EX)²/(4t²))≤2 for every t>K; this implies the norm bound 2t and hence 2K. This avoids assuming the infimum is attained.",
+      "difficulty": "Select a scale with a verified moment bound; treating t=K as admissible requires a separate limit argument.",
+      "short_version": "For every t>K=‖X‖ψ₂, E exp(X²/t²)≤2, and X is integrable.",
+      "protocol": {
+        "direction": "backward",
+        "context": "X is a real random variable with finite ψ₂ norm K. Expectations are with respect to its probability law.",
+        "target": "If X is a real subgaussian random variable, then \\(\\|X-\\mathbb EX\\|_{\\psi_2}\\le C\\|X\\|_{\\psi_2}\\). With the convention \\(\\|U\\|_{\\psi_2}=\\inf\\{t>0:E e^{U^2/t^2}\\le2\\}\\), the proof gives C=2.",
+        "basic_progress": "Unfold the current target and the definitions in the preceding state. These identify the needed bound but do not select the method.",
+        "remaining_gap": "Select a scale with a verified moment bound; treating t=K as admissible requires a separate limit argument.",
+        "observation": {
+          "target_feature": "If X is a real subgaussian random variable, then \\(\\|X-\\mathbb EX\\|_{\\psi_2}\\le C\\|X\\|_{\\psi_2}\\). With the convention \\(\\|U\\|_{\\psi_2}=\\inf\\{t>0:E e^{U^2/t^2}\\le2\\}\\), the proof gives C=2.",
+          "available_feature": "X is a real random variable with finite ψ₂ norm K. Expectations are with respect to its probability law.",
+          "connection": "The conclusion is a norm inequality, whose definition asks for an admissible exponential-moment scale."
+        },
+        "actions": [
+          {
+            "id": "u1",
+            "kind": "B-D",
+            "role": "execution",
+            "move": "The ψ₂ norm is the infimum of the set of scales with exponential moment ≤2.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Unfold a declared definition.",
+            "inputs": "X is a real random variable with finite ψ₂ norm K. Expectations are with respect to its probability law.",
+            "toolkit_uses": [],
+            "verification": "The ψ₂ norm is the infimum of the set of scales with exponential moment ≤2.",
+            "verifies": []
+          },
+          {
+            "id": "u2",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "Admissibility is an upper set; its finite infimum K implies every t>K is admissible.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "X is a real random variable with finite ψ₂ norm K. Expectations are with respect to its probability law.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [
+              {
+                "id": "limit",
+                "hypotheses_check": "Subgaussianity gives a nonempty upper set of finite admissible scales."
+              }
+            ],
+            "verification": "Admissibility is an upper set; its finite infimum K implies every t>K is admissible.",
+            "verifies": []
+          },
+          {
+            "id": "u3",
+            "kind": "B-C",
+            "role": "execution",
+            "move": "The inequality e^u≥1+u gives EX²≤t², so Cauchy–Schwarz also gives integrability of X.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Substitute, expand, differentiate an explicitly supplied smooth formula, or perform scalar arithmetic; analytic limit rules are separate toolkit calls.",
+            "inputs": "X is a real random variable with finite ψ₂ norm K. Expectations are with respect to its probability law.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "The inequality e^u≥1+u gives EX²≤t², so Cauchy–Schwarz also gives integrability of X.",
+            "verifies": []
+          },
+          {
+            "id": "u4",
+            "kind": "strategic",
+            "role": "method / representation selection",
+            "move": "Seek a centered exponential moment at scale 2t for every t>K as a sufficient target.",
+            "provenance": "The conclusion is a norm inequality, whose definition asks for an admissible exponential-moment scale.",
+            "rule": "Select an auxiliary representation, parameter, method, or sufficient target beyond direct matching.",
+            "inputs": "X is a real random variable with finite ψ₂ norm K. Expectations are with respect to its probability law.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "Verification is in the following linked basic actions and the detailed derivation.",
+            "verifies": []
+          },
+          {
+            "id": "u5",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "Such a bound makes the centered norm ≤2t for every t>K; their infimum is 2K. Open the sufficient moment goal, without assuming it established.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "X is a real random variable with finite ψ₂ norm K. Expectations are with respect to its probability law.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "Such a bound makes the centered norm ≤2t for every t>K; their infimum is 2K. Open the sufficient moment goal, without assuming it established.",
+            "verifies": [
+              "u4"
+            ]
+          }
+        ],
+        "relation": {
+          "kind": "sufficient",
+          "justification": "The admissible positive scales form an upper set, because increasing t decreases the integrand. Since K is its finite infimum, each t>K is admissible. Moreover e^u≥1+u implies E X²≤t², so X is integrable and its mean exists. The target is sufficiently reduced to showing E exp((X−EX)²/(4t²))≤2 for every t>K; this implies the norm bound 2t and hence 2K. This avoids assuming the infimum is attained.",
+          "side_conditions": "All conditional lemmas are universally quantified under their stated hypotheses; temporary vectors, thresholds, and parameters remain local. The ψ₂ norm is the infimum of t>0 with Eexp(X²/t²)≤2. No mean-zero assumption is made; C in the theorem is any universal constant."
+        },
+        "remaining_obligations": "For every t>K prove E exp((X−EX)²/(4t²))≤2, then infer the bound 2K."
+      },
+      "start": 0,
+      "end": 229
+    },
+    {
+      "id": "a2",
+      "title": "Control the deterministic mean at the same scale",
+      "quote": "By Jensen’s inequality,\n\\[\ne^{(\\mathbb EX)^2/t^2}\n\\le \\mathbb E e^{X^2/t^2}\n\\le 2.\n\\]\n",
+      "uses": [
+        "f1"
+      ],
+      "adds": [
+        "f2"
+      ],
+      "opens": [],
+      "closes": [],
+      "observations": [
+        "o2"
+      ],
+      "motivated_by": [
+        "gm"
+      ],
+      "justification": "The function φ(x)=exp(x²/t²) has second derivative (2/t²+4x²/t⁴)exp(x²/t²)>0. Thus it is convex. X is integrable from the preceding step, so Jensen gives φ(EX)≤Eφ(X)≤2. In particular |EX|≤t√log2. The mean contribution is now controlled on the same scale as the random term.",
+      "observation": "Centering subtracts a deterministic mean; convexity transfers the available exponential bound to that mean.",
+      "explanation": "The function φ(x)=exp(x²/t²) has second derivative (2/t²+4x²/t⁴)exp(x²/t²)>0. Thus it is convex. X is integrable from the preceding step, so Jensen gives φ(EX)≤Eφ(X)≤2. In particular |EX|≤t√log2. The mean contribution is now controlled on the same scale as the random term.",
+      "difficulty": "This supplies constant 2 efficiently, although the theorem only asks for a universal constant.",
+      "short_version": "For every t>K, exp((EX)²/t²)≤2.",
+      "protocol": {
+        "direction": "forward",
+        "context": "For every t>K=‖X‖ψ₂, E exp(X²/t²)≤2, and X is integrable.",
+        "target": "For every t>K prove E exp((X−EX)²/(4t²))≤2, then infer the bound 2K.",
+        "basic_progress": "Unfold the current target and the definitions in the preceding state. These identify the needed bound but do not select the method.",
+        "remaining_gap": "This supplies constant 2 efficiently, although the theorem only asks for a universal constant.",
+        "observation": {
+          "target_feature": "For every t>K prove E exp((X−EX)²/(4t²))≤2, then infer the bound 2K.",
+          "available_feature": "For every t>K=‖X‖ψ₂, E exp(X²/t²)≤2, and X is integrable.",
+          "connection": "Centering subtracts a deterministic mean; convexity transfers the available exponential bound to that mean."
+        },
+        "actions": [
+          {
+            "id": "u1",
+            "kind": "B-C",
+            "role": "execution",
+            "move": "For φ(x)=exp(x²/t²), compute φ″(x)=(2/t²+4x²/t⁴)exp(x²/t²)>0.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Substitute, expand, differentiate an explicitly supplied smooth formula, or perform scalar arithmetic; analytic limit rules are separate toolkit calls.",
+            "inputs": "For every t>K=‖X‖ψ₂, E exp(X²/t²)≤2, and X is integrable.",
+            "toolkit_uses": [],
+            "verification": "For φ(x)=exp(x²/t²), compute φ″(x)=(2/t²+4x²/t⁴)exp(x²/t²)>0.",
+            "verifies": []
+          },
+          {
+            "id": "u2",
+            "kind": "strategic",
+            "role": "method / representation selection",
+            "move": "Select Jensen to transfer the known exponential moment to the deterministic mean.",
+            "provenance": "Centering subtracts a deterministic mean; convexity transfers the available exponential bound to that mean.",
+            "rule": "Select an auxiliary representation, parameter, method, or sufficient target beyond direct matching.",
+            "inputs": "For every t>K=‖X‖ψ₂, E exp(X²/t²)≤2, and X is integrable.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "Verification is in the following linked basic actions and the detailed derivation.",
+            "verifies": []
+          },
+          {
+            "id": "u3",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "Convexity, integrability of X and Eφ(X)≤2 verify the hypotheses: φ(EX)≤Eφ(X)≤2.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "For every t>K=‖X‖ψ₂, E exp(X²/t²)≤2, and X is integrable.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [
+              {
+                "id": "jensen",
+                "hypotheses_check": "φ is convex and X is integrable; Eφ(X)≤2."
+              }
+            ],
+            "verification": "Convexity, integrability of X and Eφ(X)≤2 verify the hypotheses: φ(EX)≤Eφ(X)≤2.",
+            "verifies": [
+              "u2"
+            ]
+          }
+        ],
+        "relation": {
+          "kind": "deduction",
+          "justification": "The function φ(x)=exp(x²/t²) has second derivative (2/t²+4x²/t⁴)exp(x²/t²)>0. Thus it is convex. X is integrable from the preceding step, so Jensen gives φ(EX)≤Eφ(X)≤2. In particular |EX|≤t√log2. The mean contribution is now controlled on the same scale as the random term.",
+          "side_conditions": "All conditional lemmas are universally quantified under their stated hypotheses; temporary vectors, thresholds, and parameters remain local. The ψ₂ norm is the infimum of t>0 with Eexp(X²/t²)≤2. No mean-zero assumption is made; C in the theorem is any universal constant."
+        },
+        "remaining_obligations": "For every t>K prove E exp((X−EX)²/(4t²))≤2, then infer the bound 2K."
+      },
+      "start": 229,
+      "end": 315
+    },
+    {
+      "id": "a3",
+      "title": "Separate the two terms and bound the exponential moment",
+      "quote": "Using \\((X-\\mathbb EX)^2\\le 2X^2+2(\\mathbb EX)^2\\), we obtain\n\\[\n\\begin{aligned}\n\\mathbb E\\exp\\left(\\frac{(X-\\mathbb EX)^2}{4t^2}\\right)\n&\\le\n\\exp\\left(\\frac{(\\mathbb EX)^2}{2t^2}\\right)\n\\mathbb E\\exp\\left(\\frac{X^2}{2t^2}\\right)\\\\\n&\\le\n\\left(e^{(\\mathbb EX)^2/t^2}\\right)^{1/2}\n\\left(\\mathbb E e^{X^2/t^2}\\right)^{1/2}\\\\\n&\\le \\sqrt2\\,\\sqrt2=2,\n\\end{aligned}\n\\]\nwhere the second factor is bounded using Cauchy–Schwarz (or concavity of \\(u^{1/2}\\)).\n\n",
+      "uses": [
+        "f1",
+        "f2"
+      ],
+      "adds": [
+        "f3"
+      ],
+      "opens": [],
+      "closes": [],
+      "observations": [
+        "o3"
+      ],
+      "motivated_by": [
+        "gm"
+      ],
+      "justification": "Put μ=EX. The elementary square inequality yields (X−μ)²/(4t²)≤X²/(2t²)+μ²/(2t²). Pull the deterministic factor out of the expectation. Cauchy–Schwarz with U=exp(X²/(2t²)) and V=1 gives EU≤√(Eexp(X²/t²)). The deterministic factor is √exp(μ²/t²). Each square root is at most √2, so their product is at most 2. All exponential moments used are finite by admissibility.",
+      "observation": "The centered square contains a cross term. A quadratic bound separates the random and deterministic contributions, leaving a half-strength exponential moment controlled by Cauchy–Schwarz.",
+      "explanation": "Put μ=EX. The elementary square inequality yields (X−μ)²/(4t²)≤X²/(2t²)+μ²/(2t²). Pull the deterministic factor out of the expectation. Cauchy–Schwarz with U=exp(X²/(2t²)) and V=1 gives EU≤√(Eexp(X²/t²)). The deterministic factor is √exp(μ²/t²). Each square root is at most √2, so their product is at most 2. All exponential moments used are finite by admissibility.",
+      "difficulty": "Choosing the denominator 4t² balances the two √2 factors. Selection and checking of this inequality are distinct.",
+      "short_version": "For every t>K, E exp((X−EX)²/(4t²))≤2.",
+      "protocol": {
+        "direction": "forward",
+        "context": "For every t>K=‖X‖ψ₂, E exp(X²/t²)≤2, and X is integrable.\nFor every t>K, exp((EX)²/t²)≤2.",
+        "target": "For every t>K prove E exp((X−EX)²/(4t²))≤2, then infer the bound 2K.",
+        "basic_progress": "Unfold the current target and the definitions in the preceding state. These identify the needed bound but do not select the method.",
+        "remaining_gap": "Choosing the denominator 4t² balances the two √2 factors. Selection and checking of this inequality are distinct.",
+        "observation": {
+          "target_feature": "For every t>K prove E exp((X−EX)²/(4t²))≤2, then infer the bound 2K.",
+          "available_feature": "For every t>K=‖X‖ψ₂, E exp(X²/t²)≤2, and X is integrable.\nFor every t>K, exp((EX)²/t²)≤2.",
+          "connection": "The centered square contains a cross term. A quadratic bound separates the random and deterministic contributions, leaving a half-strength exponential moment controlled by Cauchy–Schwarz."
+        },
+        "actions": [
+          {
+            "id": "u1",
+            "kind": "strategic",
+            "role": "method / representation selection",
+            "move": "Choose the bound (X−μ)²≤2X²+2μ², and divide by 4t² to leave half-strength exponential factors.",
+            "provenance": "The centered square contains a cross term. A quadratic bound separates the random and deterministic contributions, leaving a half-strength exponential moment controlled by Cauchy–Schwarz.",
+            "rule": "Select an auxiliary representation, parameter, method, or sufficient target beyond direct matching.",
+            "inputs": "For every t>K=‖X‖ψ₂, E exp(X²/t²)≤2, and X is integrable.\nFor every t>K, exp((EX)²/t²)≤2.",
+            "toolkit_uses": [],
+            "verification": "Verification is in the following linked basic actions and the detailed derivation.",
+            "verifies": []
+          },
+          {
+            "id": "u2",
+            "kind": "B-C",
+            "role": "execution",
+            "move": "Verify the quadratic bound by expanding the nonnegative difference (X+μ)². Exponentiate and pull the deterministic factor outside the expectation.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Substitute, expand, differentiate an explicitly supplied smooth formula, or perform scalar arithmetic; analytic limit rules are separate toolkit calls.",
+            "inputs": "For every t>K=‖X‖ψ₂, E exp(X²/t²)≤2, and X is integrable.\nFor every t>K, exp((EX)²/t²)≤2.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [
+              {
+                "id": "square",
+                "hypotheses_check": "X and its mean are real."
+              }
+            ],
+            "verification": "Verify the quadratic bound by expanding the nonnegative difference (X+μ)². Exponentiate and pull the deterministic factor outside the expectation.",
+            "verifies": [
+              "u1"
+            ]
+          },
+          {
+            "id": "u3",
+            "kind": "strategic",
+            "role": "method / representation selection",
+            "move": "Select Cauchy–Schwarz for the remaining half-strength exponential moment.",
+            "provenance": "The centered square contains a cross term. A quadratic bound separates the random and deterministic contributions, leaving a half-strength exponential moment controlled by Cauchy–Schwarz.",
+            "rule": "Select an auxiliary representation, parameter, method, or sufficient target beyond direct matching.",
+            "inputs": "For every t>K=‖X‖ψ₂, E exp(X²/t²)≤2, and X is integrable.\nFor every t>K, exp((EX)²/t²)≤2.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "Verification is in the following linked basic actions and the detailed derivation.",
+            "verifies": []
+          },
+          {
+            "id": "u4",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "For U=exp(X²/(2t²)), E U²≤2. Hence EU≤√2, and the deterministic factor is also ≤√2 by the proved mean bound. Their product is ≤2.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "For every t>K=‖X‖ψ₂, E exp(X²/t²)≤2, and X is integrable.\nFor every t>K, exp((EX)²/t²)≤2.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [
+              {
+                "id": "cs",
+                "hypotheses_check": "U²=exp(X²/t²) has expectation ≤2, and V=1."
+              }
+            ],
+            "verification": "For U=exp(X²/(2t²)), E U²≤2. Hence EU≤√2, and the deterministic factor is also ≤√2 by the proved mean bound. Their product is ≤2.",
+            "verifies": [
+              "u3"
+            ]
+          }
+        ],
+        "relation": {
+          "kind": "deduction",
+          "justification": "Put μ=EX. The elementary square inequality yields (X−μ)²/(4t²)≤X²/(2t²)+μ²/(2t²). Pull the deterministic factor out of the expectation. Cauchy–Schwarz with U=exp(X²/(2t²)) and V=1 gives EU≤√(Eexp(X²/t²)). The deterministic factor is √exp(μ²/t²). Each square root is at most √2, so their product is at most 2. All exponential moments used are finite by admissibility.",
+          "side_conditions": "All conditional lemmas are universally quantified under their stated hypotheses; temporary vectors, thresholds, and parameters remain local. The ψ₂ norm is the infimum of t>0 with Eexp(X²/t²)≤2. No mean-zero assumption is made; C in the theorem is any universal constant."
+        },
+        "remaining_obligations": "For every t>K prove E exp((X−EX)²/(4t²))≤2, then infer the bound 2K."
+      },
+      "start": 315,
+      "end": 765
+    },
+    {
+      "id": "a4",
+      "title": "Read off the norm and close",
+      "quote": "Thus \\(2t\\) is admissible in the definition of \\(\\|X-\\mathbb EX\\|_{\\psi_2}\\), so\n\\[\n\\|X-\\mathbb EX\\|_{\\psi_2}\\le 2t.\n\\]\nLetting \\(t\\downarrow K\\) gives\n\\[\n\\boxed{\\|X-\\mathbb EX\\|_{\\psi_2}\\le 2\\|X\\|_{\\psi_2}}.\n\\]\nHence the theorem holds with the absolute constant \\(C=2\\).",
+      "uses": [
+        "f1",
+        "f3"
+      ],
+      "adds": [
+        "f4"
+      ],
+      "opens": [],
+      "closes": [
+        "gm"
+      ],
+      "observations": [
+        "o4"
+      ],
+      "motivated_by": [
+        "gm"
+      ],
+      "justification": "The established exponential inequality makes 2t admissible for the centered norm, so that norm is at most 2t for every t>K. Taking the infimum over these scales gives at most 2K. This also covers K=0: the resulting nonnegative centered norm is bounded by every positive number. The statement requests an absolute constant, and this proof supplies 2.",
+      "observation": "The forward moment bound is exactly the predicate in the norm definition, so the final goal is discharged by direct matching.",
+      "explanation": "The established exponential inequality makes 2t admissible for the centered norm, so that norm is at most 2t for every t>K. Taking the infimum over these scales gives at most 2K. This also covers K=0: the resulting nonnegative centered norm is bounded by every positive number. The statement requests an absolute constant, and this proof supplies 2.",
+      "difficulty": "Only definition folding and the real-number infimum remain.",
+      "short_version": "‖X−EX‖ψ₂≤2‖X‖ψ₂.",
+      "protocol": {
+        "direction": "meeting",
+        "context": "For every t>K=‖X‖ψ₂, E exp(X²/t²)≤2, and X is integrable.\nFor every t>K, E exp((X−EX)²/(4t²))≤2.",
+        "target": "For every t>K prove E exp((X−EX)²/(4t²))≤2, then infer the bound 2K.",
+        "basic_progress": "Unfold the definitions and substitute the available facts. ‖X−EX‖ψ₂≤2‖X‖ψ₂.",
+        "remaining_gap": "Only definition folding and the real-number infimum remain.",
+        "observation": {
+          "target_feature": "For every t>K prove E exp((X−EX)²/(4t²))≤2, then infer the bound 2K.",
+          "available_feature": "For every t>K=‖X‖ψ₂, E exp(X²/t²)≤2, and X is integrable.\nFor every t>K, E exp((X−EX)²/(4t²))≤2.",
+          "connection": "The forward moment bound is exactly the predicate in the norm definition, so the final goal is discharged by direct matching."
+        },
+        "actions": [
+          {
+            "id": "u1",
+            "kind": "B-D",
+            "role": "execution",
+            "move": "The established centered exponential moment says exactly that 2t is an admissible scale.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Unfold a declared definition.",
+            "inputs": "For every t>K=‖X‖ψ₂, E exp(X²/t²)≤2, and X is integrable.\nFor every t>K, E exp((X−EX)²/(4t²))≤2.",
+            "toolkit_uses": [],
+            "verification": "The established centered exponential moment says exactly that 2t is an admissible scale.",
+            "verifies": []
+          },
+          {
+            "id": "u2",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "Take the infimum of the valid bounds 2t over all t>K. The resulting bound 2K includes K=0 and discharges the original universal-constant theorem.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "For every t>K=‖X‖ψ₂, E exp(X²/t²)≤2, and X is integrable.\nFor every t>K, E exp((X−EX)²/(4t²))≤2.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [
+              {
+                "id": "limit",
+                "hypotheses_check": "The bound holds for every t>K; no division by K is used."
+              }
+            ],
+            "verification": "Take the infimum of the valid bounds 2t over all t>K. The resulting bound 2K includes K=0 and discharges the original universal-constant theorem.",
+            "verifies": []
+          }
+        ],
+        "relation": {
+          "kind": "meeting",
+          "justification": "The established exponential inequality makes 2t admissible for the centered norm, so that norm is at most 2t for every t>K. Taking the infimum over these scales gives at most 2K. This also covers K=0: the resulting nonnegative centered norm is bounded by every positive number. The statement requests an absolute constant, and this proof supplies 2.",
+          "side_conditions": "All conditional lemmas are universally quantified under their stated hypotheses; temporary vectors, thresholds, and parameters remain local. The ψ₂ norm is the infimum of t>0 with Eexp(X²/t²)≤2. No mean-zero assumption is made; C in the theorem is any universal constant."
+        },
+        "remaining_obligations": "None: all required goals have been discharged under the original assumptions."
+      },
+      "start": 765,
+      "end": 1036
+    }
+  ],
+  "states": [
+    {
+      "id": "s0",
+      "have": [
+        "f0"
+      ],
+      "want": [
+        "g0"
+      ],
+      "action": null
+    },
+    {
+      "id": "s1",
+      "have": [
+        "f0",
+        "f1"
+      ],
+      "want": [
+        "gm"
+      ],
+      "action": "a1"
+    },
+    {
+      "id": "s2",
+      "have": [
+        "f0",
+        "f1",
+        "f2"
+      ],
+      "want": [
+        "gm"
+      ],
+      "action": "a2"
+    },
+    {
+      "id": "s3",
+      "have": [
+        "f0",
+        "f1",
+        "f2",
+        "f3"
+      ],
+      "want": [
+        "gm"
+      ],
+      "action": "a3"
+    },
+    {
+      "id": "s4",
+      "have": [
+        "f0",
+        "f1",
+        "f2",
+        "f3",
+        "f4"
+      ],
+      "want": [],
+      "action": "a4"
+    }
+  ],
+  "proof_edges": [
+    {
+      "from": "f0",
+      "to": "f1",
+      "action": "a1",
+      "kind": "deduction"
+    },
+    {
+      "from": "g0",
+      "to": "gm",
+      "action": "a1",
+      "kind": "reduction"
+    },
+    {
+      "from": "g0",
+      "to": "o1",
+      "action": "a1",
+      "kind": "inspiration"
+    },
+    {
+      "from": "o1",
+      "to": "f1",
+      "action": "a1",
+      "kind": "motivation"
+    },
+    {
+      "from": "o1",
+      "to": "gm",
+      "action": "a1",
+      "kind": "motivation"
+    },
+    {
+      "from": "o1",
+      "to": "g0",
+      "action": "a1",
+      "kind": "motivation"
+    },
+    {
+      "from": "f1",
+      "to": "f2",
+      "action": "a2",
+      "kind": "deduction"
+    },
+    {
+      "from": "gm",
+      "to": "o2",
+      "action": "a2",
+      "kind": "inspiration"
+    },
+    {
+      "from": "o2",
+      "to": "f2",
+      "action": "a2",
+      "kind": "motivation"
+    },
+    {
+      "from": "f1",
+      "to": "f3",
+      "action": "a3",
+      "kind": "deduction"
+    },
+    {
+      "from": "f2",
+      "to": "f3",
+      "action": "a3",
+      "kind": "deduction"
+    },
+    {
+      "from": "gm",
+      "to": "o3",
+      "action": "a3",
+      "kind": "inspiration"
+    },
+    {
+      "from": "o3",
+      "to": "f3",
+      "action": "a3",
+      "kind": "motivation"
+    },
+    {
+      "from": "f1",
+      "to": "f4",
+      "action": "a4",
+      "kind": "deduction"
+    },
+    {
+      "from": "f3",
+      "to": "f4",
+      "action": "a4",
+      "kind": "deduction"
+    },
+    {
+      "from": "f1",
+      "to": "gm",
+      "action": "a4",
+      "kind": "meeting"
+    },
+    {
+      "from": "f3",
+      "to": "gm",
+      "action": "a4",
+      "kind": "meeting"
+    },
+    {
+      "from": "f4",
+      "to": "gm",
+      "action": "a4",
+      "kind": "meeting"
+    },
+    {
+      "from": "gm",
+      "to": "o4",
+      "action": "a4",
+      "kind": "inspiration"
+    },
+    {
+      "from": "o4",
+      "to": "f4",
+      "action": "a4",
+      "kind": "motivation"
+    },
+    {
+      "from": "o4",
+      "to": "gm",
+      "action": "a4",
+      "kind": "motivation"
+    }
+  ],
+  "closure": true,
+  "ablations": {
+    "a1": {
+      "action": "a1",
+      "restriction": "Globally forbid using arbitrary t>K to establish a centered-norm bound 2t and then taking its infimum. An attainment proof for the original norm is permitted.",
+      "alternatives": [
+        {
+          "title": "Use the attained positive norm, with a zero case",
+          "argument": "If K=0, for every t>0 the norm definition gives P(|X|>ε)≤2e^{−ε²/t²}; send t↓0, then use rational ε>0 to obtain X=0 almost surely. If K>0, take admissible t_j↓K. Monotone convergence gives E exp(X²/K²)≤2, so K itself is admissible. Jensen gives exp((EX)²/K²)≤2. The inequality (X−EX)²≤2X²+2(EX)² and Cauchy–Schwarz then give E exp((X−EX)²/(4K²))≤2. Hence ‖X−EX‖ψ₂≤2K directly. The theorem follows without proving a centered-norm bound at arbitrary t>K and then taking its limit.",
+          "outcome": "closed",
+          "cost": "Same constant 2. Adds an attainment argument and a K=0 case; no search-cost estimate.",
+          "route": [
+            {
+              "title": "Boundary scale",
+              "have": "Either X=0 a.s., or E exp(X²/K²)≤2.",
+              "want": "Bound the centered exponential moment."
+            },
+            {
+              "title": "Direct admissibility",
+              "have": "2K is an admissible centered scale.",
+              "want": ""
+            }
+          ],
+          "origin": "model_proposed",
+          "source_ids": [],
+          "rejoin_state": null,
+          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
+          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "id": "a1-alt1",
+          "research_exposed": false,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        }
+      ],
+      "research": {
+        "status": "not_performed",
+        "sources": [],
+        "calls": [],
+        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+      },
+      "status": "reviewed",
+      "scope": "Global strategy ban; every alternative restarts from the original assumptions."
+    },
+    "a2": {
+      "action": "a2",
+      "restriction": "Globally forbid controlling EX by Jensen applied to exp(X²/t²), including an equivalent convexity-of-expectation mean bound.",
+      "alternatives": [
+        {
+          "title": "Use a second-moment bound instead of Jensen",
+          "argument": "For any t>K, e^u≥1+u gives E X²≤t². Cauchy–Schwarz implies μ²=(EX)²≤E X²≤t², without Jensen applied to X. Then\n\\[E e^{(X-\\mu)^2/(8t^2)}\\le e^{\\mu^2/(4t^2)}E e^{X^2/(4t^2)}\\le e^{1/4}(E e^{X^2/t^2})^{1/4}\\le(2e)^{1/4}<2.\\]\nThe quarter-power bound follows by Cauchy–Schwarz twice. Thus √8 t is admissible; taking t↓K gives ‖X−EX‖ψ₂≤√8 K. This proves the theorem’s universal-C claim, but not the baseline’s sharper C=2. No exponential Jensen mean bound is used.",
+          "outcome": "closed",
+          "cost": "Loses the constant: √8 instead of 2, still satisfying the stated universal-C theorem. Reuses the square split but not the forbidden mean estimate.",
+          "route": [
+            {
+              "title": "Second moment",
+              "have": "(EX)²≤EX²≤t².",
+              "want": "Control a centered exponential moment."
+            },
+            {
+              "title": "Larger scale",
+              "have": "E exp((X−EX)²/(8t²))≤(2e)¹ᐟ⁴<2.",
+              "want": "Pass to the norm."
+            },
+            {
+              "title": "Universal constant",
+              "have": "‖X−EX‖ψ₂≤√8 K.",
+              "want": ""
+            }
+          ],
+          "origin": "model_proposed",
+          "source_ids": [],
+          "rejoin_state": null,
+          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
+          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "id": "a2-alt1",
+          "research_exposed": false,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        }
+      ],
+      "research": {
+        "status": "not_performed",
+        "sources": [],
+        "calls": [],
+        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+      },
+      "status": "reviewed",
+      "scope": "Global strategy ban; every alternative restarts from the original assumptions."
+    },
+    "a3": {
+      "action": "a3",
+      "restriction": "Globally forbid the square-splitting inequality (X−μ)²≤2X²+2μ² or its algebraic equivalent as the centering bound.",
+      "alternatives": [
+        {
+          "title": "Use convexity of the Orlicz function",
+          "argument": "Let Φ(u)=exp(u²)−1, a convex even function. If EΦ(U/a)≤1 and EΦ(V/b)≤1, convexity gives EΦ((U+V)/(a+b))≤[a/(a+b)]EΦ(U/a)+[b/(a+b)]EΦ(V/b)≤1. This proves the needed triangle inequality at admissible scales, without splitting a square into 2U²+2V². For t>K the mean bound exp(μ²/t²)≤2 follows from Jensen as in the baseline, so both X/t and the constant −μ/t have Φ-moment ≤1. Take a=b=t in the convexity inequality. Then Eexp((X−μ)²/(4t²))≤2. Let t↓K to obtain constant 2. Convexity of Φ follows from Φ″(u)=(2+4u²)exp(u²)>0.",
+          "outcome": "closed",
+          "cost": "Same constant 2, but exposes the general norm triangle mechanism. This is a representation change, not a claim of new discovery.",
+          "route": [
+            {
+              "title": "Convex Orlicz function",
+              "have": "Φ((U+V)/(a+b))≤weighted Φ(U/a),Φ(V/b).",
+              "want": "Apply to X and −EX."
+            },
+            {
+              "title": "Two admissible scales",
+              "have": "a=b=t gives a centered admissible scale 2t.",
+              "want": "Take t↓K."
+            },
+            {
+              "title": "Centering bound",
+              "have": "‖X−EX‖ψ₂≤2K.",
+              "want": ""
+            }
+          ],
+          "origin": "model_proposed",
+          "source_ids": [],
+          "rejoin_state": null,
+          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
+          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "id": "a3-alt1",
+          "research_exposed": false,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        },
+        {
+          "title": "Assume centering shrinks each sample",
+          "argument": "Let X take 0 and 2 with equal probabilities, so EX=1 and X is bounded and hence subgaussian. On the event X=0, |X−EX|=1>|X|=0. Therefore the proposed pointwise domination |X−EX|≤|X| is false. It cannot certify the desired exponential-moment or norm bound, even though the centering theorem remains true.",
+          "outcome": "failed",
+          "cost": "A two-point example disproves the intermediate inequality. No cost explosion occurs.",
+          "route": [
+            {
+              "title": "Two-point variable",
+              "have": "X∈{0,2}, EX=1.",
+              "want": "Compare |X−EX| and |X| pointwise."
+            },
+            {
+              "title": "Counterexample at X=0",
+              "have": "1 is greater than 0.",
+              "want": "The proposed domination fails."
+            }
+          ],
+          "origin": "model_proposed",
+          "source_ids": [],
+          "rejoin_state": null,
+          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
+          "assessment": "This candidate does not establish the stated theorem under the restriction. This says nothing about all possible replacements.",
+          "id": "a3-alt2",
+          "research_exposed": false,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        }
+      ],
+      "research": {
+        "status": "not_performed",
+        "sources": [],
+        "calls": [],
+        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+      },
+      "status": "reviewed",
+      "scope": "Global strategy ban; every alternative restarts from the original assumptions."
+    },
+    "a4": {
+      "action": "a4",
+      "restriction": "Globally forbid concluding the centered-norm bound by taking t↓K after obtaining bounds 2t. Establishing attainment of the original norm is allowed.",
+      "alternatives": [
+        {
+          "title": "Use the attained positive norm, with a zero case",
+          "argument": "If K=0, for every t>0 the norm definition gives P(|X|>ε)≤2e^{−ε²/t²}; send t↓0, then use rational ε>0 to obtain X=0 almost surely. If K>0, take admissible t_j↓K. Monotone convergence gives E exp(X²/K²)≤2, so K itself is admissible. Jensen gives exp((EX)²/K²)≤2. The inequality (X−EX)²≤2X²+2(EX)² and Cauchy–Schwarz then give E exp((X−EX)²/(4K²))≤2. Hence ‖X−EX‖ψ₂≤2K directly. The theorem follows without proving a centered-norm bound at arbitrary t>K and then taking its limit.",
+          "outcome": "closed",
+          "cost": "Same constant 2. Adds an attainment argument and a K=0 case; no search-cost estimate.",
+          "route": [
+            {
+              "title": "Boundary scale",
+              "have": "Either X=0 a.s., or E exp(X²/K²)≤2.",
+              "want": "Bound the centered exponential moment."
+            },
+            {
+              "title": "Direct admissibility",
+              "have": "2K is an admissible centered scale.",
+              "want": ""
+            }
+          ],
+          "origin": "model_proposed",
+          "source_ids": [],
+          "rejoin_state": null,
+          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
+          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "id": "a4-alt1",
+          "research_exposed": false,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        }
+      ],
+      "research": {
+        "status": "not_performed",
+        "sources": [],
+        "calls": [],
+        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+      },
+      "status": "reviewed",
+      "scope": "Global strategy ban; every alternative restarts from the original assumptions."
+    }
+  },
+  "research_records": {
+    "a1": {
+      "status": "not_performed",
+      "sources": [],
+      "calls": [],
+      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+    },
+    "a2": {
+      "status": "not_performed",
+      "sources": [],
+      "calls": [],
+      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+    },
+    "a3": {
+      "status": "not_performed",
+      "sources": [],
+      "calls": [],
+      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+    },
+    "a4": {
+      "status": "not_performed",
+      "sources": [],
+      "calls": [],
+      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+    }
+  },
+  "critical": {
+    "steps": [
+      "a3"
+    ],
+    "rationale": "The main local choice controls a centered exponential moment. Orlicz convexity replaces the square split at the same constant; a second-moment route replaces the mean estimate at a worse constant. These successful alternatives give no basis to claim an irreplaceable discovery bottleneck.",
+    "basis": "Editorial model assessment, not measured discovery difficulty."
+  },
+  "protocol": {
+    "version": "0.1",
+    "context": {
+      "domains": "X is a real random variable with finite ψ₂ norm K. Expectations are with respect to its probability law.",
+      "definitions": "The ψ₂ norm is the infimum of t>0 with Eexp(X²/t²)≤2. No mean-zero assumption is made; C in the theorem is any universal constant.",
+      "basic_rules": "Named B-C extension: differentiating an explicitly supplied elementary smooth formula by the product and chain rules; inverse Fourier transforms and analytic limit exchanges remain toolkit calls. B-D: unfold definitions. B-C: substitution, expansion and exact scalar/matrix arithmetic. B-L: instantiate a stated toolkit implication once its premises hold, use ordinary quantifier logic, and discharge local assumptions. Selecting a net, transform, test function or theorem is recorded separately as strategic.",
+      "toolkit": [
+        {
+          "id": "jensen",
+          "name": "Jensen’s inequality",
+          "statement": "φ(EU)≤Eφ(U) for convex φ and integrable U whenever the right side is defined.",
+          "hypotheses": "Convex real function; integrable random variable."
+        },
+        {
+          "id": "cs",
+          "name": "Cauchy–Schwarz",
+          "statement": "E|UV|≤√(EU² EV²).",
+          "hypotheses": "Square-integrable variables."
+        },
+        {
+          "id": "square",
+          "name": "Elementary quadratic bound",
+          "statement": "(a−b)²≤2a²+2b², because their difference is (a+b)²≥0.",
+          "hypotheses": "Real a,b."
+        },
+        {
+          "id": "limit",
+          "name": "Infimum and monotone limits",
+          "statement": "An increasing nonempty set of admissible scales contains every point strictly above its infimum. Bounds valid for all t>K pass to t↓K.",
+          "hypotheses": "Finite K≥0; admissibility is monotone in the positive scale."
+        }
+      ]
+    },
+    "validation": "Annotation structure checked; classifications and mathematics require review.",
+    "reference": {
+      "version": "0.1",
+      "sources": [
+        "tools/proof_explorer/protocol-reference.html",
+        "tools/proof_explorer/protocol.html"
+      ],
+      "sha256": "10ce6d749f133fa8b2369803c823cded381de7a5eaae3d23b0413483d18cb3f4",
+      "text": "01 / SCOPE\nWhat this specification defines\nThis is an operational protocol for annotating and communicating proofs. Its core distinctions come from the project README and our worked decompositions. The explicit state model, rule names, and recording conventions below are a proposed formalization of those ideas.\nDefinition 1 — Classification is relative to a declared context.\nBefore classifying a proof, declare its domains, definitions, elementary calculation rules, logical rules, and available toolkit results. A label describes the role of an action in that context, not a universal measure of human ingenuity.\n“Basic” does not mean familiar, short, easy, or executable by software. “Strategic” does not mean difficult, novel, or historically original. A one-line factorization can be strategic; a long sequence of prescribed arithmetic can be basic.\nVersion 0.1 uses the rule inventory in §3 as its default. An extension must be named before it is used. If a displayed step hides several actions, split it before assigning labels. If the context or motivation is missing, mark the classification\nunresolved\ninstead of inferring a strategy from the final formula alone.\n02 / REPRESENTATION\nA state, a goal map, and a progress map\nDefinition 2 — Proof state.\nA state consists of a scoped context Γ of assumptions and established facts, a set of open goals G, a declared toolkit T, and a dependency record. Every object has a domain; every fact records the assumptions under which it holds.\nThe goal map\nstarts at the ultimate claim and records what would suffice to establish it.\nThe progress map\nstarts at the givens and records justified deductions. The toolkit supplies the definitions, results, and methods that those deductions may call. Thus the progress map records uses of the toolkit; it is not the toolkit itself.\nFORWARD / DERIVE\nEstablished facts → justified new fact\nΓ ⊢ F\nAdd F to the current context only after its justification is checked.\nBACKWARD / REDUCE\nCurrent goal → sufficient obligations\nΓ ⊢ (G₁ ∧ ··· ∧ Gₖ) ⇒ G\nRecord why solving the children will establish their parent. The children remain open.\nThe symbol Γ ⊢ F means that F is derivable under Γ using the declared rules and toolkit. For reductions introducing local assumptions or arbitrary variables, record each child’s own context rather than treating it as an unscoped conjunct.\nBoth directions may be basic or strategic. Their interleaving is a\nthinking sequence\n; the dependency maps describe logical support. An animation may show a plausible reconstruction of discovery, but must not present it as the historical sequence without evidence.\nA newly proved lemma may enter T with a link to its proof. An externally assumed theorem must be named as such. Neither operation can silently promote an unproved claim into an established fact.\n03 / EXECUTION\nThe three basic step types\nDefinition 3 — Basic step.\nAn action is basic when it is an instance of B-D, B-C, or B-L below, with its inputs and side conditions explicit, and it does not conceal an additional choice of representation, auxiliary object, intermediate goal, or method. A basic block is a finite sequence of such actions whose intermediate results can be exposed.\nB-D · Direct definition interpretation\nUnfold a declared definition on an object or property already present, or fold it after its defining conditions have been established. Rename bound variables to avoid capture when necessary.\nExamples: interpreting “a is even” as ∃m ∈ ℤ, a = 2m; interpreting injectivity as an implication; replacing “G is a group” by the axioms in the declared group definition. With the convention that the operation must first be internal, the obligations are closure, associativity, identity, and inverses. If internality is already part of the given operation’s type, it is already satisfied.\nB-C · Direct elementary calculation\nThe default operations are substitution using an established equality, exact arithmetic, evaluation of a supplied operation, expansion by distributivity or a declared power rule, and collection or cancellation of like terms. Reassociation, reordering, and cancellation require the relevant algebraic laws and side conditions.\nExpansion and collection use the declared expanded form as their default direction. Searching for a useful factored form, a completed square, a change of variables, or an expression involving a newly introduced term is not part of that default calculation procedure.\nThus expanding (x − y)² into x² − 2xy + y² is B-C. Recognizing that a displayed polynomial should be represented by (x − y)² is a separate choice. Once the candidate has been chosen, expansion can verify it. Testing associativity by directly calculating both (ab)c and a(bc) is basic only when the supplied operation and these rules actually determine the calculation.\nB-L · Direct elementary logic\nThe default rules are: extract or combine conjuncts; instantiate a universal statement; apply an implication to an established premise; substitute equals; introduce a fresh arbitrary variable of the required domain; introduce and discharge an implication’s assumption; name a fresh witness supplied by an existential assumption; introduce an existential conclusion using an established witness; and combine completed exhaustive cases.\nUniversal introduction requires that the variable remain arbitrary. A witness named from an existential assumption is local and fresh. A proposed witness for an existential goal requires a value, its domain, and verification of the target predicate. Completing a case argument requires a justification that its cases cover the domain.\nDirect matching convention.\nInstantiating an explicit implication with terms already supplied by its matching premise is B-L. For example, g(f(a)) = g(f(b)) supplies u = f(a), v = f(b) to the defining implication for injectivity of g. No new representation or auxiliary target is needed.\nToolkit use is a separate annotation.\nAn available theorem is not a fourth basic step type. A direct application after its premises are checked can be B-L, while finding that theorem useful can be strategic. Record the theorem and its hypotheses even when the application is basic; its own proof may be substantial.\n04 / CHOICE\nWhat counts as strategic\nDefinition 4 — Strategic step.\nRelative to the declared basic rules, a strategic step selects a candidate representation, intermediate obligation, auxiliary object, parameter, case partition, theorem, or proof method whose usefulness is inferred from a relationship between the current state, the goal, and the toolkit, rather than obtained by direct definition interpretation, canonical calculation, or direct logical matching.\nStrategic role\nWhat is selected\nExample\nRepresentation\nA form exposing useful structure\nRewrite x² − 2xy + y² as (x − y)².\nGoal planning\nA useful intermediate claim or reduction\nSeek an exponential-moment bound to obtain a tail bound.\nConstruction\nA new witness, auxiliary object, or parameter\nChoose k = m + n; introduce an independent copy X′.\nMethod or toolkit selection\nA relevant method or result beyond a directly matching premise\nChoose induction, or recognize that Bernstein’s inequality fits a sum.\nCase selection\nA partition useful for the current goal\nSplit by parity to locate an even factor in n(n + 1).\nThese roles may overlap; they are descriptive tags, not mutually exclusive mathematical species. The principal distinction is the\nselection action\nversus its\nverification actions\n. A strategic candidate can be reasonable and still fail. Record it as exploratory until its validity and remaining obligations are established.\nWhy “already specified” is not enough\nAn author cannot erase a strategic step by writing “now factor” and then calling everything that follows basic. Record where the proposed representation or operation came from. If it was supplied by the problem or an earlier step, link to that instruction; otherwise record the observation motivating its selection here. Verification can then be basic without retrospectively making the choice basic.\nA request to verify a supplied identity and a request to discover a useful identity are therefore different tasks, even when their final algebra is identical. Basic steps can occur anywhere in a proof, including after several strategic choices.\nA consistent classification procedure\nFix the state before the action and the declared basic rules. Separate a proposed choice from the argument checking it.\nFor an execution action, exhibit its B-D, B-C, or B-L rule and inputs. A finite sequence of such instances is a basic block.\nFor a selection action beyond those rules, identify the selected object or method and the relationship motivating it; label that action strategic.\nIf neither description is available, expand the omitted reasoning or leave the classification unresolved. Do not classify an unexplained jump as basic merely because its conclusion is correct.\n05 / MOTIVATION\nAn observation must identify a connection\nDefinition 5 — Motivating observation.\nAn observation names a relevant feature of the current state, a feature required by the goal or a candidate toolkit result, and the relationship that suggests a particular move. It explains the choice; it does not replace a proof of the chosen move.\nTarget:\nWhat form, property, or hypothesis do we need?\nAvailable feature:\nWhat concrete structure do the current expressions or assumptions expose?\nConnection:\nHow would the proposed move use that feature to address the target?\n“The goal asks for twice an integer. In 2m + 2n, both summands contain the required factor 2. Factoring out that shared 2 gives 2(m + n), suggesting the witness k = m + n.”\n“Factor the expression” states an action. “Use a clever trick” states neither the relevant feature nor the connection. The observation above makes the choice inspectable without claiming that it was the only possible choice.\nObservations can also explain basic steps. In the injectivity example, the outer g in the equality matches the premise of g’s defining implication. This is direct logical matching, so the presence of an observation does not by itself imply strategy.\nIf an observation includes a mathematical assertion not yet established, verify that assertion or mark it as a conjecture. A motivation is never an extra assumption available to the proof.\n06 / BACKWARD REASONING\nThree different goal transformations\nDefinition 6 — Goal decomposition.\nReplace G by explicitly related obligations. An AND node requires every child. An OR node permits a child that is itself sufficient. A case split requires all conditional branches and exhaustiveness. A scoped implication goal permits assuming its premise locally; that assumption must later be discharged.\nDecomposition is basic when it directly unpacks a definition or logical connective. Choosing an induction scheme, an auxiliary lemma, or a useful case partition is strategic. In particular, an induction reduction must include its base, step, and the justification that the induction principle covers the claimed domain.\nDefinition 7 — Goal reinterpretation.\nReplace G by a newly represented target H chosen to connect the current state to the toolkit. Record the exact relation under the current context: Γ ⊢ G ⇔ H for an equivalent reformulation, or Γ ⊢ H ⇒ G for a sufficient-condition reduction. Its strategic content is why this target is useful. Equivalence must not be assumed.\nFor real x, y:\nx² + y² ≥ 2xy ⇔ x² − 2xy + y² ≥ 0 ⇔ (x − y)² ≥ 0.\nMoving to a difference and recognizing a square are the motivating choices. Subtraction and expansion verify the equivalences. Square nonnegativity supplies the final fact, which can then be carried back to the original goal.\nDefinition 8 — Sufficient-condition reduction.\nReplace G by an obligation H while recording Γ ⊢ H ⇒ G. The converse is not claimed. H may be stronger than G; proving H is enough, but failing to prove H does not refute G.\nFor Hanson–Wright, a suitable bound on an exponential moment over a specified parameter range supplies a tail bound through exponential Markov and a choice of parameter. This is a sufficient-condition reinterpretation; its precise relation must be recorded as\nsufficient\n, not equivalent.\nSide conditions travel with the edge.\nMultiplication by x preserves an inequality’s direction when x > 0; division requires a nonzero denominator; an MGF estimate may hold only for a restricted parameter. A reduction that drops these conditions is not verified.\nAn infinite domain or unspecified variables can motivate a change of representation, but do not imply that a goal is unsolvable. For example, a universally quantified inequality is meaningful without knowing numerical values of x and y.\n07 / ANNOTATION\nThe record for each move\nEach move should be recoverable from the following fields. A compact basic step may cite its rule and inputs in one sentence. A strategic step must make its motivating connection explicit.\nIdentity & direction\nA step identifier; forward deduction, backward reduction, or an exploratory proposal.\nContext & target\nThe facts, domains, local assumptions, and goal available immediately before the move.\nClassification\nB-D, B-C, B-L, or strategic role(s). Split mixed choices and verification into linked substeps.\nObservation\nThe target feature, available feature, and connection. For a basic step, a direct rule match suffices.\nSelected move & provenance\nThe proposed expression, witness, method, or new obligation; where the choice came from.\nToolkit dependency\nThe exact definition, rule, or named result invoked, including its required hypotheses.\nVerification & relation\nThe calculation or inference validating the move. For goals, label equivalence, sufficiency, AND, OR, or scoped reasoning.\nResult & open obligations\nWhat is now established, what remains to prove, and which earlier steps support it.\nFor a rejected attempt, keep its proposed connection and the reason it failed separate from established facts. A displayed shortcut may compress several verified actions, but must not obscure the strategic selection or an unproved dependency.\n08 / BOUNDARIES\nClassify actions, not just equations\nAction in context\nClassification\nReason\nInterpret “a + b is even” as ∃k ∈ ℤ: a + b = 2k.\nB-D\nDirect expansion of the target definition.\nSubstitute a = 2m and b = 2n to get 2m + 2n.\nB-C\nUse established equalities.\nNotice the common 2 and choose 2(m + n) to match 2k.\nStrategic\nSelect a representation and a candidate witness.\nExpand 2(m + n), verify m + n ∈ ℤ, and use the witness.\nB-C, then B-L\nVerify the choice; cite integer closure as a toolkit fact.\nChoose x² + y² = (x − y)² + 2xy to expose a nonnegative term.\nStrategic\nThe useful square is reverse-engineered from the target.\nCheck that identity by expanding its proposed right side.\nB-C\nDirect verification of an explicit candidate.\nChoose even/odd cases to find an even factor in n(n + 1).\nStrategic\nSelect a partition whose branches expose the needed factor.\nHaving proved both parity cases and exhaustiveness, conclude the statement for all integers.\nB-L\nCombine established cases.\nA proof with no separate strategic step\nSuppose f: A → B and g: B → C are injective. Unpack the target, take arbitrary a, b ∈ A, and assume g(f(a)) = g(f(b)). Since f(a), f(b) ∈ B, the expanded injectivity of g yields f(a) = f(b). The expanded injectivity of f yields a = b. Discharge the assumption and generalize.\nUnder the default direct-matching convention, this sequence uses definitions and elementary logic throughout. The order is explained by the outer function in the current equality. No additional representation, auxiliary object, or goal is needed.\nA strategic move with a basic verification\nFor x > 0, consider x + 1/x ≥ 2. The reciprocal has denominator x, and the given positivity permits clearing it while preserving the inequality. That observation motivates the strategic choice to multiply by x. Computing the products and checking positivity are basic verification. Recognizing the resulting difference x² − 2x + 1 as (x − 1)² is another strategic choice, followed by basic expansion and application of square nonnegativity.\nThe classification does not depend on whether a reader recognizes the square instantly. Nor does it claim that every valid proof must use that representation.\n09 / COMPLETION\nWhen the explanation is complete\nThe two maps meet when an established forward result satisfies an open goal under the same domain, assumptions, and side conditions. Matching surface notation is insufficient: parameter ranges, quantifiers, constants, and dependencies must also match or be connected by a verified inference.\nEvery strategic choice used in the final argument has an explicit motivating observation and a completed verification. Unresolved explorations remain outside its chain of support.\nEvery basic step identifies a permitted rule and valid inputs; every toolkit call has its hypotheses checked.\nEvery goal edge records the correct logical relationship. All required branches and side conditions are discharged.\nNo open goal is used as an established fact, and no conclusion depends circularly on itself.\nThe ultimate claim follows from the original assumptions. A linear written proof can present the verified dependencies in a valid order.\nThis protocol specifies what an explanation must expose. It does not yet supply a numerical measure of “strategic gap,” an automatic classifier, or a machine-checked foundation for every toolkit theorem. Those are separate research tasks. Its present commitment is a traceable distinction between\nwhy a move was selected\nand\nwhy that move is valid\n.\nExplore the Hanson–Wright example →\n\nTHE PRIORITY RULE\nBasic first. Observe when blocked.\nUse direct definitions, calculations, and logic as far as they address the current goal. When they leave a gap, identify a relationship that suggests a new target. Verify the reduction, then return to basic steps. Repeat if another gap remains.\n“Stuck” is local to the current representation and allowed basic moves. It does not mean the theorem is unprovable. The observation proposes a route; verification establishes that it works.\nRead the finished proof\nSince a and b are even, write a = 2m and b = 2n for integers m,n. Then a + b = 2m + 2n = 2(m + n). Since m + n is an integer, a + b is even. □\nThe short proof compresses the choice of a useful representation. The graph exposes that choice and its motivation.\nThree node types, two directions\nFact:\nan assumption or a verified statement, with its domain and dependencies.\nGoal:\na statement still needed; it closes when verified facts establish it.\nObservation:\nan explicit match between a feature we have and a feature we need. It suggests a move but is not a proof edge.\nThe forward graph records deductions. The backward graph records sufficient obligations. Direction and node type are separate: basic steps can occur in either graph.\nRead the detailed definitions and boundary rules →"
+    }
+  },
+  "experiment": {
+    "input_id": "lemma_2_7_8",
+    "url": "https://lisay1379.github.io/proof_assistant_lab/reports/control_vs_rag/test_3node_rag_2/comparison_viewer.html#case-lemma_2_7_8",
+    "baseline": "Final Library-RAG answer",
+    "control_proof": "Let the subgaussian norm be\n\\[\n\\|Y\\|_{\\psi_2}:=\\inf\\left\\{t>0:\\ \\mathbb E\\exp\\!\\left(\\frac{Y^2}{t^2}\\right)\\le 2\\right\\}.\n\\]\n\nSet \\(K=\\|X\\|_{\\psi_2}\\). More precisely, take any \\(t>K\\) such that\n\\[\n\\mathbb E e^{X^2/t^2}\\le 2.\n\\]\nBy Jensen’s inequality,\n\\[\ne^{(\\mathbb EX)^2/t^2}\n\\le \\mathbb E e^{X^2/t^2}\n\\le 2.\n\\]\nUsing \\((X-\\mathbb EX)^2\\le 2X^2+2(\\mathbb EX)^2\\), we obtain\n\\[\n\\begin{aligned}\n\\mathbb E\\exp\\left(\\frac{(X-\\mathbb EX)^2}{4t^2}\\right)\n&\\le\n\\exp\\left(\\frac{(\\mathbb EX)^2}{2t^2}\\right)\n\\mathbb E\\exp\\left(\\frac{X^2}{2t^2}\\right)\\\\\n&\\le\n\\left(e^{(\\mathbb EX)^2/t^2}\\right)^{1/2}\n\\left(\\mathbb E e^{X^2/t^2}\\right)^{1/2}\\\\\n&\\le \\sqrt2\\,\\sqrt2=2,\n\\end{aligned}\n\\]\nwhere the second factor is bounded using Cauchy–Schwarz (or concavity of \\(u^{1/2}\\)).\n\nThus \\(2t\\) is admissible in the definition of \\(\\|X-\\mathbb EX\\|_{\\psi_2}\\), so\n\\[\n\\|X-\\mathbb EX\\|_{\\psi_2}\\le 2t.\n\\]\nLetting \\(t\\downarrow K\\) gives\n\\[\n\\boxed{\\|X-\\mathbb EX\\|_{\\psi_2}\\le 2\\|X\\|_{\\psi_2}}.\n\\]\nHence the theorem holds with the absolute constant \\(C=2\\).",
+    "comparison_diff": "No textual changes: the control and Library-RAG answers are identical.",
+    "model": "gpt-5.6-sol",
+    "source_sha256": "cd56baeee38c23cf21a1c952cadb219242594231aa4d6dab8cbc4af406d83bd5",
+    "note": "The original edition is the exact saved final Library-RAG answer. Expanded explanations, protocol annotations, and ablations were added for this collection; they were not produced by the original experiment. The existing Hanson–Wright explorer is a related reference proof, not necessarily this run’s exact answer."
+  },
+  "metadata": {
+    "origin": "Curated expansion of the saved Library-RAG proof. Alternatives are worked analyses, not logged discovery attempts.",
+    "authoring": "Local editorial reconstruction; no new external model-generation calls.",
+    "source_run": "test_3node_rag_2",
+    "slug": "centering"
+  }
+}

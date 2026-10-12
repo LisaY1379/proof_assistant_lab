@@ -1,0 +1,1354 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-12T15:47:18.304016+00:00",
+  "scope": "Saved five-explorer annotations; descriptive, non-independent comparison; no new search run.",
+  "definitions": {
+    "I": "Saved AI selection, not ground truth or a human difficulty score.",
+    "U": "No recorded worked replacement under the saved restriction, not certified impossibility."
+  },
+  "summary": {
+    "total": 34,
+    "ai_selected": 8,
+    "flagged": 7,
+    "both": 4,
+    "ai_only": 4,
+    "ablation_only": 3,
+    "neither": 23,
+    "jaccard": 0.36363636363636365,
+    "captured": 0.5,
+    "flagged_selected": 0.5714285714285714,
+    "ai_keys": [
+      "centering:a3",
+      "covariance:a2",
+      "covariance:a3",
+      "dimension-reduction:a2",
+      "dimension-reduction:a3",
+      "hanson-wright:decouple",
+      "slepian:a2",
+      "slepian:a3"
+    ],
+    "flagged_keys": [
+      "covariance:a3",
+      "dimension-reduction:a3",
+      "hanson-wright:expand",
+      "slepian:a2",
+      "slepian:a3",
+      "slepian:a4",
+      "slepian:a5"
+    ],
+    "both_keys": [
+      "covariance:a3",
+      "dimension-reduction:a3",
+      "slepian:a2",
+      "slepian:a3"
+    ]
+  },
+  "source_filtered": {
+    "total": 34,
+    "ai_selected": 8,
+    "flagged": 10,
+    "both": 6,
+    "ai_only": 2,
+    "ablation_only": 4,
+    "neither": 22,
+    "jaccard": 0.5,
+    "captured": 0.75,
+    "flagged_selected": 0.6,
+    "ai_keys": [
+      "centering:a3",
+      "covariance:a2",
+      "covariance:a3",
+      "dimension-reduction:a2",
+      "dimension-reduction:a3",
+      "hanson-wright:decouple",
+      "slepian:a2",
+      "slepian:a3"
+    ],
+    "flagged_keys": [
+      "covariance:a3",
+      "dimension-reduction:a1",
+      "dimension-reduction:a2",
+      "dimension-reduction:a3",
+      "hanson-wright:decouple",
+      "hanson-wright:expand",
+      "slepian:a2",
+      "slepian:a3",
+      "slepian:a4",
+      "slepian:a5"
+    ],
+    "both_keys": [
+      "covariance:a3",
+      "dimension-reduction:a2",
+      "dimension-reduction:a3",
+      "hanson-wright:decouple",
+      "slepian:a2",
+      "slepian:a3"
+    ]
+  },
+  "narrow_slepian_density_only": {
+    "total": 34,
+    "ai_selected": 8,
+    "flagged": 6,
+    "both": 3,
+    "ai_only": 5,
+    "ablation_only": 3,
+    "neither": 23,
+    "jaccard": 0.2727272727272727,
+    "captured": 0.375,
+    "flagged_selected": 0.5,
+    "ai_keys": [
+      "centering:a3",
+      "covariance:a2",
+      "covariance:a3",
+      "dimension-reduction:a2",
+      "dimension-reduction:a3",
+      "hanson-wright:decouple",
+      "slepian:a2",
+      "slepian:a3"
+    ],
+    "flagged_keys": [
+      "covariance:a3",
+      "dimension-reduction:a3",
+      "hanson-wright:expand",
+      "slepian:a3",
+      "slepian:a4",
+      "slepian:a5"
+    ],
+    "both_keys": [
+      "covariance:a3",
+      "dimension-reduction:a3",
+      "slepian:a3"
+    ]
+  },
+  "proofs": [
+    {
+      "id": "hanson-wright",
+      "title": "Hanson–Wright",
+      "page": "../../reference-state.html",
+      "selected": [
+        "decouple"
+      ],
+      "rationale": "Decoupling is the central conceptual bridge in this proof: it turns dependent quadratic cross terms into a bilinear form with independent inputs. Conditioning on one input then makes the other a linear form, so the prepared subgaussian bound becomes usable.",
+      "selection_provenance": "Selected by a dedicated LLM agent for this reading edition, 11 October 2026.",
+      "blinded_selection_established": false
+    },
+    {
+      "id": "covariance",
+      "title": "Covariance estimation",
+      "page": "../covariance.html",
+      "selected": [
+        "a2",
+        "a3"
+      ],
+      "rationale": "Scalar concentration and uniformization supply the rate. In the candidates checked here, Frobenius control loses √r; a direct-coordinate proof removes whitening at the same n-rate. No net-free impossibility or measured search lower bound is claimed.",
+      "selection_provenance": "Editorial AI selection authored with knowledge of these ablations; no independent blinded selection call is recorded.",
+      "blinded_selection_established": false
+    },
+    {
+      "id": "dimension-reduction",
+      "title": "Dimension reduction for Boolean functions",
+      "page": "../dimension-reduction.html",
+      "selected": [
+        "a2",
+        "a3"
+      ],
+      "rationale": "Exponential concentration and simultaneous control are the two structural moves. The literature-assisted Bernoulli alternative improves the ε rate, so additive Hoeffding is replaceable. Merely analyzing one pair or using Chebyshev does not meet the requested guarantee.",
+      "selection_provenance": "Editorial AI selection authored with knowledge of these ablations; no independent blinded selection call is recorded.",
+      "blinded_selection_established": false
+    },
+    {
+      "id": "slepian",
+      "title": "Slepian’s inequality",
+      "page": "../slepian.html",
+      "selected": [
+        "a2",
+        "a3"
+      ],
+      "rationale": "The interpolation bridge and the orthant test supply the full stochastic comparison. The broad interpolation ban has no successful replacement among the candidates studied. A density-free integration-by-parts derivation still uses interpolation and therefore is not a success under that ban.",
+      "selection_provenance": "Editorial AI selection authored with knowledge of these ablations; no independent blinded selection call is recorded.",
+      "blinded_selection_established": false
+    },
+    {
+      "id": "centering",
+      "title": "Centering a subgaussian variable",
+      "page": "../centering.html",
+      "selected": [
+        "a3"
+      ],
+      "rationale": "The main local choice controls a centered exponential moment. Orlicz convexity replaces the square split at the same constant; a second-moment route replaces the mean estimate at a worse constant. These successful alternatives give no basis to claim an irreplaceable discovery bottleneck.",
+      "selection_provenance": "Editorial AI selection authored with knowledge of these ablations; no independent blinded selection call is recorded.",
+      "blinded_selection_established": false
+    }
+  ],
+  "steps": [
+    {
+      "proof": "hanson-wright",
+      "proof_title": "Hanson–Wright",
+      "action": "sign",
+      "title": "One tail is enough to work on.",
+      "ai_selected": false,
+      "restriction": "No upper-tail/sign-reversal strategy.",
+      "successful_replacements": [
+        {
+          "title": "Absolute moments instead of sign reversal",
+          "outcome": "closed",
+          "origin": "model_proposed",
+          "cost": "Sign reversal reuses the same upper-tail argument. The replacement constructs all even moments and chooses a moment order; both recover the target norm scales.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Absolute moments instead of sign reversal",
+          "outcome": "worked"
+        }
+      ],
+      "sources": [],
+      "family": "absolute-moments",
+      "cost": "Sign reversal reuses the same upper-tail argument. The replacement constructs all even moments and chooses a moment order; both recover the target norm scales.",
+      "source_file": "proposals/hanson_wright_sign_ablation.md",
+      "source_status": "Curated worked notes; not measured search results. compute permits checkpoint reuse; other displayed main replacements replan globally.",
+      "key": "hanson-wright:sign",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "neither"
+    },
+    {
+      "proof": "hanson-wright",
+      "proof_title": "Hanson–Wright",
+      "action": "expand",
+      "title": "Read the quadratic form coordinate by coordinate.",
+      "ai_selected": false,
+      "restriction": "No diagonal/off-diagonal separation anywhere in the replacement proof.",
+      "successful_replacements": [],
+      "alternatives": [
+        {
+          "title": "Whole-form polarization",
+          "outcome": "unresolved"
+        },
+        {
+          "title": "Treat sum and difference as independent",
+          "outcome": "invalid"
+        }
+      ],
+      "sources": [],
+      "family": "polarization",
+      "cost": "The available polarization bound is CK²‖A‖(n+p), too coarse compared with CK²(√p‖A‖F+p‖A‖). This is loss of estimate quality, not measured computational explosion.",
+      "source_file": "proposals/hanson_wright_ablations/02-expand.md",
+      "source_status": "Curated worked notes; not measured search results. compute permits checkpoint reuse; other displayed main replacements replan globally.",
+      "key": "hanson-wright:expand",
+      "no_worked_replacement": true,
+      "no_unattributed_replacement": true,
+      "alignment": "ablation_only"
+    },
+    {
+      "proof": "hanson-wright",
+      "proof_title": "Hanson–Wright",
+      "action": "split",
+      "title": "Give the two kinds of terms different jobs.",
+      "ai_selected": false,
+      "restriction": "No D/S deviation-event split or allocation of thresholds. Algebraic Q=D+S remains allowed.",
+      "successful_replacements": [
+        {
+          "title": "Combine MGFs before taking tails",
+          "outcome": "closed",
+          "origin": "model_proposed",
+          "cost": "Schwarz combines MGFs at 2λ, halving the common admissible domain and changing universal constants. The two norm scales are retained; D and S need not be independent.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Combine MGFs before taking tails",
+          "outcome": "worked"
+        },
+        {
+          "title": "Factor the D/S MGF",
+          "outcome": "invalid"
+        }
+      ],
+      "sources": [],
+      "family": "whole-form-mgf",
+      "cost": "Schwarz combines MGFs at 2λ, halving the common admissible domain and changing universal constants. The two norm scales are retained; D and S need not be independent.",
+      "source_file": "proposals/hanson_wright_ablations/03-split.md",
+      "source_status": "Curated worked notes; not measured search results. compute permits checkpoint reuse; other displayed main replacements replan globally.",
+      "key": "hanson-wright:split",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "neither"
+    },
+    {
+      "proof": "hanson-wright",
+      "proof_title": "Hanson–Wright",
+      "action": "bernstein",
+      "title": "Close the diagonal branch with Bernstein.",
+      "ai_selected": false,
+      "restriction": "No diagonal Bernstein or reconstruction of its exponential-MGF/Chernoff mechanism.",
+      "successful_replacements": [
+        {
+          "title": "Even-power coefficients replace Bernstein",
+          "outcome": "closed",
+          "origin": "model_proposed",
+          "cost": "The coefficient replacement requires even-power bookkeeping and a radius choice. It retains cancellation from centering and the two norm scales; a termwise triangle bound loses them.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Even-power coefficients replace Bernstein",
+          "outcome": "worked"
+        },
+        {
+          "title": "Triangle inequality term by term",
+          "outcome": "insufficient"
+        }
+      ],
+      "sources": [],
+      "family": "absolute-moments",
+      "cost": "The coefficient replacement requires even-power bookkeeping and a radius choice. It retains cancellation from centering and the two norm scales; a termwise triangle bound loses them.",
+      "source_file": "proposals/hanson_wright_ablations/04-bernstein.md",
+      "source_status": "Curated worked notes; not measured search results. compute permits checkpoint reuse; other displayed main replacements replan globally.",
+      "key": "hanson-wright:bernstein",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "neither"
+    },
+    {
+      "proof": "hanson-wright",
+      "proof_title": "Hanson–Wright",
+      "action": "exponential",
+      "title": "Ask for an exponential moment instead of a tail.",
+      "ai_selected": false,
+      "restriction": "No quadratic/bilinear MGF or Chernoff route, including cosh disguises. Scalar linear tools and Gaussian norm concentration remain allowed.",
+      "successful_replacements": [
+        {
+          "title": "Even moments replace quadratic MGFs",
+          "outcome": "closed",
+          "origin": "model_proposed",
+          "cost": "The replacement must establish bounds at all even orders, rather than just the variance. It trades quadratic MGFs for coefficient, selector, and vector-moment arguments.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Even moments replace quadratic MGFs",
+          "outcome": "worked"
+        },
+        {
+          "title": "Use only the variance",
+          "outcome": "insufficient"
+        }
+      ],
+      "sources": [],
+      "family": "absolute-moments",
+      "cost": "The replacement must establish bounds at all even orders, rather than just the variance. It trades quadratic MGFs for coefficient, selector, and vector-moment arguments.",
+      "source_file": "proposals/hanson_wright_ablations/05-exponential.md",
+      "source_status": "Curated worked notes; not measured search results. compute permits checkpoint reuse; other displayed main replacements replan globally.",
+      "key": "hanson-wright:exponential",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "neither"
+    },
+    {
+      "proof": "hanson-wright",
+      "proof_title": "Hanson–Wright",
+      "action": "linear",
+      "title": "Prepare the linear-form bound.",
+      "ai_selected": false,
+      "restriction": "No non-Gaussian linear-MGF factorization/comparison, including hidden uses in toolkit lemmas.",
+      "successful_replacements": [
+        {
+          "title": "Symmetric even-moment comparison",
+          "outcome": "closed",
+          "origin": "model_proposed",
+          "cost": "Symmetrization and comparison of even coefficients replace MGF factorization. The sharp √p‖v‖₂ dependence is retained; crude norm inequalities can lose √n or √p.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Symmetric even-moment comparison",
+          "outcome": "worked"
+        },
+        {
+          "title": "Use a coordinate triangle bound",
+          "outcome": "insufficient"
+        }
+      ],
+      "sources": [],
+      "family": "symmetric-linear-moments",
+      "cost": "Symmetrization and comparison of even coefficients replace MGF factorization. The sharp √p‖v‖₂ dependence is retained; crude norm inequalities can lose √n or √p.",
+      "source_file": "proposals/hanson_wright_ablations/06-linear.md",
+      "source_status": "Curated worked notes; not measured search results. compute permits checkpoint reuse; other displayed main replacements replan globally.",
+      "key": "hanson-wright:linear",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "neither"
+    },
+    {
+      "proof": "hanson-wright",
+      "proof_title": "Hanson–Wright",
+      "action": "decouple",
+      "title": "Make one side possible to hold fixed.",
+      "ai_selected": true,
+      "restriction": "No independent-copy bilinear comparison, selectors, random cuts, or equivalent block decoupling.",
+      "successful_replacements": [
+        {
+          "title": "Replace individual coordinates",
+          "outcome": "closed",
+          "origin": "literature_assisted",
+          "cost": "The alternative performs n coordinate comparisons and still uses Gaussian MGF control, with ‖H‖≤2‖A‖. This is proof-construction work, not a count of search calls or a demonstrated cost increase.",
+          "source_ids": [
+            "hw-source"
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Replace individual coordinates",
+          "outcome": "worked"
+        },
+        {
+          "title": "Rotate X directly",
+          "outcome": "invalid"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Ingvar Ziemann · An Elementary Proof of The Hanson-Wright Inequality (2025), §2",
+          "url": "https://arxiv.org/html/2509.00881v1#S2"
+        }
+      ],
+      "family": "coordinate-gaussianization",
+      "cost": "The alternative performs n coordinate comparisons and still uses Gaussian MGF control, with ‖H‖≤2‖A‖. This is proof-construction work, not a count of search calls or a demonstrated cost increase.",
+      "source_file": "proposals/hanson_wright_ablations/07-decouple.md",
+      "source_status": "Curated worked notes; not measured search results. compute permits checkpoint reuse; other displayed main replacements replan globally.",
+      "key": "hanson-wright:decouple",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": true,
+      "alignment": "ai_only"
+    },
+    {
+      "proof": "hanson-wright",
+      "proof_title": "Hanson–Wright",
+      "action": "gaussian",
+      "title": "Recognize a Gaussian formula inside the bound.",
+      "ai_selected": false,
+      "restriction": "No Gaussian quadratic/bilinear MGF comparison. Gaussian projection and Lipschitz norm concentration remain allowed; the all-Gaussian-tools ban is unresolved.",
+      "successful_replacements": [
+        {
+          "title": "Vector moments replace Gaussian MGF comparison",
+          "outcome": "closed",
+          "origin": "model_proposed",
+          "cost": "The moment route replaces Gaussian bilinear MGFs with Gaussian projection and Lipschitz norm concentration. It retains the norm scales and still uses Gaussian tools.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Vector moments replace Gaussian MGF comparison",
+          "outcome": "worked"
+        },
+        {
+          "title": "Use coordinate Gaussianization",
+          "outcome": "inadmissible"
+        },
+        {
+          "title": "Cite a PSD upper-tail bound",
+          "outcome": "insufficient"
+        }
+      ],
+      "sources": [],
+      "family": "absolute-moments",
+      "cost": "The moment route replaces Gaussian bilinear MGFs with Gaussian projection and Lipschitz norm concentration. It retains the norm scales and still uses Gaussian tools.",
+      "source_file": "proposals/hanson_wright_ablations/08-gaussian.md",
+      "source_status": "Curated worked notes; not measured search results. compute permits checkpoint reuse; other displayed main replacements replan globally.",
+      "key": "hanson-wright:gaussian",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "neither"
+    },
+    {
+      "proof": "hanson-wright",
+      "proof_title": "Hanson–Wright",
+      "action": "replace",
+      "title": "Carry out the two Gaussian replacements.",
+      "ai_selected": false,
+      "restriction": "Same global Gaussian-MGF comparison ban as gaussian, including one-coordinate replacements. Broader removal of all Gaussian tools remains unresolved.",
+      "successful_replacements": [
+        {
+          "title": "Bypass the Gaussian replacement chain",
+          "outcome": "closed",
+          "origin": "model_proposed",
+          "cost": "This is the same moment-route replacement as the preceding Gaussian-goal action, not a separate discovery. Norm-moment control and a moment-order choice replace the MGF comparison chain.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Bypass the Gaussian replacement chain",
+          "outcome": "worked"
+        },
+        {
+          "title": "Replace only one vector",
+          "outcome": "inadmissible"
+        }
+      ],
+      "sources": [],
+      "family": "absolute-moments",
+      "cost": "This is the same moment-route replacement as the preceding Gaussian-goal action, not a separate discovery. Norm-moment control and a moment-order choice replace the MGF comparison chain.",
+      "source_file": "proposals/hanson_wright_ablations/09-replace.md",
+      "source_status": "Curated worked notes; not measured search results. compute permits checkpoint reuse; other displayed main replacements replan globally.",
+      "key": "hanson-wright:replace",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "neither"
+    },
+    {
+      "proof": "hanson-wright",
+      "proof_title": "Hanson–Wright",
+      "action": "rotate",
+      "title": "Rotate until the matrix exposes independent products.",
+      "ai_selected": false,
+      "restriction": "No matrix spectral diagonalization, including equivalent eigenvalue, determinant, or hidden toolkit reductions.",
+      "successful_replacements": [
+        {
+          "title": "Lipschitz norm control without SVD",
+          "outcome": "closed",
+          "origin": "model_proposed",
+          "cost": "Gaussian Lipschitz concentration and a coordinate second-moment identity replace SVD. This changes the required toolkit while preserving the Frobenius and operator scales.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Lipschitz norm control without SVD",
+          "outcome": "worked"
+        },
+        {
+          "title": "Bound by ‖B‖‖g‖₂",
+          "outcome": "insufficient"
+        }
+      ],
+      "sources": [],
+      "family": "absolute-moments",
+      "cost": "Gaussian Lipschitz concentration and a coordinate second-moment identity replace SVD. This changes the required toolkit while preserving the Frobenius and operator scales.",
+      "source_file": "proposals/hanson_wright_ablations/10-rotate.md",
+      "source_status": "Curated worked notes; not measured search results. compute permits checkpoint reuse; other displayed main replacements replan globally.",
+      "key": "hanson-wright:rotate",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "neither"
+    },
+    {
+      "proof": "hanson-wright",
+      "proof_title": "Hanson–Wright",
+      "action": "compute",
+      "title": "Compute the scalar MGF and its domain.",
+      "ai_selected": false,
+      "restriction": "No exact Gaussian product/square MGF, determinant evaluation, or resummation to the same closed form.",
+      "successful_replacements": [
+        {
+          "title": "Bound coefficients instead of evaluating the MGF",
+          "outcome": "rejoined",
+          "origin": "model_proposed",
+          "cost": "A recurrence and geometric majorant control the entire series without exact evaluation. The original bound and parameter domain are recovered, permitting a checkpoint rejoin.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Bound coefficients instead of evaluating the MGF",
+          "outcome": "worked"
+        },
+        {
+          "title": "Truncate after the quadratic term",
+          "outcome": "invalid"
+        }
+      ],
+      "sources": [],
+      "family": "coefficient-majorant",
+      "cost": "A recurrence and geometric majorant control the entire series without exact evaluation. The original bound and parameter domain are recovered, permitting a checkpoint rejoin.",
+      "source_file": "proposals/hanson_wright_ablations/11-compute.md",
+      "source_status": "Curated worked notes; not measured search results. compute permits checkpoint reuse; other displayed main replacements replan globally.",
+      "key": "hanson-wright:compute",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "neither"
+    },
+    {
+      "proof": "hanson-wright",
+      "proof_title": "Hanson–Wright",
+      "action": "meet",
+      "title": "The derived MGF meets the requested MGF.",
+      "ai_selected": false,
+      "restriction": "No closure through the original quadratic-MGF comparison chain, including inlining it. Basic substitution and transitivity remain allowed.",
+      "successful_replacements": [
+        {
+          "title": "Meet at a moment goal instead",
+          "outcome": "closed",
+          "origin": "model_proposed",
+          "cost": "The alternative assembles moments with Minkowski and closes a different checkpoint. It reuses the full moment route; it does not remove basic logical assembly.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Meet at a moment goal instead",
+          "outcome": "worked"
+        },
+        {
+          "title": "Drop the parameter cutoff",
+          "outcome": "invalid"
+        },
+        {
+          "title": "Inline the same chain into optimize",
+          "outcome": "inadmissible"
+        }
+      ],
+      "sources": [],
+      "family": "absolute-moments",
+      "cost": "The alternative assembles moments with Minkowski and closes a different checkpoint. It reuses the full moment route; it does not remove basic logical assembly.",
+      "source_file": "proposals/hanson_wright_ablations/12-meet.md",
+      "source_status": "Curated worked notes; not measured search results. compute permits checkpoint reuse; other displayed main replacements replan globally.",
+      "key": "hanson-wright:meet",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "neither"
+    },
+    {
+      "proof": "hanson-wright",
+      "proof_title": "Hanson–Wright",
+      "action": "optimize",
+      "title": "Balance the exponent, respecting the cutoff.",
+      "ai_selected": false,
+      "restriction": "No threshold-dependent Chernoff-parameter tuning. A threshold-dependent moment order remains allowed.",
+      "successful_replacements": [
+        {
+          "title": "Choose an even moment order",
+          "outcome": "closed",
+          "origin": "model_proposed",
+          "cost": "Choosing p=2⌊αq/2⌋ replaces tuning λ. Scale-dependent parameter selection remains, with even rounding and small-q handling; no discovery-cost comparison is available.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Choose an even moment order",
+          "outcome": "worked"
+        },
+        {
+          "title": "Use fixed λ proportional to 1/L",
+          "outcome": "insufficient"
+        },
+        {
+          "title": "Use λ proportional to t/V everywhere",
+          "outcome": "invalid"
+        },
+        {
+          "title": "Use λ=ct/(V+Lt)",
+          "outcome": "inadmissible"
+        }
+      ],
+      "sources": [],
+      "family": "absolute-moments",
+      "cost": "Choosing p=2⌊αq/2⌋ replaces tuning λ. Scale-dependent parameter selection remains, with even rounding and small-q handling; no discovery-cost comparison is available.",
+      "source_file": "proposals/hanson_wright_ablations/13-optimize.md",
+      "source_status": "Curated worked notes; not measured search results. compute permits checkpoint reuse; other displayed main replacements replan globally.",
+      "key": "hanson-wright:optimize",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "neither"
+    },
+    {
+      "proof": "hanson-wright",
+      "proof_title": "Hanson–Wright",
+      "action": "finish",
+      "title": "Both branches reach the original endpoint.",
+      "ai_selected": false,
+      "restriction": "No four-tail D/S/sign union and prefactor absorption. Basic final inference remains allowed.",
+      "successful_replacements": [
+        {
+          "title": "Combine transforms, then take two tails",
+          "outcome": "closed",
+          "origin": "model_proposed",
+          "cost": "Combining D and S before taking tails produces two probability terms rather than four, giving prefactor 2 directly. This requires upstream MGF estimates, not just the original tail bounds.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Combine transforms, then take two tails",
+          "outcome": "worked"
+        },
+        {
+          "title": "Change the prefactor 4 to 2",
+          "outcome": "invalid"
+        }
+      ],
+      "sources": [],
+      "family": "whole-form-mgf",
+      "cost": "Combining D and S before taking tails produces two probability terms rather than four, giving prefactor 2 directly. This requires upstream MGF estimates, not just the original tail bounds.",
+      "source_file": "proposals/hanson_wright_ablations/14-finish.md",
+      "source_status": "Curated worked notes; not measured search results. compute permits checkpoint reuse; other displayed main replacements replan globally.",
+      "key": "hanson-wright:finish",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "neither"
+    },
+    {
+      "proof": "covariance",
+      "proof_title": "Covariance estimation",
+      "action": "a1",
+      "title": "Plan an isotropic lemma and a transport argument",
+      "ai_selected": false,
+      "restriction": "Globally forbid reducing X to an isotropic auxiliary random vector or proving an isotropic auxiliary covariance theorem.",
+      "successful_replacements": [
+        {
+          "title": "Work in the original coordinates",
+          "outcome": "closed",
+          "origin": "model_proposed",
+          "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n; no measured discovery-cost comparison.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Work in the original coordinates",
+          "outcome": "closed"
+        }
+      ],
+      "sources": [],
+      "family": null,
+      "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n; no measured discovery-cost comparison.",
+      "source_file": "tools/proof_explorer/collection/data/covariance.json",
+      "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
+      "key": "covariance:a1",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "neither"
+    },
+    {
+      "proof": "covariance",
+      "proof_title": "Covariance estimation",
+      "action": "a2",
+      "title": "Control a fixed quadratic form",
+      "ai_selected": true,
+      "restriction": "Globally forbid invoking scalar Bernstein as a black-box theorem. Deriving its exponential-moment mechanism is allowed; this is a toolkit-call ablation, not a removal of exponential concentration.",
+      "successful_replacements": [
+        {
+          "title": "Derive the scalar MGF bound from moments",
+          "outcome": "closed",
+          "origin": "model_proposed",
+          "cost": "Same rate; substantially more algebra. The mechanism is equivalent to Bernstein, so this does not establish conceptual dispensability.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Derive the scalar MGF bound from moments",
+          "outcome": "closed"
+        }
+      ],
+      "sources": [],
+      "family": null,
+      "cost": "Same rate; substantially more algebra. The mechanism is equivalent to Bernstein, so this does not establish conceptual dispensability.",
+      "source_file": "tools/proof_explorer/collection/data/covariance.json",
+      "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
+      "key": "covariance:a2",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "ai_only"
+    },
+    {
+      "proof": "covariance",
+      "proof_title": "Covariance estimation",
+      "action": "a3",
+      "title": "Pass from one direction to a finite net",
+      "ai_selected": true,
+      "restriction": "Globally forbid finite sphere nets or discretizations of directions, including disguised covering arguments.",
+      "successful_replacements": [],
+      "alternatives": [
+        {
+          "title": "Replace the operator norm by the Frobenius norm",
+          "outcome": "failed"
+        },
+        {
+          "title": "Try a net-free matrix-moment theorem",
+          "outcome": "unresolved"
+        }
+      ],
+      "sources": [],
+      "family": null,
+      "cost": "Finite calculation, but a √r loss in the leading dimension term. This is failure of the requested rate, not infinite search. | A stronger matrix toolkit may work; its complete bound and cost have not been established.",
+      "source_file": "tools/proof_explorer/collection/data/covariance.json",
+      "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
+      "key": "covariance:a3",
+      "no_worked_replacement": true,
+      "no_unattributed_replacement": true,
+      "alignment": "both"
+    },
+    {
+      "proof": "covariance",
+      "proof_title": "Covariance estimation",
+      "action": "a4",
+      "title": "Integrate the matrix tail",
+      "ai_selected": false,
+      "restriction": "Globally forbid obtaining E‖A‖ by integrating or summing probabilities of the operator-norm tail. Scalar moment estimates remain permitted.",
+      "successful_replacements": [
+        {
+          "title": "Control a finite maximum in Lp",
+          "outcome": "closed",
+          "origin": "model_proposed",
+          "cost": "Same rate, with an extra p≈r optimization. This still uses the finite-net mechanism.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Control a finite maximum in Lp",
+          "outcome": "closed"
+        }
+      ],
+      "sources": [],
+      "family": null,
+      "cost": "Same rate, with an extra p≈r optimization. This still uses the finite-net mechanism.",
+      "source_file": "tools/proof_explorer/collection/data/covariance.json",
+      "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
+      "key": "covariance:a4",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "neither"
+    },
+    {
+      "proof": "covariance",
+      "proof_title": "Covariance estimation",
+      "action": "a5",
+      "title": "Whiten only on the covariance range",
+      "ai_selected": false,
+      "restriction": "Globally forbid whitening X or using an inverse or pseudoinverse square root of Σ.",
+      "successful_replacements": [
+        {
+          "title": "Work in the original coordinates",
+          "outcome": "closed",
+          "origin": "model_proposed",
+          "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n; no measured discovery-cost comparison.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Work in the original coordinates",
+          "outcome": "closed"
+        }
+      ],
+      "sources": [],
+      "family": null,
+      "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n; no measured discovery-cost comparison.",
+      "source_file": "tools/proof_explorer/collection/data/covariance.json",
+      "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
+      "key": "covariance:a5",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "neither"
+    },
+    {
+      "proof": "covariance",
+      "proof_title": "Covariance estimation",
+      "action": "a6",
+      "title": "Transport the norm bound and close the proof",
+      "ai_selected": false,
+      "restriction": "Globally forbid bounding the covariance error through the sandwich Σ¹ᐟ²AΣ¹ᐟ² and a product of three operator norms.",
+      "successful_replacements": [
+        {
+          "title": "Work in the original coordinates",
+          "outcome": "closed",
+          "origin": "model_proposed",
+          "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n; no measured discovery-cost comparison.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Work in the original coordinates",
+          "outcome": "closed"
+        }
+      ],
+      "sources": [],
+      "family": null,
+      "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n; no measured discovery-cost comparison.",
+      "source_file": "tools/proof_explorer/collection/data/covariance.json",
+      "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
+      "key": "covariance:a6",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "neither"
+    },
+    {
+      "proof": "dimension-reduction",
+      "proof_title": "Dimension reduction for Boolean functions",
+      "action": "a1",
+      "title": "Encode pairwise distances by bounded samples",
+      "ai_selected": false,
+      "restriction": "Globally forbid the additive bounded-square route using centered Yi=(f−g)²−E(f−g)² and Hoeffding. Direct disagreement counts are permitted.",
+      "successful_replacements": [
+        {
+          "title": "Count Bernoulli disagreements",
+          "outcome": "closed",
+          "origin": "literature_assisted",
+          "cost": "Improves the sufficient sample size from ε⁻⁴ log m to ε⁻² log m. Uses Boolean structure rather than only boundedness; discovery cost is unmeasured.",
+          "source_ids": [
+            "src1"
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Count Bernoulli disagreements",
+          "outcome": "closed"
+        }
+      ],
+      "sources": [
+        {
+          "id": "src1",
+          "title": "Cifuentes–Goemans, MIT 18.200: Chernoff bounds, Theorem 4 (lower tail)",
+          "url": "https://ocw.mit.edu/courses/18-200-principles-of-discrete-applied-mathematics-spring-2024/mit18_200_s24_lec_chernoff.pdf"
+        }
+      ],
+      "family": null,
+      "cost": "Improves the sufficient sample size from ε⁻⁴ log m to ε⁻² log m. Uses Boolean structure rather than only boundedness; discovery cost is unmeasured.",
+      "source_file": "tools/proof_explorer/collection/data/dimension-reduction.json",
+      "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
+      "key": "dimension-reduction:a1",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": true,
+      "alignment": "neither"
+    },
+    {
+      "proof": "dimension-reduction",
+      "proof_title": "Dimension reduction for Boolean functions",
+      "action": "a2",
+      "title": "Bound one bad pair",
+      "ai_selected": true,
+      "restriction": "Globally forbid additive Hoeffding or an equivalent bound depending only on the range length. A mean-sensitive Bernoulli argument is allowed.",
+      "successful_replacements": [
+        {
+          "title": "Count Bernoulli disagreements",
+          "outcome": "closed",
+          "origin": "literature_assisted",
+          "cost": "Improves the sufficient sample size from ε⁻⁴ log m to ε⁻² log m. Uses Boolean structure rather than only boundedness; discovery cost is unmeasured.",
+          "source_ids": [
+            "src1"
+          ]
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Count Bernoulli disagreements",
+          "outcome": "closed"
+        },
+        {
+          "title": "Use only the second moment",
+          "outcome": "failed"
+        }
+      ],
+      "sources": [
+        {
+          "id": "src1",
+          "title": "Cifuentes–Goemans, MIT 18.200: Chernoff bounds, Theorem 4 (lower tail)",
+          "url": "https://ocw.mit.edu/courses/18-200-principles-of-discrete-applied-mathematics-spring-2024/mit18_200_s24_lec_chernoff.pdf"
+        }
+      ],
+      "family": null,
+      "cost": "Improves the sufficient sample size from ε⁻⁴ log m to ε⁻² log m. Uses Boolean structure rather than only boundedness; discovery cost is unmeasured. | Polynomial m² rather than log m in the sufficient budget; finite but too expensive for this theorem.",
+      "source_file": "tools/proof_explorer/collection/data/dimension-reduction.json",
+      "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
+      "key": "dimension-reduction:a2",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": true,
+      "alignment": "ai_only"
+    },
+    {
+      "proof": "dimension-reduction",
+      "proof_title": "Dimension reduction for Boolean functions",
+      "action": "a3",
+      "title": "Make the pairwise guarantee simultaneous",
+      "ai_selected": true,
+      "restriction": "Globally forbid finite aggregation of pair events, including union bounds and Markov applied to their count (the same mechanism).",
+      "successful_replacements": [],
+      "alternatives": [
+        {
+          "title": "Keep only the fixed-pair guarantee",
+          "outcome": "failed"
+        },
+        {
+          "title": "Seek a direct uniform empirical-process bound",
+          "outcome": "unresolved"
+        }
+      ],
+      "sources": [],
+      "family": null,
+      "cost": "Skipping uniform control leaves the central quantifier unproved. Failure is logical, not an infinite computation. | A stronger toolkit would need a full proof or independently checked statement.",
+      "source_file": "tools/proof_explorer/collection/data/dimension-reduction.json",
+      "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
+      "key": "dimension-reduction:a3",
+      "no_worked_replacement": true,
+      "no_unattributed_replacement": true,
+      "alignment": "both"
+    },
+    {
+      "proof": "dimension-reduction",
+      "proof_title": "Dimension reduction for Boolean functions",
+      "action": "a4",
+      "title": "Choose the budget and close",
+      "ai_selected": false,
+      "restriction": "Globally forbid selecting C=128 as the sufficient sample-size constant; keep the theorem’s unspecified universal C.",
+      "successful_replacements": [
+        {
+          "title": "Use unordered pairs and C=112",
+          "outcome": "closed",
+          "origin": "model_proposed",
+          "cost": "A modest constant change. This does not replace either concentration or the simultaneous-event mechanism.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Use unordered pairs and C=112",
+          "outcome": "closed"
+        }
+      ],
+      "sources": [],
+      "family": null,
+      "cost": "A modest constant change. This does not replace either concentration or the simultaneous-event mechanism.",
+      "source_file": "tools/proof_explorer/collection/data/dimension-reduction.json",
+      "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
+      "key": "dimension-reduction:a4",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "neither"
+    },
+    {
+      "proof": "slepian",
+      "proof_title": "Slepian’s inequality",
+      "action": "a1",
+      "title": "Reduce to finite covariance comparison",
+      "ai_selected": false,
+      "restriction": "Globally forbid introducing the separate intermediate assertion Aij≥Bij; retain direct use of the increment inequalities.",
+      "successful_replacements": [
+        {
+          "title": "Keep increment differences in the interpolation sum",
+          "outcome": "closed",
+          "origin": "model_proposed",
+          "cost": "Equivalent mathematics with slightly less notation; this does not remove the comparison mechanism.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Keep increment differences in the interpolation sum",
+          "outcome": "closed"
+        }
+      ],
+      "sources": [],
+      "family": null,
+      "cost": "Equivalent mathematics with slightly less notation; this does not remove the comparison mechanism.",
+      "source_file": "tools/proof_explorer/collection/data/slepian.json",
+      "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
+      "key": "slepian:a1",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "neither"
+    },
+    {
+      "proof": "slepian",
+      "proof_title": "Slepian’s inequality",
+      "action": "a2",
+      "title": "Interpolate the Gaussian covariance",
+      "ai_selected": true,
+      "restriction": "Globally forbid all Gaussian interpolation or covariance deformation methods, including disguised integration-by-parts implementations of the same path.",
+      "successful_replacements": [],
+      "alternatives": [
+        {
+          "title": "Seek a coordinatewise ordered coupling",
+          "outcome": "failed"
+        },
+        {
+          "title": "Use a soft maximum and expectation order",
+          "outcome": "unresolved"
+        }
+      ],
+      "sources": [],
+      "family": null,
+      "cost": "A concrete admissible Gaussian example rules out this proposed coupling, not every interpolation-free proof. | May settle the weaker expected-supremum claim; it leaves the requested distributional comparison unproved.",
+      "source_file": "tools/proof_explorer/collection/data/slepian.json",
+      "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
+      "key": "slepian:a2",
+      "no_worked_replacement": true,
+      "no_unattributed_replacement": true,
+      "alignment": "both"
+    },
+    {
+      "proof": "slepian",
+      "proof_title": "Slepian’s inequality",
+      "action": "a3",
+      "title": "Choose a product cutoff with positive mixed derivatives",
+      "ai_selected": true,
+      "restriction": "Globally forbid product cutoffs or an equivalent smooth encoding of the lower orthant with nonnegative mixed derivatives.",
+      "successful_replacements": [],
+      "alternatives": [
+        {
+          "title": "Replace the orthant test by a smooth maximum",
+          "outcome": "unresolved"
+        }
+      ],
+      "sources": [],
+      "family": null,
+      "cost": "No full stochastic-order argument is established under this ban.",
+      "source_file": "tools/proof_explorer/collection/data/slepian.json",
+      "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
+      "key": "slepian:a3",
+      "no_worked_replacement": true,
+      "no_unattributed_replacement": true,
+      "alignment": "both"
+    },
+    {
+      "proof": "slepian",
+      "proof_title": "Slepian’s inequality",
+      "action": "a4",
+      "title": "Remove smoothing and meet the finite goal",
+      "ai_selected": false,
+      "restriction": "Globally forbid letting the cutoff parameter ε tend to zero in bounded smooth tests. Do not assume nondegenerate endpoint distributions.",
+      "successful_replacements": [],
+      "alternatives": [
+        {
+          "title": "Invoke continuity of the maximum distribution",
+          "outcome": "failed"
+        }
+      ],
+      "sources": [],
+      "family": null,
+      "cost": "The failed step is an unjustified continuity assumption; no infinite computation is implicated.",
+      "source_file": "tools/proof_explorer/collection/data/slepian.json",
+      "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
+      "key": "slepian:a4",
+      "no_worked_replacement": true,
+      "no_unattributed_replacement": true,
+      "alignment": "ablation_only"
+    },
+    {
+      "proof": "slepian",
+      "proof_title": "Slepian’s inequality",
+      "action": "a5",
+      "title": "Pass to separable suprema and closed tails",
+      "ai_selected": false,
+      "restriction": "Globally forbid exhausting the common separable index set by finite subsets or equivalent finite-subset limiting arguments.",
+      "successful_replacements": [],
+      "alternatives": [
+        {
+          "title": "Treat an uncountable intersection as a finite event",
+          "outcome": "failed"
+        }
+      ],
+      "sources": [],
+      "family": null,
+      "cost": "The gap is the passage between quantifiers. Separability enables the baseline countable argument but does not justify arbitrary intersections.",
+      "source_file": "tools/proof_explorer/collection/data/slepian.json",
+      "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
+      "key": "slepian:a5",
+      "no_worked_replacement": true,
+      "no_unattributed_replacement": true,
+      "alignment": "ablation_only"
+    },
+    {
+      "proof": "slepian",
+      "proof_title": "Slepian’s inequality",
+      "action": "a6",
+      "title": "Truncate and close the expectation goal",
+      "ai_selected": false,
+      "restriction": "Globally forbid clipped bounded test functions φ_m and passage to their unbounded limit for the expectation comparison.",
+      "successful_replacements": [
+        {
+          "title": "Integrate the ordered positive and negative tails",
+          "outcome": "closed",
+          "origin": "model_proposed",
+          "cost": "Same integrability requirement; a different final representation with no extra probabilistic estimate.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Integrate the ordered positive and negative tails",
+          "outcome": "closed"
+        }
+      ],
+      "sources": [],
+      "family": null,
+      "cost": "Same integrability requirement; a different final representation with no extra probabilistic estimate.",
+      "source_file": "tools/proof_explorer/collection/data/slepian.json",
+      "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
+      "key": "slepian:a6",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "neither"
+    },
+    {
+      "proof": "centering",
+      "proof_title": "Centering a subgaussian variable",
+      "action": "a1",
+      "title": "Unpack the norm and choose an admissible scale",
+      "ai_selected": false,
+      "restriction": "Globally forbid using arbitrary t>K to establish a centered-norm bound 2t and then taking its infimum. An attainment proof for the original norm is permitted.",
+      "successful_replacements": [
+        {
+          "title": "Use the attained positive norm, with a zero case",
+          "outcome": "closed",
+          "origin": "model_proposed",
+          "cost": "Same constant 2. Adds an attainment argument and a K=0 case; no search-cost estimate.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Use the attained positive norm, with a zero case",
+          "outcome": "closed"
+        }
+      ],
+      "sources": [],
+      "family": null,
+      "cost": "Same constant 2. Adds an attainment argument and a K=0 case; no search-cost estimate.",
+      "source_file": "tools/proof_explorer/collection/data/centering.json",
+      "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
+      "key": "centering:a1",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "neither"
+    },
+    {
+      "proof": "centering",
+      "proof_title": "Centering a subgaussian variable",
+      "action": "a2",
+      "title": "Control the deterministic mean at the same scale",
+      "ai_selected": false,
+      "restriction": "Globally forbid controlling EX by Jensen applied to exp(X²/t²), including an equivalent convexity-of-expectation mean bound.",
+      "successful_replacements": [
+        {
+          "title": "Use a second-moment bound instead of Jensen",
+          "outcome": "closed",
+          "origin": "model_proposed",
+          "cost": "Loses the constant: √8 instead of 2, still satisfying the stated universal-C theorem. Reuses the square split but not the forbidden mean estimate.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Use a second-moment bound instead of Jensen",
+          "outcome": "closed"
+        }
+      ],
+      "sources": [],
+      "family": null,
+      "cost": "Loses the constant: √8 instead of 2, still satisfying the stated universal-C theorem. Reuses the square split but not the forbidden mean estimate.",
+      "source_file": "tools/proof_explorer/collection/data/centering.json",
+      "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
+      "key": "centering:a2",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "neither"
+    },
+    {
+      "proof": "centering",
+      "proof_title": "Centering a subgaussian variable",
+      "action": "a3",
+      "title": "Separate the two terms and bound the exponential moment",
+      "ai_selected": true,
+      "restriction": "Globally forbid the square-splitting inequality (X−μ)²≤2X²+2μ² or its algebraic equivalent as the centering bound.",
+      "successful_replacements": [
+        {
+          "title": "Use convexity of the Orlicz function",
+          "outcome": "closed",
+          "origin": "model_proposed",
+          "cost": "Same constant 2, but exposes the general norm triangle mechanism. This is a representation change, not a claim of new discovery.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Use convexity of the Orlicz function",
+          "outcome": "closed"
+        },
+        {
+          "title": "Assume centering shrinks each sample",
+          "outcome": "failed"
+        }
+      ],
+      "sources": [],
+      "family": null,
+      "cost": "Same constant 2, but exposes the general norm triangle mechanism. This is a representation change, not a claim of new discovery. | A two-point example disproves the intermediate inequality. No cost explosion occurs.",
+      "source_file": "tools/proof_explorer/collection/data/centering.json",
+      "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
+      "key": "centering:a3",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "ai_only"
+    },
+    {
+      "proof": "centering",
+      "proof_title": "Centering a subgaussian variable",
+      "action": "a4",
+      "title": "Read off the norm and close",
+      "ai_selected": false,
+      "restriction": "Globally forbid concluding the centered-norm bound by taking t↓K after obtaining bounds 2t. Establishing attainment of the original norm is allowed.",
+      "successful_replacements": [
+        {
+          "title": "Use the attained positive norm, with a zero case",
+          "outcome": "closed",
+          "origin": "model_proposed",
+          "cost": "Same constant 2. Adds an attainment argument and a K=0 case; no search-cost estimate.",
+          "source_ids": []
+        }
+      ],
+      "alternatives": [
+        {
+          "title": "Use the attained positive norm, with a zero case",
+          "outcome": "closed"
+        }
+      ],
+      "sources": [],
+      "family": null,
+      "cost": "Same constant 2. Adds an attainment argument and a K=0 case; no search-cost estimate.",
+      "source_file": "tools/proof_explorer/collection/data/centering.json",
+      "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
+      "key": "centering:a4",
+      "no_worked_replacement": false,
+      "no_unattributed_replacement": false,
+      "alignment": "neither"
+    }
+  ],
+  "inputs": {
+    "tools/proof_explorer/critical-step-selection.js": "57b003db4e8cecd9f7809c2b257ccde55e2b984689aba197ba4e591f55740fc0",
+    "tools/proof_explorer/ablation-proofs.js": "c4aa89cbf8dd9accc4245ec78f16687b4e3bcb70a3e2a0d5baf254af53e6f1e1",
+    "tools/proof_explorer/proof.js": "55cc92b2db8f1d761e50617f2acd4d23ce0d7d7df11d5e873aef615480156023",
+    "tools/proof_explorer/proof-reader-content.js": "9b7f0fe9b7d85098dfdc60d2afff98c49157a9ecef92d4395d6b3c53f2e5403f",
+    "tools/proof_explorer/collection/data/centering.json": "4608a8c329be0087eb08e5ff3947f249f308b7f76a580a01a63df89ad8ffb947",
+    "tools/proof_explorer/collection/data/covariance.json": "21fb1cdd5a4e1a720047bcb3c0bf791baf3fefbb07e1c5ae72504e0abe4521be",
+    "tools/proof_explorer/collection/data/dimension-reduction.json": "8692bb59b1fcd16eed0e4f79d62b73d649bb4fe45c393b9f88620c0ef49fd2c8",
+    "tools/proof_explorer/collection/data/slepian.json": "c7c6a916558af549e6ae64aebe3f7b5f32ee29a54a1b87a2e2e410457f4dfd08",
+    "proposals/hanson_wright_ablation_notes.md": "d3988a4ab364933f4bbc95e9f3759fbad33239d86fcb00f56aba21b923447c48",
+    "proposals/hanson_wright_sign_ablation.md": "f993088d0368a8d7b9517309e84aa030ce8f7e3aaf9dee59503ae6644d6b4702",
+    "proposals/hanson_wright_ablations/00-common.md": "0a2eaac061f02e04fd873f69f0347de2759043299ed8fbd7059703074a666224",
+    "proposals/hanson_wright_ablations/02-expand.md": "98af5a982ae4dbd32e0f824978f931e30ce7249ae6e3f6a28e3421720a0a4f67",
+    "proposals/hanson_wright_ablations/03-split.md": "02f240ffcd2bac3c5fee1f61db63bbfb84a567ff29a38fd1753d805461e875fa",
+    "proposals/hanson_wright_ablations/04-bernstein.md": "3fbd26839e2257a441855690c1491dae3bd1428b10441ff64e648b8cd25c850f",
+    "proposals/hanson_wright_ablations/05-exponential.md": "ab2c4e14b8bb1b7da7527a2a92a8446fe016168bed2263daa8adbc2cd3e73990",
+    "proposals/hanson_wright_ablations/06-linear.md": "29727f1774d5c3845ad0f0a3af617c98212e117e194c0df972679174ae811a2a",
+    "proposals/hanson_wright_ablations/07-decouple.md": "5b857215cc571b42f4c221b35eaa2e4ce449bf289211982bf5f55b83774c0af3",
+    "proposals/hanson_wright_ablations/08-gaussian.md": "6832d924da84bc0eff23c334be0e67b00c0c4814aad1871753eada2923dc8690",
+    "proposals/hanson_wright_ablations/09-replace.md": "fbf8964069e73256dec8b5c1249c186293df38506cabc72e9614a9d6e654eab5",
+    "proposals/hanson_wright_ablations/10-rotate.md": "2523bb8188618eb7df4a89de3b195a15db50100b4945a7ac7b6efb59c76b0396",
+    "proposals/hanson_wright_ablations/11-compute.md": "cad57079d5a41781f23655a85c487f83c952ee56eb644f6cfcf49e1e921575a5",
+    "proposals/hanson_wright_ablations/12-meet.md": "fd811d337a3ef5c19161fd5ef30cb120906565c1de4c5a67fb597a8debb3dc5c",
+    "proposals/hanson_wright_ablations/13-optimize.md": "eea795855981f762d08c198ac29b12b1328a40e35f9f0726c366e20f7827cd83",
+    "proposals/hanson_wright_ablations/14-finish.md": "5ba7836acd88755bbef8afbe3e34050bddd60ca1aa77d44e37c713afbba99e9d"
+  }
+}

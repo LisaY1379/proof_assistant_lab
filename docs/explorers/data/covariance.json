@@ -1,0 +1,1437 @@
+{
+  "schema_version": 1,
+  "title": "Covariance estimation",
+  "statement": "For independent copies \\(X_i\\in\\mathbb R^n\\), let \\(\\Sigma=\\mathbb E XX^\\top\\), \\(\\Sigma_m=m^{-1}\\sum_iX_iX_i^\\top\\). If \\(\\|\\langle X,x\\rangle\\|_{\\psi_2}\\le K\\|\\langle X,x\\rangle\\|_{L_2}\\) for all \\(x\\), \\(K\\ge1\\), then \\(\\mathbb E\\|\\Sigma_m-\\Sigma\\|\\le CK^2(\\sqrt{n/m}+n/m)\\|\\Sigma\\|\\).",
+  "original_proof": "Let \\(X_1,\\dots,X_m\\) be independent copies of \\(X\\), and write\n\\[\n\\Sigma=\\mathbb E XX^\\top,\n\\qquad\n\\Sigma_m=\\frac1m\\sum_{i=1}^m X_iX_i^\\top .\n\\]\n\nWe first prove the isotropic case.\n\n### Isotropic case\n\nSuppose \\(Y\\in\\mathbb R^r\\) satisfies\n\\[\n\\mathbb E YY^\\top=I_r,\n\\qquad\n\\|\\langle Y,x\\rangle\\|_{\\psi_2}\\le K\\|x\\|_2.\n\\]\nLet \\(Y_1,\\dots,Y_m\\) be independent copies and set\n\\[\nA=\\frac1m\\sum_{i=1}^mY_iY_i^\\top-I_r.\n\\]\n\nFor \\(x\\in S^{r-1}\\), \\(x^\\top Ax=m^{-1}\\sum_{i=1}^m(\\langle Y_i,x\\rangle^2-1)\\).\nBecause \\(\\|\\langle Y_i,x\\rangle\\|_{\\psi_2}\\le K\\), the variables\n\\[\nZ_i=\\langle Y_i,x\\rangle^2-1\n\\]\nare centered and subexponential, with\n\\[\n\\|Z_i\\|_{\\psi_1}\\le CK^2.\n\\]\nBernstein’s inequality therefore gives\n\\[\n\\mathbb P\\{|x^\\top Ax|>t\\}\n\\le\n2\\exp\\left[-cm\\min\\left(\\frac{t^2}{K^4},\\frac{t}{K^2}\\right)\\right].\n\\tag{1}\n\\]\n\nLet \\(\\mathcal N\\) be a \\(1/4\\)-net of \\(S^{r-1}\\) with\n\\[\n|\\mathcal N|\\le 9^r.\n\\]\nFor every symmetric matrix \\(A\\),\n\\[\n\\|A\\|\\le 2\\max_{x\\in\\mathcal N}|x^\\top Ax|.\n\\]\nThus, by (1) and the union bound,\n\\[\n\\mathbb P\\{\\|A\\|>2t\\}\n\\le\n2\\exp\\left[\nCr-cm\\min\\left(\\frac{t^2}{K^4},\\frac{t}{K^2}\\right)\n\\right].\n\\]\nConsequently, for every \\(u\\ge0\\), with probability at least \\(1-2e^{-u}\\),\n\\[\n\\|A\\|\n\\le\nCK^2\\left(\n\\sqrt{\\frac{r+u}{m}}+\\frac{r+u}{m}\n\\right).\n\\tag{2}\n\\]\nIntegrating this tail bound yields\n\\[\n\\mathbb E\\|A\\|\n\\le\nCK^2\\left(\\sqrt{\\frac rm}+\\frac rm\\right).\n\\tag{3}\n\\]\n\n### Reduction to the isotropic case\n\nLet \\(S=\\operatorname{range}(\\Sigma)\\) and \\(r=\\dim S\\le n\\). If \\(v\\in\\ker(\\Sigma)\\), then\n\\[\n\\mathbb E\\langle X,v\\rangle^2=v^\\top\\Sigma v=0,\n\\]\nso \\(X\\in S\\) almost surely.\n\nOn \\(S\\), define\n\\[\nY=\\Sigma^{-1/2}X,\n\\]\nwhere the inverse is taken only on \\(S\\). Then\n\\[\n\\mathbb E YY^\\top=I_S.\n\\]\nMoreover, for every \\(y\\in S\\),\n\\[\n\\begin{aligned}\n\\|\\langle Y,y\\rangle\\|_{\\psi_2}\n&=\\|\\langle X,\\Sigma^{-1/2}y\\rangle\\|_{\\psi_2}\\\\\n&\\le K\\|\\langle X,\\Sigma^{-1/2}y\\rangle\\|_{L_2}\\\\\n&=K\\|y\\|_2.\n\\end{aligned}\n\\]\nThus \\(Y\\) satisfies the isotropic assumptions above.\n\nWriting \\(Y_i=\\Sigma^{-1/2}X_i\\), we have\n\\[\n\\Sigma_m-\\Sigma\n=\n\\Sigma^{1/2}\n\\left(\n\\frac1m\\sum_{i=1}^mY_iY_i^\\top-I_S\n\\right)\n\\Sigma^{1/2}.\n\\]\nHence\n\\[\n\\|\\Sigma_m-\\Sigma\\|\n\\le\n\\|\\Sigma\\|\n\\left\\|\n\\frac1m\\sum_{i=1}^mY_iY_i^\\top-I_S\n\\right\\|.\n\\]\nApplying (3) and using \\(r\\le n\\), we obtain\n\\[\n\\boxed{\n\\mathbb E\\|\\Sigma_m-\\Sigma\\|\n\\le\nCK^2\\left(\\sqrt{\\frac nm}+\\frac nm\\right)\\|\\Sigma\\|\n}.\n\\]\nHere \\(C>0\\) is an absolute constant.",
+  "nodes": [
+    {
+      "id": "f0",
+      "kind": "fact",
+      "text": "X is a real subgaussian vector; Xi are independent copies; K≥1 and the relative marginal bound in the theorem holds; n,m≥1.",
+      "label": "Starting assumptions"
+    },
+    {
+      "id": "g0",
+      "kind": "goal",
+      "text": "For independent copies \\(X_i\\in\\mathbb R^n\\), let \\(\\Sigma=\\mathbb E XX^\\top\\), \\(\\Sigma_m=m^{-1}\\sum_iX_iX_i^\\top\\). If \\(\\|\\langle X,x\\rangle\\|_{\\psi_2}\\le K\\|\\langle X,x\\rangle\\|_{L_2}\\) for all \\(x\\), \\(K\\ge1\\), then \\(\\mathbb E\\|\\Sigma_m-\\Sigma\\|\\le CK^2(\\sqrt{n/m}+n/m)\\|\\Sigma\\|\\).",
+      "label": "Theorem to prove"
+    },
+    {
+      "id": "f1",
+      "kind": "fact",
+      "text": "For each r≥1, an isotropic Y with marginal ψ₂ norm at most K defines a symmetric empirical error A; E⟨Y,x⟩²=1 on the unit sphere.",
+      "label": "Plan an isotropic lemma and a transport argument"
+    },
+    {
+      "id": "o1",
+      "kind": "observation",
+      "text": "The hypothesis scales subgaussianity by each marginal L₂ norm; isotropy would make that scale constant across the unit sphere.",
+      "label": "Why this move?"
+    },
+    {
+      "id": "gi",
+      "kind": "goal",
+      "text": "For every isotropic Y in dimension r≥1 with marginal bound K, prove \\(E\\|A\\|\\le CK^2(\\sqrt{r/m}+r/m)\\).",
+      "label": "Isotropic expectation bound"
+    },
+    {
+      "id": "gt",
+      "kind": "goal",
+      "text": "Transport that isotropic lemma to X, including singular Σ and rank zero.",
+      "label": "Transport to the original vector"
+    },
+    {
+      "id": "f2",
+      "kind": "fact",
+      "text": "Under the isotropic hypotheses, for each unit x and t>0, \\(P(|x^\\top Ax|>t)\\le2e^{-cm\\min(t^2/K^4,t/K^2)}\\).",
+      "label": "Control a fixed quadratic form"
+    },
+    {
+      "id": "o2",
+      "kind": "observation",
+      "text": "A quadratic form of the empirical matrix is an average of independent scalar squares, which matches scalar concentration.",
+      "label": "Why this move?"
+    },
+    {
+      "id": "f3",
+      "kind": "fact",
+      "text": "Under the isotropic hypotheses, \\(P\\{\\|A\\|>CK^2(\\sqrt{(r+u)/m}+(r+u)/m)\\}\\le2e^{-u}\\) for u≥0.",
+      "label": "Pass from one direction to a finite net"
+    },
+    {
+      "id": "o3",
+      "kind": "observation",
+      "text": "The operator norm of a symmetric matrix is a supremum of quadratic forms; continuity allows a finite cover to control that supremum.",
+      "label": "Why this move?"
+    },
+    {
+      "id": "f4",
+      "kind": "fact",
+      "text": "The isotropic lemma holds: \\(E\\|A\\|\\le CK^2(\\sqrt{r/m}+r/m)\\).",
+      "label": "Integrate the matrix tail"
+    },
+    {
+      "id": "o4",
+      "kind": "observation",
+      "text": "An exponentially decaying tail controls the expectation after accounting for the baseline threshold b(0).",
+      "label": "Why this move?"
+    },
+    {
+      "id": "f5",
+      "kind": "fact",
+      "text": "If rank Σ=0 then X=0 a.s.; otherwise S=range Σ has r≥1, X∈S a.s., and Y=Σ_S⁻¹ᐟ²X satisfies the isotropic hypotheses.",
+      "label": "Whiten only on the covariance range"
+    },
+    {
+      "id": "o5",
+      "kind": "observation",
+      "text": "Zero variance identifies the actual support; the inverse square root normalizes each surviving direction.",
+      "label": "Why this move?"
+    },
+    {
+      "id": "f6",
+      "kind": "fact",
+      "text": "\\(E\\|\\Sigma_m-\\Sigma\\|\\le CK^2(\\sqrt{n/m}+n/m)\\|\\Sigma\\|\\).",
+      "label": "Transport the norm bound and close the proof"
+    },
+    {
+      "id": "o6",
+      "kind": "observation",
+      "text": "Congruence by Σ¹ᐟ² restores the original scale while operator norms multiply.",
+      "label": "Why this move?"
+    }
+  ],
+  "initial_facts": [
+    "f0"
+  ],
+  "initial_goals": [
+    "g0"
+  ],
+  "steps": [
+    {
+      "id": "a1",
+      "title": "Plan an isotropic lemma and a transport argument",
+      "quote": "Let \\(X_1,\\dots,X_m\\) be independent copies of \\(X\\), and write\n\\[\n\\Sigma=\\mathbb E XX^\\top,\n\\qquad\n\\Sigma_m=\\frac1m\\sum_{i=1}^m X_iX_i^\\top .\n\\]\n\nWe first prove the isotropic case.\n\n### Isotropic case\n\nSuppose \\(Y\\in\\mathbb R^r\\) satisfies\n\\[\n\\mathbb E YY^\\top=I_r,\n\\qquad\n\\|\\langle Y,x\\rangle\\|_{\\psi_2}\\le K\\|x\\|_2.\n\\]\nLet \\(Y_1,\\dots,Y_m\\) be independent copies and set\n\\[\nA=\\frac1m\\sum_{i=1}^mY_iY_i^\\top-I_r.\n\\]\n\n",
+      "uses": [
+        "f0"
+      ],
+      "adds": [
+        "f1"
+      ],
+      "opens": [
+        "gi",
+        "gt"
+      ],
+      "closes": [
+        "g0"
+      ],
+      "observations": [
+        "o1"
+      ],
+      "motivated_by": [
+        "g0"
+      ],
+      "justification": "The general target is sufficiently reduced to two obligations: prove the empirical bound for every isotropic Y of dimension r, and show that X can be transported to that setting with a factor ‖Σ‖. This is a planned lemma, not an assumption that X is isotropic. Under the local isotropic hypotheses, define A as in the source. All later isotropic facts are conditional statements about such Y. Rank zero will be handled in transport.",
+      "observation": "The hypothesis scales subgaussianity by each marginal L₂ norm; isotropy would make that scale constant across the unit sphere.",
+      "explanation": "The general target is sufficiently reduced to two obligations: prove the empirical bound for every isotropic Y of dimension r, and show that X can be transported to that setting with a factor ‖Σ‖. This is a planned lemma, not an assumption that X is isotropic. Under the local isotropic hypotheses, define A as in the source. All later isotropic facts are conditional statements about such Y. Rank zero will be handled in transport.",
+      "difficulty": "Selecting a useful intermediate theorem is strategic; its local hypotheses must never become unconditional facts about X.",
+      "short_version": "For each r≥1, an isotropic Y with marginal ψ₂ norm at most K defines a symmetric empirical error A; E⟨Y,x⟩²=1 on the unit sphere.",
+      "protocol": {
+        "direction": "backward",
+        "context": "X is a real subgaussian vector; Xi are independent copies; K≥1 and the relative marginal bound in the theorem holds; n,m≥1.",
+        "target": "For independent copies \\(X_i\\in\\mathbb R^n\\), let \\(\\Sigma=\\mathbb E XX^\\top\\), \\(\\Sigma_m=m^{-1}\\sum_iX_iX_i^\\top\\). If \\(\\|\\langle X,x\\rangle\\|_{\\psi_2}\\le K\\|\\langle X,x\\rangle\\|_{L_2}\\) for all \\(x\\), \\(K\\ge1\\), then \\(\\mathbb E\\|\\Sigma_m-\\Sigma\\|\\le CK^2(\\sqrt{n/m}+n/m)\\|\\Sigma\\|\\).",
+        "basic_progress": "Unfold the current target and the definitions in the preceding state. These identify the needed bound but do not select the method.",
+        "remaining_gap": "Selecting a useful intermediate theorem is strategic; its local hypotheses must never become unconditional facts about X.",
+        "observation": {
+          "target_feature": "For independent copies \\(X_i\\in\\mathbb R^n\\), let \\(\\Sigma=\\mathbb E XX^\\top\\), \\(\\Sigma_m=m^{-1}\\sum_iX_iX_i^\\top\\). If \\(\\|\\langle X,x\\rangle\\|_{\\psi_2}\\le K\\|\\langle X,x\\rangle\\|_{L_2}\\) for all \\(x\\), \\(K\\ge1\\), then \\(\\mathbb E\\|\\Sigma_m-\\Sigma\\|\\le CK^2(\\sqrt{n/m}+n/m)\\|\\Sigma\\|\\).",
+          "available_feature": "X is a real subgaussian vector; Xi are independent copies; K≥1 and the relative marginal bound in the theorem holds; n,m≥1.",
+          "connection": "The hypothesis scales subgaussianity by each marginal L₂ norm; isotropy would make that scale constant across the unit sphere."
+        },
+        "actions": [
+          {
+            "id": "u1",
+            "kind": "B-D",
+            "role": "execution",
+            "move": "Unfold Σ and Σ_m as second moments; the target is an operator-norm expectation.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Unfold a declared definition.",
+            "inputs": "X is a real subgaussian vector; Xi are independent copies; K≥1 and the relative marginal bound in the theorem holds; n,m≥1.",
+            "toolkit_uses": [],
+            "verification": "Unfold Σ and Σ_m as second moments; the target is an operator-norm expectation.",
+            "verifies": []
+          },
+          {
+            "id": "u2",
+            "kind": "strategic",
+            "role": "method / representation selection",
+            "move": "Select the universally quantified isotropic lemma plus a transport obligation as sufficient intermediate goals.",
+            "provenance": "The hypothesis scales subgaussianity by each marginal L₂ norm; isotropy would make that scale constant across the unit sphere.",
+            "rule": "Select an auxiliary representation, parameter, method, or sufficient target beyond direct matching.",
+            "inputs": "X is a real subgaussian vector; Xi are independent copies; K≥1 and the relative marginal bound in the theorem holds; n,m≥1.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "Verification is in the following linked basic actions and the detailed derivation.",
+            "verifies": []
+          },
+          {
+            "id": "u3",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "If the isotropic estimate and the stated transport implication are both proved, the original bound follows. Open both required goals; do not assume the lemma true.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "X is a real subgaussian vector; Xi are independent copies; K≥1 and the relative marginal bound in the theorem holds; n,m≥1.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "If the isotropic estimate and the stated transport implication are both proved, the original bound follows. Open both required goals; do not assume the lemma true.",
+            "verifies": [
+              "u2"
+            ]
+          },
+          {
+            "id": "u4",
+            "kind": "B-C",
+            "role": "execution",
+            "move": "For a locally admissible isotropic Y and unit x, substitute EYYᵀ=I to obtain E⟨Y,x⟩²=1. Discharge the local hypotheses into a conditional fact.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Substitute, expand, differentiate an explicitly supplied smooth formula, or perform scalar arithmetic; analytic limit rules are separate toolkit calls.",
+            "inputs": "X is a real subgaussian vector; Xi are independent copies; K≥1 and the relative marginal bound in the theorem holds; n,m≥1.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "For a locally admissible isotropic Y and unit x, substitute EYYᵀ=I to obtain E⟨Y,x⟩²=1. Discharge the local hypotheses into a conditional fact.",
+            "verifies": []
+          }
+        ],
+        "relation": {
+          "kind": "sufficient",
+          "justification": "The general target is sufficiently reduced to two obligations: prove the empirical bound for every isotropic Y of dimension r, and show that X can be transported to that setting with a factor ‖Σ‖. This is a planned lemma, not an assumption that X is isotropic. Under the local isotropic hypotheses, define A as in the source. All later isotropic facts are conditional statements about such Y. Rank zero will be handled in transport.",
+          "side_conditions": "All conditional lemmas are universally quantified under their stated hypotheses; temporary vectors, thresholds, and parameters remain local. Σ is a second-moment matrix, equal to covariance when X is centered. ‖·‖ is operator norm; ψ₂ and ψ₁ are exponential Orlicz norms. Conditional isotropic lemmas are universally quantified over admissible Y and r≥1."
+        },
+        "remaining_obligations": "For every isotropic Y in dimension r≥1 with marginal bound K, prove \\(E\\|A\\|\\le CK^2(\\sqrt{r/m}+r/m)\\).; Transport that isotropic lemma to X, including singular Σ and rank zero."
+      },
+      "start": 0,
+      "end": 419
+    },
+    {
+      "id": "a2",
+      "title": "Control a fixed quadratic form",
+      "quote": "For \\(x\\in S^{r-1}\\), \\(x^\\top Ax=m^{-1}\\sum_{i=1}^m(\\langle Y_i,x\\rangle^2-1)\\).\nBecause \\(\\|\\langle Y_i,x\\rangle\\|_{\\psi_2}\\le K\\), the variables\n\\[\nZ_i=\\langle Y_i,x\\rangle^2-1\n\\]\nare centered and subexponential, with\n\\[\n\\|Z_i\\|_{\\psi_1}\\le CK^2.\n\\]\nBernstein’s inequality therefore gives\n\\[\n\\mathbb P\\{|x^\\top Ax|>t\\}\n\\le\n2\\exp\\left[-cm\\min\\left(\\frac{t^2}{K^4},\\frac{t}{K^2}\\right)\\right].\n\\tag{1}\n\\]\n\n",
+      "uses": [
+        "f1"
+      ],
+      "adds": [
+        "f2"
+      ],
+      "opens": [],
+      "closes": [],
+      "observations": [
+        "o2"
+      ],
+      "motivated_by": [
+        "gi",
+        "gt"
+      ],
+      "justification": "Fix a deterministic unit x. Isotropy gives E⟨Y_i,x⟩²=1, so the summands are centered; independence follows from independent sample vectors, without requiring their coordinates to be independent. The squared-subgaussian bound yields ψ₁ norm CK². Substitution into scalar Bernstein proves the displayed tail uniformly in the choice of deterministic x.",
+      "observation": "A quadratic form of the empirical matrix is an average of independent scalar squares, which matches scalar concentration.",
+      "explanation": "Fix a deterministic unit x. Isotropy gives E⟨Y_i,x⟩²=1, so the summands are centered; independence follows from independent sample vectors, without requiring their coordinates to be independent. The squared-subgaussian bound yields ψ₁ norm CK². Substitution into scalar Bernstein proves the displayed tail uniformly in the choice of deterministic x.",
+      "difficulty": "A fixed-direction estimate still says nothing uniform about the random maximizing direction.",
+      "short_version": "Under the isotropic hypotheses, for each unit x and t>0, \\(P(|x^\\top Ax|>t)\\le2e^{-cm\\min(t^2/K^4,t/K^2)}\\).",
+      "protocol": {
+        "direction": "forward",
+        "context": "For each r≥1, an isotropic Y with marginal ψ₂ norm at most K defines a symmetric empirical error A; E⟨Y,x⟩²=1 on the unit sphere.",
+        "target": "For every isotropic Y in dimension r≥1 with marginal bound K, prove \\(E\\|A\\|\\le CK^2(\\sqrt{r/m}+r/m)\\).; Transport that isotropic lemma to X, including singular Σ and rank zero.",
+        "basic_progress": "Unfold the current target and the definitions in the preceding state. These identify the needed bound but do not select the method.",
+        "remaining_gap": "A fixed-direction estimate still says nothing uniform about the random maximizing direction.",
+        "observation": {
+          "target_feature": "For every isotropic Y in dimension r≥1 with marginal bound K, prove \\(E\\|A\\|\\le CK^2(\\sqrt{r/m}+r/m)\\).; Transport that isotropic lemma to X, including singular Σ and rank zero.",
+          "available_feature": "For each r≥1, an isotropic Y with marginal ψ₂ norm at most K defines a symmetric empirical error A; E⟨Y,x⟩²=1 on the unit sphere.",
+          "connection": "A quadratic form of the empirical matrix is an average of independent scalar squares, which matches scalar concentration."
+        },
+        "actions": [
+          {
+            "id": "u1",
+            "kind": "B-C",
+            "role": "execution",
+            "move": "Substitute A=m⁻¹∑Y_iY_iᵀ−I into xᵀAx and expand to the average of ⟨Y_i,x⟩²−1.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Substitute, expand, differentiate an explicitly supplied smooth formula, or perform scalar arithmetic; analytic limit rules are separate toolkit calls.",
+            "inputs": "For each r≥1, an isotropic Y with marginal ψ₂ norm at most K defines a symmetric empirical error A; E⟨Y,x⟩²=1 on the unit sphere.",
+            "toolkit_uses": [],
+            "verification": "Substitute A=m⁻¹∑Y_iY_iᵀ−I into xᵀAx and expand to the average of ⟨Y_i,x⟩²−1.",
+            "verifies": []
+          },
+          {
+            "id": "u2",
+            "kind": "strategic",
+            "role": "method / representation selection",
+            "move": "Select squared-subgaussian control followed by scalar Bernstein for this independent sum.",
+            "provenance": "A quadratic form of the empirical matrix is an average of independent scalar squares, which matches scalar concentration.",
+            "rule": "Select an auxiliary representation, parameter, method, or sufficient target beyond direct matching.",
+            "inputs": "For each r≥1, an isotropic Y with marginal ψ₂ norm at most K defines a symmetric empirical error A; E⟨Y,x⟩²=1 on the unit sphere.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "Verification is in the following linked basic actions and the detailed derivation.",
+            "verifies": []
+          },
+          {
+            "id": "u3",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "Check mean zero by isotropy, independence across sample index, and ψ₁ norm ≤CK² from the declared square bound; instantiate Bernstein with L=CK².",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "For each r≥1, an isotropic Y with marginal ψ₂ norm at most K defines a symmetric empirical error A; E⟨Y,x⟩²=1 on the unit sphere.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [
+              {
+                "id": "square",
+                "hypotheses_check": "Each ⟨Y_i,x⟩ has ψ₂ norm ≤K."
+              },
+              {
+                "id": "bernstein",
+                "hypotheses_check": "The centered scalar squares are independent across i and have ψ₁ norm ≤CK²."
+              }
+            ],
+            "verification": "Check mean zero by isotropy, independence across sample index, and ψ₁ norm ≤CK² from the declared square bound; instantiate Bernstein with L=CK².",
+            "verifies": [
+              "u2"
+            ]
+          }
+        ],
+        "relation": {
+          "kind": "deduction",
+          "justification": "Fix a deterministic unit x. Isotropy gives E⟨Y_i,x⟩²=1, so the summands are centered; independence follows from independent sample vectors, without requiring their coordinates to be independent. The squared-subgaussian bound yields ψ₁ norm CK². Substitution into scalar Bernstein proves the displayed tail uniformly in the choice of deterministic x.",
+          "side_conditions": "All conditional lemmas are universally quantified under their stated hypotheses; temporary vectors, thresholds, and parameters remain local. Σ is a second-moment matrix, equal to covariance when X is centered. ‖·‖ is operator norm; ψ₂ and ψ₁ are exponential Orlicz norms. Conditional isotropic lemmas are universally quantified over admissible Y and r≥1."
+        },
+        "remaining_obligations": "For every isotropic Y in dimension r≥1 with marginal bound K, prove \\(E\\|A\\|\\le CK^2(\\sqrt{r/m}+r/m)\\).; Transport that isotropic lemma to X, including singular Σ and rank zero."
+      },
+      "start": 419,
+      "end": 826
+    },
+    {
+      "id": "a3",
+      "title": "Pass from one direction to a finite net",
+      "quote": "Let \\(\\mathcal N\\) be a \\(1/4\\)-net of \\(S^{r-1}\\) with\n\\[\n|\\mathcal N|\\le 9^r.\n\\]\nFor every symmetric matrix \\(A\\),\n\\[\n\\|A\\|\\le 2\\max_{x\\in\\mathcal N}|x^\\top Ax|.\n\\]\nThus, by (1) and the union bound,\n\\[\n\\mathbb P\\{\\|A\\|>2t\\}\n\\le\n2\\exp\\left[\nCr-cm\\min\\left(\\frac{t^2}{K^4},\\frac{t}{K^2}\\right)\n\\right].\n\\]\nConsequently, for every \\(u\\ge0\\), with probability at least \\(1-2e^{-u}\\),\n\\[\n\\|A\\|\n\\le\nCK^2\\left(\n\\sqrt{\\frac{r+u}{m}}+\\frac{r+u}{m}\n\\right).\n\\tag{2}\n\\]\n",
+      "uses": [
+        "f1",
+        "f2"
+      ],
+      "adds": [
+        "f3"
+      ],
+      "opens": [],
+      "closes": [],
+      "observations": [
+        "o3"
+      ],
+      "motivated_by": [
+        "gi",
+        "gt"
+      ],
+      "justification": "Choose a deterministic 1/4-net N of size at most 9^r. For any unit z choose x∈N within 1/4. The identity zᵀAz−xᵀAx=(z−x)ᵀAz+xᵀA(z−x) bounds the difference by ‖A‖/2. Taking a supremum gives ‖A‖≤2 max_N|xᵀAx|. Union bound multiplies the fixed-direction tail by 9^r. Set t=C K²(√((r+u)/m)+(r+u)/m); with C large, both m t²/K⁴ and m t/K² dominate r log9+u. This proves (2).",
+      "observation": "The operator norm of a symmetric matrix is a supremum of quadratic forms; continuity allows a finite cover to control that supremum.",
+      "explanation": "Choose a deterministic 1/4-net N of size at most 9^r. For any unit z choose x∈N within 1/4. The identity zᵀAz−xᵀAx=(z−x)ᵀAz+xᵀA(z−x) bounds the difference by ‖A‖/2. Taking a supremum gives ‖A‖≤2 max_N|xᵀAx|. Union bound multiplies the fixed-direction tail by 9^r. Set t=C K²(√((r+u)/m)+(r+u)/m); with C large, both m t²/K⁴ and m t/K² dominate r log9+u. This proves (2).",
+      "difficulty": "This is the uniformization bottleneck. The net is exponentially large but finite; its logarithm is proportional to r.",
+      "short_version": "Under the isotropic hypotheses, \\(P\\{\\|A\\|>CK^2(\\sqrt{(r+u)/m}+(r+u)/m)\\}\\le2e^{-u}\\) for u≥0.",
+      "protocol": {
+        "direction": "forward",
+        "context": "For each r≥1, an isotropic Y with marginal ψ₂ norm at most K defines a symmetric empirical error A; E⟨Y,x⟩²=1 on the unit sphere.\nUnder the isotropic hypotheses, for each unit x and t>0, \\(P(|x^\\top Ax|>t)\\le2e^{-cm\\min(t^2/K^4,t/K^2)}\\).",
+        "target": "For every isotropic Y in dimension r≥1 with marginal bound K, prove \\(E\\|A\\|\\le CK^2(\\sqrt{r/m}+r/m)\\).; Transport that isotropic lemma to X, including singular Σ and rank zero.",
+        "basic_progress": "Unfold the current target and the definitions in the preceding state. These identify the needed bound but do not select the method.",
+        "remaining_gap": "This is the uniformization bottleneck. The net is exponentially large but finite; its logarithm is proportional to r.",
+        "observation": {
+          "target_feature": "For every isotropic Y in dimension r≥1 with marginal bound K, prove \\(E\\|A\\|\\le CK^2(\\sqrt{r/m}+r/m)\\).; Transport that isotropic lemma to X, including singular Σ and rank zero.",
+          "available_feature": "For each r≥1, an isotropic Y with marginal ψ₂ norm at most K defines a symmetric empirical error A; E⟨Y,x⟩²=1 on the unit sphere.\nUnder the isotropic hypotheses, for each unit x and t>0, \\(P(|x^\\top Ax|>t)\\le2e^{-cm\\min(t^2/K^4,t/K^2)}\\).",
+          "connection": "The operator norm of a symmetric matrix is a supremum of quadratic forms; continuity allows a finite cover to control that supremum."
+        },
+        "actions": [
+          {
+            "id": "u1",
+            "kind": "B-D",
+            "role": "execution",
+            "move": "For symmetric A, unfold ‖A‖ as the supremum of |zᵀAz| over unit z.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Unfold a declared definition.",
+            "inputs": "For each r≥1, an isotropic Y with marginal ψ₂ norm at most K defines a symmetric empirical error A; E⟨Y,x⟩²=1 on the unit sphere.\nUnder the isotropic hypotheses, for each unit x and t>0, \\(P(|x^\\top Ax|>t)\\le2e^{-cm\\min(t^2/K^4,t/K^2)}\\).",
+            "toolkit_uses": [],
+            "verification": "For symmetric A, unfold ‖A‖ as the supremum of |zᵀAz| over unit z.",
+            "verifies": []
+          },
+          {
+            "id": "u2",
+            "kind": "strategic",
+            "role": "method / representation selection",
+            "move": "Choose a deterministic 1/4-net so a quadratic-form error can be absorbed into half the operator norm.",
+            "provenance": "The operator norm of a symmetric matrix is a supremum of quadratic forms; continuity allows a finite cover to control that supremum.",
+            "rule": "Select an auxiliary representation, parameter, method, or sufficient target beyond direct matching.",
+            "inputs": "For each r≥1, an isotropic Y with marginal ψ₂ norm at most K defines a symmetric empirical error A; E⟨Y,x⟩²=1 on the unit sphere.\nUnder the isotropic hypotheses, for each unit x and t>0, \\(P(|x^\\top Ax|>t)\\le2e^{-cm\\min(t^2/K^4,t/K^2)}\\).\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "Verification is in the following linked basic actions and the detailed derivation.",
+            "verifies": []
+          },
+          {
+            "id": "u3",
+            "kind": "B-C",
+            "role": "execution",
+            "move": "For ‖z−x‖≤1/4 expand zᵀAz−xᵀAx=(z−x)ᵀAz+xᵀA(z−x); the absolute value is at most ‖A‖/2.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Substitute, expand, differentiate an explicitly supplied smooth formula, or perform scalar arithmetic; analytic limit rules are separate toolkit calls.",
+            "inputs": "For each r≥1, an isotropic Y with marginal ψ₂ norm at most K defines a symmetric empirical error A; E⟨Y,x⟩²=1 on the unit sphere.\nUnder the isotropic hypotheses, for each unit x and t>0, \\(P(|x^\\top Ax|>t)\\le2e^{-cm\\min(t^2/K^4,t/K^2)}\\).\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "For ‖z−x‖≤1/4 expand zᵀAz−xᵀAx=(z−x)ᵀAz+xᵀA(z−x); the absolute value is at most ‖A‖/2.",
+            "verifies": [
+              "u2"
+            ]
+          },
+          {
+            "id": "u4",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "The net theorem supplies at most 9^r points. Apply the fixed-direction bound to each, and sum the event probabilities.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "For each r≥1, an isotropic Y with marginal ψ₂ norm at most K defines a symmetric empirical error A; E⟨Y,x⟩²=1 on the unit sphere.\nUnder the isotropic hypotheses, for each unit x and t>0, \\(P(|x^\\top Ax|>t)\\le2e^{-cm\\min(t^2/K^4,t/K^2)}\\).\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [
+              {
+                "id": "net",
+                "hypotheses_check": "A is symmetric and r≥1; η=1/4<1/2."
+              },
+              {
+                "id": "prob",
+                "hypotheses_check": "Apply the finite union bound to the deterministic net events."
+              }
+            ],
+            "verification": "The net theorem supplies at most 9^r points. Apply the fixed-direction bound to each, and sum the event probabilities.",
+            "verifies": []
+          },
+          {
+            "id": "u5",
+            "kind": "strategic",
+            "role": "method / representation selection",
+            "move": "Choose t=C K²(√((r+u)/m)+(r+u)/m) to absorb the covering entropy r log9.",
+            "provenance": "The operator norm of a symmetric matrix is a supremum of quadratic forms; continuity allows a finite cover to control that supremum.",
+            "rule": "Select an auxiliary representation, parameter, method, or sufficient target beyond direct matching.",
+            "inputs": "For each r≥1, an isotropic Y with marginal ψ₂ norm at most K defines a symmetric empirical error A; E⟨Y,x⟩²=1 on the unit sphere.\nUnder the isotropic hypotheses, for each unit x and t>0, \\(P(|x^\\top Ax|>t)\\le2e^{-cm\\min(t^2/K^4,t/K^2)}\\).\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "Verification is in the following linked basic actions and the detailed derivation.",
+            "verifies": []
+          },
+          {
+            "id": "u6",
+            "kind": "B-C",
+            "role": "execution",
+            "move": "For sufficiently large universal C, both m t²/K⁴ and m t/K² dominate r log9+u. Substitute into the net tail.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Substitute, expand, differentiate an explicitly supplied smooth formula, or perform scalar arithmetic; analytic limit rules are separate toolkit calls.",
+            "inputs": "For each r≥1, an isotropic Y with marginal ψ₂ norm at most K defines a symmetric empirical error A; E⟨Y,x⟩²=1 on the unit sphere.\nUnder the isotropic hypotheses, for each unit x and t>0, \\(P(|x^\\top Ax|>t)\\le2e^{-cm\\min(t^2/K^4,t/K^2)}\\).\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "For sufficiently large universal C, both m t²/K⁴ and m t/K² dominate r log9+u. Substitute into the net tail.",
+            "verifies": [
+              "u5"
+            ]
+          }
+        ],
+        "relation": {
+          "kind": "deduction",
+          "justification": "Choose a deterministic 1/4-net N of size at most 9^r. For any unit z choose x∈N within 1/4. The identity zᵀAz−xᵀAx=(z−x)ᵀAz+xᵀA(z−x) bounds the difference by ‖A‖/2. Taking a supremum gives ‖A‖≤2 max_N|xᵀAx|. Union bound multiplies the fixed-direction tail by 9^r. Set t=C K²(√((r+u)/m)+(r+u)/m); with C large, both m t²/K⁴ and m t/K² dominate r log9+u. This proves (2).",
+          "side_conditions": "All conditional lemmas are universally quantified under their stated hypotheses; temporary vectors, thresholds, and parameters remain local. Σ is a second-moment matrix, equal to covariance when X is centered. ‖·‖ is operator norm; ψ₂ and ψ₁ are exponential Orlicz norms. Conditional isotropic lemmas are universally quantified over admissible Y and r≥1."
+        },
+        "remaining_obligations": "For every isotropic Y in dimension r≥1 with marginal bound K, prove \\(E\\|A\\|\\le CK^2(\\sqrt{r/m}+r/m)\\).; Transport that isotropic lemma to X, including singular Σ and rank zero."
+      },
+      "start": 826,
+      "end": 1287
+    },
+    {
+      "id": "a4",
+      "title": "Integrate the matrix tail",
+      "quote": "Integrating this tail bound yields\n\\[\n\\mathbb E\\|A\\|\n\\le\nCK^2\\left(\\sqrt{\\frac rm}+\\frac rm\\right).\n\\tag{3}\n\\]\n\n",
+      "uses": [
+        "f3"
+      ],
+      "adds": [
+        "f4"
+      ],
+      "opens": [],
+      "closes": [
+        "gi"
+      ],
+      "observations": [
+        "o4"
+      ],
+      "motivated_by": [
+        "gi",
+        "gt"
+      ],
+      "justification": "Write b(u)=C K²(√((r+u)/m)+(r+u)/m). By layer cake and a change of variable above b(0), E‖A‖≤b(0)+∫₀∞2e^(−u)b′(u)du. Since r≥1, b′(u)≤C K²(1/(2√m)+1/m), and these remainder terms are bounded by a constant times K²(√(r/m)+r/m). Thus the isotropic goal closes; transport to X remains.",
+      "observation": "An exponentially decaying tail controls the expectation after accounting for the baseline threshold b(0).",
+      "explanation": "Write b(u)=C K²(√((r+u)/m)+(r+u)/m). By layer cake and a change of variable above b(0), E‖A‖≤b(0)+∫₀∞2e^(−u)b′(u)du. Since r≥1, b′(u)≤C K²(1/(2√m)+1/m), and these remainder terms are bounded by a constant times K²(√(r/m)+r/m). Thus the isotropic goal closes; transport to X remains.",
+      "difficulty": "Integrating from zero as if b(0)=0 would omit the dimension term.",
+      "short_version": "The isotropic lemma holds: \\(E\\|A\\|\\le CK^2(\\sqrt{r/m}+r/m)\\).",
+      "protocol": {
+        "direction": "meeting",
+        "context": "Under the isotropic hypotheses, \\(P\\{\\|A\\|>CK^2(\\sqrt{(r+u)/m}+(r+u)/m)\\}\\le2e^{-u}\\) for u≥0.",
+        "target": "For every isotropic Y in dimension r≥1 with marginal bound K, prove \\(E\\|A\\|\\le CK^2(\\sqrt{r/m}+r/m)\\).; Transport that isotropic lemma to X, including singular Σ and rank zero.",
+        "basic_progress": "Unfold the current target and the definitions in the preceding state. These identify the needed bound but do not select the method.",
+        "remaining_gap": "Integrating from zero as if b(0)=0 would omit the dimension term.",
+        "observation": {
+          "target_feature": "For every isotropic Y in dimension r≥1 with marginal bound K, prove \\(E\\|A\\|\\le CK^2(\\sqrt{r/m}+r/m)\\).; Transport that isotropic lemma to X, including singular Σ and rank zero.",
+          "available_feature": "Under the isotropic hypotheses, \\(P\\{\\|A\\|>CK^2(\\sqrt{(r+u)/m}+(r+u)/m)\\}\\le2e^{-u}\\) for u≥0.",
+          "connection": "An exponentially decaying tail controls the expectation after accounting for the baseline threshold b(0)."
+        },
+        "actions": [
+          {
+            "id": "u1",
+            "kind": "strategic",
+            "role": "method / representation selection",
+            "move": "Select layer cake with the change of variable t=b(u), splitting at b(0).",
+            "provenance": "An exponentially decaying tail controls the expectation after accounting for the baseline threshold b(0).",
+            "rule": "Select an auxiliary representation, parameter, method, or sufficient target beyond direct matching.",
+            "inputs": "Under the isotropic hypotheses, \\(P\\{\\|A\\|>CK^2(\\sqrt{(r+u)/m}+(r+u)/m)\\}\\le2e^{-u}\\) for u≥0.",
+            "toolkit_uses": [],
+            "verification": "Verification is in the following linked basic actions and the detailed derivation.",
+            "verifies": []
+          },
+          {
+            "id": "u2",
+            "kind": "B-C",
+            "role": "execution",
+            "move": "Differentiate b: b′(u)=C K²(1/(2√(m(r+u)))+1/m). For r≥1 bound it by C K²(1/(2√m)+1/m).",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Substitute, expand, differentiate an explicitly supplied smooth formula, or perform scalar arithmetic; analytic limit rules are separate toolkit calls.",
+            "inputs": "Under the isotropic hypotheses, \\(P\\{\\|A\\|>CK^2(\\sqrt{(r+u)/m}+(r+u)/m)\\}\\le2e^{-u}\\) for u≥0.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "Differentiate b: b′(u)=C K²(1/(2√(m(r+u)))+1/m). For r≥1 bound it by C K²(1/(2√m)+1/m).",
+            "verifies": [
+              "u1"
+            ]
+          },
+          {
+            "id": "u3",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "Integrate 2e^(−u)b′(u), add b(0), and absorb the remainder into C K²(√(r/m)+r/m); this discharges the isotropic goal.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "Under the isotropic hypotheses, \\(P\\{\\|A\\|>CK^2(\\sqrt{(r+u)/m}+(r+u)/m)\\}\\le2e^{-u}\\) for u≥0.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [
+              {
+                "id": "prob",
+                "hypotheses_check": "‖A‖ is nonnegative measurable; the tail bound holds for all u≥0."
+              }
+            ],
+            "verification": "Integrate 2e^(−u)b′(u), add b(0), and absorb the remainder into C K²(√(r/m)+r/m); this discharges the isotropic goal.",
+            "verifies": []
+          }
+        ],
+        "relation": {
+          "kind": "meeting",
+          "justification": "Write b(u)=C K²(√((r+u)/m)+(r+u)/m). By layer cake and a change of variable above b(0), E‖A‖≤b(0)+∫₀∞2e^(−u)b′(u)du. Since r≥1, b′(u)≤C K²(1/(2√m)+1/m), and these remainder terms are bounded by a constant times K²(√(r/m)+r/m). Thus the isotropic goal closes; transport to X remains.",
+          "side_conditions": "All conditional lemmas are universally quantified under their stated hypotheses; temporary vectors, thresholds, and parameters remain local. Σ is a second-moment matrix, equal to covariance when X is centered. ‖·‖ is operator norm; ψ₂ and ψ₁ are exponential Orlicz norms. Conditional isotropic lemmas are universally quantified over admissible Y and r≥1."
+        },
+        "remaining_obligations": "Transport that isotropic lemma to X, including singular Σ and rank zero."
+      },
+      "start": 1287,
+      "end": 1399
+    },
+    {
+      "id": "a5",
+      "title": "Whiten only on the covariance range",
+      "quote": "### Reduction to the isotropic case\n\nLet \\(S=\\operatorname{range}(\\Sigma)\\) and \\(r=\\dim S\\le n\\). If \\(v\\in\\ker(\\Sigma)\\), then\n\\[\n\\mathbb E\\langle X,v\\rangle^2=v^\\top\\Sigma v=0,\n\\]\nso \\(X\\in S\\) almost surely.\n\nOn \\(S\\), define\n\\[\nY=\\Sigma^{-1/2}X,\n\\]\nwhere the inverse is taken only on \\(S\\). Then\n\\[\n\\mathbb E YY^\\top=I_S.\n\\]\nMoreover, for every \\(y\\in S\\),\n\\[\n\\begin{aligned}\n\\|\\langle Y,y\\rangle\\|_{\\psi_2}\n&=\\|\\langle X,\\Sigma^{-1/2}y\\rangle\\|_{\\psi_2}\\\\\n&\\le K\\|\\langle X,\\Sigma^{-1/2}y\\rangle\\|_{L_2}\\\\\n&=K\\|y\\|_2.\n\\end{aligned}\n\\]\nThus \\(Y\\) satisfies the isotropic assumptions above.\n\n",
+      "uses": [
+        "f0"
+      ],
+      "adds": [
+        "f5"
+      ],
+      "opens": [],
+      "closes": [],
+      "observations": [
+        "o5"
+      ],
+      "motivated_by": [
+        "gt"
+      ],
+      "justification": "For an orthonormal basis v_j of kerΣ, E⟨X,v_j⟩²=0. Each coordinate vanishes almost surely, and the finite intersection of these events proves X∈S a.s. Rank zero gives X=0 and the target directly. For r>0 use the inverse only on S. Then EYYᵀ=I_S. For y∈S, the assumed relative ψ₂ bound applied to Σ_S⁻¹ᐟ²y gives ‖⟨Y,y⟩‖ψ₂≤K√(yᵀΣ_S⁻¹ᐟ²ΣΣ_S⁻¹ᐟ²y)=K‖y‖. Independent copies stay independent under this deterministic transformation.",
+      "observation": "Zero variance identifies the actual support; the inverse square root normalizes each surviving direction.",
+      "explanation": "For an orthonormal basis v_j of kerΣ, E⟨X,v_j⟩²=0. Each coordinate vanishes almost surely, and the finite intersection of these events proves X∈S a.s. Rank zero gives X=0 and the target directly. For r>0 use the inverse only on S. Then EYYᵀ=I_S. For y∈S, the assumed relative ψ₂ bound applied to Σ_S⁻¹ᐟ²y gives ‖⟨Y,y⟩‖ψ₂≤K√(yᵀΣ_S⁻¹ᐟ²ΣΣ_S⁻¹ᐟ²y)=K‖y‖. Independent copies stay independent under this deterministic transformation.",
+      "difficulty": "A full-space inverse is invalid when Σ is singular. This construction is avoidable by the direct-coordinate alternative.",
+      "short_version": "If rank Σ=0 then X=0 a.s.; otherwise S=range Σ has r≥1, X∈S a.s., and Y=Σ_S⁻¹ᐟ²X satisfies the isotropic hypotheses.",
+      "protocol": {
+        "direction": "forward",
+        "context": "X is a real subgaussian vector; Xi are independent copies; K≥1 and the relative marginal bound in the theorem holds; n,m≥1.",
+        "target": "Transport that isotropic lemma to X, including singular Σ and rank zero.",
+        "basic_progress": "Unfold the current target and the definitions in the preceding state. These identify the needed bound but do not select the method.",
+        "remaining_gap": "A full-space inverse is invalid when Σ is singular. This construction is avoidable by the direct-coordinate alternative.",
+        "observation": {
+          "target_feature": "Transport that isotropic lemma to X, including singular Σ and rank zero.",
+          "available_feature": "X is a real subgaussian vector; Xi are independent copies; K≥1 and the relative marginal bound in the theorem holds; n,m≥1.",
+          "connection": "Zero variance identifies the actual support; the inverse square root normalizes each surviving direction."
+        },
+        "actions": [
+          {
+            "id": "u1",
+            "kind": "B-C",
+            "role": "execution",
+            "move": "For v∈kerΣ, E⟨X,v⟩²=vᵀΣv=0. A finite basis of the kernel yields X∈rangeΣ almost surely.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Substitute, expand, differentiate an explicitly supplied smooth formula, or perform scalar arithmetic; analytic limit rules are separate toolkit calls.",
+            "inputs": "X is a real subgaussian vector; Xi are independent copies; K≥1 and the relative marginal bound in the theorem holds; n,m≥1.",
+            "toolkit_uses": [],
+            "verification": "For v∈kerΣ, E⟨X,v⟩²=vᵀΣv=0. A finite basis of the kernel yields X∈rangeΣ almost surely.",
+            "verifies": []
+          },
+          {
+            "id": "u2",
+            "kind": "strategic",
+            "role": "method / representation selection",
+            "move": "Handle rank zero separately; on positive rank choose Y=Σ_S⁻¹ᐟ²X to normalize the second moment.",
+            "provenance": "Zero variance identifies the actual support; the inverse square root normalizes each surviving direction.",
+            "rule": "Select an auxiliary representation, parameter, method, or sufficient target beyond direct matching.",
+            "inputs": "X is a real subgaussian vector; Xi are independent copies; K≥1 and the relative marginal bound in the theorem holds; n,m≥1.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "Verification is in the following linked basic actions and the detailed derivation.",
+            "verifies": []
+          },
+          {
+            "id": "u3",
+            "kind": "B-C",
+            "role": "execution",
+            "move": "On S, EYYᵀ=Σ_S⁻¹ᐟ²ΣΣ_S⁻¹ᐟ²=I_S and E⟨X,Σ_S⁻¹ᐟ²y⟩²=‖y‖². Rank zero makes X=0 a.s.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Substitute, expand, differentiate an explicitly supplied smooth formula, or perform scalar arithmetic; analytic limit rules are separate toolkit calls.",
+            "inputs": "X is a real subgaussian vector; Xi are independent copies; K≥1 and the relative marginal bound in the theorem holds; n,m≥1.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [
+              {
+                "id": "spectral",
+                "hypotheses_check": "Σ is a finite positive semidefinite second-moment matrix; use its positive eigenspace."
+              }
+            ],
+            "verification": "On S, EYYᵀ=Σ_S⁻¹ᐟ²ΣΣ_S⁻¹ᐟ²=I_S and E⟨X,Σ_S⁻¹ᐟ²y⟩²=‖y‖². Rank zero makes X=0 a.s.",
+            "verifies": [
+              "u2"
+            ]
+          },
+          {
+            "id": "u4",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "Instantiate the original relative subgaussian assumption at Σ_S⁻¹ᐟ²y. The marginal bound for Y is K‖y‖; a deterministic map preserves sample independence.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "X is a real subgaussian vector; Xi are independent copies; K≥1 and the relative marginal bound in the theorem holds; n,m≥1.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "Instantiate the original relative subgaussian assumption at Σ_S⁻¹ᐟ²y. The marginal bound for Y is K‖y‖; a deterministic map preserves sample independence.",
+            "verifies": []
+          }
+        ],
+        "relation": {
+          "kind": "deduction",
+          "justification": "For an orthonormal basis v_j of kerΣ, E⟨X,v_j⟩²=0. Each coordinate vanishes almost surely, and the finite intersection of these events proves X∈S a.s. Rank zero gives X=0 and the target directly. For r>0 use the inverse only on S. Then EYYᵀ=I_S. For y∈S, the assumed relative ψ₂ bound applied to Σ_S⁻¹ᐟ²y gives ‖⟨Y,y⟩‖ψ₂≤K√(yᵀΣ_S⁻¹ᐟ²ΣΣ_S⁻¹ᐟ²y)=K‖y‖. Independent copies stay independent under this deterministic transformation.",
+          "side_conditions": "All conditional lemmas are universally quantified under their stated hypotheses; temporary vectors, thresholds, and parameters remain local. Σ is a second-moment matrix, equal to covariance when X is centered. ‖·‖ is operator norm; ψ₂ and ψ₁ are exponential Orlicz norms. Conditional isotropic lemmas are universally quantified over admissible Y and r≥1."
+        },
+        "remaining_obligations": "Transport that isotropic lemma to X, including singular Σ and rank zero."
+      },
+      "start": 1399,
+      "end": 1995
+    },
+    {
+      "id": "a6",
+      "title": "Transport the norm bound and close the proof",
+      "quote": "Writing \\(Y_i=\\Sigma^{-1/2}X_i\\), we have\n\\[\n\\Sigma_m-\\Sigma\n=\n\\Sigma^{1/2}\n\\left(\n\\frac1m\\sum_{i=1}^mY_iY_i^\\top-I_S\n\\right)\n\\Sigma^{1/2}.\n\\]\nHence\n\\[\n\\|\\Sigma_m-\\Sigma\\|\n\\le\n\\|\\Sigma\\|\n\\left\\|\n\\frac1m\\sum_{i=1}^mY_iY_i^\\top-I_S\n\\right\\|.\n\\]\nApplying (3) and using \\(r\\le n\\), we obtain\n\\[\n\\boxed{\n\\mathbb E\\|\\Sigma_m-\\Sigma\\|\n\\le\nCK^2\\left(\\sqrt{\\frac nm}+\\frac nm\\right)\\|\\Sigma\\|\n}.\n\\]\nHere \\(C>0\\) is an absolute constant.",
+      "uses": [
+        "f4",
+        "f5"
+      ],
+      "adds": [
+        "f6"
+      ],
+      "opens": [],
+      "closes": [
+        "gt"
+      ],
+      "observations": [
+        "o6"
+      ],
+      "motivated_by": [
+        "gt"
+      ],
+      "justification": "On S and hence as an ambient operator extended by zero, Σ_m−Σ=Σ¹ᐟ²AΣ¹ᐟ². Submultiplicativity gives ‖Σ_m−Σ‖≤‖Σ¹ᐟ²‖²‖A‖=‖Σ‖‖A‖. Apply the proved isotropic lemma to the Y from the preceding step. Since r≤n and both terms increase with r, the requested n bound follows. The rank-zero case already holds with both sides zero. The forward facts now discharge the remaining transport goal.",
+      "observation": "Congruence by Σ¹ᐟ² restores the original scale while operator norms multiply.",
+      "explanation": "On S and hence as an ambient operator extended by zero, Σ_m−Σ=Σ¹ᐟ²AΣ¹ᐟ². Submultiplicativity gives ‖Σ_m−Σ‖≤‖Σ¹ᐟ²‖²‖A‖=‖Σ‖‖A‖. Apply the proved isotropic lemma to the Y from the preceding step. Since r≤n and both terms increase with r, the requested n bound follows. The rank-zero case already holds with both sides zero. The forward facts now discharge the remaining transport goal.",
+      "difficulty": "Only the transport remains; no new stochastic estimate is needed.",
+      "short_version": "\\(E\\|\\Sigma_m-\\Sigma\\|\\le CK^2(\\sqrt{n/m}+n/m)\\|\\Sigma\\|\\).",
+      "protocol": {
+        "direction": "meeting",
+        "context": "The isotropic lemma holds: \\(E\\|A\\|\\le CK^2(\\sqrt{r/m}+r/m)\\).\nIf rank Σ=0 then X=0 a.s.; otherwise S=range Σ has r≥1, X∈S a.s., and Y=Σ_S⁻¹ᐟ²X satisfies the isotropic hypotheses.",
+        "target": "Transport that isotropic lemma to X, including singular Σ and rank zero.",
+        "basic_progress": "Unfold the definitions and substitute the available facts. \\(E\\|\\Sigma_m-\\Sigma\\|\\le CK^2(\\sqrt{n/m}+n/m)\\|\\Sigma\\|\\).",
+        "remaining_gap": "Only the transport remains; no new stochastic estimate is needed.",
+        "observation": {
+          "target_feature": "Transport that isotropic lemma to X, including singular Σ and rank zero.",
+          "available_feature": "The isotropic lemma holds: \\(E\\|A\\|\\le CK^2(\\sqrt{r/m}+r/m)\\).\nIf rank Σ=0 then X=0 a.s.; otherwise S=range Σ has r≥1, X∈S a.s., and Y=Σ_S⁻¹ᐟ²X satisfies the isotropic hypotheses.",
+          "connection": "Congruence by Σ¹ᐟ² restores the original scale while operator norms multiply."
+        },
+        "actions": [
+          {
+            "id": "u1",
+            "kind": "B-C",
+            "role": "execution",
+            "move": "Substitute X_i=Σ¹ᐟ²Y_i on S to expand Σ_m−Σ=Σ¹ᐟ²AΣ¹ᐟ².",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Substitute, expand, differentiate an explicitly supplied smooth formula, or perform scalar arithmetic; analytic limit rules are separate toolkit calls.",
+            "inputs": "The isotropic lemma holds: \\(E\\|A\\|\\le CK^2(\\sqrt{r/m}+r/m)\\).\nIf rank Σ=0 then X=0 a.s.; otherwise S=range Σ has r≥1, X∈S a.s., and Y=Σ_S⁻¹ᐟ²X satisfies the isotropic hypotheses.",
+            "toolkit_uses": [],
+            "verification": "Substitute X_i=Σ¹ᐟ²Y_i on S to expand Σ_m−Σ=Σ¹ᐟ²AΣ¹ᐟ².",
+            "verifies": []
+          },
+          {
+            "id": "u2",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "Apply norm submultiplicativity and ‖Σ¹ᐟ²‖²=‖Σ‖, then the already proved isotropic lemma. Use r≤n and the completed rank-zero case to discharge the transport goal.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "The isotropic lemma holds: \\(E\\|A\\|\\le CK^2(\\sqrt{r/m}+r/m)\\).\nIf rank Σ=0 then X=0 a.s.; otherwise S=range Σ has r≥1, X∈S a.s., and Y=Σ_S⁻¹ᐟ²X satisfies the isotropic hypotheses.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [
+              {
+                "id": "spectral",
+                "hypotheses_check": "The sandwich identity holds on S, and Σ¹ᐟ² has norm √‖Σ‖."
+              }
+            ],
+            "verification": "Apply norm submultiplicativity and ‖Σ¹ᐟ²‖²=‖Σ‖, then the already proved isotropic lemma. Use r≤n and the completed rank-zero case to discharge the transport goal.",
+            "verifies": []
+          }
+        ],
+        "relation": {
+          "kind": "meeting",
+          "justification": "On S and hence as an ambient operator extended by zero, Σ_m−Σ=Σ¹ᐟ²AΣ¹ᐟ². Submultiplicativity gives ‖Σ_m−Σ‖≤‖Σ¹ᐟ²‖²‖A‖=‖Σ‖‖A‖. Apply the proved isotropic lemma to the Y from the preceding step. Since r≤n and both terms increase with r, the requested n bound follows. The rank-zero case already holds with both sides zero. The forward facts now discharge the remaining transport goal.",
+          "side_conditions": "All conditional lemmas are universally quantified under their stated hypotheses; temporary vectors, thresholds, and parameters remain local. Σ is a second-moment matrix, equal to covariance when X is centered. ‖·‖ is operator norm; ψ₂ and ψ₁ are exponential Orlicz norms. Conditional isotropic lemmas are universally quantified over admissible Y and r≥1."
+        },
+        "remaining_obligations": "None: all required goals have been discharged under the original assumptions."
+      },
+      "start": 1995,
+      "end": 2422
+    }
+  ],
+  "states": [
+    {
+      "id": "s0",
+      "have": [
+        "f0"
+      ],
+      "want": [
+        "g0"
+      ],
+      "action": null
+    },
+    {
+      "id": "s1",
+      "have": [
+        "f0",
+        "f1"
+      ],
+      "want": [
+        "gi",
+        "gt"
+      ],
+      "action": "a1"
+    },
+    {
+      "id": "s2",
+      "have": [
+        "f0",
+        "f1",
+        "f2"
+      ],
+      "want": [
+        "gi",
+        "gt"
+      ],
+      "action": "a2"
+    },
+    {
+      "id": "s3",
+      "have": [
+        "f0",
+        "f1",
+        "f2",
+        "f3"
+      ],
+      "want": [
+        "gi",
+        "gt"
+      ],
+      "action": "a3"
+    },
+    {
+      "id": "s4",
+      "have": [
+        "f0",
+        "f1",
+        "f2",
+        "f3",
+        "f4"
+      ],
+      "want": [
+        "gt"
+      ],
+      "action": "a4"
+    },
+    {
+      "id": "s5",
+      "have": [
+        "f0",
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "f5"
+      ],
+      "want": [
+        "gt"
+      ],
+      "action": "a5"
+    },
+    {
+      "id": "s6",
+      "have": [
+        "f0",
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "f5",
+        "f6"
+      ],
+      "want": [],
+      "action": "a6"
+    }
+  ],
+  "proof_edges": [
+    {
+      "from": "f0",
+      "to": "f1",
+      "action": "a1",
+      "kind": "deduction"
+    },
+    {
+      "from": "g0",
+      "to": "gi",
+      "action": "a1",
+      "kind": "reduction"
+    },
+    {
+      "from": "g0",
+      "to": "gt",
+      "action": "a1",
+      "kind": "reduction"
+    },
+    {
+      "from": "g0",
+      "to": "o1",
+      "action": "a1",
+      "kind": "inspiration"
+    },
+    {
+      "from": "o1",
+      "to": "f1",
+      "action": "a1",
+      "kind": "motivation"
+    },
+    {
+      "from": "o1",
+      "to": "gi",
+      "action": "a1",
+      "kind": "motivation"
+    },
+    {
+      "from": "o1",
+      "to": "gt",
+      "action": "a1",
+      "kind": "motivation"
+    },
+    {
+      "from": "o1",
+      "to": "g0",
+      "action": "a1",
+      "kind": "motivation"
+    },
+    {
+      "from": "f1",
+      "to": "f2",
+      "action": "a2",
+      "kind": "deduction"
+    },
+    {
+      "from": "gi",
+      "to": "o2",
+      "action": "a2",
+      "kind": "inspiration"
+    },
+    {
+      "from": "gt",
+      "to": "o2",
+      "action": "a2",
+      "kind": "inspiration"
+    },
+    {
+      "from": "o2",
+      "to": "f2",
+      "action": "a2",
+      "kind": "motivation"
+    },
+    {
+      "from": "f1",
+      "to": "f3",
+      "action": "a3",
+      "kind": "deduction"
+    },
+    {
+      "from": "f2",
+      "to": "f3",
+      "action": "a3",
+      "kind": "deduction"
+    },
+    {
+      "from": "gi",
+      "to": "o3",
+      "action": "a3",
+      "kind": "inspiration"
+    },
+    {
+      "from": "gt",
+      "to": "o3",
+      "action": "a3",
+      "kind": "inspiration"
+    },
+    {
+      "from": "o3",
+      "to": "f3",
+      "action": "a3",
+      "kind": "motivation"
+    },
+    {
+      "from": "f3",
+      "to": "f4",
+      "action": "a4",
+      "kind": "deduction"
+    },
+    {
+      "from": "f3",
+      "to": "gi",
+      "action": "a4",
+      "kind": "meeting"
+    },
+    {
+      "from": "f4",
+      "to": "gi",
+      "action": "a4",
+      "kind": "meeting"
+    },
+    {
+      "from": "gi",
+      "to": "o4",
+      "action": "a4",
+      "kind": "inspiration"
+    },
+    {
+      "from": "gt",
+      "to": "o4",
+      "action": "a4",
+      "kind": "inspiration"
+    },
+    {
+      "from": "o4",
+      "to": "f4",
+      "action": "a4",
+      "kind": "motivation"
+    },
+    {
+      "from": "o4",
+      "to": "gi",
+      "action": "a4",
+      "kind": "motivation"
+    },
+    {
+      "from": "f0",
+      "to": "f5",
+      "action": "a5",
+      "kind": "deduction"
+    },
+    {
+      "from": "gt",
+      "to": "o5",
+      "action": "a5",
+      "kind": "inspiration"
+    },
+    {
+      "from": "o5",
+      "to": "f5",
+      "action": "a5",
+      "kind": "motivation"
+    },
+    {
+      "from": "f4",
+      "to": "f6",
+      "action": "a6",
+      "kind": "deduction"
+    },
+    {
+      "from": "f5",
+      "to": "f6",
+      "action": "a6",
+      "kind": "deduction"
+    },
+    {
+      "from": "f4",
+      "to": "gt",
+      "action": "a6",
+      "kind": "meeting"
+    },
+    {
+      "from": "f5",
+      "to": "gt",
+      "action": "a6",
+      "kind": "meeting"
+    },
+    {
+      "from": "f6",
+      "to": "gt",
+      "action": "a6",
+      "kind": "meeting"
+    },
+    {
+      "from": "gt",
+      "to": "o6",
+      "action": "a6",
+      "kind": "inspiration"
+    },
+    {
+      "from": "o6",
+      "to": "f6",
+      "action": "a6",
+      "kind": "motivation"
+    },
+    {
+      "from": "o6",
+      "to": "gt",
+      "action": "a6",
+      "kind": "motivation"
+    }
+  ],
+  "closure": true,
+  "ablations": {
+    "a1": {
+      "action": "a1",
+      "restriction": "Globally forbid reducing X to an isotropic auxiliary random vector or proving an isotropic auxiliary covariance theorem.",
+      "alternatives": [
+        {
+          "title": "Work in the original coordinates",
+          "argument": "Work directly with \\(H=\\Sigma_m-\\Sigma\\). If \\(\\|\\Sigma\\|=0\\), then each coordinate has zero second moment and X=0 almost surely. Otherwise every unit x satisfies \\(\\|\\langle X,x\\rangle\\|_{\\psi_2}\\le K\\sqrt{\\|\\Sigma\\|}\\). Squaring and centering therefore gives independent summands with subexponential norm at most \\(CK^2\\|\\Sigma\\|\\). Scalar Bernstein, a 1/4-net in the original \\(\\mathbb R^n\\), and the quadratic-form net inequality give\n\\[P\\{\\|H\\|> CK^2\\|\\Sigma\\|(\\sqrt{(n+u)/m}+(n+u)/m)\\}\\le2e^{-u}.\\]\nTo integrate, put \\(b(u)=CK^2\\|\\Sigma\\|(\\sqrt{(n+u)/m}+(n+u)/m)\\). Then \\(E\\|H\\|\\le b(0)+\\int_0^\\infty 2e^{-u}b'(u)du\\le C'K^2\\|\\Sigma\\|(\\sqrt{n/m}+n/m)\\) for n≥1. No whitening, range inverse, isotropic auxiliary vector or sandwich estimate occurs.",
+          "outcome": "closed",
+          "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n; no measured discovery-cost comparison.",
+          "route": [
+            {
+              "title": "Original marginal scale",
+              "have": "\\(\\|\\langle X,x\\rangle\\|_{\\psi_2}\\le K\\sqrt{\\|\\Sigma\\|}\\) on the unit sphere.",
+              "want": "Control all directions simultaneously."
+            },
+            {
+              "title": "Bernstein and an original-space net",
+              "have": "\\(P(\\|H\\|>b(u))\\le2e^{-u}\\).",
+              "want": "Integrate the tail."
+            },
+            {
+              "title": "Expectation bound",
+              "have": "\\(E\\|H\\|\\le CK^2\\|\\Sigma\\|(\\sqrt{n/m}+n/m)\\).",
+              "want": ""
+            }
+          ],
+          "origin": "model_proposed",
+          "source_ids": [],
+          "rejoin_state": null,
+          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
+          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "id": "a1-alt1",
+          "research_exposed": false,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        }
+      ],
+      "research": {
+        "status": "not_performed",
+        "sources": [],
+        "calls": [],
+        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+      },
+      "status": "reviewed",
+      "scope": "Global strategy ban; every alternative restarts from the original assumptions."
+    },
+    "a2": {
+      "action": "a2",
+      "restriction": "Globally forbid invoking scalar Bernstein as a black-box theorem. Deriving its exponential-moment mechanism is allowed; this is a toolkit-call ablation, not a removal of exponential concentration.",
+      "alternatives": [
+        {
+          "title": "Derive the scalar MGF bound from moments",
+          "argument": "Avoid invoking packaged Bernstein. From E exp(|Z|/L)≤2 obtain E|Z|^p≤2p!L^p. Since EZ=0, for |s|L≤1/2 the power series gives E e^{sZ}≤1+2∑_{p≥2}(|s|L)^p≤exp(4s²L²). For independent Z_i, E exp(s∑Z_i)≤exp(4ms²L²). Exponential Markov with s=min(t/(8L²),1/(4L)) and its negative gives 2exp[−cm min(t²/L²,t/L)]. Here Z_i=⟨Y_i,x⟩²−1 and L=CK². Reconstruct the isotropic setting, apply the same deterministic net, integrate its tail, then whiten on rangeΣ and transport as explicitly shown in the original proof. This recovers the full theorem without a Bernstein theorem call.",
+          "outcome": "closed",
+          "cost": "Same rate; substantially more algebra. The mechanism is equivalent to Bernstein, so this does not establish conceptual dispensability.",
+          "route": [
+            {
+              "title": "Moment bound",
+              "have": "E|Z|^p≤2p!L^p.",
+              "want": "Bound the MGF and optimize."
+            },
+            {
+              "title": "Exponential tail",
+              "have": "2 exp[−cm min(t²/L²,t/L)].",
+              "want": "Apply net, expectation and transport."
+            },
+            {
+              "title": "Reuse permitted continuation",
+              "have": "The covariance target follows with L=CK².",
+              "want": ""
+            }
+          ],
+          "origin": "model_proposed",
+          "source_ids": [],
+          "rejoin_state": null,
+          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
+          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "id": "a2-alt1",
+          "research_exposed": false,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        }
+      ],
+      "research": {
+        "status": "not_performed",
+        "sources": [],
+        "calls": [],
+        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+      },
+      "status": "reviewed",
+      "scope": "Global strategy ban; every alternative restarts from the original assumptions."
+    },
+    "a3": {
+      "action": "a3",
+      "restriction": "Globally forbid finite sphere nets or discretizations of directions, including disguised covering arguments.",
+      "alternatives": [
+        {
+          "title": "Replace the operator norm by the Frobenius norm",
+          "argument": "For isotropic Y with independent standard Gaussian coordinates, Var(A_ii)=2/m and E A_ij²=1/m for i≠j. Therefore E‖A‖F²=(r²+r)/m. The route ‖A‖≤‖A‖F followed by Cauchy–Schwarz only gives O(r/√m), whereas the target for m≫r is O(√(r/m)). The resulting dimension loss cannot be absorbed into a universal constant. This calculation refutes this proposed certificate, not every net-free method.",
+          "outcome": "failed",
+          "cost": "Finite calculation, but a √r loss in the leading dimension term. This is failure of the requested rate, not infinite search.",
+          "route": [
+            {
+              "title": "Entrywise second moments",
+              "have": "E‖A‖F²=(r²+r)/m in the Gaussian test case.",
+              "want": "Obtain a √(r/m) rate."
+            },
+            {
+              "title": "Dimension loss",
+              "have": "The derived certificate is only O(r/√m).",
+              "want": "The target rate remains unproved."
+            }
+          ],
+          "origin": "model_proposed",
+          "source_ids": [],
+          "rejoin_state": null,
+          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
+          "assessment": "This candidate does not establish the stated theorem under the restriction. This says nothing about all possible replacements.",
+          "id": "a3-alt1",
+          "research_exposed": false,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        },
+        {
+          "title": "Try a net-free matrix-moment theorem",
+          "argument": "One could seek E‖m⁻¹∑(Y_iY_iᵀ−I)‖ directly by a matrix moment inequality. Naming this route is not a derivation: the required dimension dependence and hypotheses for unbounded subgaussian rank-one terms have not been checked here. No downstream net-derived estimate is inherited.",
+          "outcome": "unresolved",
+          "cost": "A stronger matrix toolkit may work; its complete bound and cost have not been established.",
+          "route": [
+            {
+              "title": "Matrix sum",
+              "have": "Independent centered rank-one matrix differences.",
+              "want": "Prove the sharp operator-norm estimate without a cover."
+            }
+          ],
+          "origin": "model_proposed",
+          "source_ids": [],
+          "rejoin_state": null,
+          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
+          "assessment": "This candidate does not establish the stated theorem under the restriction. This says nothing about all possible replacements.",
+          "id": "a3-alt2",
+          "research_exposed": false,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        }
+      ],
+      "research": {
+        "status": "not_performed",
+        "sources": [],
+        "calls": [],
+        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+      },
+      "status": "reviewed",
+      "scope": "Global strategy ban; every alternative restarts from the original assumptions."
+    },
+    "a4": {
+      "action": "a4",
+      "restriction": "Globally forbid obtaining E‖A‖ by integrating or summing probabilities of the operator-norm tail. Scalar moment estimates remain permitted.",
+      "alternatives": [
+        {
+          "title": "Control a finite maximum in Lp",
+          "argument": "Retain the fixed-direction Bernstein estimate and the 1/4-net, but never integrate the operator-norm tail. Integrating the scalar tail via E|Q|^p=p∫t^{p−1}P(|Q|>t)dt gives ‖Q‖p≤CK²(√(p/m)+p/m) for p≥2 (split the bound into exp(−cmt²/K⁴) and exp(−cmt/K²), then use the Gamma integrals). For N of size ≤9^r, ‖max_N|Q_x|‖p≤|N|^{1/p}max_N‖Q_x‖p. Choose p=max(2,r log9), so |N|^{1/p}≤e. Thus E‖A‖≤2‖max_N|Q_x|‖p≤CK²(√(r/m)+r/m). Range-restricted whitening and the norm sandwich then prove the original target. The scalar moments are quantified for every admissible isotropic Y.",
+          "outcome": "closed",
+          "cost": "Same rate, with an extra p≈r optimization. This still uses the finite-net mechanism.",
+          "route": [
+            {
+              "title": "Scalar moments",
+              "have": "‖xᵀAx‖p≤CK²(√(p/m)+p/m).",
+              "want": "Control maximum over N."
+            },
+            {
+              "title": "Choose p proportional to log|N|",
+              "have": "‖max_N|xᵀAx|‖p≤e CK²(√(p/m)+p/m).",
+              "want": "Transport to X."
+            },
+            {
+              "title": "Norm and transport",
+              "have": "The same covariance expectation bound follows.",
+              "want": ""
+            }
+          ],
+          "origin": "model_proposed",
+          "source_ids": [],
+          "rejoin_state": null,
+          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
+          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "id": "a4-alt1",
+          "research_exposed": false,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        }
+      ],
+      "research": {
+        "status": "not_performed",
+        "sources": [],
+        "calls": [],
+        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+      },
+      "status": "reviewed",
+      "scope": "Global strategy ban; every alternative restarts from the original assumptions."
+    },
+    "a5": {
+      "action": "a5",
+      "restriction": "Globally forbid whitening X or using an inverse or pseudoinverse square root of Σ.",
+      "alternatives": [
+        {
+          "title": "Work in the original coordinates",
+          "argument": "Work directly with \\(H=\\Sigma_m-\\Sigma\\). If \\(\\|\\Sigma\\|=0\\), then each coordinate has zero second moment and X=0 almost surely. Otherwise every unit x satisfies \\(\\|\\langle X,x\\rangle\\|_{\\psi_2}\\le K\\sqrt{\\|\\Sigma\\|}\\). Squaring and centering therefore gives independent summands with subexponential norm at most \\(CK^2\\|\\Sigma\\|\\). Scalar Bernstein, a 1/4-net in the original \\(\\mathbb R^n\\), and the quadratic-form net inequality give\n\\[P\\{\\|H\\|> CK^2\\|\\Sigma\\|(\\sqrt{(n+u)/m}+(n+u)/m)\\}\\le2e^{-u}.\\]\nTo integrate, put \\(b(u)=CK^2\\|\\Sigma\\|(\\sqrt{(n+u)/m}+(n+u)/m)\\). Then \\(E\\|H\\|\\le b(0)+\\int_0^\\infty 2e^{-u}b'(u)du\\le C'K^2\\|\\Sigma\\|(\\sqrt{n/m}+n/m)\\) for n≥1. No whitening, range inverse, isotropic auxiliary vector or sandwich estimate occurs.",
+          "outcome": "closed",
+          "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n; no measured discovery-cost comparison.",
+          "route": [
+            {
+              "title": "Original marginal scale",
+              "have": "\\(\\|\\langle X,x\\rangle\\|_{\\psi_2}\\le K\\sqrt{\\|\\Sigma\\|}\\) on the unit sphere.",
+              "want": "Control all directions simultaneously."
+            },
+            {
+              "title": "Bernstein and an original-space net",
+              "have": "\\(P(\\|H\\|>b(u))\\le2e^{-u}\\).",
+              "want": "Integrate the tail."
+            },
+            {
+              "title": "Expectation bound",
+              "have": "\\(E\\|H\\|\\le CK^2\\|\\Sigma\\|(\\sqrt{n/m}+n/m)\\).",
+              "want": ""
+            }
+          ],
+          "origin": "model_proposed",
+          "source_ids": [],
+          "rejoin_state": null,
+          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
+          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "id": "a5-alt1",
+          "research_exposed": false,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        }
+      ],
+      "research": {
+        "status": "not_performed",
+        "sources": [],
+        "calls": [],
+        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+      },
+      "status": "reviewed",
+      "scope": "Global strategy ban; every alternative restarts from the original assumptions."
+    },
+    "a6": {
+      "action": "a6",
+      "restriction": "Globally forbid bounding the covariance error through the sandwich Σ¹ᐟ²AΣ¹ᐟ² and a product of three operator norms.",
+      "alternatives": [
+        {
+          "title": "Work in the original coordinates",
+          "argument": "Work directly with \\(H=\\Sigma_m-\\Sigma\\). If \\(\\|\\Sigma\\|=0\\), then each coordinate has zero second moment and X=0 almost surely. Otherwise every unit x satisfies \\(\\|\\langle X,x\\rangle\\|_{\\psi_2}\\le K\\sqrt{\\|\\Sigma\\|}\\). Squaring and centering therefore gives independent summands with subexponential norm at most \\(CK^2\\|\\Sigma\\|\\). Scalar Bernstein, a 1/4-net in the original \\(\\mathbb R^n\\), and the quadratic-form net inequality give\n\\[P\\{\\|H\\|> CK^2\\|\\Sigma\\|(\\sqrt{(n+u)/m}+(n+u)/m)\\}\\le2e^{-u}.\\]\nTo integrate, put \\(b(u)=CK^2\\|\\Sigma\\|(\\sqrt{(n+u)/m}+(n+u)/m)\\). Then \\(E\\|H\\|\\le b(0)+\\int_0^\\infty 2e^{-u}b'(u)du\\le C'K^2\\|\\Sigma\\|(\\sqrt{n/m}+n/m)\\) for n≥1. No whitening, range inverse, isotropic auxiliary vector or sandwich estimate occurs.",
+          "outcome": "closed",
+          "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n; no measured discovery-cost comparison.",
+          "route": [
+            {
+              "title": "Original marginal scale",
+              "have": "\\(\\|\\langle X,x\\rangle\\|_{\\psi_2}\\le K\\sqrt{\\|\\Sigma\\|}\\) on the unit sphere.",
+              "want": "Control all directions simultaneously."
+            },
+            {
+              "title": "Bernstein and an original-space net",
+              "have": "\\(P(\\|H\\|>b(u))\\le2e^{-u}\\).",
+              "want": "Integrate the tail."
+            },
+            {
+              "title": "Expectation bound",
+              "have": "\\(E\\|H\\|\\le CK^2\\|\\Sigma\\|(\\sqrt{n/m}+n/m)\\).",
+              "want": ""
+            }
+          ],
+          "origin": "model_proposed",
+          "source_ids": [],
+          "rejoin_state": null,
+          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
+          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "id": "a6-alt1",
+          "research_exposed": false,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        }
+      ],
+      "research": {
+        "status": "not_performed",
+        "sources": [],
+        "calls": [],
+        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+      },
+      "status": "reviewed",
+      "scope": "Global strategy ban; every alternative restarts from the original assumptions."
+    }
+  },
+  "research_records": {
+    "a1": {
+      "status": "not_performed",
+      "sources": [],
+      "calls": [],
+      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+    },
+    "a2": {
+      "status": "not_performed",
+      "sources": [],
+      "calls": [],
+      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+    },
+    "a3": {
+      "status": "not_performed",
+      "sources": [],
+      "calls": [],
+      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+    },
+    "a4": {
+      "status": "not_performed",
+      "sources": [],
+      "calls": [],
+      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+    },
+    "a5": {
+      "status": "not_performed",
+      "sources": [],
+      "calls": [],
+      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+    },
+    "a6": {
+      "status": "not_performed",
+      "sources": [],
+      "calls": [],
+      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+    }
+  },
+  "critical": {
+    "steps": [
+      "a2",
+      "a3"
+    ],
+    "rationale": "Scalar concentration and uniformization supply the rate. In the candidates checked here, Frobenius control loses √r; a direct-coordinate proof removes whitening at the same n-rate. No net-free impossibility or measured search lower bound is claimed.",
+    "basis": "Editorial model assessment, not measured discovery difficulty."
+  },
+  "protocol": {
+    "version": "0.1",
+    "context": {
+      "domains": "X is a real subgaussian vector; Xi are independent copies; K≥1 and the relative marginal bound in the theorem holds; n,m≥1.",
+      "definitions": "Σ is a second-moment matrix, equal to covariance when X is centered. ‖·‖ is operator norm; ψ₂ and ψ₁ are exponential Orlicz norms. Conditional isotropic lemmas are universally quantified over admissible Y and r≥1.",
+      "basic_rules": "Named B-C extension: differentiating an explicitly supplied elementary smooth formula by the product and chain rules; inverse Fourier transforms and analytic limit exchanges remain toolkit calls. B-D: unfold definitions. B-C: substitution, expansion and exact scalar/matrix arithmetic. B-L: instantiate a stated toolkit implication once its premises hold, use ordinary quantifier logic, and discharge local assumptions. Selecting a net, transform, test function or theorem is recorded separately as strategic.",
+      "toolkit": [
+        {
+          "id": "square",
+          "name": "Squared subgaussian variables",
+          "statement": "\\(\\|U^2-\\mathbb EU^2\\|_{\\psi_1}\\le C\\|U\\|_{\\psi_2}^2\\).",
+          "hypotheses": "U has finite subgaussian norm."
+        },
+        {
+          "id": "bernstein",
+          "name": "Scalar Bernstein inequality",
+          "statement": "Independent centered \\(Z_i\\) with \\(\\|Z_i\\|_{\\psi_1}\\le L\\) satisfy \\(P(|m^{-1}\\sum Z_i|>t)\\le2e^{-cm\\min(t^2/L^2,t/L)}\\).",
+          "hypotheses": "Independent, centered scalar variables; t>0."
+        },
+        {
+          "id": "net",
+          "name": "Sphere net and symmetric quadratic forms",
+          "statement": "An \\(\\eta\\)-net has size at most \\((1+2/\\eta)^r\\); for symmetric A and \\(\\eta<1/2\\), \\(\\|A\\|\\le(1-2\\eta)^{-1}\\max_{x\\in N}|x^\\top Ax|\\).",
+          "hypotheses": "Finite dimension r≥1, Euclidean unit sphere, symmetric A."
+        },
+        {
+          "id": "prob",
+          "name": "Union bound and tail integration",
+          "statement": "\\(P(\\cup E_j)\\le\\sum P(E_j)\\); for W≥0, \\(EW=\\int_0^\\infty P(W>t)dt\\).",
+          "hypotheses": "Finite or countable union; nonnegative measurable W, Tonelli allowed."
+        },
+        {
+          "id": "spectral",
+          "name": "Spectral calculus and norm product",
+          "statement": "A positive semidefinite matrix has a positive square root, invertible on its range; \\(\\|BCD\\|\\le\\|B\\|\\|C\\|\\|D\\|\\).",
+          "hypotheses": "Finite real matrices; inverse restricted to the positive eigenspace."
+        }
+      ]
+    },
+    "validation": "Annotation structure checked; classifications and mathematics require review.",
+    "reference": {
+      "version": "0.1",
+      "sources": [
+        "tools/proof_explorer/protocol-reference.html",
+        "tools/proof_explorer/protocol.html"
+      ],
+      "sha256": "10ce6d749f133fa8b2369803c823cded381de7a5eaae3d23b0413483d18cb3f4",
+      "text": "01 / SCOPE\nWhat this specification defines\nThis is an operational protocol for annotating and communicating proofs. Its core distinctions come from the project README and our worked decompositions. The explicit state model, rule names, and recording conventions below are a proposed formalization of those ideas.\nDefinition 1 — Classification is relative to a declared context.\nBefore classifying a proof, declare its domains, definitions, elementary calculation rules, logical rules, and available toolkit results. A label describes the role of an action in that context, not a universal measure of human ingenuity.\n“Basic” does not mean familiar, short, easy, or executable by software. “Strategic” does not mean difficult, novel, or historically original. A one-line factorization can be strategic; a long sequence of prescribed arithmetic can be basic.\nVersion 0.1 uses the rule inventory in §3 as its default. An extension must be named before it is used. If a displayed step hides several actions, split it before assigning labels. If the context or motivation is missing, mark the classification\nunresolved\ninstead of inferring a strategy from the final formula alone.\n02 / REPRESENTATION\nA state, a goal map, and a progress map\nDefinition 2 — Proof state.\nA state consists of a scoped context Γ of assumptions and established facts, a set of open goals G, a declared toolkit T, and a dependency record. Every object has a domain; every fact records the assumptions under which it holds.\nThe goal map\nstarts at the ultimate claim and records what would suffice to establish it.\nThe progress map\nstarts at the givens and records justified deductions. The toolkit supplies the definitions, results, and methods that those deductions may call. Thus the progress map records uses of the toolkit; it is not the toolkit itself.\nFORWARD / DERIVE\nEstablished facts → justified new fact\nΓ ⊢ F\nAdd F to the current context only after its justification is checked.\nBACKWARD / REDUCE\nCurrent goal → sufficient obligations\nΓ ⊢ (G₁ ∧ ··· ∧ Gₖ) ⇒ G\nRecord why solving the children will establish their parent. The children remain open.\nThe symbol Γ ⊢ F means that F is derivable under Γ using the declared rules and toolkit. For reductions introducing local assumptions or arbitrary variables, record each child’s own context rather than treating it as an unscoped conjunct.\nBoth directions may be basic or strategic. Their interleaving is a\nthinking sequence\n; the dependency maps describe logical support. An animation may show a plausible reconstruction of discovery, but must not present it as the historical sequence without evidence.\nA newly proved lemma may enter T with a link to its proof. An externally assumed theorem must be named as such. Neither operation can silently promote an unproved claim into an established fact.\n03 / EXECUTION\nThe three basic step types\nDefinition 3 — Basic step.\nAn action is basic when it is an instance of B-D, B-C, or B-L below, with its inputs and side conditions explicit, and it does not conceal an additional choice of representation, auxiliary object, intermediate goal, or method. A basic block is a finite sequence of such actions whose intermediate results can be exposed.\nB-D · Direct definition interpretation\nUnfold a declared definition on an object or property already present, or fold it after its defining conditions have been established. Rename bound variables to avoid capture when necessary.\nExamples: interpreting “a is even” as ∃m ∈ ℤ, a = 2m; interpreting injectivity as an implication; replacing “G is a group” by the axioms in the declared group definition. With the convention that the operation must first be internal, the obligations are closure, associativity, identity, and inverses. If internality is already part of the given operation’s type, it is already satisfied.\nB-C · Direct elementary calculation\nThe default operations are substitution using an established equality, exact arithmetic, evaluation of a supplied operation, expansion by distributivity or a declared power rule, and collection or cancellation of like terms. Reassociation, reordering, and cancellation require the relevant algebraic laws and side conditions.\nExpansion and collection use the declared expanded form as their default direction. Searching for a useful factored form, a completed square, a change of variables, or an expression involving a newly introduced term is not part of that default calculation procedure.\nThus expanding (x − y)² into x² − 2xy + y² is B-C. Recognizing that a displayed polynomial should be represented by (x − y)² is a separate choice. Once the candidate has been chosen, expansion can verify it. Testing associativity by directly calculating both (ab)c and a(bc) is basic only when the supplied operation and these rules actually determine the calculation.\nB-L · Direct elementary logic\nThe default rules are: extract or combine conjuncts; instantiate a universal statement; apply an implication to an established premise; substitute equals; introduce a fresh arbitrary variable of the required domain; introduce and discharge an implication’s assumption; name a fresh witness supplied by an existential assumption; introduce an existential conclusion using an established witness; and combine completed exhaustive cases.\nUniversal introduction requires that the variable remain arbitrary. A witness named from an existential assumption is local and fresh. A proposed witness for an existential goal requires a value, its domain, and verification of the target predicate. Completing a case argument requires a justification that its cases cover the domain.\nDirect matching convention.\nInstantiating an explicit implication with terms already supplied by its matching premise is B-L. For example, g(f(a)) = g(f(b)) supplies u = f(a), v = f(b) to the defining implication for injectivity of g. No new representation or auxiliary target is needed.\nToolkit use is a separate annotation.\nAn available theorem is not a fourth basic step type. A direct application after its premises are checked can be B-L, while finding that theorem useful can be strategic. Record the theorem and its hypotheses even when the application is basic; its own proof may be substantial.\n04 / CHOICE\nWhat counts as strategic\nDefinition 4 — Strategic step.\nRelative to the declared basic rules, a strategic step selects a candidate representation, intermediate obligation, auxiliary object, parameter, case partition, theorem, or proof method whose usefulness is inferred from a relationship between the current state, the goal, and the toolkit, rather than obtained by direct definition interpretation, canonical calculation, or direct logical matching.\nStrategic role\nWhat is selected\nExample\nRepresentation\nA form exposing useful structure\nRewrite x² − 2xy + y² as (x − y)².\nGoal planning\nA useful intermediate claim or reduction\nSeek an exponential-moment bound to obtain a tail bound.\nConstruction\nA new witness, auxiliary object, or parameter\nChoose k = m + n; introduce an independent copy X′.\nMethod or toolkit selection\nA relevant method or result beyond a directly matching premise\nChoose induction, or recognize that Bernstein’s inequality fits a sum.\nCase selection\nA partition useful for the current goal\nSplit by parity to locate an even factor in n(n + 1).\nThese roles may overlap; they are descriptive tags, not mutually exclusive mathematical species. The principal distinction is the\nselection action\nversus its\nverification actions\n. A strategic candidate can be reasonable and still fail. Record it as exploratory until its validity and remaining obligations are established.\nWhy “already specified” is not enough\nAn author cannot erase a strategic step by writing “now factor” and then calling everything that follows basic. Record where the proposed representation or operation came from. If it was supplied by the problem or an earlier step, link to that instruction; otherwise record the observation motivating its selection here. Verification can then be basic without retrospectively making the choice basic.\nA request to verify a supplied identity and a request to discover a useful identity are therefore different tasks, even when their final algebra is identical. Basic steps can occur anywhere in a proof, including after several strategic choices.\nA consistent classification procedure\nFix the state before the action and the declared basic rules. Separate a proposed choice from the argument checking it.\nFor an execution action, exhibit its B-D, B-C, or B-L rule and inputs. A finite sequence of such instances is a basic block.\nFor a selection action beyond those rules, identify the selected object or method and the relationship motivating it; label that action strategic.\nIf neither description is available, expand the omitted reasoning or leave the classification unresolved. Do not classify an unexplained jump as basic merely because its conclusion is correct.\n05 / MOTIVATION\nAn observation must identify a connection\nDefinition 5 — Motivating observation.\nAn observation names a relevant feature of the current state, a feature required by the goal or a candidate toolkit result, and the relationship that suggests a particular move. It explains the choice; it does not replace a proof of the chosen move.\nTarget:\nWhat form, property, or hypothesis do we need?\nAvailable feature:\nWhat concrete structure do the current expressions or assumptions expose?\nConnection:\nHow would the proposed move use that feature to address the target?\n“The goal asks for twice an integer. In 2m + 2n, both summands contain the required factor 2. Factoring out that shared 2 gives 2(m + n), suggesting the witness k = m + n.”\n“Factor the expression” states an action. “Use a clever trick” states neither the relevant feature nor the connection. The observation above makes the choice inspectable without claiming that it was the only possible choice.\nObservations can also explain basic steps. In the injectivity example, the outer g in the equality matches the premise of g’s defining implication. This is direct logical matching, so the presence of an observation does not by itself imply strategy.\nIf an observation includes a mathematical assertion not yet established, verify that assertion or mark it as a conjecture. A motivation is never an extra assumption available to the proof.\n06 / BACKWARD REASONING\nThree different goal transformations\nDefinition 6 — Goal decomposition.\nReplace G by explicitly related obligations. An AND node requires every child. An OR node permits a child that is itself sufficient. A case split requires all conditional branches and exhaustiveness. A scoped implication goal permits assuming its premise locally; that assumption must later be discharged.\nDecomposition is basic when it directly unpacks a definition or logical connective. Choosing an induction scheme, an auxiliary lemma, or a useful case partition is strategic. In particular, an induction reduction must include its base, step, and the justification that the induction principle covers the claimed domain.\nDefinition 7 — Goal reinterpretation.\nReplace G by a newly represented target H chosen to connect the current state to the toolkit. Record the exact relation under the current context: Γ ⊢ G ⇔ H for an equivalent reformulation, or Γ ⊢ H ⇒ G for a sufficient-condition reduction. Its strategic content is why this target is useful. Equivalence must not be assumed.\nFor real x, y:\nx² + y² ≥ 2xy ⇔ x² − 2xy + y² ≥ 0 ⇔ (x − y)² ≥ 0.\nMoving to a difference and recognizing a square are the motivating choices. Subtraction and expansion verify the equivalences. Square nonnegativity supplies the final fact, which can then be carried back to the original goal.\nDefinition 8 — Sufficient-condition reduction.\nReplace G by an obligation H while recording Γ ⊢ H ⇒ G. The converse is not claimed. H may be stronger than G; proving H is enough, but failing to prove H does not refute G.\nFor Hanson–Wright, a suitable bound on an exponential moment over a specified parameter range supplies a tail bound through exponential Markov and a choice of parameter. This is a sufficient-condition reinterpretation; its precise relation must be recorded as\nsufficient\n, not equivalent.\nSide conditions travel with the edge.\nMultiplication by x preserves an inequality’s direction when x > 0; division requires a nonzero denominator; an MGF estimate may hold only for a restricted parameter. A reduction that drops these conditions is not verified.\nAn infinite domain or unspecified variables can motivate a change of representation, but do not imply that a goal is unsolvable. For example, a universally quantified inequality is meaningful without knowing numerical values of x and y.\n07 / ANNOTATION\nThe record for each move\nEach move should be recoverable from the following fields. A compact basic step may cite its rule and inputs in one sentence. A strategic step must make its motivating connection explicit.\nIdentity & direction\nA step identifier; forward deduction, backward reduction, or an exploratory proposal.\nContext & target\nThe facts, domains, local assumptions, and goal available immediately before the move.\nClassification\nB-D, B-C, B-L, or strategic role(s). Split mixed choices and verification into linked substeps.\nObservation\nThe target feature, available feature, and connection. For a basic step, a direct rule match suffices.\nSelected move & provenance\nThe proposed expression, witness, method, or new obligation; where the choice came from.\nToolkit dependency\nThe exact definition, rule, or named result invoked, including its required hypotheses.\nVerification & relation\nThe calculation or inference validating the move. For goals, label equivalence, sufficiency, AND, OR, or scoped reasoning.\nResult & open obligations\nWhat is now established, what remains to prove, and which earlier steps support it.\nFor a rejected attempt, keep its proposed connection and the reason it failed separate from established facts. A displayed shortcut may compress several verified actions, but must not obscure the strategic selection or an unproved dependency.\n08 / BOUNDARIES\nClassify actions, not just equations\nAction in context\nClassification\nReason\nInterpret “a + b is even” as ∃k ∈ ℤ: a + b = 2k.\nB-D\nDirect expansion of the target definition.\nSubstitute a = 2m and b = 2n to get 2m + 2n.\nB-C\nUse established equalities.\nNotice the common 2 and choose 2(m + n) to match 2k.\nStrategic\nSelect a representation and a candidate witness.\nExpand 2(m + n), verify m + n ∈ ℤ, and use the witness.\nB-C, then B-L\nVerify the choice; cite integer closure as a toolkit fact.\nChoose x² + y² = (x − y)² + 2xy to expose a nonnegative term.\nStrategic\nThe useful square is reverse-engineered from the target.\nCheck that identity by expanding its proposed right side.\nB-C\nDirect verification of an explicit candidate.\nChoose even/odd cases to find an even factor in n(n + 1).\nStrategic\nSelect a partition whose branches expose the needed factor.\nHaving proved both parity cases and exhaustiveness, conclude the statement for all integers.\nB-L\nCombine established cases.\nA proof with no separate strategic step\nSuppose f: A → B and g: B → C are injective. Unpack the target, take arbitrary a, b ∈ A, and assume g(f(a)) = g(f(b)). Since f(a), f(b) ∈ B, the expanded injectivity of g yields f(a) = f(b). The expanded injectivity of f yields a = b. Discharge the assumption and generalize.\nUnder the default direct-matching convention, this sequence uses definitions and elementary logic throughout. The order is explained by the outer function in the current equality. No additional representation, auxiliary object, or goal is needed.\nA strategic move with a basic verification\nFor x > 0, consider x + 1/x ≥ 2. The reciprocal has denominator x, and the given positivity permits clearing it while preserving the inequality. That observation motivates the strategic choice to multiply by x. Computing the products and checking positivity are basic verification. Recognizing the resulting difference x² − 2x + 1 as (x − 1)² is another strategic choice, followed by basic expansion and application of square nonnegativity.\nThe classification does not depend on whether a reader recognizes the square instantly. Nor does it claim that every valid proof must use that representation.\n09 / COMPLETION\nWhen the explanation is complete\nThe two maps meet when an established forward result satisfies an open goal under the same domain, assumptions, and side conditions. Matching surface notation is insufficient: parameter ranges, quantifiers, constants, and dependencies must also match or be connected by a verified inference.\nEvery strategic choice used in the final argument has an explicit motivating observation and a completed verification. Unresolved explorations remain outside its chain of support.\nEvery basic step identifies a permitted rule and valid inputs; every toolkit call has its hypotheses checked.\nEvery goal edge records the correct logical relationship. All required branches and side conditions are discharged.\nNo open goal is used as an established fact, and no conclusion depends circularly on itself.\nThe ultimate claim follows from the original assumptions. A linear written proof can present the verified dependencies in a valid order.\nThis protocol specifies what an explanation must expose. It does not yet supply a numerical measure of “strategic gap,” an automatic classifier, or a machine-checked foundation for every toolkit theorem. Those are separate research tasks. Its present commitment is a traceable distinction between\nwhy a move was selected\nand\nwhy that move is valid\n.\nExplore the Hanson–Wright example →\n\nTHE PRIORITY RULE\nBasic first. Observe when blocked.\nUse direct definitions, calculations, and logic as far as they address the current goal. When they leave a gap, identify a relationship that suggests a new target. Verify the reduction, then return to basic steps. Repeat if another gap remains.\n“Stuck” is local to the current representation and allowed basic moves. It does not mean the theorem is unprovable. The observation proposes a route; verification establishes that it works.\nRead the finished proof\nSince a and b are even, write a = 2m and b = 2n for integers m,n. Then a + b = 2m + 2n = 2(m + n). Since m + n is an integer, a + b is even. □\nThe short proof compresses the choice of a useful representation. The graph exposes that choice and its motivation.\nThree node types, two directions\nFact:\nan assumption or a verified statement, with its domain and dependencies.\nGoal:\na statement still needed; it closes when verified facts establish it.\nObservation:\nan explicit match between a feature we have and a feature we need. It suggests a move but is not a proof edge.\nThe forward graph records deductions. The backward graph records sufficient obligations. Direction and node type are separate: basic steps can occur in either graph.\nRead the detailed definitions and boundary rules →"
+    }
+  },
+  "experiment": {
+    "input_id": "theorem_4_7_1",
+    "url": "https://lisay1379.github.io/proof_assistant_lab/reports/control_vs_rag/test_3node_rag_2/comparison_viewer.html#case-theorem_4_7_1",
+    "baseline": "Final Library-RAG answer",
+    "control_proof": "Let \\(X_1,\\dots,X_m\\) be independent copies of \\(X\\), and write\n\\[\n\\Sigma=\\mathbb E XX^\\top,\n\\qquad\n\\Sigma_m=\\frac1m\\sum_{i=1}^m X_iX_i^\\top .\n\\]\n\nWe first prove the isotropic case.\n\n### Isotropic case\n\nSuppose \\(Y\\in\\mathbb R^r\\) satisfies\n\\[\n\\mathbb E YY^\\top=I_r,\n\\qquad\n\\|\\langle Y,x\\rangle\\|_{\\psi_2}\\le K\\|x\\|_2.\n\\]\nLet \\(Y_1,\\dots,Y_m\\) be independent copies and set\n\\[\nA=\\frac1m\\sum_{i=1}^mY_iY_i^\\top-I_r.\n\\]\n\nFor a fixed \\(x\\in S^{r-1}\\),\n\\[\nx^\\top Ax\n=\\frac1m\\sum_{i=1}^m\\big(\\langle Y_i,x\\rangle^2-1\\big).\n\\]\nBecause \\(\\|\\langle Y_i,x\\rangle\\|_{\\psi_2}\\le K\\), the variables\n\\[\nZ_i=\\langle Y_i,x\\rangle^2-1\n\\]\nare centered and subexponential, with\n\\[\n\\|Z_i\\|_{\\psi_1}\\le CK^2.\n\\]\nBernstein’s inequality therefore gives\n\\[\n\\mathbb P\\{|x^\\top Ax|>t\\}\n\\le\n2\\exp\\left[-cm\\min\\left(\\frac{t^2}{K^4},\\frac{t}{K^2}\\right)\\right].\n\\tag{1}\n\\]\n\nLet \\(\\mathcal N\\) be a \\(1/4\\)-net of \\(S^{r-1}\\) with\n\\[\n|\\mathcal N|\\le 9^r.\n\\]\nFor every symmetric matrix \\(A\\),\n\\[\n\\|A\\|\\le 2\\max_{x\\in\\mathcal N}|x^\\top Ax|.\n\\]\nThus, by (1) and the union bound,\n\\[\n\\mathbb P\\{\\|A\\|>2t\\}\n\\le\n2\\exp\\left[\nCr-cm\\min\\left(\\frac{t^2}{K^4},\\frac{t}{K^2}\\right)\n\\right].\n\\]\nConsequently, for every \\(u\\ge0\\), with probability at least \\(1-2e^{-u}\\),\n\\[\n\\|A\\|\n\\le\nCK^2\\left(\n\\sqrt{\\frac{r+u}{m}}+\\frac{r+u}{m}\n\\right).\n\\tag{2}\n\\]\nIntegrating this tail bound yields\n\\[\n\\mathbb E\\|A\\|\n\\le\nCK^2\\left(\\sqrt{\\frac rm}+\\frac rm\\right).\n\\tag{3}\n\\]\n\n### Reduction to the isotropic case\n\nLet \\(S=\\operatorname{range}(\\Sigma)\\) and \\(r=\\dim S\\le n\\). If \\(v\\in\\ker(\\Sigma)\\), then\n\\[\n\\mathbb E\\langle X,v\\rangle^2=v^\\top\\Sigma v=0,\n\\]\nso \\(X\\in S\\) almost surely.\n\nOn \\(S\\), define\n\\[\nY=\\Sigma^{-1/2}X,\n\\]\nwhere the inverse is taken only on \\(S\\). Then\n\\[\n\\mathbb E YY^\\top=I_S.\n\\]\nMoreover, for every \\(y\\in S\\),\n\\[\n\\begin{aligned}\n\\|\\langle Y,y\\rangle\\|_{\\psi_2}\n&=\\|\\langle X,\\Sigma^{-1/2}y\\rangle\\|_{\\psi_2}\\\\\n&\\le K\\|\\langle X,\\Sigma^{-1/2}y\\rangle\\|_{L_2}\\\\\n&=K\\|y\\|_2.\n\\end{aligned}\n\\]\nThus \\(Y\\) satisfies the isotropic assumptions above.\n\nWriting \\(Y_i=\\Sigma^{-1/2}X_i\\), we have\n\\[\n\\Sigma_m-\\Sigma\n=\n\\Sigma^{1/2}\n\\left(\n\\frac1m\\sum_{i=1}^mY_iY_i^\\top-I_S\n\\right)\n\\Sigma^{1/2}.\n\\]\nHence\n\\[\n\\|\\Sigma_m-\\Sigma\\|\n\\le\n\\|\\Sigma\\|\n\\left\\|\n\\frac1m\\sum_{i=1}^mY_iY_i^\\top-I_S\n\\right\\|.\n\\]\nApplying (3) and using \\(r\\le n\\), we obtain\n\\[\n\\boxed{\n\\mathbb E\\|\\Sigma_m-\\Sigma\\|\n\\le\nCK^2\\left(\\sqrt{\\frac nm}+\\frac nm\\right)\\|\\Sigma\\|\n}.\n\\]\nHere \\(C>0\\) is an absolute constant.",
+    "comparison_diff": "--- Control\n+++ Library-RAG\n@@ -20,11 +20,7 @@\n A=\\frac1m\\sum_{i=1}^mY_iY_i^\\top-I_r.\n \\]\n \n-For a fixed \\(x\\in S^{r-1}\\),\n-\\[\n-x^\\top Ax\n-=\\frac1m\\sum_{i=1}^m\\big(\\langle Y_i,x\\rangle^2-1\\big).\n-\\]\n+For \\(x\\in S^{r-1}\\), \\(x^\\top Ax=m^{-1}\\sum_{i=1}^m(\\langle Y_i,x\\rangle^2-1)\\).\n Because \\(\\|\\langle Y_i,x\\rangle\\|_{\\psi_2}\\le K\\), the variables\n \\[\n Z_i=\\langle Y_i,x\\rangle^2-1",
+    "model": "gpt-5.6-sol",
+    "source_sha256": "fd31fc10b3cbcf7a77a25405dff4322b5dcdcc2b18ad57c73fdbf386e167bc42",
+    "note": "The original edition is the exact saved final Library-RAG answer. Expanded explanations, protocol annotations, and ablations were added for this collection; they were not produced by the original experiment. The existing Hanson–Wright explorer is a related reference proof, not necessarily this run’s exact answer."
+  },
+  "metadata": {
+    "origin": "Curated expansion of the saved Library-RAG proof. Alternatives are worked analyses, not logged discovery attempts.",
+    "authoring": "Local editorial reconstruction; no new external model-generation calls.",
+    "source_run": "test_3node_rag_2",
+    "slug": "covariance"
+  }
+}

@@ -1,0 +1,1500 @@
+{
+  "schema_version": 1,
+  "title": "Slepian’s inequality",
+  "statement": "For centered Gaussian processes \\((X_t),(Y_t)\\) on a nonempty index set T, suppose \\(EX_t^2=EY_t^2\\) and \\(E(X_t-X_s)^2\\le E(Y_t-Y_s)^2\\). With common separable measurable suprema, for every real τ, \\(P(\\sup_tX_t\\ge\\tau)\\le P(\\sup_tY_t\\ge\\tau)\\), hence \\(E\\sup_tX_t\\le E\\sup_tY_t\\) in the extended sense.",
+  "original_proof": "Assume the suprema are measurable and separable—for example, \\(T\\) is countable, or there is a countable \\(T_0\\subseteq T\\) over which both suprema agree almost surely. We first prove the result for finite \\(T\\).\n\n### 1. Finite-dimensional case\n\nLet \\(T=\\{1,\\dots,n\\}\\), and write\n\\[\nA_{ij}=\\mathbb E[X_iX_j],\n\\qquad\nB_{ij}=\\mathbb E[Y_iY_j].\n\\]\nThe variance assumption gives\n\\[\nA_{ii}=B_{ii}.\n\\]\nComparing \\(\\mathbb E(X_i-X_j)^2=A_{ii}+A_{jj}-2A_{ij}\\) with the analogous formula for \\(Y\\), and using \\(A_{ii}=B_{ii}\\), gives \\(A_{ij}\\ge B_{ij}\\) for \\(i\\ne j\\).\n\nInterpolate between the two covariance matrices:\n\\[\nC(u)=(1-u)B+uA,\\qquad 0\\le u\\le 1,\n\\]\nand let \\(Z(u)\\) be a centered Gaussian vector with covariance \\(C(u)\\). Put \\(D=A-B\\).\n\nSuppose first that \\(C(u)\\) is positive definite, and denote the density of \\(Z(u)\\) by \\(p_u\\). Differentiating its Fourier transform gives\n\\[\n\\partial_u p_u(x)=\\frac12\\sum_{i,j=1}^nD_{ij}\\,\\partial_{ij}p_u(x).\n\\]\nConsequently, for every smooth bounded function \\(h:\\mathbb R^n\\to\\mathbb R\\) with bounded derivatives, differentiation under the integral followed by two integrations by parts yields the Gaussian interpolation identity\n\\[\n\\frac{d}{du}\\mathbb E h(Z(u))\n=\n\\frac12\\sum_{i,j=1}^n\n(A_{ij}-B_{ij})\\,\n\\mathbb E\\big[\\partial_{ij}h(Z(u))\\big].\n\\tag{1}\n\\]\nIf the covariance matrices are singular, replace \\(C(u)\\) by \\(C(u)+\\delta I\\). The identity and the ensuing monotonicity then hold for the regularized Gaussian vectors; letting \\(\\delta\\downarrow0\\) recovers the comparison because the regularized vectors converge in distribution and \\(h\\) is bounded and continuous.\n\nFix \\(r\\in\\mathbb R\\). Choose a smooth nonincreasing function\n\\[\ng_\\varepsilon:\\mathbb R\\to[0,1]\n\\]\nsuch that\n\\[\ng_\\varepsilon(x)=1\\quad\\text{for }x\\le r,\n\\qquad\ng_\\varepsilon(x)=0\\quad\\text{for }x\\ge r+\\varepsilon,\n\\]\nand define\n\\[\nh_\\varepsilon(x_1,\\dots,x_n)\n=\\prod_{k=1}^n g_\\varepsilon(x_k).\n\\]\nFor \\(i\\ne j\\),\n\\[\n\\partial_{ij}h_\\varepsilon(x)\n=\ng_\\varepsilon'(x_i)g_\\varepsilon'(x_j)\n\\prod_{k\\ne i,j}g_\\varepsilon(x_k)\\ge0,\n\\]\nbecause \\(g_\\varepsilon'\\le0\\). The diagonal terms in (1) vanish since\n\\(A_{ii}-B_{ii}=0\\), while all off-diagonal terms are nonnegative. Hence\n\\[\n\\frac{d}{du}\\mathbb E h_\\varepsilon(Z(u))\\ge0.\n\\]\nEvaluating at \\(u=0\\) and \\(u=1\\),\n\\[\n\\mathbb E h_\\varepsilon(X)\n\\ge\n\\mathbb E h_\\varepsilon(Y).\n\\]\nLetting \\(\\varepsilon\\downarrow0\\) and using bounded convergence yields\n\\[\n\\mathbb P\\left\\{\\max_{1\\le i\\le n}X_i\\le r\\right\\}\n\\ge\n\\mathbb P\\left\\{\\max_{1\\le i\\le n}Y_i\\le r\\right\\}.\n\\tag{2}\n\\]\n\nThus the maximum of the \\(X_i\\)'s is stochastically smaller than the maximum of the \\(Y_i\\)'s.\n\n### 2. General separable index sets\n\nChoose a countable set \\(T_0=\\{t_1,t_2,\\dots\\}\\subseteq T\\) such that\n\\[\n\\sup_{t\\in T}X_t=\\sup_{t\\in T_0}X_t,\n\\qquad\n\\sup_{t\\in T}Y_t=\\sup_{t\\in T_0}Y_t\n\\quad\\text{a.s.}\n\\]\nSet\n\\[\nM_n^X=\\max_{1\\le k\\le n}X_{t_k},\n\\qquad\nM_n^Y=\\max_{1\\le k\\le n}Y_{t_k}.\n\\]\nBy (2),\n\\[\n\\mathbb P\\{M_n^X\\le r\\}\\ge \\mathbb P\\{M_n^Y\\le r\\}.\n\\]\nSince \\(M_n^X\\uparrow \\sup_tX_t\\) and \\(M_n^Y\\uparrow\\sup_tY_t\\),\ncontinuity of probability from above gives\n\\[\n\\mathbb P\\left\\{\\sup_{t\\in T}X_t\\le r\\right\\}\n\\ge\n\\mathbb P\\left\\{\\sup_{t\\in T}Y_t\\le r\\right\\}.\n\\tag{3}\n\\]\nTaking left limits in \\(r\\), we obtain, for every \\(\\tau\\in\\mathbb R\\),\n\\[\n\\mathbb P\\left\\{\\sup_{t\\in T}X_t\\ge\\tau\\right\\}\n\\le\n\\mathbb P\\left\\{\\sup_{t\\in T}Y_t\\ge\\tau\\right\\}.\n\\]\nThis is the claimed stochastic domination.\n\n### 3. Comparison of expectations\n\nLet\n\\[\nU=\\sup_{t\\in T}X_t,\\qquad V=\\sup_{t\\in T}Y_t.\n\\]\nStochastic domination implies\n\\[\n\\mathbb E\\phi(U)\\le \\mathbb E\\phi(V)\n\\]\nfor every bounded increasing function \\(\\phi\\). Applying this to\n\\[\n\\phi_m(x)=(-m)\\vee(x\\wedge m)\n\\]\nand letting \\(m\\to\\infty\\) gives\n\\[\n\\mathbb E U\\le \\mathbb E V.\n\\]\nIndeed, for any fixed \\(t_0\\in T\\),\n\\[\nU^-\\le X_{t_0}^-,\n\\qquad\nV^-\\le Y_{t_0}^-,\n\\]\nso both negative parts are integrable; the positive parts may be infinite, in which case the inequality is understood in the extended sense. Therefore\n\\[\n\\boxed{\\mathbb E\\sup_{t\\in T}X_t\n\\le\n\\mathbb E\\sup_{t\\in T}Y_t.}\n\\]\n\nThe separability convention is essential for arbitrary uncountable \\(T\\); equivalently, one may interpret the suprema as essential/separable suprema.",
+  "nodes": [
+    {
+      "id": "f0",
+      "kind": "fact",
+      "text": "Centered Gaussian processes on nonempty T; equal point variances and ordered increment variances. A common countable set realizes both measurable suprema almost surely.",
+      "label": "Starting assumptions"
+    },
+    {
+      "id": "g0",
+      "kind": "goal",
+      "text": "For centered Gaussian processes \\((X_t),(Y_t)\\) on a nonempty index set T, suppose \\(EX_t^2=EY_t^2\\) and \\(E(X_t-X_s)^2\\le E(Y_t-Y_s)^2\\). With common separable measurable suprema, for every real τ, \\(P(\\sup_tX_t\\ge\\tau)\\le P(\\sup_tY_t\\ge\\tau)\\), hence \\(E\\sup_tX_t\\le E\\sup_tY_t\\) in the extended sense.",
+      "label": "Theorem to prove"
+    },
+    {
+      "id": "f1",
+      "kind": "fact",
+      "text": "For any finite set of indices, Aii=Bii and Aij≥Bij for i≠j.",
+      "label": "Reduce to finite covariance comparison"
+    },
+    {
+      "id": "o1",
+      "kind": "observation",
+      "text": "Equal variances turn the increment comparison into a sign condition on the off-diagonal covariance difference.",
+      "label": "Why this move?"
+    },
+    {
+      "id": "gf",
+      "kind": "goal",
+      "text": "Prove P(max finite X≤r)≥P(max finite Y≤r) for every finite restriction and real r.",
+      "label": "Finite maximum CDF comparison"
+    },
+    {
+      "id": "gs",
+      "kind": "goal",
+      "text": "Extend the finite comparison to the separable suprema and all closed upper tails.",
+      "label": "Separable supremum tail comparison"
+    },
+    {
+      "id": "ge",
+      "kind": "goal",
+      "text": "Derive the extended expectation inequality from the stochastic comparison.",
+      "label": "Extended expectation comparison"
+    },
+    {
+      "id": "f2",
+      "kind": "fact",
+      "text": "For bounded smooth h with bounded derivatives, interpolation gives \\(dE h(Z(u))/du=\\frac12\\sum_{ij}(A_{ij}-B_{ij})E\\partial_{ij}h(Z(u))\\), first with δI regularization.",
+      "label": "Interpolate the Gaussian covariance"
+    },
+    {
+      "id": "o2",
+      "kind": "observation",
+      "text": "The covariance difference has a useful sign pattern; interpolation can convert that pattern into monotonicity of a suitable test expectation.",
+      "label": "Why this move?"
+    },
+    {
+      "id": "f3",
+      "kind": "fact",
+      "text": "For the smooth lower-orthant product hε, E hε(X)≥E hε(Y).",
+      "label": "Choose a product cutoff with positive mixed derivatives"
+    },
+    {
+      "id": "o3",
+      "kind": "observation",
+      "text": "The event max≤r is an intersection of coordinate inequalities. A product of decreasing cutoffs encodes that event and makes each mixed second derivative nonnegative.",
+      "label": "Why this move?"
+    },
+    {
+      "id": "f4",
+      "kind": "fact",
+      "text": "For every finite restriction and r∈R, P(max X≤r)≥P(max Y≤r).",
+      "label": "Remove smoothing and meet the finite goal"
+    },
+    {
+      "id": "o4",
+      "kind": "observation",
+      "text": "The smooth test was chosen to retain the boundary value, so its limit has the intended weak inequality.",
+      "label": "Why this move?"
+    },
+    {
+      "id": "f5",
+      "kind": "fact",
+      "text": "For all τ∈R, P(sup X≥τ)≤P(sup Y≥τ).",
+      "label": "Pass to separable suprema and closed tails"
+    },
+    {
+      "id": "o5",
+      "kind": "observation",
+      "text": "Countable exhaustion turns the supremum into a monotone limit, and a left limit gives precisely the requested tail convention.",
+      "label": "Why this move?"
+    },
+    {
+      "id": "f6",
+      "kind": "fact",
+      "text": "E sup X≤E sup Y, allowing +∞.",
+      "label": "Truncate and close the expectation goal"
+    },
+    {
+      "id": "o6",
+      "kind": "observation",
+      "text": "Bounded tests already obey stochastic order; a fixed Gaussian coordinate controls the negative tail so unbounded expectations can be recovered.",
+      "label": "Why this move?"
+    }
+  ],
+  "initial_facts": [
+    "f0"
+  ],
+  "initial_goals": [
+    "g0"
+  ],
+  "steps": [
+    {
+      "id": "a1",
+      "title": "Reduce to finite covariance comparison",
+      "quote": "Assume the suprema are measurable and separable—for example, \\(T\\) is countable, or there is a countable \\(T_0\\subseteq T\\) over which both suprema agree almost surely. We first prove the result for finite \\(T\\).\n\n### 1. Finite-dimensional case\n\nLet \\(T=\\{1,\\dots,n\\}\\), and write\n\\[\nA_{ij}=\\mathbb E[X_iX_j],\n\\qquad\nB_{ij}=\\mathbb E[Y_iY_j].\n\\]\nThe variance assumption gives\n\\[\nA_{ii}=B_{ii}.\n\\]\nComparing \\(\\mathbb E(X_i-X_j)^2=A_{ii}+A_{jj}-2A_{ij}\\) with the analogous formula for \\(Y\\), and using \\(A_{ii}=B_{ii}\\), gives \\(A_{ij}\\ge B_{ij}\\) for \\(i\\ne j\\).\n\n",
+      "uses": [
+        "f0"
+      ],
+      "adds": [
+        "f1"
+      ],
+      "opens": [
+        "gf",
+        "gs",
+        "ge"
+      ],
+      "closes": [
+        "g0"
+      ],
+      "observations": [
+        "o1"
+      ],
+      "motivated_by": [
+        "g0"
+      ],
+      "justification": "On a finite set, expand E(X_i−X_j)²=Aii+Ajj−2Aij, and do the same for Y. Equal diagonal variances cancel; the increment inequality then gives Aij≥Bij. It suffices to prove the finite lower-orthant CDF comparison, extend it to the common separable suprema, and derive the expectation statement. These are three required obligations; finite-dimensional facts remain universally quantified over finite restrictions.",
+      "observation": "Equal variances turn the increment comparison into a sign condition on the off-diagonal covariance difference.",
+      "explanation": "On a finite set, expand E(X_i−X_j)²=Aii+Ajj−2Aij, and do the same for Y. Equal diagonal variances cancel; the increment inequality then gives Aij≥Bij. It suffices to prove the finite lower-orthant CDF comparison, extend it to the common separable suprema, and derive the expectation statement. These are three required obligations; finite-dimensional facts remain universally quantified over finite restrictions.",
+      "difficulty": "The chosen finite-dimensional representation connects the hypothesis to derivatives with respect to covariance.",
+      "short_version": "For any finite set of indices, Aii=Bii and Aij≥Bij for i≠j.",
+      "protocol": {
+        "direction": "backward",
+        "context": "Centered Gaussian processes on nonempty T; equal point variances and ordered increment variances. A common countable set realizes both measurable suprema almost surely.",
+        "target": "For centered Gaussian processes \\((X_t),(Y_t)\\) on a nonempty index set T, suppose \\(EX_t^2=EY_t^2\\) and \\(E(X_t-X_s)^2\\le E(Y_t-Y_s)^2\\). With common separable measurable suprema, for every real τ, \\(P(\\sup_tX_t\\ge\\tau)\\le P(\\sup_tY_t\\ge\\tau)\\), hence \\(E\\sup_tX_t\\le E\\sup_tY_t\\) in the extended sense.",
+        "basic_progress": "Unfold the current target and the definitions in the preceding state. These identify the needed bound but do not select the method.",
+        "remaining_gap": "The chosen finite-dimensional representation connects the hypothesis to derivatives with respect to covariance.",
+        "observation": {
+          "target_feature": "For centered Gaussian processes \\((X_t),(Y_t)\\) on a nonempty index set T, suppose \\(EX_t^2=EY_t^2\\) and \\(E(X_t-X_s)^2\\le E(Y_t-Y_s)^2\\). With common separable measurable suprema, for every real τ, \\(P(\\sup_tX_t\\ge\\tau)\\le P(\\sup_tY_t\\ge\\tau)\\), hence \\(E\\sup_tX_t\\le E\\sup_tY_t\\) in the extended sense.",
+          "available_feature": "Centered Gaussian processes on nonempty T; equal point variances and ordered increment variances. A common countable set realizes both measurable suprema almost surely.",
+          "connection": "Equal variances turn the increment comparison into a sign condition on the off-diagonal covariance difference."
+        },
+        "actions": [
+          {
+            "id": "u1",
+            "kind": "B-C",
+            "role": "execution",
+            "move": "Expand the increment variances and cancel the equal diagonal terms to derive Aij≥Bij for i≠j on every finite restriction.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Substitute, expand, differentiate an explicitly supplied smooth formula, or perform scalar arithmetic; analytic limit rules are separate toolkit calls.",
+            "inputs": "Centered Gaussian processes on nonempty T; equal point variances and ordered increment variances. A common countable set realizes both measurable suprema almost surely.",
+            "toolkit_uses": [],
+            "verification": "Expand the increment variances and cancel the equal diagonal terms to derive Aij≥Bij for i≠j on every finite restriction.",
+            "verifies": []
+          },
+          {
+            "id": "u2",
+            "kind": "strategic",
+            "role": "method / representation selection",
+            "move": "Plan a finite CDF comparison followed by common countable exhaustion, then expectation comparison.",
+            "provenance": "Equal variances turn the increment comparison into a sign condition on the off-diagonal covariance difference.",
+            "rule": "Select an auxiliary representation, parameter, method, or sufficient target beyond direct matching.",
+            "inputs": "Centered Gaussian processes on nonempty T; equal point variances and ordered increment variances. A common countable set realizes both measurable suprema almost surely.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "Verification is in the following linked basic actions and the detailed derivation.",
+            "verifies": []
+          },
+          {
+            "id": "u3",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "These three required obligations suffice for the statement. Keep all finite-dimensional facts universally quantified rather than assuming the full index set is finite.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "Centered Gaussian processes on nonempty T; equal point variances and ordered increment variances. A common countable set realizes both measurable suprema almost surely.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "These three required obligations suffice for the statement. Keep all finite-dimensional facts universally quantified rather than assuming the full index set is finite.",
+            "verifies": [
+              "u2"
+            ]
+          }
+        ],
+        "relation": {
+          "kind": "sufficient",
+          "justification": "On a finite set, expand E(X_i−X_j)²=Aii+Ajj−2Aij, and do the same for Y. Equal diagonal variances cancel; the increment inequality then gives Aij≥Bij. It suffices to prove the finite lower-orthant CDF comparison, extend it to the common separable suprema, and derive the expectation statement. These are three required obligations; finite-dimensional facts remain universally quantified over finite restrictions.",
+          "side_conditions": "All conditional lemmas are universally quantified under their stated hypotheses; temporary vectors, thresholds, and parameters remain local. A,B are covariances of arbitrary finite restrictions. D=A−B; all smooth-test identities first refer to finite dimension. Infinite positive expectations are permitted, negative parts are integrable."
+        },
+        "remaining_obligations": "Prove P(max finite X≤r)≥P(max finite Y≤r) for every finite restriction and real r.; Extend the finite comparison to the separable suprema and all closed upper tails.; Derive the extended expectation inequality from the stochastic comparison."
+      },
+      "start": 0,
+      "end": 565
+    },
+    {
+      "id": "a2",
+      "title": "Interpolate the Gaussian covariance",
+      "quote": "Interpolate between the two covariance matrices:\n\\[\nC(u)=(1-u)B+uA,\\qquad 0\\le u\\le 1,\n\\]\nand let \\(Z(u)\\) be a centered Gaussian vector with covariance \\(C(u)\\). Put \\(D=A-B\\).\n\nSuppose first that \\(C(u)\\) is positive definite, and denote the density of \\(Z(u)\\) by \\(p_u\\). Differentiating its Fourier transform gives\n\\[\n\\partial_u p_u(x)=\\frac12\\sum_{i,j=1}^nD_{ij}\\,\\partial_{ij}p_u(x).\n\\]\nConsequently, for every smooth bounded function \\(h:\\mathbb R^n\\to\\mathbb R\\) with bounded derivatives, differentiation under the integral followed by two integrations by parts yields the Gaussian interpolation identity\n\\[\n\\frac{d}{du}\\mathbb E h(Z(u))\n=\n\\frac12\\sum_{i,j=1}^n\n(A_{ij}-B_{ij})\\,\n\\mathbb E\\big[\\partial_{ij}h(Z(u))\\big].\n\\tag{1}\n\\]\nIf the covariance matrices are singular, replace \\(C(u)\\) by \\(C(u)+\\delta I\\). The identity and the ensuing monotonicity then hold for the regularized Gaussian vectors; letting \\(\\delta\\downarrow0\\) recovers the comparison because the regularized vectors converge in distribution and \\(h\\) is bounded and continuous.\n\n",
+      "uses": [
+        "f1"
+      ],
+      "adds": [
+        "f2"
+      ],
+      "opens": [],
+      "closes": [],
+      "observations": [
+        "o2"
+      ],
+      "motivated_by": [
+        "gf",
+        "gs",
+        "ge"
+      ],
+      "justification": "Choose C(u)=(1−u)B+uA and D=A−B. Add δI, δ>0, so the smallest eigenvalue is at least δ on the whole compact interval. The Gaussian Fourier transform is exp(−ξᵀC(u)ξ/2); its u-derivative is −(ξᵀDξ)/2 times the transform, matching the transform of (1/2)∑Dij∂ij p. Gaussian decay permits inverse transformation, differentiation and integration by parts twice. This proves the identity for the regularized vector. Monotonicity for a fixed bounded continuous h then passes to δ↓0 by coupling added noise √δG, or convergence in distribution. No density is assumed for the singular endpoints.",
+      "observation": "The covariance difference has a useful sign pattern; interpolation can convert that pattern into monotonicity of a suitable test expectation.",
+      "explanation": "Choose C(u)=(1−u)B+uA and D=A−B. Add δI, δ>0, so the smallest eigenvalue is at least δ on the whole compact interval. The Gaussian Fourier transform is exp(−ξᵀC(u)ξ/2); its u-derivative is −(ξᵀDξ)/2 times the transform, matching the transform of (1/2)∑Dij∂ij p. Gaussian decay permits inverse transformation, differentiation and integration by parts twice. This proves the identity for the regularized vector. Monotonicity for a fixed bounded continuous h then passes to δ↓0 by coupling added noise √δG, or convergence in distribution. No density is assumed for the singular endpoints.",
+      "difficulty": "A covariance inequality by itself does not order the maxima. The interpolation mechanism is the main bridge.",
+      "short_version": "For bounded smooth h with bounded derivatives, interpolation gives \\(dE h(Z(u))/du=\\frac12\\sum_{ij}(A_{ij}-B_{ij})E\\partial_{ij}h(Z(u))\\), first with δI regularization.",
+      "protocol": {
+        "direction": "forward",
+        "context": "For any finite set of indices, Aii=Bii and Aij≥Bij for i≠j.",
+        "target": "Prove P(max finite X≤r)≥P(max finite Y≤r) for every finite restriction and real r.; Extend the finite comparison to the separable suprema and all closed upper tails.; Derive the extended expectation inequality from the stochastic comparison.",
+        "basic_progress": "Unfold the current target and the definitions in the preceding state. These identify the needed bound but do not select the method.",
+        "remaining_gap": "A covariance inequality by itself does not order the maxima. The interpolation mechanism is the main bridge.",
+        "observation": {
+          "target_feature": "Prove P(max finite X≤r)≥P(max finite Y≤r) for every finite restriction and real r.; Extend the finite comparison to the separable suprema and all closed upper tails.; Derive the extended expectation inequality from the stochastic comparison.",
+          "available_feature": "For any finite set of indices, Aii=Bii and Aij≥Bij for i≠j.",
+          "connection": "The covariance difference has a useful sign pattern; interpolation can convert that pattern into monotonicity of a suitable test expectation."
+        },
+        "actions": [
+          {
+            "id": "u1",
+            "kind": "strategic",
+            "role": "method / representation selection",
+            "move": "Choose the covariance path C(u)=(1−u)B+uA and regularization C(u)+δI.",
+            "provenance": "The covariance difference has a useful sign pattern; interpolation can convert that pattern into monotonicity of a suitable test expectation.",
+            "rule": "Select an auxiliary representation, parameter, method, or sufficient target beyond direct matching.",
+            "inputs": "For any finite set of indices, Aii=Bii and Aij≥Bij for i≠j.",
+            "toolkit_uses": [],
+            "verification": "Verification is in the following linked basic actions and the detailed derivation.",
+            "verifies": []
+          },
+          {
+            "id": "u2",
+            "kind": "B-C",
+            "role": "execution",
+            "move": "For δ>0, the smallest eigenvalue is at least δ. Differentiate exp(−ξᵀ(C(u)+δI)ξ/2) to get −(ξᵀDξ)/2 times the transform.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Substitute, expand, differentiate an explicitly supplied smooth formula, or perform scalar arithmetic; analytic limit rules are separate toolkit calls.",
+            "inputs": "For any finite set of indices, Aii=Bii and Aij≥Bij for i≠j.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "For δ>0, the smallest eigenvalue is at least δ. Differentiate exp(−ξᵀ(C(u)+δI)ξ/2) to get −(ξᵀDξ)/2 times the transform.",
+            "verifies": [
+              "u1"
+            ]
+          },
+          {
+            "id": "u3",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "The declared Gaussian Fourier identity and twice-integrated density derivatives yield dEh/du=(1/2)∑Dij E∂ijh; bounded derivatives and uniform Gaussian decay justify the operations.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "For any finite set of indices, Aii=Bii and Aij≥Bij for i≠j.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [
+              {
+                "id": "gauss",
+                "hypotheses_check": "For δ>0 the covariance is uniformly positive definite; h is smooth bounded with bounded derivatives."
+              }
+            ],
+            "verification": "The declared Gaussian Fourier identity and twice-integrated density derivatives yield dEh/du=(1/2)∑Dij E∂ijh; bounded derivatives and uniform Gaussian decay justify the operations.",
+            "verifies": []
+          },
+          {
+            "id": "u4",
+            "kind": "strategic",
+            "role": "method / representation selection",
+            "move": "Remove the auxiliary regularization only after proving monotonicity for a fixed bounded continuous test.",
+            "provenance": "The covariance difference has a useful sign pattern; interpolation can convert that pattern into monotonicity of a suitable test expectation.",
+            "rule": "Select an auxiliary representation, parameter, method, or sufficient target beyond direct matching.",
+            "inputs": "For any finite set of indices, Aii=Bii and Aij≥Bij for i≠j.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "Verification is in the following linked basic actions and the detailed derivation.",
+            "verifies": []
+          },
+          {
+            "id": "u5",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "The regularized vectors converge in distribution as δ↓0; bounded continuity passes their comparison to the original singular endpoints.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "For any finite set of indices, Aii=Bii and Aij≥Bij for i≠j.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [
+              {
+                "id": "limits",
+                "hypotheses_check": "At fixed smoothing scale, h is bounded continuous and Gaussian regularizations converge."
+              }
+            ],
+            "verification": "The regularized vectors converge in distribution as δ↓0; bounded continuity passes their comparison to the original singular endpoints.",
+            "verifies": [
+              "u4"
+            ]
+          }
+        ],
+        "relation": {
+          "kind": "deduction",
+          "justification": "Choose C(u)=(1−u)B+uA and D=A−B. Add δI, δ>0, so the smallest eigenvalue is at least δ on the whole compact interval. The Gaussian Fourier transform is exp(−ξᵀC(u)ξ/2); its u-derivative is −(ξᵀDξ)/2 times the transform, matching the transform of (1/2)∑Dij∂ij p. Gaussian decay permits inverse transformation, differentiation and integration by parts twice. This proves the identity for the regularized vector. Monotonicity for a fixed bounded continuous h then passes to δ↓0 by coupling added noise √δG, or convergence in distribution. No density is assumed for the singular endpoints.",
+          "side_conditions": "All conditional lemmas are universally quantified under their stated hypotheses; temporary vectors, thresholds, and parameters remain local. A,B are covariances of arbitrary finite restrictions. D=A−B; all smooth-test identities first refer to finite dimension. Infinite positive expectations are permitted, negative parts are integrable."
+        },
+        "remaining_obligations": "Prove P(max finite X≤r)≥P(max finite Y≤r) for every finite restriction and real r.; Extend the finite comparison to the separable suprema and all closed upper tails.; Derive the extended expectation inequality from the stochastic comparison."
+      },
+      "start": 565,
+      "end": 1625
+    },
+    {
+      "id": "a3",
+      "title": "Choose a product cutoff with positive mixed derivatives",
+      "quote": "Fix \\(r\\in\\mathbb R\\). Choose a smooth nonincreasing function\n\\[\ng_\\varepsilon:\\mathbb R\\to[0,1]\n\\]\nsuch that\n\\[\ng_\\varepsilon(x)=1\\quad\\text{for }x\\le r,\n\\qquad\ng_\\varepsilon(x)=0\\quad\\text{for }x\\ge r+\\varepsilon,\n\\]\nand define\n\\[\nh_\\varepsilon(x_1,\\dots,x_n)\n=\\prod_{k=1}^n g_\\varepsilon(x_k).\n\\]\nFor \\(i\\ne j\\),\n\\[\n\\partial_{ij}h_\\varepsilon(x)\n=\ng_\\varepsilon'(x_i)g_\\varepsilon'(x_j)\n\\prod_{k\\ne i,j}g_\\varepsilon(x_k)\\ge0,\n\\]\nbecause \\(g_\\varepsilon'\\le0\\). The diagonal terms in (1) vanish since\n\\(A_{ii}-B_{ii}=0\\), while all off-diagonal terms are nonnegative. Hence\n\\[\n\\frac{d}{du}\\mathbb E h_\\varepsilon(Z(u))\\ge0.\n\\]\nEvaluating at \\(u=0\\) and \\(u=1\\),\n\\[\n\\mathbb E h_\\varepsilon(X)\n\\ge\n\\mathbb E h_\\varepsilon(Y).\n\\]\n",
+      "uses": [
+        "f1",
+        "f2"
+      ],
+      "adds": [
+        "f3"
+      ],
+      "opens": [],
+      "closes": [],
+      "observations": [
+        "o3"
+      ],
+      "motivated_by": [
+        "gf",
+        "gs",
+        "ge"
+      ],
+      "justification": "Fix ε>0 and r. Take a decreasing cutoff gε as stated and set hε=∏gε(x_k). This is bounded smooth and all its derivatives are bounded for fixed ε and finite dimension. For i≠j, ∂ijhε=gε′(x_i)gε′(x_j)∏_{k≠i,j}gε(x_k)≥0. Since Dii=0, all diagonal contributions vanish. Since Dij≥0 off diagonal, the interpolation derivative is nonnegative. Integrate it from u=0 (Y) to u=1 (X); then remove δ. This gives the claimed smooth comparison.",
+      "observation": "The event max≤r is an intersection of coordinate inequalities. A product of decreasing cutoffs encodes that event and makes each mixed second derivative nonnegative.",
+      "explanation": "Fix ε>0 and r. Take a decreasing cutoff gε as stated and set hε=∏gε(x_k). This is bounded smooth and all its derivatives are bounded for fixed ε and finite dimension. For i≠j, ∂ijhε=gε′(x_i)gε′(x_j)∏_{k≠i,j}gε(x_k)≥0. Since Dii=0, all diagonal contributions vanish. Since Dij≥0 off diagonal, the interpolation derivative is nonnegative. Integrate it from u=0 (Y) to u=1 (X); then remove δ. This gives the claimed smooth comparison.",
+      "difficulty": "Selecting a test function with the required derivative signs is as important as the interpolation identity itself.",
+      "short_version": "For the smooth lower-orthant product hε, E hε(X)≥E hε(Y).",
+      "protocol": {
+        "direction": "forward",
+        "context": "For any finite set of indices, Aii=Bii and Aij≥Bij for i≠j.\nFor bounded smooth h with bounded derivatives, interpolation gives \\(dE h(Z(u))/du=\\frac12\\sum_{ij}(A_{ij}-B_{ij})E\\partial_{ij}h(Z(u))\\), first with δI regularization.",
+        "target": "Prove P(max finite X≤r)≥P(max finite Y≤r) for every finite restriction and real r.; Extend the finite comparison to the separable suprema and all closed upper tails.; Derive the extended expectation inequality from the stochastic comparison.",
+        "basic_progress": "Unfold the current target and the definitions in the preceding state. These identify the needed bound but do not select the method.",
+        "remaining_gap": "Selecting a test function with the required derivative signs is as important as the interpolation identity itself.",
+        "observation": {
+          "target_feature": "Prove P(max finite X≤r)≥P(max finite Y≤r) for every finite restriction and real r.; Extend the finite comparison to the separable suprema and all closed upper tails.; Derive the extended expectation inequality from the stochastic comparison.",
+          "available_feature": "For any finite set of indices, Aii=Bii and Aij≥Bij for i≠j.\nFor bounded smooth h with bounded derivatives, interpolation gives \\(dE h(Z(u))/du=\\frac12\\sum_{ij}(A_{ij}-B_{ij})E\\partial_{ij}h(Z(u))\\), first with δI regularization.",
+          "connection": "The event max≤r is an intersection of coordinate inequalities. A product of decreasing cutoffs encodes that event and makes each mixed second derivative nonnegative."
+        },
+        "actions": [
+          {
+            "id": "u1",
+            "kind": "B-D",
+            "role": "execution",
+            "move": "The event max≤r is the intersection of the coordinate lower-threshold events.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Unfold a declared definition.",
+            "inputs": "For any finite set of indices, Aii=Bii and Aij≥Bij for i≠j.\nFor bounded smooth h with bounded derivatives, interpolation gives \\(dE h(Z(u))/du=\\frac12\\sum_{ij}(A_{ij}-B_{ij})E\\partial_{ij}h(Z(u))\\), first with δI regularization.",
+            "toolkit_uses": [],
+            "verification": "The event max≤r is the intersection of the coordinate lower-threshold events.",
+            "verifies": []
+          },
+          {
+            "id": "u2",
+            "kind": "strategic",
+            "role": "method / representation selection",
+            "move": "Choose hε(x)=∏gε(x_k), with each factor smooth and decreasing from 1 to 0 between r and r+ε.",
+            "provenance": "The event max≤r is an intersection of coordinate inequalities. A product of decreasing cutoffs encodes that event and makes each mixed second derivative nonnegative.",
+            "rule": "Select an auxiliary representation, parameter, method, or sufficient target beyond direct matching.",
+            "inputs": "For any finite set of indices, Aii=Bii and Aij≥Bij for i≠j.\nFor bounded smooth h with bounded derivatives, interpolation gives \\(dE h(Z(u))/du=\\frac12\\sum_{ij}(A_{ij}-B_{ij})E\\partial_{ij}h(Z(u))\\), first with δI regularization.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "Verification is in the following linked basic actions and the detailed derivation.",
+            "verifies": []
+          },
+          {
+            "id": "u3",
+            "kind": "B-C",
+            "role": "execution",
+            "move": "Differentiate in distinct coordinates: ∂ijhε=gε′(x_i)gε′(x_j)∏_{k≠i,j}gε(x_k)≥0. The diagonal coefficients Dii vanish.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Substitute, expand, differentiate an explicitly supplied smooth formula, or perform scalar arithmetic; analytic limit rules are separate toolkit calls.",
+            "inputs": "For any finite set of indices, Aii=Bii and Aij≥Bij for i≠j.\nFor bounded smooth h with bounded derivatives, interpolation gives \\(dE h(Z(u))/du=\\frac12\\sum_{ij}(A_{ij}-B_{ij})E\\partial_{ij}h(Z(u))\\), first with δI regularization.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [
+              {
+                "id": "smooth",
+                "hypotheses_check": "r is real and ε>0; choose a bounded smooth decreasing cutoff."
+              }
+            ],
+            "verification": "Differentiate in distinct coordinates: ∂ijhε=gε′(x_i)gε′(x_j)∏_{k≠i,j}gε(x_k)≥0. The diagonal coefficients Dii vanish.",
+            "verifies": [
+              "u2"
+            ]
+          },
+          {
+            "id": "u4",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "Apply the established interpolation identity with this bounded smooth test. Each off-diagonal coefficient is nonnegative, so integrate the nonnegative derivative and remove δ.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "For any finite set of indices, Aii=Bii and Aij≥Bij for i≠j.\nFor bounded smooth h with bounded derivatives, interpolation gives \\(dE h(Z(u))/du=\\frac12\\sum_{ij}(A_{ij}-B_{ij})E\\partial_{ij}h(Z(u))\\), first with δI regularization.\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [
+              {
+                "id": "limits",
+                "hypotheses_check": "After integrating the regularized derivative, bounded continuity allows δ↓0."
+              }
+            ],
+            "verification": "Apply the established interpolation identity with this bounded smooth test. Each off-diagonal coefficient is nonnegative, so integrate the nonnegative derivative and remove δ.",
+            "verifies": []
+          }
+        ],
+        "relation": {
+          "kind": "deduction",
+          "justification": "Fix ε>0 and r. Take a decreasing cutoff gε as stated and set hε=∏gε(x_k). This is bounded smooth and all its derivatives are bounded for fixed ε and finite dimension. For i≠j, ∂ijhε=gε′(x_i)gε′(x_j)∏_{k≠i,j}gε(x_k)≥0. Since Dii=0, all diagonal contributions vanish. Since Dij≥0 off diagonal, the interpolation derivative is nonnegative. Integrate it from u=0 (Y) to u=1 (X); then remove δ. This gives the claimed smooth comparison.",
+          "side_conditions": "All conditional lemmas are universally quantified under their stated hypotheses; temporary vectors, thresholds, and parameters remain local. A,B are covariances of arbitrary finite restrictions. D=A−B; all smooth-test identities first refer to finite dimension. Infinite positive expectations are permitted, negative parts are integrable."
+        },
+        "remaining_obligations": "Prove P(max finite X≤r)≥P(max finite Y≤r) for every finite restriction and real r.; Extend the finite comparison to the separable suprema and all closed upper tails.; Derive the extended expectation inequality from the stochastic comparison."
+      },
+      "start": 1625,
+      "end": 2355
+    },
+    {
+      "id": "a4",
+      "title": "Remove smoothing and meet the finite goal",
+      "quote": "Letting \\(\\varepsilon\\downarrow0\\) and using bounded convergence yields\n\\[\n\\mathbb P\\left\\{\\max_{1\\le i\\le n}X_i\\le r\\right\\}\n\\ge\n\\mathbb P\\left\\{\\max_{1\\le i\\le n}Y_i\\le r\\right\\}.\n\\tag{2}\n\\]\n\nThus the maximum of the \\(X_i\\)'s is stochastically smaller than the maximum of the \\(Y_i\\)'s.\n\n",
+      "uses": [
+        "f3"
+      ],
+      "adds": [
+        "f4"
+      ],
+      "opens": [],
+      "closes": [
+        "gf"
+      ],
+      "observations": [
+        "o4"
+      ],
+      "motivated_by": [
+        "gf",
+        "gs",
+        "ge"
+      ],
+      "justification": "Pointwise, gε(x) tends to 1{x≤r}: at x=r it is exactly 1 for every ε. Hence the product tends to 1{max≤r}, even at atoms or degenerate coordinates. The product is bounded by 1, so bounded convergence proves the finite CDF inequality. This fact exactly matches the finite goal; it is not yet the arbitrary-index conclusion.",
+      "observation": "The smooth test was chosen to retain the boundary value, so its limit has the intended weak inequality.",
+      "explanation": "Pointwise, gε(x) tends to 1{x≤r}: at x=r it is exactly 1 for every ε. Hence the product tends to 1{max≤r}, even at atoms or degenerate coordinates. The product is bounded by 1, so bounded convergence proves the finite CDF inequality. This fact exactly matches the finite goal; it is not yet the arbitrary-index conclusion.",
+      "difficulty": "A generic claim about continuity of the CDF would be unsafe when Gaussian coordinates are degenerate.",
+      "short_version": "For every finite restriction and r∈R, P(max X≤r)≥P(max Y≤r).",
+      "protocol": {
+        "direction": "meeting",
+        "context": "For the smooth lower-orthant product hε, E hε(X)≥E hε(Y).",
+        "target": "Prove P(max finite X≤r)≥P(max finite Y≤r) for every finite restriction and real r.; Extend the finite comparison to the separable suprema and all closed upper tails.; Derive the extended expectation inequality from the stochastic comparison.",
+        "basic_progress": "Unfold the definitions and substitute the available facts. For every finite restriction and r∈R, P(max X≤r)≥P(max Y≤r).",
+        "remaining_gap": "A generic claim about continuity of the CDF would be unsafe when Gaussian coordinates are degenerate.",
+        "observation": {
+          "target_feature": "Prove P(max finite X≤r)≥P(max finite Y≤r) for every finite restriction and real r.; Extend the finite comparison to the separable suprema and all closed upper tails.; Derive the extended expectation inequality from the stochastic comparison.",
+          "available_feature": "For the smooth lower-orthant product hε, E hε(X)≥E hε(Y).",
+          "connection": "The smooth test was chosen to retain the boundary value, so its limit has the intended weak inequality."
+        },
+        "actions": [
+          {
+            "id": "u1",
+            "kind": "B-D",
+            "role": "execution",
+            "move": "For every x, including x=r, gε(x) tends to the indicator of x≤r.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Unfold a declared definition.",
+            "inputs": "For the smooth lower-orthant product hε, E hε(X)≥E hε(Y).",
+            "toolkit_uses": [],
+            "verification": "For every x, including x=r, gε(x) tends to the indicator of x≤r.",
+            "verifies": []
+          },
+          {
+            "id": "u2",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "The product is bounded by 1; bounded convergence transfers the proved expectation comparison to the finite CDF events. This meets the finite goal with its boundary convention intact.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "For the smooth lower-orthant product hε, E hε(X)≥E hε(Y).\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [
+              {
+                "id": "limits",
+                "hypotheses_check": "The functions are between 0 and 1 and converge pointwise including at x=r."
+              }
+            ],
+            "verification": "The product is bounded by 1; bounded convergence transfers the proved expectation comparison to the finite CDF events. This meets the finite goal with its boundary convention intact.",
+            "verifies": []
+          }
+        ],
+        "relation": {
+          "kind": "meeting",
+          "justification": "Pointwise, gε(x) tends to 1{x≤r}: at x=r it is exactly 1 for every ε. Hence the product tends to 1{max≤r}, even at atoms or degenerate coordinates. The product is bounded by 1, so bounded convergence proves the finite CDF inequality. This fact exactly matches the finite goal; it is not yet the arbitrary-index conclusion.",
+          "side_conditions": "All conditional lemmas are universally quantified under their stated hypotheses; temporary vectors, thresholds, and parameters remain local. A,B are covariances of arbitrary finite restrictions. D=A−B; all smooth-test identities first refer to finite dimension. Infinite positive expectations are permitted, negative parts are integrable."
+        },
+        "remaining_obligations": "Extend the finite comparison to the separable suprema and all closed upper tails.; Derive the extended expectation inequality from the stochastic comparison."
+      },
+      "start": 2355,
+      "end": 2645
+    },
+    {
+      "id": "a5",
+      "title": "Pass to separable suprema and closed tails",
+      "quote": "### 2. General separable index sets\n\nChoose a countable set \\(T_0=\\{t_1,t_2,\\dots\\}\\subseteq T\\) such that\n\\[\n\\sup_{t\\in T}X_t=\\sup_{t\\in T_0}X_t,\n\\qquad\n\\sup_{t\\in T}Y_t=\\sup_{t\\in T_0}Y_t\n\\quad\\text{a.s.}\n\\]\nSet\n\\[\nM_n^X=\\max_{1\\le k\\le n}X_{t_k},\n\\qquad\nM_n^Y=\\max_{1\\le k\\le n}Y_{t_k}.\n\\]\nBy (2),\n\\[\n\\mathbb P\\{M_n^X\\le r\\}\\ge \\mathbb P\\{M_n^Y\\le r\\}.\n\\]\nSince \\(M_n^X\\uparrow \\sup_tX_t\\) and \\(M_n^Y\\uparrow\\sup_tY_t\\),\ncontinuity of probability from above gives\n\\[\n\\mathbb P\\left\\{\\sup_{t\\in T}X_t\\le r\\right\\}\n\\ge\n\\mathbb P\\left\\{\\sup_{t\\in T}Y_t\\le r\\right\\}.\n\\tag{3}\n\\]\nTaking left limits in \\(r\\), we obtain, for every \\(\\tau\\in\\mathbb R\\),\n\\[\n\\mathbb P\\left\\{\\sup_{t\\in T}X_t\\ge\\tau\\right\\}\n\\le\n\\mathbb P\\left\\{\\sup_{t\\in T}Y_t\\ge\\tau\\right\\}.\n\\]\nThis is the claimed stochastic domination.\n\n",
+      "uses": [
+        "f0",
+        "f4"
+      ],
+      "adds": [
+        "f5"
+      ],
+      "opens": [],
+      "closes": [
+        "gs"
+      ],
+      "observations": [
+        "o5"
+      ],
+      "motivated_by": [
+        "gs",
+        "ge"
+      ],
+      "justification": "Choose the common countable set T₀ from the separability assumption. Finite maxima M_n increase to U=sup X and V=sup Y almost surely. For fixed r, {M_n≤r} decreases to {sup≤r}, so continuity from above carries the finite CDF inequality to U,V. To obtain ≥τ rather than >τ, take r_k↑τ with r_k<τ. Then {U≤r_k} increases to {U<τ}; take limits and complement. This handles atoms and the possible value +∞ without assuming CDF continuity.",
+      "observation": "Countable exhaustion turns the supremum into a monotone limit, and a left limit gives precisely the requested tail convention.",
+      "explanation": "Choose the common countable set T₀ from the separability assumption. Finite maxima M_n increase to U=sup X and V=sup Y almost surely. For fixed r, {M_n≤r} decreases to {sup≤r}, so continuity from above carries the finite CDF inequality to U,V. To obtain ≥τ rather than >τ, take r_k↑τ with r_k<τ. Then {U≤r_k} increases to {U<τ}; take limits and complement. This handles atoms and the possible value +∞ without assuming CDF continuity.",
+      "difficulty": "Separability is an explicit assumption for this proof. It cannot simply be inferred from finite-dimensional Gaussianity.",
+      "short_version": "For all τ∈R, P(sup X≥τ)≤P(sup Y≥τ).",
+      "protocol": {
+        "direction": "meeting",
+        "context": "Centered Gaussian processes on nonempty T; equal point variances and ordered increment variances. A common countable set realizes both measurable suprema almost surely.\nFor every finite restriction and r∈R, P(max X≤r)≥P(max Y≤r).",
+        "target": "Extend the finite comparison to the separable suprema and all closed upper tails.; Derive the extended expectation inequality from the stochastic comparison.",
+        "basic_progress": "Unfold the current target and the definitions in the preceding state. These identify the needed bound but do not select the method.",
+        "remaining_gap": "Separability is an explicit assumption for this proof. It cannot simply be inferred from finite-dimensional Gaussianity.",
+        "observation": {
+          "target_feature": "Extend the finite comparison to the separable suprema and all closed upper tails.; Derive the extended expectation inequality from the stochastic comparison.",
+          "available_feature": "Centered Gaussian processes on nonempty T; equal point variances and ordered increment variances. A common countable set realizes both measurable suprema almost surely.\nFor every finite restriction and r∈R, P(max X≤r)≥P(max Y≤r).",
+          "connection": "Countable exhaustion turns the supremum into a monotone limit, and a left limit gives precisely the requested tail convention."
+        },
+        "actions": [
+          {
+            "id": "u1",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "Name the common countable set supplied by the separability assumption.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "Centered Gaussian processes on nonempty T; equal point variances and ordered increment variances. A common countable set realizes both measurable suprema almost surely.\nFor every finite restriction and r∈R, P(max X≤r)≥P(max Y≤r).",
+            "toolkit_uses": [],
+            "verification": "Name the common countable set supplied by the separability assumption.",
+            "verifies": []
+          },
+          {
+            "id": "u2",
+            "kind": "strategic",
+            "role": "method / representation selection",
+            "move": "Enumerate that set and approximate both suprema by finite maxima M_n.",
+            "provenance": "Countable exhaustion turns the supremum into a monotone limit, and a left limit gives precisely the requested tail convention.",
+            "rule": "Select an auxiliary representation, parameter, method, or sufficient target beyond direct matching.",
+            "inputs": "Centered Gaussian processes on nonempty T; equal point variances and ordered increment variances. A common countable set realizes both measurable suprema almost surely.\nFor every finite restriction and r∈R, P(max X≤r)≥P(max Y≤r).\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "Verification is in the following linked basic actions and the detailed derivation.",
+            "verifies": []
+          },
+          {
+            "id": "u3",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "M_n increases to its specified supremum almost surely. The events {M_n≤r} decrease; continuity from above passes the finite CDF comparison to the suprema.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "Centered Gaussian processes on nonempty T; equal point variances and ordered increment variances. A common countable set realizes both measurable suprema almost surely.\nFor every finite restriction and r∈R, P(max X≤r)≥P(max Y≤r).\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [
+              {
+                "id": "limits",
+                "hypotheses_check": "Common T₀ makes both limits equal the specified measurable suprema; use decreasing events and then an increasing threshold sequence."
+              }
+            ],
+            "verification": "M_n increases to its specified supremum almost surely. The events {M_n≤r} decrease; continuity from above passes the finite CDF comparison to the suprema.",
+            "verifies": [
+              "u2"
+            ]
+          },
+          {
+            "id": "u4",
+            "kind": "strategic",
+            "role": "method / representation selection",
+            "move": "Take thresholds r_k↑τ from below to obtain the closed upper-tail convention.",
+            "provenance": "Countable exhaustion turns the supremum into a monotone limit, and a left limit gives precisely the requested tail convention.",
+            "rule": "Select an auxiliary representation, parameter, method, or sufficient target beyond direct matching.",
+            "inputs": "Centered Gaussian processes on nonempty T; equal point variances and ordered increment variances. A common countable set realizes both measurable suprema almost surely.\nFor every finite restriction and r∈R, P(max X≤r)≥P(max Y≤r).\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "Verification is in the following linked basic actions and the detailed derivation.",
+            "verifies": []
+          },
+          {
+            "id": "u5",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "The events {U≤r_k} increase to {U<τ}; pass to the limit and complement to obtain P(U≥τ)≤P(V≥τ).",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "Centered Gaussian processes on nonempty T; equal point variances and ordered increment variances. A common countable set realizes both measurable suprema almost surely.\nFor every finite restriction and r∈R, P(max X≤r)≥P(max Y≤r).\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "The events {U≤r_k} increase to {U<τ}; pass to the limit and complement to obtain P(U≥τ)≤P(V≥τ).",
+            "verifies": [
+              "u4"
+            ]
+          }
+        ],
+        "relation": {
+          "kind": "meeting",
+          "justification": "Choose the common countable set T₀ from the separability assumption. Finite maxima M_n increase to U=sup X and V=sup Y almost surely. For fixed r, {M_n≤r} decreases to {sup≤r}, so continuity from above carries the finite CDF inequality to U,V. To obtain ≥τ rather than >τ, take r_k↑τ with r_k<τ. Then {U≤r_k} increases to {U<τ}; take limits and complement. This handles atoms and the possible value +∞ without assuming CDF continuity.",
+          "side_conditions": "All conditional lemmas are universally quantified under their stated hypotheses; temporary vectors, thresholds, and parameters remain local. A,B are covariances of arbitrary finite restrictions. D=A−B; all smooth-test identities first refer to finite dimension. Infinite positive expectations are permitted, negative parts are integrable."
+        },
+        "remaining_obligations": "Derive the extended expectation inequality from the stochastic comparison."
+      },
+      "start": 2645,
+      "end": 3447
+    },
+    {
+      "id": "a6",
+      "title": "Truncate and close the expectation goal",
+      "quote": "### 3. Comparison of expectations\n\nLet\n\\[\nU=\\sup_{t\\in T}X_t,\\qquad V=\\sup_{t\\in T}Y_t.\n\\]\nStochastic domination implies\n\\[\n\\mathbb E\\phi(U)\\le \\mathbb E\\phi(V)\n\\]\nfor every bounded increasing function \\(\\phi\\). Applying this to\n\\[\n\\phi_m(x)=(-m)\\vee(x\\wedge m)\n\\]\nand letting \\(m\\to\\infty\\) gives\n\\[\n\\mathbb E U\\le \\mathbb E V.\n\\]\nIndeed, for any fixed \\(t_0\\in T\\),\n\\[\nU^-\\le X_{t_0}^-,\n\\qquad\nV^-\\le Y_{t_0}^-,\n\\]\nso both negative parts are integrable; the positive parts may be infinite, in which case the inequality is understood in the extended sense. Therefore\n\\[\n\\boxed{\\mathbb E\\sup_{t\\in T}X_t\n\\le\n\\mathbb E\\sup_{t\\in T}Y_t.}\n\\]\n\nThe separability convention is essential for arbitrary uncountable \\(T\\); equivalently, one may interpret the suprema as essential/separable suprema.",
+      "uses": [
+        "f0",
+        "f5"
+      ],
+      "adds": [
+        "f6"
+      ],
+      "opens": [],
+      "closes": [
+        "ge"
+      ],
+      "observations": [
+        "o6"
+      ],
+      "motivated_by": [
+        "ge"
+      ],
+      "justification": "For φ_m(z)=max(−m,min(z,m)), stochastic order gives Eφ_m(U)≤Eφ_m(V). Choose a fixed t₀ in nonempty T. Since U≥X_t₀ and V≥Y_t₀, U⁻≤X_t₀⁻ and V⁻≤Y_t₀⁻; these Gaussian negative parts are integrable. Write φ_m(U)=min(U⁺,m)−min(U⁻,m), and similarly for V. Monotone convergence on the positive terms and dominated convergence on the negative terms pass the inequality to extended expectations. Thus the final forward fact closes the remaining goal.",
+      "observation": "Bounded tests already obey stochastic order; a fixed Gaussian coordinate controls the negative tail so unbounded expectations can be recovered.",
+      "explanation": "For φ_m(z)=max(−m,min(z,m)), stochastic order gives Eφ_m(U)≤Eφ_m(V). Choose a fixed t₀ in nonempty T. Since U≥X_t₀ and V≥Y_t₀, U⁻≤X_t₀⁻ and V⁻≤Y_t₀⁻; these Gaussian negative parts are integrable. Write φ_m(U)=min(U⁺,m)−min(U⁻,m), and similarly for V. Monotone convergence on the positive terms and dominated convergence on the negative terms pass the inequality to extended expectations. Thus the final forward fact closes the remaining goal.",
+      "difficulty": "Without integrable negative parts, an extended expectation could be undefined as ∞−∞.",
+      "short_version": "E sup X≤E sup Y, allowing +∞.",
+      "protocol": {
+        "direction": "meeting",
+        "context": "Centered Gaussian processes on nonempty T; equal point variances and ordered increment variances. A common countable set realizes both measurable suprema almost surely.\nFor all τ∈R, P(sup X≥τ)≤P(sup Y≥τ).",
+        "target": "Derive the extended expectation inequality from the stochastic comparison.",
+        "basic_progress": "Unfold the current target and the definitions in the preceding state. These identify the needed bound but do not select the method.",
+        "remaining_gap": "Without integrable negative parts, an extended expectation could be undefined as ∞−∞.",
+        "observation": {
+          "target_feature": "Derive the extended expectation inequality from the stochastic comparison.",
+          "available_feature": "Centered Gaussian processes on nonempty T; equal point variances and ordered increment variances. A common countable set realizes both measurable suprema almost surely.\nFor all τ∈R, P(sup X≥τ)≤P(sup Y≥τ).",
+          "connection": "Bounded tests already obey stochastic order; a fixed Gaussian coordinate controls the negative tail so unbounded expectations can be recovered."
+        },
+        "actions": [
+          {
+            "id": "u1",
+            "kind": "B-D",
+            "role": "execution",
+            "move": "Decompose each supremum into positive and negative parts. A fixed coordinate implies U⁻≤X_t₀⁻ and V⁻≤Y_t₀⁻.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Unfold a declared definition.",
+            "inputs": "Centered Gaussian processes on nonempty T; equal point variances and ordered increment variances. A common countable set realizes both measurable suprema almost surely.\nFor all τ∈R, P(sup X≥τ)≤P(sup Y≥τ).",
+            "toolkit_uses": [],
+            "verification": "Decompose each supremum into positive and negative parts. A fixed coordinate implies U⁻≤X_t₀⁻ and V⁻≤Y_t₀⁻.",
+            "verifies": []
+          },
+          {
+            "id": "u2",
+            "kind": "strategic",
+            "role": "method / representation selection",
+            "move": "Choose the bounded increasing clipped tests φ_m(z)=max(−m,min(z,m)).",
+            "provenance": "Bounded tests already obey stochastic order; a fixed Gaussian coordinate controls the negative tail so unbounded expectations can be recovered.",
+            "rule": "Select an auxiliary representation, parameter, method, or sufficient target beyond direct matching.",
+            "inputs": "Centered Gaussian processes on nonempty T; equal point variances and ordered increment variances. A common countable set realizes both measurable suprema almost surely.\nFor all τ∈R, P(sup X≥τ)≤P(sup Y≥τ).\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [],
+            "verification": "Verification is in the following linked basic actions and the detailed derivation.",
+            "verifies": []
+          },
+          {
+            "id": "u3",
+            "kind": "B-L",
+            "role": "execution",
+            "move": "Stochastic order applies to each φ_m. The positive truncations increase, while the negative ones are dominated by integrable Gaussian variables. Pass to the extended expectation inequality.",
+            "provenance": "Declared facts and preceding local actions in this group.",
+            "rule": "Instantiate the stated implication after checking its premises, or use the declared logical rules.",
+            "inputs": "Centered Gaussian processes on nonempty T; equal point variances and ordered increment variances. A common countable set realizes both measurable suprema almost surely.\nFor all τ∈R, P(sup X≥τ)≤P(sup Y≥τ).\nAlso use the explicitly established outputs of earlier local actions.",
+            "toolkit_uses": [
+              {
+                "id": "order",
+                "hypotheses_check": "The preceding step proves full stochastic order; φ_m is bounded increasing."
+              },
+              {
+                "id": "limits",
+                "hypotheses_check": "Positive truncations increase, and negative parts are bounded by integrable Gaussian coordinates."
+              }
+            ],
+            "verification": "Stochastic order applies to each φ_m. The positive truncations increase, while the negative ones are dominated by integrable Gaussian variables. Pass to the extended expectation inequality.",
+            "verifies": [
+              "u2"
+            ]
+          }
+        ],
+        "relation": {
+          "kind": "meeting",
+          "justification": "For φ_m(z)=max(−m,min(z,m)), stochastic order gives Eφ_m(U)≤Eφ_m(V). Choose a fixed t₀ in nonempty T. Since U≥X_t₀ and V≥Y_t₀, U⁻≤X_t₀⁻ and V⁻≤Y_t₀⁻; these Gaussian negative parts are integrable. Write φ_m(U)=min(U⁺,m)−min(U⁻,m), and similarly for V. Monotone convergence on the positive terms and dominated convergence on the negative terms pass the inequality to extended expectations. Thus the final forward fact closes the remaining goal.",
+          "side_conditions": "All conditional lemmas are universally quantified under their stated hypotheses; temporary vectors, thresholds, and parameters remain local. A,B are covariances of arbitrary finite restrictions. D=A−B; all smooth-test identities first refer to finite dimension. Infinite positive expectations are permitted, negative parts are integrable."
+        },
+        "remaining_obligations": "None: all required goals have been discharged under the original assumptions."
+      },
+      "start": 3447,
+      "end": 4236
+    }
+  ],
+  "states": [
+    {
+      "id": "s0",
+      "have": [
+        "f0"
+      ],
+      "want": [
+        "g0"
+      ],
+      "action": null
+    },
+    {
+      "id": "s1",
+      "have": [
+        "f0",
+        "f1"
+      ],
+      "want": [
+        "gf",
+        "gs",
+        "ge"
+      ],
+      "action": "a1"
+    },
+    {
+      "id": "s2",
+      "have": [
+        "f0",
+        "f1",
+        "f2"
+      ],
+      "want": [
+        "gf",
+        "gs",
+        "ge"
+      ],
+      "action": "a2"
+    },
+    {
+      "id": "s3",
+      "have": [
+        "f0",
+        "f1",
+        "f2",
+        "f3"
+      ],
+      "want": [
+        "gf",
+        "gs",
+        "ge"
+      ],
+      "action": "a3"
+    },
+    {
+      "id": "s4",
+      "have": [
+        "f0",
+        "f1",
+        "f2",
+        "f3",
+        "f4"
+      ],
+      "want": [
+        "gs",
+        "ge"
+      ],
+      "action": "a4"
+    },
+    {
+      "id": "s5",
+      "have": [
+        "f0",
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "f5"
+      ],
+      "want": [
+        "ge"
+      ],
+      "action": "a5"
+    },
+    {
+      "id": "s6",
+      "have": [
+        "f0",
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "f5",
+        "f6"
+      ],
+      "want": [],
+      "action": "a6"
+    }
+  ],
+  "proof_edges": [
+    {
+      "from": "f0",
+      "to": "f1",
+      "action": "a1",
+      "kind": "deduction"
+    },
+    {
+      "from": "g0",
+      "to": "gf",
+      "action": "a1",
+      "kind": "reduction"
+    },
+    {
+      "from": "g0",
+      "to": "gs",
+      "action": "a1",
+      "kind": "reduction"
+    },
+    {
+      "from": "g0",
+      "to": "ge",
+      "action": "a1",
+      "kind": "reduction"
+    },
+    {
+      "from": "g0",
+      "to": "o1",
+      "action": "a1",
+      "kind": "inspiration"
+    },
+    {
+      "from": "o1",
+      "to": "f1",
+      "action": "a1",
+      "kind": "motivation"
+    },
+    {
+      "from": "o1",
+      "to": "gf",
+      "action": "a1",
+      "kind": "motivation"
+    },
+    {
+      "from": "o1",
+      "to": "gs",
+      "action": "a1",
+      "kind": "motivation"
+    },
+    {
+      "from": "o1",
+      "to": "ge",
+      "action": "a1",
+      "kind": "motivation"
+    },
+    {
+      "from": "o1",
+      "to": "g0",
+      "action": "a1",
+      "kind": "motivation"
+    },
+    {
+      "from": "f1",
+      "to": "f2",
+      "action": "a2",
+      "kind": "deduction"
+    },
+    {
+      "from": "gf",
+      "to": "o2",
+      "action": "a2",
+      "kind": "inspiration"
+    },
+    {
+      "from": "gs",
+      "to": "o2",
+      "action": "a2",
+      "kind": "inspiration"
+    },
+    {
+      "from": "ge",
+      "to": "o2",
+      "action": "a2",
+      "kind": "inspiration"
+    },
+    {
+      "from": "o2",
+      "to": "f2",
+      "action": "a2",
+      "kind": "motivation"
+    },
+    {
+      "from": "f1",
+      "to": "f3",
+      "action": "a3",
+      "kind": "deduction"
+    },
+    {
+      "from": "f2",
+      "to": "f3",
+      "action": "a3",
+      "kind": "deduction"
+    },
+    {
+      "from": "gf",
+      "to": "o3",
+      "action": "a3",
+      "kind": "inspiration"
+    },
+    {
+      "from": "gs",
+      "to": "o3",
+      "action": "a3",
+      "kind": "inspiration"
+    },
+    {
+      "from": "ge",
+      "to": "o3",
+      "action": "a3",
+      "kind": "inspiration"
+    },
+    {
+      "from": "o3",
+      "to": "f3",
+      "action": "a3",
+      "kind": "motivation"
+    },
+    {
+      "from": "f3",
+      "to": "f4",
+      "action": "a4",
+      "kind": "deduction"
+    },
+    {
+      "from": "f3",
+      "to": "gf",
+      "action": "a4",
+      "kind": "meeting"
+    },
+    {
+      "from": "f4",
+      "to": "gf",
+      "action": "a4",
+      "kind": "meeting"
+    },
+    {
+      "from": "gf",
+      "to": "o4",
+      "action": "a4",
+      "kind": "inspiration"
+    },
+    {
+      "from": "gs",
+      "to": "o4",
+      "action": "a4",
+      "kind": "inspiration"
+    },
+    {
+      "from": "ge",
+      "to": "o4",
+      "action": "a4",
+      "kind": "inspiration"
+    },
+    {
+      "from": "o4",
+      "to": "f4",
+      "action": "a4",
+      "kind": "motivation"
+    },
+    {
+      "from": "o4",
+      "to": "gf",
+      "action": "a4",
+      "kind": "motivation"
+    },
+    {
+      "from": "f0",
+      "to": "f5",
+      "action": "a5",
+      "kind": "deduction"
+    },
+    {
+      "from": "f4",
+      "to": "f5",
+      "action": "a5",
+      "kind": "deduction"
+    },
+    {
+      "from": "f0",
+      "to": "gs",
+      "action": "a5",
+      "kind": "meeting"
+    },
+    {
+      "from": "f4",
+      "to": "gs",
+      "action": "a5",
+      "kind": "meeting"
+    },
+    {
+      "from": "f5",
+      "to": "gs",
+      "action": "a5",
+      "kind": "meeting"
+    },
+    {
+      "from": "gs",
+      "to": "o5",
+      "action": "a5",
+      "kind": "inspiration"
+    },
+    {
+      "from": "ge",
+      "to": "o5",
+      "action": "a5",
+      "kind": "inspiration"
+    },
+    {
+      "from": "o5",
+      "to": "f5",
+      "action": "a5",
+      "kind": "motivation"
+    },
+    {
+      "from": "o5",
+      "to": "gs",
+      "action": "a5",
+      "kind": "motivation"
+    },
+    {
+      "from": "f0",
+      "to": "f6",
+      "action": "a6",
+      "kind": "deduction"
+    },
+    {
+      "from": "f5",
+      "to": "f6",
+      "action": "a6",
+      "kind": "deduction"
+    },
+    {
+      "from": "f0",
+      "to": "ge",
+      "action": "a6",
+      "kind": "meeting"
+    },
+    {
+      "from": "f5",
+      "to": "ge",
+      "action": "a6",
+      "kind": "meeting"
+    },
+    {
+      "from": "f6",
+      "to": "ge",
+      "action": "a6",
+      "kind": "meeting"
+    },
+    {
+      "from": "ge",
+      "to": "o6",
+      "action": "a6",
+      "kind": "inspiration"
+    },
+    {
+      "from": "o6",
+      "to": "f6",
+      "action": "a6",
+      "kind": "motivation"
+    },
+    {
+      "from": "o6",
+      "to": "ge",
+      "action": "a6",
+      "kind": "motivation"
+    }
+  ],
+  "closure": true,
+  "ablations": {
+    "a1": {
+      "action": "a1",
+      "restriction": "Globally forbid introducing the separate intermediate assertion Aij≥Bij; retain direct use of the increment inequalities.",
+      "alternatives": [
+        {
+          "title": "Keep increment differences in the interpolation sum",
+          "argument": "To avoid writing separate entrywise covariance comparisons, let D=A−B. Directly from equal point variances, Dii=0; expanding the increment difference gives Dij=−(E(X_i−X_j)²−E(Y_i−Y_j)²)/2. Thus the interpolation derivative equals −(1/4)∑ij[increment difference] E∂ijh. For the same product cutoff all off-diagonal derivatives are nonnegative, so each term is nonnegative. Finite smoothing limits, common countable exhaustion, left limits, and bounded truncations finish exactly as in the baseline. This removes a bookkeeping representation, not the covariance-sign mechanism.",
+          "outcome": "closed",
+          "cost": "Equivalent mathematics with slightly less notation; this does not remove the comparison mechanism.",
+          "route": [
+            {
+              "title": "Increment expression",
+              "have": "Dij is minus half the increment-variance difference.",
+              "want": "Prove monotonicity."
+            },
+            {
+              "title": "Signed derivative and limits",
+              "have": "The full tail and expectation comparison follows.",
+              "want": ""
+            }
+          ],
+          "origin": "model_proposed",
+          "source_ids": [],
+          "rejoin_state": null,
+          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
+          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "id": "a1-alt1",
+          "research_exposed": false,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        }
+      ],
+      "research": {
+        "status": "not_performed",
+        "sources": [],
+        "calls": [],
+        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+      },
+      "status": "reviewed",
+      "scope": "Global strategy ban; every alternative restarts from the original assumptions."
+    },
+    "a2": {
+      "action": "a2",
+      "restriction": "Globally forbid all Gaussian interpolation or covariance deformation methods, including disguised integration-by-parts implementations of the same path.",
+      "alternatives": [
+        {
+          "title": "Seek a coordinatewise ordered coupling",
+          "argument": "Take two coordinates: X=(G,G), while Y=(G₁,G₂) has independent standard Gaussian coordinates. Equal variances hold; the X increment variance is 0 and the Y increment variance is 2. Any coupling with X_i≤Y_i almost surely must have X_i=Y_i almost surely, since the two integrable variables have equal means and Y_i−X_i≥0. Doing this for both i would force Y₁=Y₂ almost surely, contradicting independence. Therefore the proposed coordinatewise ordered coupling need not exist.",
+          "outcome": "failed",
+          "cost": "A concrete admissible Gaussian example rules out this proposed coupling, not every interpolation-free proof.",
+          "route": [
+            {
+              "title": "Admissible two-coordinate example",
+              "have": "X=(G,G); Y has independent standard coordinates.",
+              "want": "Construct X_i≤Y_i simultaneously."
+            },
+            {
+              "title": "Contradiction",
+              "have": "Equal means would force coordinate equality and hence Y₁=Y₂.",
+              "want": "This coupling route is impossible in general."
+            }
+          ],
+          "origin": "model_proposed",
+          "source_ids": [],
+          "rejoin_state": null,
+          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
+          "assessment": "This candidate does not establish the stated theorem under the restriction. This says nothing about all possible replacements.",
+          "id": "a2-alt1",
+          "research_exposed": false,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        },
+        {
+          "title": "Use a soft maximum and expectation order",
+          "argument": "A smooth maximum such as β⁻¹log∑exp(βx_i) can lead to a comparison of expected maxima. That proves only the weaker expectation conclusion. Expectation order alone never implies all threshold probabilities: for example U is ±1 with equal probabilities and V=0; EU=EV, but P(U≥1/2)>P(V≥1/2). These are a logical counterexample to the proposed inference, not a Gaussian counterexample to Slepian. No smooth-max test with the needed orthant derivative signs has been supplied.",
+          "outcome": "unresolved",
+          "cost": "May settle the weaker expected-supremum claim; it leaves the requested distributional comparison unproved.",
+          "route": [
+            {
+              "title": "Soft maximum",
+              "have": "A candidate comparison for expected maxima.",
+              "want": "Control every tail threshold, not only the mean."
+            }
+          ],
+          "origin": "model_proposed",
+          "source_ids": [],
+          "rejoin_state": null,
+          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
+          "assessment": "This candidate does not establish the stated theorem under the restriction. This says nothing about all possible replacements.",
+          "id": "a2-alt2",
+          "research_exposed": false,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        }
+      ],
+      "research": {
+        "status": "not_performed",
+        "sources": [],
+        "calls": [],
+        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+      },
+      "status": "reviewed",
+      "scope": "Global strategy ban; every alternative restarts from the original assumptions."
+    },
+    "a3": {
+      "action": "a3",
+      "restriction": "Globally forbid product cutoffs or an equivalent smooth encoding of the lower orthant with nonnegative mixed derivatives.",
+      "alternatives": [
+        {
+          "title": "Replace the orthant test by a smooth maximum",
+          "argument": "A smooth maximum such as β⁻¹log∑exp(βx_i) can lead to a comparison of expected maxima. That proves only the weaker expectation conclusion. Expectation order alone never implies all threshold probabilities: for example U is ±1 with equal probabilities and V=0; EU=EV, but P(U≥1/2)>P(V≥1/2). These are a logical counterexample to the proposed inference, not a Gaussian counterexample to Slepian. No smooth-max test with the needed orthant derivative signs has been supplied.",
+          "outcome": "unresolved",
+          "cost": "No full stochastic-order argument is established under this ban.",
+          "route": [
+            {
+              "title": "Smooth maximum",
+              "have": "A smooth approximation to max is available.",
+              "want": "Its expectation comparison must be strengthened to all thresholds."
+            }
+          ],
+          "origin": "model_proposed",
+          "source_ids": [],
+          "rejoin_state": null,
+          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
+          "assessment": "This candidate does not establish the stated theorem under the restriction. This says nothing about all possible replacements.",
+          "id": "a3-alt1",
+          "research_exposed": false,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        }
+      ],
+      "research": {
+        "status": "not_performed",
+        "sources": [],
+        "calls": [],
+        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+      },
+      "status": "reviewed",
+      "scope": "Global strategy ban; every alternative restarts from the original assumptions."
+    },
+    "a4": {
+      "action": "a4",
+      "restriction": "Globally forbid letting the cutoff parameter ε tend to zero in bounded smooth tests. Do not assume nondegenerate endpoint distributions.",
+      "alternatives": [
+        {
+          "title": "Invoke continuity of the maximum distribution",
+          "argument": "The original hypotheses permit X_t=0 almost surely. Its maximum has an atom at zero, so a blanket assertion that its CDF is continuous is false. A direct orthant integral proof with singular cases could replace smooth limits, but that proof is not supplied by this candidate.",
+          "outcome": "failed",
+          "cost": "The failed step is an unjustified continuity assumption; no infinite computation is implicated.",
+          "route": [
+            {
+              "title": "Degenerate example",
+              "have": "All coordinates can be identically zero.",
+              "want": "Justify the boundary threshold."
+            },
+            {
+              "title": "Atom at zero",
+              "have": "CDF continuity cannot be assumed.",
+              "want": "A boundary-valid proof is still needed."
+            }
+          ],
+          "origin": "model_proposed",
+          "source_ids": [],
+          "rejoin_state": null,
+          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
+          "assessment": "This candidate does not establish the stated theorem under the restriction. This says nothing about all possible replacements.",
+          "id": "a4-alt1",
+          "research_exposed": false,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        }
+      ],
+      "research": {
+        "status": "not_performed",
+        "sources": [],
+        "calls": [],
+        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+      },
+      "status": "reviewed",
+      "scope": "Global strategy ban; every alternative restarts from the original assumptions."
+    },
+    "a5": {
+      "action": "a5",
+      "restriction": "Globally forbid exhausting the common separable index set by finite subsets or equivalent finite-subset limiting arguments.",
+      "alternatives": [
+        {
+          "title": "Treat an uncountable intersection as a finite event",
+          "argument": "Finite-dimensional CDF comparison is known only for finite intersections. Probability is not generally continuous over arbitrary uncountable intersections. For example on [0,1] with Lebesgue measure, each event [0,1] except a singleton has probability one, but their uncountable intersection is empty. This is a counterexample to the proposed measure-theoretic inference, not to the separable Gaussian theorem. A new direct separable-process comparison remains to be proved.",
+          "outcome": "failed",
+          "cost": "The gap is the passage between quantifiers. Separability enables the baseline countable argument but does not justify arbitrary intersections.",
+          "route": [
+            {
+              "title": "Finite marginals",
+              "have": "Every finite restriction satisfies the comparison.",
+              "want": "Pass to the specified infinite suprema."
+            },
+            {
+              "title": "Invalid continuity rule",
+              "have": "Arbitrary uncountable intersections do not preserve probabilities.",
+              "want": "A valid process-level argument remains absent."
+            }
+          ],
+          "origin": "model_proposed",
+          "source_ids": [],
+          "rejoin_state": null,
+          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
+          "assessment": "This candidate does not establish the stated theorem under the restriction. This says nothing about all possible replacements.",
+          "id": "a5-alt1",
+          "research_exposed": false,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        }
+      ],
+      "research": {
+        "status": "not_performed",
+        "sources": [],
+        "calls": [],
+        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+      },
+      "status": "reviewed",
+      "scope": "Global strategy ban; every alternative restarts from the original assumptions."
+    },
+    "a6": {
+      "action": "a6",
+      "restriction": "Globally forbid clipped bounded test functions φ_m and passage to their unbounded limit for the expectation comparison.",
+      "alternatives": [
+        {
+          "title": "Integrate the ordered positive and negative tails",
+          "argument": "From the already established closed-tail comparison one obtains P(U>t)≤P(V>t) by taking decreasing thresholds above t, and P(U<−t)≥P(V<−t) by complementation. Since U⁻ and V⁻ are integrable (bounded by one coordinate’s negative part), E U=∫₀∞P(U>t)dt−∫₀∞P(U<−t)dt. The corresponding two inequalities imply EU≤EV, allowing infinite positive integrals. Reconstruct the finite interpolation proof and countable extension first; this last argument avoids clipped test functions entirely.",
+          "outcome": "closed",
+          "cost": "Same integrability requirement; a different final representation with no extra probabilistic estimate.",
+          "route": [
+            {
+              "title": "Full stochastic order",
+              "have": "Tail and lower-tail probabilities are ordered.",
+              "want": "Recover expectations with signed parts."
+            },
+            {
+              "title": "Layer cake",
+              "have": "The negative integrals are finite and the positive ones are ordered.",
+              "want": ""
+            }
+          ],
+          "origin": "model_proposed",
+          "source_ids": [],
+          "rejoin_state": null,
+          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
+          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "id": "a6-alt1",
+          "research_exposed": false,
+          "fork_state": "s0",
+          "search_cost_measured": false
+        }
+      ],
+      "research": {
+        "status": "not_performed",
+        "sources": [],
+        "calls": [],
+        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+      },
+      "status": "reviewed",
+      "scope": "Global strategy ban; every alternative restarts from the original assumptions."
+    }
+  },
+  "research_records": {
+    "a1": {
+      "status": "not_performed",
+      "sources": [],
+      "calls": [],
+      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+    },
+    "a2": {
+      "status": "not_performed",
+      "sources": [],
+      "calls": [],
+      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+    },
+    "a3": {
+      "status": "not_performed",
+      "sources": [],
+      "calls": [],
+      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+    },
+    "a4": {
+      "status": "not_performed",
+      "sources": [],
+      "calls": [],
+      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+    },
+    "a5": {
+      "status": "not_performed",
+      "sources": [],
+      "calls": [],
+      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+    },
+    "a6": {
+      "status": "not_performed",
+      "sources": [],
+      "calls": [],
+      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
+    }
+  },
+  "critical": {
+    "steps": [
+      "a2",
+      "a3"
+    ],
+    "rationale": "The interpolation bridge and the orthant test supply the full stochastic comparison. The broad interpolation ban has no successful replacement among the candidates studied. A density-free integration-by-parts derivation still uses interpolation and therefore is not a success under that ban.",
+    "basis": "Editorial model assessment, not measured discovery difficulty."
+  },
+  "protocol": {
+    "version": "0.1",
+    "context": {
+      "domains": "Centered Gaussian processes on nonempty T; equal point variances and ordered increment variances. A common countable set realizes both measurable suprema almost surely.",
+      "definitions": "A,B are covariances of arbitrary finite restrictions. D=A−B; all smooth-test identities first refer to finite dimension. Infinite positive expectations are permitted, negative parts are integrable.",
+      "basic_rules": "Named B-C extension: differentiating an explicitly supplied elementary smooth formula by the product and chain rules; inverse Fourier transforms and analytic limit exchanges remain toolkit calls. B-D: unfold definitions. B-C: substitution, expansion and exact scalar/matrix arithmetic. B-L: instantiate a stated toolkit implication once its premises hold, use ordinary quantifier logic, and discharge local assumptions. Selecting a net, transform, test function or theorem is recorded separately as strategic.",
+      "toolkit": [
+        {
+          "id": "gauss",
+          "name": "Gaussian density differentiation",
+          "statement": "For uniformly positive definite \\(C(u)\\) on a compact interval, Fourier differentiation yields \\(\\partial_up_u=\\frac12\\sum \\dot C_{ij}\\partial_{ij}p_u\\). Integrating twice by parts transfers derivatives to bounded smooth h.",
+          "hypotheses": "Finite Gaussian vector; positive definite covariance with a uniform lower bound; h and its first two derivatives bounded. Gaussian decay justifies integrations."
+        },
+        {
+          "id": "limits",
+          "name": "Probability and integral limits",
+          "statement": "Bounded convergence, continuity of probability for monotone events, dominated convergence for integrable bounds, and monotone convergence for nonnegative variables.",
+          "hypotheses": "Measurability and the indicated bounds or monotonicity; common separable version for uncountable suprema."
+        },
+        {
+          "id": "smooth",
+          "name": "Smooth monotone cutoffs",
+          "statement": "There is a smooth decreasing g:R→[0,1], equal to 1 below r and 0 above r+ε, with bounded derivatives for fixed ε>0.",
+          "hypotheses": "r real and ε>0; a compactly supported smooth bump may be integrated and normalized."
+        },
+        {
+          "id": "order",
+          "name": "First-order stochastic order",
+          "statement": "CDF order implies ordered expectations for bounded increasing functions.",
+          "hypotheses": "Real extended random variables with their distribution functions; bounded test function."
+        }
+      ]
+    },
+    "validation": "Annotation structure checked; classifications and mathematics require review.",
+    "reference": {
+      "version": "0.1",
+      "sources": [
+        "tools/proof_explorer/protocol-reference.html",
+        "tools/proof_explorer/protocol.html"
+      ],
+      "sha256": "10ce6d749f133fa8b2369803c823cded381de7a5eaae3d23b0413483d18cb3f4",
+      "text": "01 / SCOPE\nWhat this specification defines\nThis is an operational protocol for annotating and communicating proofs. Its core distinctions come from the project README and our worked decompositions. The explicit state model, rule names, and recording conventions below are a proposed formalization of those ideas.\nDefinition 1 — Classification is relative to a declared context.\nBefore classifying a proof, declare its domains, definitions, elementary calculation rules, logical rules, and available toolkit results. A label describes the role of an action in that context, not a universal measure of human ingenuity.\n“Basic” does not mean familiar, short, easy, or executable by software. “Strategic” does not mean difficult, novel, or historically original. A one-line factorization can be strategic; a long sequence of prescribed arithmetic can be basic.\nVersion 0.1 uses the rule inventory in §3 as its default. An extension must be named before it is used. If a displayed step hides several actions, split it before assigning labels. If the context or motivation is missing, mark the classification\nunresolved\ninstead of inferring a strategy from the final formula alone.\n02 / REPRESENTATION\nA state, a goal map, and a progress map\nDefinition 2 — Proof state.\nA state consists of a scoped context Γ of assumptions and established facts, a set of open goals G, a declared toolkit T, and a dependency record. Every object has a domain; every fact records the assumptions under which it holds.\nThe goal map\nstarts at the ultimate claim and records what would suffice to establish it.\nThe progress map\nstarts at the givens and records justified deductions. The toolkit supplies the definitions, results, and methods that those deductions may call. Thus the progress map records uses of the toolkit; it is not the toolkit itself.\nFORWARD / DERIVE\nEstablished facts → justified new fact\nΓ ⊢ F\nAdd F to the current context only after its justification is checked.\nBACKWARD / REDUCE\nCurrent goal → sufficient obligations\nΓ ⊢ (G₁ ∧ ··· ∧ Gₖ) ⇒ G\nRecord why solving the children will establish their parent. The children remain open.\nThe symbol Γ ⊢ F means that F is derivable under Γ using the declared rules and toolkit. For reductions introducing local assumptions or arbitrary variables, record each child’s own context rather than treating it as an unscoped conjunct.\nBoth directions may be basic or strategic. Their interleaving is a\nthinking sequence\n; the dependency maps describe logical support. An animation may show a plausible reconstruction of discovery, but must not present it as the historical sequence without evidence.\nA newly proved lemma may enter T with a link to its proof. An externally assumed theorem must be named as such. Neither operation can silently promote an unproved claim into an established fact.\n03 / EXECUTION\nThe three basic step types\nDefinition 3 — Basic step.\nAn action is basic when it is an instance of B-D, B-C, or B-L below, with its inputs and side conditions explicit, and it does not conceal an additional choice of representation, auxiliary object, intermediate goal, or method. A basic block is a finite sequence of such actions whose intermediate results can be exposed.\nB-D · Direct definition interpretation\nUnfold a declared definition on an object or property already present, or fold it after its defining conditions have been established. Rename bound variables to avoid capture when necessary.\nExamples: interpreting “a is even” as ∃m ∈ ℤ, a = 2m; interpreting injectivity as an implication; replacing “G is a group” by the axioms in the declared group definition. With the convention that the operation must first be internal, the obligations are closure, associativity, identity, and inverses. If internality is already part of the given operation’s type, it is already satisfied.\nB-C · Direct elementary calculation\nThe default operations are substitution using an established equality, exact arithmetic, evaluation of a supplied operation, expansion by distributivity or a declared power rule, and collection or cancellation of like terms. Reassociation, reordering, and cancellation require the relevant algebraic laws and side conditions.\nExpansion and collection use the declared expanded form as their default direction. Searching for a useful factored form, a completed square, a change of variables, or an expression involving a newly introduced term is not part of that default calculation procedure.\nThus expanding (x − y)² into x² − 2xy + y² is B-C. Recognizing that a displayed polynomial should be represented by (x − y)² is a separate choice. Once the candidate has been chosen, expansion can verify it. Testing associativity by directly calculating both (ab)c and a(bc) is basic only when the supplied operation and these rules actually determine the calculation.\nB-L · Direct elementary logic\nThe default rules are: extract or combine conjuncts; instantiate a universal statement; apply an implication to an established premise; substitute equals; introduce a fresh arbitrary variable of the required domain; introduce and discharge an implication’s assumption; name a fresh witness supplied by an existential assumption; introduce an existential conclusion using an established witness; and combine completed exhaustive cases.\nUniversal introduction requires that the variable remain arbitrary. A witness named from an existential assumption is local and fresh. A proposed witness for an existential goal requires a value, its domain, and verification of the target predicate. Completing a case argument requires a justification that its cases cover the domain.\nDirect matching convention.\nInstantiating an explicit implication with terms already supplied by its matching premise is B-L. For example, g(f(a)) = g(f(b)) supplies u = f(a), v = f(b) to the defining implication for injectivity of g. No new representation or auxiliary target is needed.\nToolkit use is a separate annotation.\nAn available theorem is not a fourth basic step type. A direct application after its premises are checked can be B-L, while finding that theorem useful can be strategic. Record the theorem and its hypotheses even when the application is basic; its own proof may be substantial.\n04 / CHOICE\nWhat counts as strategic\nDefinition 4 — Strategic step.\nRelative to the declared basic rules, a strategic step selects a candidate representation, intermediate obligation, auxiliary object, parameter, case partition, theorem, or proof method whose usefulness is inferred from a relationship between the current state, the goal, and the toolkit, rather than obtained by direct definition interpretation, canonical calculation, or direct logical matching.\nStrategic role\nWhat is selected\nExample\nRepresentation\nA form exposing useful structure\nRewrite x² − 2xy + y² as (x − y)².\nGoal planning\nA useful intermediate claim or reduction\nSeek an exponential-moment bound to obtain a tail bound.\nConstruction\nA new witness, auxiliary object, or parameter\nChoose k = m + n; introduce an independent copy X′.\nMethod or toolkit selection\nA relevant method or result beyond a directly matching premise\nChoose induction, or recognize that Bernstein’s inequality fits a sum.\nCase selection\nA partition useful for the current goal\nSplit by parity to locate an even factor in n(n + 1).\nThese roles may overlap; they are descriptive tags, not mutually exclusive mathematical species. The principal distinction is the\nselection action\nversus its\nverification actions\n. A strategic candidate can be reasonable and still fail. Record it as exploratory until its validity and remaining obligations are established.\nWhy “already specified” is not enough\nAn author cannot erase a strategic step by writing “now factor” and then calling everything that follows basic. Record where the proposed representation or operation came from. If it was supplied by the problem or an earlier step, link to that instruction; otherwise record the observation motivating its selection here. Verification can then be basic without retrospectively making the choice basic.\nA request to verify a supplied identity and a request to discover a useful identity are therefore different tasks, even when their final algebra is identical. Basic steps can occur anywhere in a proof, including after several strategic choices.\nA consistent classification procedure\nFix the state before the action and the declared basic rules. Separate a proposed choice from the argument checking it.\nFor an execution action, exhibit its B-D, B-C, or B-L rule and inputs. A finite sequence of such instances is a basic block.\nFor a selection action beyond those rules, identify the selected object or method and the relationship motivating it; label that action strategic.\nIf neither description is available, expand the omitted reasoning or leave the classification unresolved. Do not classify an unexplained jump as basic merely because its conclusion is correct.\n05 / MOTIVATION\nAn observation must identify a connection\nDefinition 5 — Motivating observation.\nAn observation names a relevant feature of the current state, a feature required by the goal or a candidate toolkit result, and the relationship that suggests a particular move. It explains the choice; it does not replace a proof of the chosen move.\nTarget:\nWhat form, property, or hypothesis do we need?\nAvailable feature:\nWhat concrete structure do the current expressions or assumptions expose?\nConnection:\nHow would the proposed move use that feature to address the target?\n“The goal asks for twice an integer. In 2m + 2n, both summands contain the required factor 2. Factoring out that shared 2 gives 2(m + n), suggesting the witness k = m + n.”\n“Factor the expression” states an action. “Use a clever trick” states neither the relevant feature nor the connection. The observation above makes the choice inspectable without claiming that it was the only possible choice.\nObservations can also explain basic steps. In the injectivity example, the outer g in the equality matches the premise of g’s defining implication. This is direct logical matching, so the presence of an observation does not by itself imply strategy.\nIf an observation includes a mathematical assertion not yet established, verify that assertion or mark it as a conjecture. A motivation is never an extra assumption available to the proof.\n06 / BACKWARD REASONING\nThree different goal transformations\nDefinition 6 — Goal decomposition.\nReplace G by explicitly related obligations. An AND node requires every child. An OR node permits a child that is itself sufficient. A case split requires all conditional branches and exhaustiveness. A scoped implication goal permits assuming its premise locally; that assumption must later be discharged.\nDecomposition is basic when it directly unpacks a definition or logical connective. Choosing an induction scheme, an auxiliary lemma, or a useful case partition is strategic. In particular, an induction reduction must include its base, step, and the justification that the induction principle covers the claimed domain.\nDefinition 7 — Goal reinterpretation.\nReplace G by a newly represented target H chosen to connect the current state to the toolkit. Record the exact relation under the current context: Γ ⊢ G ⇔ H for an equivalent reformulation, or Γ ⊢ H ⇒ G for a sufficient-condition reduction. Its strategic content is why this target is useful. Equivalence must not be assumed.\nFor real x, y:\nx² + y² ≥ 2xy ⇔ x² − 2xy + y² ≥ 0 ⇔ (x − y)² ≥ 0.\nMoving to a difference and recognizing a square are the motivating choices. Subtraction and expansion verify the equivalences. Square nonnegativity supplies the final fact, which can then be carried back to the original goal.\nDefinition 8 — Sufficient-condition reduction.\nReplace G by an obligation H while recording Γ ⊢ H ⇒ G. The converse is not claimed. H may be stronger than G; proving H is enough, but failing to prove H does not refute G.\nFor Hanson–Wright, a suitable bound on an exponential moment over a specified parameter range supplies a tail bound through exponential Markov and a choice of parameter. This is a sufficient-condition reinterpretation; its precise relation must be recorded as\nsufficient\n, not equivalent.\nSide conditions travel with the edge.\nMultiplication by x preserves an inequality’s direction when x > 0; division requires a nonzero denominator; an MGF estimate may hold only for a restricted parameter. A reduction that drops these conditions is not verified.\nAn infinite domain or unspecified variables can motivate a change of representation, but do not imply that a goal is unsolvable. For example, a universally quantified inequality is meaningful without knowing numerical values of x and y.\n07 / ANNOTATION\nThe record for each move\nEach move should be recoverable from the following fields. A compact basic step may cite its rule and inputs in one sentence. A strategic step must make its motivating connection explicit.\nIdentity & direction\nA step identifier; forward deduction, backward reduction, or an exploratory proposal.\nContext & target\nThe facts, domains, local assumptions, and goal available immediately before the move.\nClassification\nB-D, B-C, B-L, or strategic role(s). Split mixed choices and verification into linked substeps.\nObservation\nThe target feature, available feature, and connection. For a basic step, a direct rule match suffices.\nSelected move & provenance\nThe proposed expression, witness, method, or new obligation; where the choice came from.\nToolkit dependency\nThe exact definition, rule, or named result invoked, including its required hypotheses.\nVerification & relation\nThe calculation or inference validating the move. For goals, label equivalence, sufficiency, AND, OR, or scoped reasoning.\nResult & open obligations\nWhat is now established, what remains to prove, and which earlier steps support it.\nFor a rejected attempt, keep its proposed connection and the reason it failed separate from established facts. A displayed shortcut may compress several verified actions, but must not obscure the strategic selection or an unproved dependency.\n08 / BOUNDARIES\nClassify actions, not just equations\nAction in context\nClassification\nReason\nInterpret “a + b is even” as ∃k ∈ ℤ: a + b = 2k.\nB-D\nDirect expansion of the target definition.\nSubstitute a = 2m and b = 2n to get 2m + 2n.\nB-C\nUse established equalities.\nNotice the common 2 and choose 2(m + n) to match 2k.\nStrategic\nSelect a representation and a candidate witness.\nExpand 2(m + n), verify m + n ∈ ℤ, and use the witness.\nB-C, then B-L\nVerify the choice; cite integer closure as a toolkit fact.\nChoose x² + y² = (x − y)² + 2xy to expose a nonnegative term.\nStrategic\nThe useful square is reverse-engineered from the target.\nCheck that identity by expanding its proposed right side.\nB-C\nDirect verification of an explicit candidate.\nChoose even/odd cases to find an even factor in n(n + 1).\nStrategic\nSelect a partition whose branches expose the needed factor.\nHaving proved both parity cases and exhaustiveness, conclude the statement for all integers.\nB-L\nCombine established cases.\nA proof with no separate strategic step\nSuppose f: A → B and g: B → C are injective. Unpack the target, take arbitrary a, b ∈ A, and assume g(f(a)) = g(f(b)). Since f(a), f(b) ∈ B, the expanded injectivity of g yields f(a) = f(b). The expanded injectivity of f yields a = b. Discharge the assumption and generalize.\nUnder the default direct-matching convention, this sequence uses definitions and elementary logic throughout. The order is explained by the outer function in the current equality. No additional representation, auxiliary object, or goal is needed.\nA strategic move with a basic verification\nFor x > 0, consider x + 1/x ≥ 2. The reciprocal has denominator x, and the given positivity permits clearing it while preserving the inequality. That observation motivates the strategic choice to multiply by x. Computing the products and checking positivity are basic verification. Recognizing the resulting difference x² − 2x + 1 as (x − 1)² is another strategic choice, followed by basic expansion and application of square nonnegativity.\nThe classification does not depend on whether a reader recognizes the square instantly. Nor does it claim that every valid proof must use that representation.\n09 / COMPLETION\nWhen the explanation is complete\nThe two maps meet when an established forward result satisfies an open goal under the same domain, assumptions, and side conditions. Matching surface notation is insufficient: parameter ranges, quantifiers, constants, and dependencies must also match or be connected by a verified inference.\nEvery strategic choice used in the final argument has an explicit motivating observation and a completed verification. Unresolved explorations remain outside its chain of support.\nEvery basic step identifies a permitted rule and valid inputs; every toolkit call has its hypotheses checked.\nEvery goal edge records the correct logical relationship. All required branches and side conditions are discharged.\nNo open goal is used as an established fact, and no conclusion depends circularly on itself.\nThe ultimate claim follows from the original assumptions. A linear written proof can present the verified dependencies in a valid order.\nThis protocol specifies what an explanation must expose. It does not yet supply a numerical measure of “strategic gap,” an automatic classifier, or a machine-checked foundation for every toolkit theorem. Those are separate research tasks. Its present commitment is a traceable distinction between\nwhy a move was selected\nand\nwhy that move is valid\n.\nExplore the Hanson–Wright example →\n\nTHE PRIORITY RULE\nBasic first. Observe when blocked.\nUse direct definitions, calculations, and logic as far as they address the current goal. When they leave a gap, identify a relationship that suggests a new target. Verify the reduction, then return to basic steps. Repeat if another gap remains.\n“Stuck” is local to the current representation and allowed basic moves. It does not mean the theorem is unprovable. The observation proposes a route; verification establishes that it works.\nRead the finished proof\nSince a and b are even, write a = 2m and b = 2n for integers m,n. Then a + b = 2m + 2n = 2(m + n). Since m + n is an integer, a + b is even. □\nThe short proof compresses the choice of a useful representation. The graph exposes that choice and its motivation.\nThree node types, two directions\nFact:\nan assumption or a verified statement, with its domain and dependencies.\nGoal:\na statement still needed; it closes when verified facts establish it.\nObservation:\nan explicit match between a feature we have and a feature we need. It suggests a move but is not a proof edge.\nThe forward graph records deductions. The backward graph records sufficient obligations. Direction and node type are separate: basic steps can occur in either graph.\nRead the detailed definitions and boundary rules →"
+    }
+  },
+  "experiment": {
+    "input_id": "theorem_7_2_2",
+    "url": "https://lisay1379.github.io/proof_assistant_lab/reports/control_vs_rag/test_3node_rag_2/comparison_viewer.html#case-theorem_7_2_2",
+    "baseline": "Final Library-RAG answer",
+    "control_proof": "Assume the suprema are measurable and separable—for example, \\(T\\) is countable, or there is a countable \\(T_0\\subseteq T\\) over which both suprema agree almost surely. We first prove the result for finite \\(T\\).\n\n### 1. Finite-dimensional case\n\nLet \\(T=\\{1,\\dots,n\\}\\), and write\n\\[\nA_{ij}=\\mathbb E[X_iX_j],\n\\qquad\nB_{ij}=\\mathbb E[Y_iY_j].\n\\]\nThe variance assumption gives\n\\[\nA_{ii}=B_{ii}.\n\\]\nMoreover,\n\\[\n\\mathbb E(X_i-X_j)^2\n  =A_{ii}+A_{jj}-2A_{ij},\n\\]\nand similarly for \\(Y\\). Therefore, the increment assumption implies\n\\[\nA_{ij}\\ge B_{ij}\\qquad (i\\ne j).\n\\]\n\nInterpolate between the two covariance matrices:\n\\[\nC(u)=(1-u)B+uA,\\qquad 0\\le u\\le 1,\n\\]\nand let \\(Z(u)\\) be a centered Gaussian vector with covariance \\(C(u)\\).\n\nFor every smooth function \\(h:\\mathbb R^n\\to\\mathbb R\\) with bounded derivatives, the Gaussian interpolation identity gives\n\\[\n\\frac{d}{du}\\mathbb E h(Z(u))\n=\n\\frac12\\sum_{i,j=1}^n\n(A_{ij}-B_{ij})\\,\n\\mathbb E\\big[\\partial_{ij}h(Z(u))\\big].\n\\tag{1}\n\\]\nIf some covariance matrices are singular, this follows by adding \\(\\varepsilon I\\) and then letting \\(\\varepsilon\\downarrow0\\).\n\nFix \\(r\\in\\mathbb R\\). Choose a smooth nonincreasing function\n\\[\ng_\\varepsilon:\\mathbb R\\to[0,1]\n\\]\nsuch that\n\\[\ng_\\varepsilon(x)=1\\quad\\text{for }x\\le r,\n\\qquad\ng_\\varepsilon(x)=0\\quad\\text{for }x\\ge r+\\varepsilon,\n\\]\nand define\n\\[\nh_\\varepsilon(x_1,\\dots,x_n)\n=\\prod_{k=1}^n g_\\varepsilon(x_k).\n\\]\nFor \\(i\\ne j\\),\n\\[\n\\partial_{ij}h_\\varepsilon(x)\n=\ng_\\varepsilon'(x_i)g_\\varepsilon'(x_j)\n\\prod_{k\\ne i,j}g_\\varepsilon(x_k)\\ge0,\n\\]\nbecause \\(g_\\varepsilon'\\le0\\). The diagonal terms in (1) vanish since\n\\(A_{ii}-B_{ii}=0\\), while all off-diagonal terms are nonnegative. Hence\n\\[\n\\frac{d}{du}\\mathbb E h_\\varepsilon(Z(u))\\ge0.\n\\]\nEvaluating at \\(u=0\\) and \\(u=1\\),\n\\[\n\\mathbb E h_\\varepsilon(X)\n\\ge\n\\mathbb E h_\\varepsilon(Y).\n\\]\nLetting \\(\\varepsilon\\downarrow0\\) and using bounded convergence yields\n\\[\n\\mathbb P\\left\\{\\max_{1\\le i\\le n}X_i\\le r\\right\\}\n\\ge\n\\mathbb P\\left\\{\\max_{1\\le i\\le n}Y_i\\le r\\right\\}.\n\\tag{2}\n\\]\n\nThus the maximum of the \\(X_i\\)'s is stochastically smaller than the maximum of the \\(Y_i\\)'s.\n\n### 2. General separable index sets\n\nChoose a countable set \\(T_0=\\{t_1,t_2,\\dots\\}\\subseteq T\\) such that\n\\[\n\\sup_{t\\in T}X_t=\\sup_{t\\in T_0}X_t,\n\\qquad\n\\sup_{t\\in T}Y_t=\\sup_{t\\in T_0}Y_t\n\\quad\\text{a.s.}\n\\]\nSet\n\\[\nM_n^X=\\max_{1\\le k\\le n}X_{t_k},\n\\qquad\nM_n^Y=\\max_{1\\le k\\le n}Y_{t_k}.\n\\]\nBy (2),\n\\[\n\\mathbb P\\{M_n^X\\le r\\}\\ge \\mathbb P\\{M_n^Y\\le r\\}.\n\\]\nSince \\(M_n^X\\uparrow \\sup_tX_t\\) and \\(M_n^Y\\uparrow\\sup_tY_t\\),\ncontinuity of probability from above gives\n\\[\n\\mathbb P\\left\\{\\sup_{t\\in T}X_t\\le r\\right\\}\n\\ge\n\\mathbb P\\left\\{\\sup_{t\\in T}Y_t\\le r\\right\\}.\n\\tag{3}\n\\]\nTaking left limits in \\(r\\), we obtain, for every \\(\\tau\\in\\mathbb R\\),\n\\[\n\\mathbb P\\left\\{\\sup_{t\\in T}X_t\\ge\\tau\\right\\}\n\\le\n\\mathbb P\\left\\{\\sup_{t\\in T}Y_t\\ge\\tau\\right\\}.\n\\]\nThis is the claimed stochastic domination.\n\n### 3. Comparison of expectations\n\nLet\n\\[\nU=\\sup_{t\\in T}X_t,\\qquad V=\\sup_{t\\in T}Y_t.\n\\]\nStochastic domination implies\n\\[\n\\mathbb E\\phi(U)\\le \\mathbb E\\phi(V)\n\\]\nfor every bounded increasing function \\(\\phi\\). Applying this to\n\\[\n\\phi_m(x)=(-m)\\vee(x\\wedge m)\n\\]\nand letting \\(m\\to\\infty\\) gives\n\\[\n\\mathbb E U\\le \\mathbb E V.\n\\]\nIndeed, for any fixed \\(t_0\\in T\\),\n\\[\nU^-\\le X_{t_0}^-,\n\\qquad\nV^-\\le Y_{t_0}^-,\n\\]\nso both negative parts are integrable; the positive parts may be infinite, in which case the inequality is understood in the extended sense. Therefore\n\\[\n\\boxed{\\mathbb E\\sup_{t\\in T}X_t\n\\le\n\\mathbb E\\sup_{t\\in T}Y_t.}\n\\]\n\nThe separability convention is essential for arbitrary uncountable \\(T\\); equivalently, one may interpret the suprema as essential/separable suprema.",
+    "comparison_diff": "--- Control\n+++ Library-RAG\n@@ -12,23 +12,19 @@\n \\[\n A_{ii}=B_{ii}.\n \\]\n-Moreover,\n-\\[\n-\\mathbb E(X_i-X_j)^2\n-  =A_{ii}+A_{jj}-2A_{ij},\n-\\]\n-and similarly for \\(Y\\). Therefore, the increment assumption implies\n-\\[\n-A_{ij}\\ge B_{ij}\\qquad (i\\ne j).\n-\\]\n+Comparing \\(\\mathbb E(X_i-X_j)^2=A_{ii}+A_{jj}-2A_{ij}\\) with the analogous formula for \\(Y\\), and using \\(A_{ii}=B_{ii}\\), gives \\(A_{ij}\\ge B_{ij}\\) for \\(i\\ne j\\).\n \n Interpolate between the two covariance matrices:\n \\[\n C(u)=(1-u)B+uA,\\qquad 0\\le u\\le 1,\n \\]\n-and let \\(Z(u)\\) be a centered Gaussian vector with covariance \\(C(u)\\).\n+and let \\(Z(u)\\) be a centered Gaussian vector with covariance \\(C(u)\\). Put \\(D=A-B\\).\n \n-For every smooth function \\(h:\\mathbb R^n\\to\\mathbb R\\) with bounded derivatives, the Gaussian interpolation identity gives\n+Suppose first that \\(C(u)\\) is positive definite, and denote the density of \\(Z(u)\\) by \\(p_u\\). Differentiating its Fourier transform gives\n+\\[\n+\\partial_u p_u(x)=\\frac12\\sum_{i,j=1}^nD_{ij}\\,\\partial_{ij}p_u(x).\n+\\]\n+Consequently, for every smooth bounded function \\(h:\\mathbb R^n\\to\\mathbb R\\) with bounded derivatives, differentiation under the integral followed by two integrations by parts yields the Gaussian interpolation identity\n \\[\n \\frac{d}{du}\\mathbb E h(Z(u))\n =\n@@ -37,7 +33,7 @@\n \\mathbb E\\big[\\partial_{ij}h(Z(u))\\big].\n \\tag{1}\n \\]\n-If some covariance matrices are singular, this follows by adding \\(\\varepsilon I\\) and then letting \\(\\varepsilon\\downarrow0\\).\n+If the covariance matrices are singular, replace \\(C(u)\\) by \\(C(u)+\\delta I\\). The identity and the ensuing monotonicity then hold for the regularized Gaussian vectors; letting \\(\\delta\\downarrow0\\) recovers the comparison because the regularized vectors converge in distribution and \\(h\\) is bounded and continuous.\n \n Fix \\(r\\in\\mathbb R\\). Choose a smooth nonincreasing function\n \\[",
+    "model": "gpt-5.6-sol",
+    "source_sha256": "1d93202ba1ecd44dea9bab7e9fedac2504e3b35fb8c33be67a20fff2c4835789",
+    "note": "The original edition is the exact saved final Library-RAG answer. Expanded explanations, protocol annotations, and ablations were added for this collection; they were not produced by the original experiment. The existing Hanson–Wright explorer is a related reference proof, not necessarily this run’s exact answer."
+  },
+  "metadata": {
+    "origin": "Curated expansion of the saved Library-RAG proof. Alternatives are worked analyses, not logged discovery attempts.",
+    "authoring": "Local editorial reconstruction; no new external model-generation calls.",
+    "source_run": "test_3node_rag_2",
+    "slug": "slepian"
+  },
+  "supplemental_notes": [
+    {
+      "title": "A narrower replacement: density differentiation only",
+      "text": "Realize independent Gaussian vectors X,Y with covariances A,B and put Z_u=√u X+√(1−u)Y. For 0<u<1, differentiation gives\n\\[\\frac d{du}Eh(Z_u)=\\sum_i E\\partial_i h(Z_u)\\left(\\frac{X_i}{2\\sqrt u}-\\frac{Y_i}{2\\sqrt{1-u}}\\right).\\]\nGaussian integration by parts, E[X_i F(X)]=∑j Aij E∂jF(X), gives the derivative (1/2)∑ij(Aij−Bij)E∂ijh(Z_u). The integration-by-parts formula itself follows by representing X=LG with G standard normal and applying one-dimensional integration by parts in each G coordinate; it works even when L is rectangular or singular. Bounded derivatives justify differentiation away from endpoints. The resulting derivative is bounded uniformly in u, so integrate on [η,1−η] and take η↓0 by bounded continuity. For h=∏gε, the same sign calculation orders its expectations. Let ε↓0, exhaust the common countable set, take left limits and truncate as in the original proof. This proves the full statement without covariance-density differentiation or δI regularization.",
+      "note": "This worked route avoids Fourier/density differentiation and handles singular matrices directly, but still interpolates. It is deliberately excluded from the green branches under the broad a2 restriction. Same qualitative mathematical cost; no measured search cost."
+    }
+  ]
+}
