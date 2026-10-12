@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hanson–Wright · Proof explorer</title>
+  <link rel="stylesheet" href="proof-explorer/styles.css">
+  <script defer src="proof-explorer/proof.js"></script>
+  <script defer src="proof-explorer/written-proof.js"></script>
+  <script defer src="proof-explorer/app.js"></script>
+</head>
+<body>
+  <main>
+    <header class="masthead">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">∴</span> PROOF ASSISTANT LAB <span class="divider">/</span> EXPLORER 01</div>
+      <nav aria-label="Site navigation"><a href="proof-strategy-viewer.html">Proof library</a> &nbsp; · &nbsp; <a href="protocol.html">Our protocol</a> &nbsp; · &nbsp; <a href="explorers/index.html">Five-theorem explorers</a> &nbsp; · &nbsp; <a href="reference-state.html">Proof &amp; state graphs</a> &nbsp; · &nbsp; <a href="explorers/alignment/index.html">Alignment report</a> &nbsp; · &nbsp; <a href="#about">About this proof</a></nav>
+    </header>
+    <section class="intro" aria-labelledby="title">
+      <div><div class="eyebrow">QUADRATIC FORMS · THEOREM 6.2.2</div><h1 id="title">Hanson–Wright</h1><p>Build from what you know. Work back from what you need.</p></div>
+      <div class="theorem"><span class="eyebrow">THE DESTINATION</span><div class="formula">ℙ(∣XᵀAX − 𝔼XᵀAX∣ ≥ t)<br>≤ 2 exp[−c min{t²/V, t/L}]</div><div class="notation">V = K⁴‖A‖<sub>F</sub>² &nbsp; · &nbsp; L = K²‖A‖ &nbsp; · &nbsp; K = maxᵢ ‖Xᵢ‖<sub>ψ₂</sub></div></div>
+    </section>
+
+    <div class="proof-layout">
+    <div class="explorer-column">
+    <section class="workspace" aria-label="Interactive proof map">
+      <div class="map-toolbar">
+        <div class="legend"><span><i class="goal-dot"></i>Goal checkpoints</span><span><i class="progress-dot"></i>Established facts</span><span><i class="observation-dot"></i>Observations</span><span><i class="inspiration-key"></i>Inspired by a goal</span></div>
+        <div class="view-controls"><button id="jump-start">↑ Givens</button><button id="jump-goal">↓ Endpoint</button><button id="zoom-out" aria-label="Zoom out">−</button><button id="fit">Reset view</button><button id="zoom-in" aria-label="Zoom in">+</button></div>
+      </div>
+      <div id="viewport" class="viewport" aria-label="Proof graph. Use the zoom controls, scroll, or select a checkpoint.">
+        <div id="scaled-board"><div id="board">
+          <div class="lane-label goal-label">GOAL LAYER <span>↑ decompose the endpoint</span></div>
+          <div class="lane-label progress-label">PROGRESS LAYER <span>↓ derive from the givens</span></div>
+          <div class="lane-rule top-rule"></div><div class="lane-rule bottom-rule"></div>
+          <svg id="edges" viewBox="0 0 640 2030" aria-hidden="true"><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="context-stroke"/></marker></defs><g id="edge-paths"></g><g id="meeting-paths"></g></svg>
+          <div id="nodes"></div>
+          <div id="runner" class="runner" aria-hidden="true"><span></span></div>
+          <div id="goal-runner" class="runner goal-runner" aria-hidden="true"><span></span></div>
+          <div id="initial-gap"><span>A proof to discover</span><span>The assumptions and the goal are not connected yet.</span></div>
+          <div id="meet-badge" hidden>THE TWO LAYERS MEET <span>The bound we derived is the bound we needed.</span></div>
+        </div></div>
+      </div>
+      <div class="map-pan-hint">Observation arrows motivate moves; dotted links identify inspiring goals. Select a node for its reasoning.</div>
+      <div class="transport">
+        <div class="play-controls"><button id="restart" aria-label="Restart proof">↺</button><button id="undo" aria-label="Previous thinking step">←</button><button id="play" class="primary">▶ Play thinking order</button><select id="speed" aria-label="Playback speed"><option value="6500">Slow</option><option value="4300" selected>Normal</option><option value="2200">Fast</option></select></div>
+        <div class="step-counter" id="step-counter" aria-live="polite">0 / 15 moves</div>
+        <button id="clip">Watch final connection ↗</button>
+      </div>
+      <div class="history-control"><label for="timeline">Thinking history</label><input id="timeline" type="range" min="0" max="0" value="0" aria-label="Thinking history"><span id="history-position">Start</span></div>
+    </section>
+
+    <section class="next-moves" aria-label="Choose a direction">
+      <div><span class="eyebrow">YOUR NEXT MOVE</span><p id="move-hint">Choose either direction, or follow the guided thinking order.</p></div>
+      <button id="backward" class="direction backward"><span>↑ Work backward</span><small id="backward-label"></small></button>
+      <button id="forward" class="direction forward"><span>Work forward ↓</span><small id="forward-label"></small></button>
+    </section>
+    </div>
+    <aside class="written-panel" aria-labelledby="written-title">
+      <div class="written-header">
+        <div><span class="eyebrow">THE SAME ARGUMENT, IN TEXTBOOK ORDER</span><h2 id="written-title">The written proof</h2></div>
+        <label class="follow-proof"><input id="follow-proof" type="checkbox" checked> Follow animation</label>
+      </div>
+      <div id="written-position" class="written-position" aria-live="polite"></div>
+      <div id="written-scroll" class="written-scroll" role="region" aria-label="Linear written proof">
+        <article id="written-content"></article>
+      </div>
+    </aside>
+    </div>
+
+    <section id="inspector" class="inspector" aria-labelledby="detail-title">
+      <div class="thought">
+        <div class="detail-meta"><span id="detail-type" class="pill">STARTING POSITION</span><span id="detail-category"></span><button id="return-current" hidden>Return to current move</button></div>
+        <h2 id="detail-title">Three starting points. One distant goal.</h2>
+        <p id="detail-summary"></p>
+        <div class="observation-detail" id="observation-detail"><span class="eyebrow">THE OBSERVATION</span><p id="detail-observation"></p></div>
+      </div>
+      <div class="reasoning">
+        <div class="reasoning-section"><span class="eyebrow">WHAT WE NEED</span><p id="detail-need"></p></div>
+        <div class="reasoning-section"><span class="eyebrow">WHAT WE HAVE</span><p id="detail-have"></p></div>
+        <details id="verification"><summary>The move, its verification & the toolkit</summary><div id="detail-math" class="math-block"></div><p id="detail-check"></p><div class="toolkit-label">TOOLKIT <span id="detail-tool"></span></div></details>
+      </div>
+    </section>
+    <section class="journey" aria-label="Moves taken"><span class="eyebrow">THE ROUTE SO FAR</span><div id="journey-list"><span class="empty-route">No moves yet.</span></div></section>
+    <footer id="about"><div><h3>A reconstruction of the thinking</h3><p>This is one plausible discovery order, not a historical record of how the proof was found. Forward and backward moves are constrained by their prerequisites. Goal reductions are sufficient bounds, not claims that the transformed random variables are equal.</p></div><div><h3>Mathematical scope</h3><p>Real A; independent, mean-zero subgaussian coordinates; t ≥ 0. V and L are positive in the displayed derivation. If A = 0 or K = 0, the centered form vanishes; t = 0 is immediate. Constants c,C are absolute. Toolkit results are dependencies, not elementary proofs.</p><p>Content: observation_02.md, §1; local source, Theorem 6.2.2 and Lemmas 6.2.3–6.2.4. Built around the observation → strategic move → verification protocol.</p></div></footer>
+    <noscript>This proof explorer needs JavaScript for the interactive map and playback.</noscript>
+  </main>
+</body>
+</html>
