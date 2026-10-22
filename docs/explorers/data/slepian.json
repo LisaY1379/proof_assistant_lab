@@ -1132,8 +1132,8 @@
           "origin": "model_proposed",
           "source_ids": [],
           "rejoin_state": null,
-          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
-          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "adaptation": "Mathematical analysis written for this explorer.",
+          "assessment": "This route establishes the stated theorem under the restriction.",
           "id": "a1-alt1",
           "research_exposed": false,
           "fork_state": "s0",
@@ -1144,7 +1144,7 @@
         "status": "not_performed",
         "sources": [],
         "calls": [],
-        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "summary": "The alternatives are analyses written for this explorer.",
         "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
       },
       "status": "reviewed",
@@ -1174,8 +1174,8 @@
           "origin": "model_proposed",
           "source_ids": [],
           "rejoin_state": null,
-          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
-          "assessment": "This candidate does not establish the stated theorem under the restriction. This says nothing about all possible replacements.",
+          "adaptation": "Mathematical analysis written for this explorer.",
+          "assessment": "This candidate leaves the stated target unresolved under the restriction.",
           "id": "a2-alt1",
           "research_exposed": false,
           "fork_state": "s0",
@@ -1196,8 +1196,8 @@
           "origin": "model_proposed",
           "source_ids": [],
           "rejoin_state": null,
-          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
-          "assessment": "This candidate does not establish the stated theorem under the restriction. This says nothing about all possible replacements.",
+          "adaptation": "Mathematical analysis written for this explorer.",
+          "assessment": "This candidate leaves the stated target unresolved under the restriction.",
           "id": "a2-alt2",
           "research_exposed": false,
           "fork_state": "s0",
@@ -1208,7 +1208,7 @@
         "status": "not_performed",
         "sources": [],
         "calls": [],
-        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "summary": "The alternatives are analyses written for this explorer.",
         "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
       },
       "status": "reviewed",
@@ -1233,8 +1233,8 @@
           "origin": "model_proposed",
           "source_ids": [],
           "rejoin_state": null,
-          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
-          "assessment": "This candidate does not establish the stated theorem under the restriction. This says nothing about all possible replacements.",
+          "adaptation": "Mathematical analysis written for this explorer.",
+          "assessment": "This candidate leaves the stated target unresolved under the restriction.",
           "id": "a3-alt1",
           "research_exposed": false,
           "fork_state": "s0",
@@ -1245,7 +1245,7 @@
         "status": "not_performed",
         "sources": [],
         "calls": [],
-        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "summary": "The alternatives are analyses written for this explorer.",
         "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
       },
       "status": "reviewed",
@@ -1275,8 +1275,8 @@
           "origin": "model_proposed",
           "source_ids": [],
           "rejoin_state": null,
-          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
-          "assessment": "This candidate does not establish the stated theorem under the restriction. This says nothing about all possible replacements.",
+          "adaptation": "Mathematical analysis written for this explorer.",
+          "assessment": "This candidate leaves the stated target unresolved under the restriction.",
           "id": "a4-alt1",
           "research_exposed": false,
           "fork_state": "s0",
@@ -1287,7 +1287,7 @@
         "status": "not_performed",
         "sources": [],
         "calls": [],
-        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "summary": "The alternatives are analyses written for this explorer.",
         "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
       },
       "status": "reviewed",
@@ -1317,8 +1317,8 @@
           "origin": "model_proposed",
           "source_ids": [],
           "rejoin_state": null,
-          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
-          "assessment": "This candidate does not establish the stated theorem under the restriction. This says nothing about all possible replacements.",
+          "adaptation": "Mathematical analysis written for this explorer.",
+          "assessment": "This candidate leaves the stated target unresolved under the restriction.",
           "id": "a5-alt1",
           "research_exposed": false,
           "fork_state": "s0",
@@ -1329,7 +1329,7 @@
         "status": "not_performed",
         "sources": [],
         "calls": [],
-        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "summary": "The alternatives are analyses written for this explorer.",
         "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
       },
       "status": "reviewed",
@@ -1359,8 +1359,8 @@
           "origin": "model_proposed",
           "source_ids": [],
           "rejoin_state": null,
-          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
-          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "adaptation": "Mathematical analysis written for this explorer.",
+          "assessment": "This route establishes the stated theorem under the restriction.",
           "id": "a6-alt1",
           "research_exposed": false,
           "fork_state": "s0",
@@ -1371,7 +1371,7 @@
         "status": "not_performed",
         "sources": [],
         "calls": [],
-        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "summary": "The alternatives are analyses written for this explorer.",
         "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
       },
       "status": "reviewed",
@@ -1383,42 +1383,42 @@
       "status": "not_performed",
       "sources": [],
       "calls": [],
-      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "summary": "The alternatives are analyses written for this explorer.",
       "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
     },
     "a2": {
       "status": "not_performed",
       "sources": [],
       "calls": [],
-      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "summary": "The alternatives are analyses written for this explorer.",
       "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
     },
     "a3": {
       "status": "not_performed",
       "sources": [],
       "calls": [],
-      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "summary": "The alternatives are analyses written for this explorer.",
       "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
     },
     "a4": {
       "status": "not_performed",
       "sources": [],
       "calls": [],
-      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "summary": "The alternatives are analyses written for this explorer.",
       "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
     },
     "a5": {
       "status": "not_performed",
       "sources": [],
       "calls": [],
-      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "summary": "The alternatives are analyses written for this explorer.",
       "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
     },
     "a6": {
       "status": "not_performed",
       "sources": [],
       "calls": [],
-      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "summary": "The alternatives are analyses written for this explorer.",
       "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
     }
   },
@@ -1485,8 +1485,8 @@
     "note": "The original edition is the exact saved final Library-RAG answer. Expanded explanations, protocol annotations, and ablations were added for this collection; they were not produced by the original experiment. The existing Hanson–Wright explorer is a related reference proof, not necessarily this run’s exact answer."
   },
   "metadata": {
-    "origin": "Curated expansion of the saved Library-RAG proof. Alternatives are worked analyses, not logged discovery attempts.",
-    "authoring": "Local editorial reconstruction; no new external model-generation calls.",
+    "origin": "Expanded saved Library-RAG proof with alternative derivations.",
+    "authoring": "Local proof annotation.",
     "source_run": "test_3node_rag_2",
     "slug": "slepian"
   },
@@ -1494,7 +1494,7 @@
     {
       "title": "A narrower replacement: density differentiation only",
       "text": "Realize independent Gaussian vectors X,Y with covariances A,B and put Z_u=√u X+√(1−u)Y. For 0<u<1, differentiation gives\n\\[\\frac d{du}Eh(Z_u)=\\sum_i E\\partial_i h(Z_u)\\left(\\frac{X_i}{2\\sqrt u}-\\frac{Y_i}{2\\sqrt{1-u}}\\right).\\]\nGaussian integration by parts, E[X_i F(X)]=∑j Aij E∂jF(X), gives the derivative (1/2)∑ij(Aij−Bij)E∂ijh(Z_u). The integration-by-parts formula itself follows by representing X=LG with G standard normal and applying one-dimensional integration by parts in each G coordinate; it works even when L is rectangular or singular. Bounded derivatives justify differentiation away from endpoints. The resulting derivative is bounded uniformly in u, so integrate on [η,1−η] and take η↓0 by bounded continuity. For h=∏gε, the same sign calculation orders its expectations. Let ε↓0, exhaust the common countable set, take left limits and truncate as in the original proof. This proves the full statement without covariance-density differentiation or δI regularization.",
-      "note": "This worked route avoids Fourier/density differentiation and handles singular matrices directly, but still interpolates. It is deliberately excluded from the green branches under the broad a2 restriction. Same qualitative mathematical cost; no measured search cost."
+      "note": "This worked route avoids Fourier/density differentiation and handles singular matrices directly, but still interpolates. It is deliberately excluded from the green branches under the broad a2 restriction. Same qualitative mathematical cost."
     }
   ]
 }

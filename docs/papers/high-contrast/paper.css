@@ -89,3 +89,7 @@ body.paper-home #overview{height:auto;display:block}
 /* Main-page research question and contribution, shared by paper companions. */
 .paper-hero .research-intro{font-size:17px;line-height:1.75;letter-spacing:0;max-width:62ch;margin:24px 0;color:var(--ink)}
 @media(max-width:760px){.paper-hero .research-intro{font-size:16px;line-height:1.7;margin:20px 0}}
+
+/* Reading and graph panels use a quieter hierarchy on detail pages. */
+#theorem-view h2, #detail-view h2 { font-size: 24px; }
+#theorem-view h3, #detail-view h3 { font-size: 16px; }

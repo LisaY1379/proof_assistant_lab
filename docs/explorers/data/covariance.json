@@ -1024,7 +1024,7 @@
           "title": "Work in the original coordinates",
           "argument": "Work directly with \\(H=\\Sigma_m-\\Sigma\\). If \\(\\|\\Sigma\\|=0\\), then each coordinate has zero second moment and X=0 almost surely. Otherwise every unit x satisfies \\(\\|\\langle X,x\\rangle\\|_{\\psi_2}\\le K\\sqrt{\\|\\Sigma\\|}\\). Squaring and centering therefore gives independent summands with subexponential norm at most \\(CK^2\\|\\Sigma\\|\\). Scalar Bernstein, a 1/4-net in the original \\(\\mathbb R^n\\), and the quadratic-form net inequality give\n\\[P\\{\\|H\\|> CK^2\\|\\Sigma\\|(\\sqrt{(n+u)/m}+(n+u)/m)\\}\\le2e^{-u}.\\]\nTo integrate, put \\(b(u)=CK^2\\|\\Sigma\\|(\\sqrt{(n+u)/m}+(n+u)/m)\\). Then \\(E\\|H\\|\\le b(0)+\\int_0^\\infty 2e^{-u}b'(u)du\\le C'K^2\\|\\Sigma\\|(\\sqrt{n/m}+n/m)\\) for n≥1. No whitening, range inverse, isotropic auxiliary vector or sandwich estimate occurs.",
           "outcome": "closed",
-          "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n; no measured discovery-cost comparison.",
+          "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n.",
           "route": [
             {
               "title": "Original marginal scale",
@@ -1045,8 +1045,8 @@
           "origin": "model_proposed",
           "source_ids": [],
           "rejoin_state": null,
-          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
-          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "adaptation": "Mathematical analysis written for this explorer.",
+          "assessment": "This route establishes the stated theorem under the restriction.",
           "id": "a1-alt1",
           "research_exposed": false,
           "fork_state": "s0",
@@ -1057,7 +1057,7 @@
         "status": "not_performed",
         "sources": [],
         "calls": [],
-        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "summary": "The alternatives are analyses written for this explorer.",
         "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
       },
       "status": "reviewed",
@@ -1071,7 +1071,7 @@
           "title": "Derive the scalar MGF bound from moments",
           "argument": "Avoid invoking packaged Bernstein. From E exp(|Z|/L)≤2 obtain E|Z|^p≤2p!L^p. Since EZ=0, for |s|L≤1/2 the power series gives E e^{sZ}≤1+2∑_{p≥2}(|s|L)^p≤exp(4s²L²). For independent Z_i, E exp(s∑Z_i)≤exp(4ms²L²). Exponential Markov with s=min(t/(8L²),1/(4L)) and its negative gives 2exp[−cm min(t²/L²,t/L)]. Here Z_i=⟨Y_i,x⟩²−1 and L=CK². Reconstruct the isotropic setting, apply the same deterministic net, integrate its tail, then whiten on rangeΣ and transport as explicitly shown in the original proof. This recovers the full theorem without a Bernstein theorem call.",
           "outcome": "closed",
-          "cost": "Same rate; substantially more algebra. The mechanism is equivalent to Bernstein, so this does not establish conceptual dispensability.",
+          "cost": "Same rate; substantially more algebra. The mechanism is equivalent to Bernstein, so the replacement preserves that mechanism.",
           "route": [
             {
               "title": "Moment bound",
@@ -1092,8 +1092,8 @@
           "origin": "model_proposed",
           "source_ids": [],
           "rejoin_state": null,
-          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
-          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "adaptation": "Mathematical analysis written for this explorer.",
+          "assessment": "This route establishes the stated theorem under the restriction.",
           "id": "a2-alt1",
           "research_exposed": false,
           "fork_state": "s0",
@@ -1104,7 +1104,7 @@
         "status": "not_performed",
         "sources": [],
         "calls": [],
-        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "summary": "The alternatives are analyses written for this explorer.",
         "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
       },
       "status": "reviewed",
@@ -1118,7 +1118,7 @@
           "title": "Replace the operator norm by the Frobenius norm",
           "argument": "For isotropic Y with independent standard Gaussian coordinates, Var(A_ii)=2/m and E A_ij²=1/m for i≠j. Therefore E‖A‖F²=(r²+r)/m. The route ‖A‖≤‖A‖F followed by Cauchy–Schwarz only gives O(r/√m), whereas the target for m≫r is O(√(r/m)). The resulting dimension loss cannot be absorbed into a universal constant. This calculation refutes this proposed certificate, not every net-free method.",
           "outcome": "failed",
-          "cost": "Finite calculation, but a √r loss in the leading dimension term. This is failure of the requested rate, not infinite search.",
+          "cost": "Finite calculation, but a √r loss in the leading dimension term. The bound loses the requested rate.",
           "route": [
             {
               "title": "Entrywise second moments",
@@ -1134,8 +1134,8 @@
           "origin": "model_proposed",
           "source_ids": [],
           "rejoin_state": null,
-          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
-          "assessment": "This candidate does not establish the stated theorem under the restriction. This says nothing about all possible replacements.",
+          "adaptation": "Mathematical analysis written for this explorer.",
+          "assessment": "This candidate leaves the stated target unresolved under the restriction.",
           "id": "a3-alt1",
           "research_exposed": false,
           "fork_state": "s0",
@@ -1156,8 +1156,8 @@
           "origin": "model_proposed",
           "source_ids": [],
           "rejoin_state": null,
-          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
-          "assessment": "This candidate does not establish the stated theorem under the restriction. This says nothing about all possible replacements.",
+          "adaptation": "Mathematical analysis written for this explorer.",
+          "assessment": "This candidate leaves the stated target unresolved under the restriction.",
           "id": "a3-alt2",
           "research_exposed": false,
           "fork_state": "s0",
@@ -1168,7 +1168,7 @@
         "status": "not_performed",
         "sources": [],
         "calls": [],
-        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "summary": "The alternatives are analyses written for this explorer.",
         "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
       },
       "status": "reviewed",
@@ -1203,8 +1203,8 @@
           "origin": "model_proposed",
           "source_ids": [],
           "rejoin_state": null,
-          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
-          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "adaptation": "Mathematical analysis written for this explorer.",
+          "assessment": "This route establishes the stated theorem under the restriction.",
           "id": "a4-alt1",
           "research_exposed": false,
           "fork_state": "s0",
@@ -1215,7 +1215,7 @@
         "status": "not_performed",
         "sources": [],
         "calls": [],
-        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "summary": "The alternatives are analyses written for this explorer.",
         "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
       },
       "status": "reviewed",
@@ -1229,7 +1229,7 @@
           "title": "Work in the original coordinates",
           "argument": "Work directly with \\(H=\\Sigma_m-\\Sigma\\). If \\(\\|\\Sigma\\|=0\\), then each coordinate has zero second moment and X=0 almost surely. Otherwise every unit x satisfies \\(\\|\\langle X,x\\rangle\\|_{\\psi_2}\\le K\\sqrt{\\|\\Sigma\\|}\\). Squaring and centering therefore gives independent summands with subexponential norm at most \\(CK^2\\|\\Sigma\\|\\). Scalar Bernstein, a 1/4-net in the original \\(\\mathbb R^n\\), and the quadratic-form net inequality give\n\\[P\\{\\|H\\|> CK^2\\|\\Sigma\\|(\\sqrt{(n+u)/m}+(n+u)/m)\\}\\le2e^{-u}.\\]\nTo integrate, put \\(b(u)=CK^2\\|\\Sigma\\|(\\sqrt{(n+u)/m}+(n+u)/m)\\). Then \\(E\\|H\\|\\le b(0)+\\int_0^\\infty 2e^{-u}b'(u)du\\le C'K^2\\|\\Sigma\\|(\\sqrt{n/m}+n/m)\\) for n≥1. No whitening, range inverse, isotropic auxiliary vector or sandwich estimate occurs.",
           "outcome": "closed",
-          "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n; no measured discovery-cost comparison.",
+          "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n.",
           "route": [
             {
               "title": "Original marginal scale",
@@ -1250,8 +1250,8 @@
           "origin": "model_proposed",
           "source_ids": [],
           "rejoin_state": null,
-          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
-          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "adaptation": "Mathematical analysis written for this explorer.",
+          "assessment": "This route establishes the stated theorem under the restriction.",
           "id": "a5-alt1",
           "research_exposed": false,
           "fork_state": "s0",
@@ -1262,7 +1262,7 @@
         "status": "not_performed",
         "sources": [],
         "calls": [],
-        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "summary": "The alternatives are analyses written for this explorer.",
         "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
       },
       "status": "reviewed",
@@ -1276,7 +1276,7 @@
           "title": "Work in the original coordinates",
           "argument": "Work directly with \\(H=\\Sigma_m-\\Sigma\\). If \\(\\|\\Sigma\\|=0\\), then each coordinate has zero second moment and X=0 almost surely. Otherwise every unit x satisfies \\(\\|\\langle X,x\\rangle\\|_{\\psi_2}\\le K\\sqrt{\\|\\Sigma\\|}\\). Squaring and centering therefore gives independent summands with subexponential norm at most \\(CK^2\\|\\Sigma\\|\\). Scalar Bernstein, a 1/4-net in the original \\(\\mathbb R^n\\), and the quadratic-form net inequality give\n\\[P\\{\\|H\\|> CK^2\\|\\Sigma\\|(\\sqrt{(n+u)/m}+(n+u)/m)\\}\\le2e^{-u}.\\]\nTo integrate, put \\(b(u)=CK^2\\|\\Sigma\\|(\\sqrt{(n+u)/m}+(n+u)/m)\\). Then \\(E\\|H\\|\\le b(0)+\\int_0^\\infty 2e^{-u}b'(u)du\\le C'K^2\\|\\Sigma\\|(\\sqrt{n/m}+n/m)\\) for n≥1. No whitening, range inverse, isotropic auxiliary vector or sandwich estimate occurs.",
           "outcome": "closed",
-          "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n; no measured discovery-cost comparison.",
+          "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n.",
           "route": [
             {
               "title": "Original marginal scale",
@@ -1297,8 +1297,8 @@
           "origin": "model_proposed",
           "source_ids": [],
           "rejoin_state": null,
-          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
-          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "adaptation": "Mathematical analysis written for this explorer.",
+          "assessment": "This route establishes the stated theorem under the restriction.",
           "id": "a6-alt1",
           "research_exposed": false,
           "fork_state": "s0",
@@ -1309,7 +1309,7 @@
         "status": "not_performed",
         "sources": [],
         "calls": [],
-        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "summary": "The alternatives are analyses written for this explorer.",
         "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
       },
       "status": "reviewed",
@@ -1321,42 +1321,42 @@
       "status": "not_performed",
       "sources": [],
       "calls": [],
-      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "summary": "The alternatives are analyses written for this explorer.",
       "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
     },
     "a2": {
       "status": "not_performed",
       "sources": [],
       "calls": [],
-      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "summary": "The alternatives are analyses written for this explorer.",
       "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
     },
     "a3": {
       "status": "not_performed",
       "sources": [],
       "calls": [],
-      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "summary": "The alternatives are analyses written for this explorer.",
       "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
     },
     "a4": {
       "status": "not_performed",
       "sources": [],
       "calls": [],
-      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "summary": "The alternatives are analyses written for this explorer.",
       "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
     },
     "a5": {
       "status": "not_performed",
       "sources": [],
       "calls": [],
-      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "summary": "The alternatives are analyses written for this explorer.",
       "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
     },
     "a6": {
       "status": "not_performed",
       "sources": [],
       "calls": [],
-      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "summary": "The alternatives are analyses written for this explorer.",
       "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
     }
   },
@@ -1429,8 +1429,8 @@
     "note": "The original edition is the exact saved final Library-RAG answer. Expanded explanations, protocol annotations, and ablations were added for this collection; they were not produced by the original experiment. The existing Hanson–Wright explorer is a related reference proof, not necessarily this run’s exact answer."
   },
   "metadata": {
-    "origin": "Curated expansion of the saved Library-RAG proof. Alternatives are worked analyses, not logged discovery attempts.",
-    "authoring": "Local editorial reconstruction; no new external model-generation calls.",
+    "origin": "Expanded saved Library-RAG proof with alternative derivations.",
+    "authoring": "Local proof annotation.",
     "source_run": "test_3node_rag_2",
     "slug": "covariance"
   }

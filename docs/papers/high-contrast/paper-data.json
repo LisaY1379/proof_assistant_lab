@@ -120,7 +120,7 @@
             "title": "Restart preparation after every improvement",
             "status": "budget",
             "reason": "The paper explains that the earlier [AK25] organization repeats a logarithmic preparation over logarithmically many stages. That yields a squared-log scale bound instead of the desired logarithmic one.",
-            "cost": "O(log² contrast) scale indices in the earlier argument; this is a weaker proven bound, not an impossibility result.",
+            "cost": "O(log² contrast) scale indices in the earlier argument; compare this with the paper’s logarithmic scale index.",
             "source": [
               8,
               "§1.3 comparison with [AK25]"
@@ -148,7 +148,7 @@
           "move": "Apply the scale-selection mechanism through Proposition 5.2, combining logarithmic error, shape mismatch, and determinant losses.",
           "verification": "B-L: initialization supplies the starting histories; §4 supplies the update and startup bounds; Proposition 2.1 supplies the joint count. Proposition 5.2 returns (5.11)–(5.13) and t ≤ j* + ⌈(B + C(H,τ,d,γ)) log₃(2 + Π)⌉.",
           "proof": "Proposition 5.2 supplies an interval [s,t] with t = s + H, small retained histories, small mean variation, and suitable adapted geometry. The terminal scale satisfies t ≤ j* + ⌈(B + C(H,τ,d,γ)) log₃(2 + Π)⌉.",
-          "detail": "This is the main organizational gain of the paper. Fixed-grid contraction, partial geometry improvements, and determinant losses are charged to one count. Failed determinant tests and temporary error increases remain in that count. The selected interval is forced by a bounded progress budget; the argument is not a numerical search for a lucky cube.",
+          "detail": "This is the main organizational gain of the paper. Fixed-grid contraction, partial geometry improvements, and determinant losses are charged to one count. Failed determinant tests and temporary error increases remain in that count. The selected interval is forced by a bounded progress budget.",
           "source": [
             53,
             "Proposition 5.2; §2; §1.3, p.9"
@@ -191,7 +191,7 @@
             "title": "Infer a small gap from small variance alone",
             "status": "insufficient",
             "reason": "A random quantity can be almost deterministic while two different mean quantities remain separated. Fluctuation control alone does not compare primal and dual energies.",
-            "cost": "Missing implication, not an infinite search lower bound.",
+            "cost": "The alternative still needs the implication connecting these estimates.",
             "source": [
               47,
               "§5 introduction; Proposition 5.3"
@@ -417,7 +417,7 @@
           "move": "Control the positive-excess maximum Mₙ, apply the weak-norm optimizer comparison, and absorb Caₙ² using the small entry tolerance.",
           "verification": "B-L: choose ρ = (1+γ)/2 and Q as in the paper so ζ = ρ−d/Q > γ; (6.5) bounds Mₙ. With β = (1−ρ)/2 > 0, the comparison gives (6.7) for n ≥ b+4. Increase b so the prefactor is controlled. The cited analytic estimates are toolkit dependencies.",
           "proof": "The maximum estimate (6.5) controls coarse-ellipticity excess. The optimizer comparison, including [AK25, Lemma 2.16], yields aₙ ≤ C Σ_{k=b}^n 3^{−β(n−k)}(vₖ + aₖ − aₙ) + C3^{−β(n−b)}, after absorbing the quadratic term.",
-          "detail": "The expression aₖ − aₙ is a nonnegative mean decrease for k ≤ n. Keeping the negative copies of aₙ matters: they later strengthen the coefficient on the left. This is a sourced summary of the estimates on pp.68–69, not an elementary derivation of the imported weak-norm lemma.",
+          "detail": "The expression aₖ − aₙ is a nonnegative mean decrease for k ≤ n. Keeping the negative copies of aₙ matters: they later strengthen the coefficient on the left. The weak-norm estimate and its application appear on pp.68–69.",
           "source": [
             68,
             "§6.1 Step 2, pp.68–69, (6.5)–(6.7)"

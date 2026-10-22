@@ -626,7 +626,7 @@
           "title": "Count Bernoulli disagreements",
           "argument": "For {−1,1}-valued functions set p=μ(f≠g)>ε²/4 and S=∑ᵢ1{f(Xᵢ)≠g(Xᵢ)}. Bad empirical separation implies S≤nε²/16<np/4. The multiplicative Bernoulli lower tail with δ=3/4 gives probability ≤exp(−9np/32)≤exp(−9nε²/128). Summing over at most m² pairs gives m²exp(−9nε²/128). For m≥2 the nonvacuous range is ε<2. Thus n≥512 ε⁻⁴ log m makes this ≤m⁻⁷<.01. In fact n≥128 ε⁻²log m suffices. For {0,1} values replace S’s scaling by 1: p>ε² and ε<1 give at least as strong a conclusion. No additive Hoeffding bound is used.",
           "outcome": "closed",
-          "cost": "Improves the sufficient sample size from ε⁻⁴ log m to ε⁻² log m. Uses Boolean structure rather than only boundedness; discovery cost is unmeasured.",
+          "cost": "Improves the sufficient sample size from ε⁻⁴ log m to ε⁻² log m. Uses Boolean structure rather than only boundedness.",
           "route": [
             {
               "title": "Disagreements",
@@ -650,7 +650,7 @@
           ],
           "rejoin_state": null,
           "adaptation": "The lower-tail Chernoff inequality was checked in the linked MIT notes. Its application to Boolean disagreement counts and constants below is our adaptation.",
-          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "assessment": "This route establishes the stated theorem under the restriction.",
           "id": "a1-alt1",
           "research_exposed": true,
           "fork_state": "s0",
@@ -667,7 +667,7 @@
           }
         ],
         "calls": [],
-        "summary": "The named source was opened and its lower-tail theorem checked during this build. No external model generation was used.",
+        "summary": "The lower-tail theorem was checked against the linked source.",
         "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
       },
       "status": "reviewed",
@@ -681,7 +681,7 @@
           "title": "Count Bernoulli disagreements",
           "argument": "For {−1,1}-valued functions set p=μ(f≠g)>ε²/4 and S=∑ᵢ1{f(Xᵢ)≠g(Xᵢ)}. Bad empirical separation implies S≤nε²/16<np/4. The multiplicative Bernoulli lower tail with δ=3/4 gives probability ≤exp(−9np/32)≤exp(−9nε²/128). Summing over at most m² pairs gives m²exp(−9nε²/128). For m≥2 the nonvacuous range is ε<2. Thus n≥512 ε⁻⁴ log m makes this ≤m⁻⁷<.01. In fact n≥128 ε⁻²log m suffices. For {0,1} values replace S’s scaling by 1: p>ε² and ε<1 give at least as strong a conclusion. No additive Hoeffding bound is used.",
           "outcome": "closed",
-          "cost": "Improves the sufficient sample size from ε⁻⁴ log m to ε⁻² log m. Uses Boolean structure rather than only boundedness; discovery cost is unmeasured.",
+          "cost": "Improves the sufficient sample size from ε⁻⁴ log m to ε⁻² log m. Uses Boolean structure rather than only boundedness.",
           "route": [
             {
               "title": "Disagreements",
@@ -705,7 +705,7 @@
           ],
           "rejoin_state": null,
           "adaptation": "The lower-tail Chernoff inequality was checked in the linked MIT notes. Its application to Boolean disagreement counts and constants below is our adaptation.",
-          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "assessment": "This route establishes the stated theorem under the restriction.",
           "id": "a2-alt1",
           "research_exposed": true,
           "fork_state": "s0",
@@ -731,8 +731,8 @@
           "origin": "model_proposed",
           "source_ids": [],
           "rejoin_state": null,
-          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
-          "assessment": "This candidate does not establish the stated theorem under the restriction. This says nothing about all possible replacements.",
+          "adaptation": "Mathematical analysis written for this explorer.",
+          "assessment": "This candidate leaves the stated target unresolved under the restriction.",
           "id": "a2-alt2",
           "research_exposed": true,
           "fork_state": "s0",
@@ -749,7 +749,7 @@
           }
         ],
         "calls": [],
-        "summary": "The named source was opened and its lower-tail theorem checked during this build. No external model generation was used.",
+        "summary": "The lower-tail theorem was checked against the linked source.",
         "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
       },
       "status": "reviewed",
@@ -779,8 +779,8 @@
           "origin": "model_proposed",
           "source_ids": [],
           "rejoin_state": null,
-          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
-          "assessment": "This candidate does not establish the stated theorem under the restriction. This says nothing about all possible replacements.",
+          "adaptation": "Mathematical analysis written for this explorer.",
+          "assessment": "This candidate leaves the stated target unresolved under the restriction.",
           "id": "a3-alt1",
           "research_exposed": false,
           "fork_state": "s0",
@@ -801,8 +801,8 @@
           "origin": "model_proposed",
           "source_ids": [],
           "rejoin_state": null,
-          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
-          "assessment": "This candidate does not establish the stated theorem under the restriction. This says nothing about all possible replacements.",
+          "adaptation": "Mathematical analysis written for this explorer.",
+          "assessment": "This candidate leaves the stated target unresolved under the restriction.",
           "id": "a3-alt2",
           "research_exposed": false,
           "fork_state": "s0",
@@ -813,7 +813,7 @@
         "status": "not_performed",
         "sources": [],
         "calls": [],
-        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "summary": "The alternatives are analyses written for this explorer.",
         "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
       },
       "status": "reviewed",
@@ -843,8 +843,8 @@
           "origin": "model_proposed",
           "source_ids": [],
           "rejoin_state": null,
-          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
-          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "adaptation": "Mathematical analysis written for this explorer.",
+          "assessment": "This route establishes the stated theorem under the restriction.",
           "id": "a4-alt1",
           "research_exposed": false,
           "fork_state": "s0",
@@ -855,7 +855,7 @@
         "status": "not_performed",
         "sources": [],
         "calls": [],
-        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "summary": "The alternatives are analyses written for this explorer.",
         "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
       },
       "status": "reviewed",
@@ -873,7 +873,7 @@
         }
       ],
       "calls": [],
-      "summary": "The named source was opened and its lower-tail theorem checked during this build. No external model generation was used.",
+      "summary": "The lower-tail theorem was checked against the linked source.",
       "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
     },
     "a2": {
@@ -886,21 +886,21 @@
         }
       ],
       "calls": [],
-      "summary": "The named source was opened and its lower-tail theorem checked during this build. No external model generation was used.",
+      "summary": "The lower-tail theorem was checked against the linked source.",
       "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
     },
     "a3": {
       "status": "not_performed",
       "sources": [],
       "calls": [],
-      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "summary": "The alternatives are analyses written for this explorer.",
       "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
     },
     "a4": {
       "status": "not_performed",
       "sources": [],
       "calls": [],
-      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "summary": "The alternatives are analyses written for this explorer.",
       "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
     }
   },
@@ -961,8 +961,8 @@
     "note": "The original edition is the exact saved final Library-RAG answer. Expanded explanations, protocol annotations, and ablations were added for this collection; they were not produced by the original experiment. The existing Hanson–Wright explorer is a related reference proof, not necessarily this run’s exact answer."
   },
   "metadata": {
-    "origin": "Curated expansion of the saved Library-RAG proof. Alternatives are worked analyses, not logged discovery attempts.",
-    "authoring": "Local editorial reconstruction; no new external model-generation calls.",
+    "origin": "Expanded saved Library-RAG proof with alternative derivations.",
+    "authoring": "Local proof annotation.",
     "source_run": "test_3node_rag_2",
     "slug": "dimension-reduction"
   }

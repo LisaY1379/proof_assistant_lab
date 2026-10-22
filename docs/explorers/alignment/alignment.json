@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-22T03:23:30.001747+00:00",
+  "generated_at": "2026-10-22T13:49:57.569040+00:00",
   "scope": "Saved five-explorer annotations; descriptive, non-independent comparison; no new search run.",
   "definitions": {
     "I": "Saved AI selection, not ground truth or a human difficulty score.",
@@ -233,7 +233,7 @@
       ],
       "sources": [],
       "family": "polarization",
-      "cost": "The available polarization bound is CK²‖A‖(n+p), too coarse compared with CK²(√p‖A‖F+p‖A‖). This is loss of estimate quality, not measured computational explosion.",
+      "cost": "The available polarization bound is CK²‖A‖(n+p), too coarse compared with CK²(√p‖A‖F+p‖A‖). The resulting bound loses the required dependence on the matrix norms.",
       "source_file": "proposals/hanson_wright_ablations/02-expand.md",
       "source_status": "Curated worked notes; not measured search results. compute permits checkpoint reuse; other displayed main replacements replan globally.",
       "key": "hanson-wright:expand",
@@ -397,7 +397,7 @@
           "title": "Replace individual coordinates",
           "outcome": "closed",
           "origin": "literature_assisted",
-          "cost": "The alternative performs n coordinate comparisons and still uses Gaussian MGF control, with ‖H‖≤2‖A‖. This is proof-construction work, not a count of search calls or a demonstrated cost increase.",
+          "cost": "The alternative performs n coordinate comparisons and still uses Gaussian MGF control, with ‖H‖≤2‖A‖. The construction compares one coordinate at a time.",
           "source_ids": [
             "hw-source"
           ]
@@ -420,7 +420,7 @@
         }
       ],
       "family": "coordinate-gaussianization",
-      "cost": "The alternative performs n coordinate comparisons and still uses Gaussian MGF control, with ‖H‖≤2‖A‖. This is proof-construction work, not a count of search calls or a demonstrated cost increase.",
+      "cost": "The alternative performs n coordinate comparisons and still uses Gaussian MGF control, with ‖H‖≤2‖A‖. The construction compares one coordinate at a time.",
       "source_file": "proposals/hanson_wright_ablations/07-decouple.md",
       "source_status": "Curated worked notes; not measured search results. compute permits checkpoint reuse; other displayed main replacements replan globally.",
       "key": "hanson-wright:decouple",
@@ -480,7 +480,7 @@
           "title": "Bypass the Gaussian replacement chain",
           "outcome": "closed",
           "origin": "model_proposed",
-          "cost": "This is the same moment-route replacement as the preceding Gaussian-goal action, not a separate discovery. Norm-moment control and a moment-order choice replace the MGF comparison chain.",
+          "cost": "This is the same moment-route replacement as the preceding Gaussian-goal action, reused at this step. Norm-moment control and a moment-order choice replace the MGF comparison chain.",
           "source_ids": []
         }
       ],
@@ -496,7 +496,7 @@
       ],
       "sources": [],
       "family": "absolute-moments",
-      "cost": "This is the same moment-route replacement as the preceding Gaussian-goal action, not a separate discovery. Norm-moment control and a moment-order choice replace the MGF comparison chain.",
+      "cost": "This is the same moment-route replacement as the preceding Gaussian-goal action, reused at this step. Norm-moment control and a moment-order choice replace the MGF comparison chain.",
       "source_file": "proposals/hanson_wright_ablations/09-replace.md",
       "source_status": "Curated worked notes; not measured search results. compute permits checkpoint reuse; other displayed main replacements replan globally.",
       "key": "hanson-wright:replace",
@@ -708,7 +708,7 @@
           "title": "Work in the original coordinates",
           "outcome": "closed",
           "origin": "model_proposed",
-          "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n; no measured discovery-cost comparison.",
+          "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n.",
           "source_ids": []
         }
       ],
@@ -720,7 +720,7 @@
       ],
       "sources": [],
       "family": null,
-      "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n; no measured discovery-cost comparison.",
+      "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n.",
       "source_file": "tools/proof_explorer/collection/data/covariance.json",
       "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
       "key": "covariance:a1",
@@ -740,7 +740,7 @@
           "title": "Derive the scalar MGF bound from moments",
           "outcome": "closed",
           "origin": "model_proposed",
-          "cost": "Same rate; substantially more algebra. The mechanism is equivalent to Bernstein, so this does not establish conceptual dispensability.",
+          "cost": "Same rate; substantially more algebra. The mechanism is equivalent to Bernstein, so the replacement preserves that mechanism.",
           "source_ids": []
         }
       ],
@@ -752,7 +752,7 @@
       ],
       "sources": [],
       "family": null,
-      "cost": "Same rate; substantially more algebra. The mechanism is equivalent to Bernstein, so this does not establish conceptual dispensability.",
+      "cost": "Same rate; substantially more algebra. The mechanism is equivalent to Bernstein, so the replacement preserves that mechanism.",
       "source_file": "tools/proof_explorer/collection/data/covariance.json",
       "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
       "key": "covariance:a2",
@@ -780,7 +780,7 @@
       ],
       "sources": [],
       "family": null,
-      "cost": "Finite calculation, but a √r loss in the leading dimension term. This is failure of the requested rate, not infinite search. | A stronger matrix toolkit may work; its complete bound and cost have not been established.",
+      "cost": "Finite calculation, but a √r loss in the leading dimension term. The bound loses the requested rate. | A stronger matrix toolkit may work; its complete bound and cost have not been established.",
       "source_file": "tools/proof_explorer/collection/data/covariance.json",
       "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
       "key": "covariance:a3",
@@ -832,7 +832,7 @@
           "title": "Work in the original coordinates",
           "outcome": "closed",
           "origin": "model_proposed",
-          "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n; no measured discovery-cost comparison.",
+          "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n.",
           "source_ids": []
         }
       ],
@@ -844,7 +844,7 @@
       ],
       "sources": [],
       "family": null,
-      "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n; no measured discovery-cost comparison.",
+      "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n.",
       "source_file": "tools/proof_explorer/collection/data/covariance.json",
       "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
       "key": "covariance:a5",
@@ -864,7 +864,7 @@
           "title": "Work in the original coordinates",
           "outcome": "closed",
           "origin": "model_proposed",
-          "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n; no measured discovery-cost comparison.",
+          "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n.",
           "source_ids": []
         }
       ],
@@ -876,7 +876,7 @@
       ],
       "sources": [],
       "family": null,
-      "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n; no measured discovery-cost comparison.",
+      "cost": "Same n,m,K dependence; avoids whitening and its singular-case bookkeeping. Loses the optional rank refinement r≤n.",
       "source_file": "tools/proof_explorer/collection/data/covariance.json",
       "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
       "key": "covariance:a6",
@@ -896,7 +896,7 @@
           "title": "Count Bernoulli disagreements",
           "outcome": "closed",
           "origin": "literature_assisted",
-          "cost": "Improves the sufficient sample size from ε⁻⁴ log m to ε⁻² log m. Uses Boolean structure rather than only boundedness; discovery cost is unmeasured.",
+          "cost": "Improves the sufficient sample size from ε⁻⁴ log m to ε⁻² log m. Uses Boolean structure rather than only boundedness.",
           "source_ids": [
             "src1"
           ]
@@ -916,7 +916,7 @@
         }
       ],
       "family": null,
-      "cost": "Improves the sufficient sample size from ε⁻⁴ log m to ε⁻² log m. Uses Boolean structure rather than only boundedness; discovery cost is unmeasured.",
+      "cost": "Improves the sufficient sample size from ε⁻⁴ log m to ε⁻² log m. Uses Boolean structure rather than only boundedness.",
       "source_file": "tools/proof_explorer/collection/data/dimension-reduction.json",
       "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
       "key": "dimension-reduction:a1",
@@ -936,7 +936,7 @@
           "title": "Count Bernoulli disagreements",
           "outcome": "closed",
           "origin": "literature_assisted",
-          "cost": "Improves the sufficient sample size from ε⁻⁴ log m to ε⁻² log m. Uses Boolean structure rather than only boundedness; discovery cost is unmeasured.",
+          "cost": "Improves the sufficient sample size from ε⁻⁴ log m to ε⁻² log m. Uses Boolean structure rather than only boundedness.",
           "source_ids": [
             "src1"
           ]
@@ -960,7 +960,7 @@
         }
       ],
       "family": null,
-      "cost": "Improves the sufficient sample size from ε⁻⁴ log m to ε⁻² log m. Uses Boolean structure rather than only boundedness; discovery cost is unmeasured. | Polynomial m² rather than log m in the sufficient budget; finite but too expensive for this theorem.",
+      "cost": "Improves the sufficient sample size from ε⁻⁴ log m to ε⁻² log m. Uses Boolean structure rather than only boundedness. | Polynomial m² rather than log m in the sufficient budget; finite but too expensive for this theorem.",
       "source_file": "tools/proof_explorer/collection/data/dimension-reduction.json",
       "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
       "key": "dimension-reduction:a2",
@@ -1268,7 +1268,7 @@
           "title": "Use convexity of the Orlicz function",
           "outcome": "closed",
           "origin": "model_proposed",
-          "cost": "Same constant 2, but exposes the general norm triangle mechanism. This is a representation change, not a claim of new discovery.",
+          "cost": "Same constant 2, but exposes the general norm triangle mechanism. This changes the representation of the same estimate.",
           "source_ids": []
         }
       ],
@@ -1284,7 +1284,7 @@
       ],
       "sources": [],
       "family": null,
-      "cost": "Same constant 2, but exposes the general norm triangle mechanism. This is a representation change, not a claim of new discovery. | A two-point example disproves the intermediate inequality. No cost explosion occurs.",
+      "cost": "Same constant 2, but exposes the general norm triangle mechanism. This changes the representation of the same estimate. | A two-point example disproves the intermediate inequality.",
       "source_file": "tools/proof_explorer/collection/data/centering.json",
       "source_status": "Curated local mathematical analysis. Original proof is the saved final Library-RAG answer; not a fresh measured search.",
       "key": "centering:a3",
@@ -1327,28 +1327,28 @@
   ],
   "inputs": {
     "tools/proof_explorer/critical-step-selection.js": "57b003db4e8cecd9f7809c2b257ccde55e2b984689aba197ba4e591f55740fc0",
-    "tools/proof_explorer/ablation-proofs.js": "c4aa89cbf8dd9accc4245ec78f16687b4e3bcb70a3e2a0d5baf254af53e6f1e1",
+    "tools/proof_explorer/ablation-proofs.js": "438da3141ca818f6eac39d385f2d53e473f0d95fcf8b25202a4890fc3654eaf9",
     "tools/proof_explorer/proof.js": "55cc92b2db8f1d761e50617f2acd4d23ce0d7d7df11d5e873aef615480156023",
-    "tools/proof_explorer/proof-reader-content.js": "9b7f0fe9b7d85098dfdc60d2afff98c49157a9ecef92d4395d6b3c53f2e5403f",
-    "tools/proof_explorer/collection/data/centering.json": "4608a8c329be0087eb08e5ff3947f249f308b7f76a580a01a63df89ad8ffb947",
-    "tools/proof_explorer/collection/data/covariance.json": "21fb1cdd5a4e1a720047bcb3c0bf791baf3fefbb07e1c5ae72504e0abe4521be",
-    "tools/proof_explorer/collection/data/dimension-reduction.json": "8692bb59b1fcd16eed0e4f79d62b73d649bb4fe45c393b9f88620c0ef49fd2c8",
-    "tools/proof_explorer/collection/data/slepian.json": "c7c6a916558af549e6ae64aebe3f7b5f32ee29a54a1b87a2e2e410457f4dfd08",
-    "proposals/hanson_wright_ablation_notes.md": "d3988a4ab364933f4bbc95e9f3759fbad33239d86fcb00f56aba21b923447c48",
-    "proposals/hanson_wright_sign_ablation.md": "f993088d0368a8d7b9517309e84aa030ce8f7e3aaf9dee59503ae6644d6b4702",
-    "proposals/hanson_wright_ablations/00-common.md": "0a2eaac061f02e04fd873f69f0347de2759043299ed8fbd7059703074a666224",
+    "tools/proof_explorer/proof-reader-content.js": "b0b34398b6226a8699485c1bd65851cca0f675b758deda3bb6c3ddee170c05c8",
+    "tools/proof_explorer/collection/data/centering.json": "329246a66266e785477f8a3365dbd2bea653b469e860c1239e265f6a251d6b33",
+    "tools/proof_explorer/collection/data/covariance.json": "101cfe747ec39f599df4621c6e7cc971216cf3a6fe73ef91b3b4d7cfbee4808a",
+    "tools/proof_explorer/collection/data/dimension-reduction.json": "4526bf624f1ed634afa33302d3710c328ba566f02cc525d6a19230a39a8ac908",
+    "tools/proof_explorer/collection/data/slepian.json": "beed6075e686a3da89731111733be0abc19f9c2888a9a1d06e63db6a5e8cc96b",
+    "proposals/hanson_wright_ablation_notes.md": "1bff1559db4f698a968398de9b06b8aea8cc21c6aa911dffc3173e678425e8bf",
+    "proposals/hanson_wright_sign_ablation.md": "d1974d67458c74921baedb137931bcaa31ca87c3ff46384d437f79778c6bf5c3",
+    "proposals/hanson_wright_ablations/00-common.md": "5c8e8c73887caaa1b0e175ee39e62bb04e7d8ca35ab15a57dba56de60a04726e",
     "proposals/hanson_wright_ablations/02-expand.md": "98af5a982ae4dbd32e0f824978f931e30ce7249ae6e3f6a28e3421720a0a4f67",
     "proposals/hanson_wright_ablations/03-split.md": "02f240ffcd2bac3c5fee1f61db63bbfb84a567ff29a38fd1753d805461e875fa",
     "proposals/hanson_wright_ablations/04-bernstein.md": "3fbd26839e2257a441855690c1491dae3bd1428b10441ff64e648b8cd25c850f",
     "proposals/hanson_wright_ablations/05-exponential.md": "ab2c4e14b8bb1b7da7527a2a92a8446fe016168bed2263daa8adbc2cd3e73990",
     "proposals/hanson_wright_ablations/06-linear.md": "29727f1774d5c3845ad0f0a3af617c98212e117e194c0df972679174ae811a2a",
-    "proposals/hanson_wright_ablations/07-decouple.md": "5b857215cc571b42f4c221b35eaa2e4ce449bf289211982bf5f55b83774c0af3",
+    "proposals/hanson_wright_ablations/07-decouple.md": "88db25db3d092727fbfafdbb8ebc16492bd30c1e4cb3fa8087869f978e6d0e5c",
     "proposals/hanson_wright_ablations/08-gaussian.md": "6832d924da84bc0eff23c334be0e67b00c0c4814aad1871753eada2923dc8690",
     "proposals/hanson_wright_ablations/09-replace.md": "fbf8964069e73256dec8b5c1249c186293df38506cabc72e9614a9d6e654eab5",
     "proposals/hanson_wright_ablations/10-rotate.md": "2523bb8188618eb7df4a89de3b195a15db50100b4945a7ac7b6efb59c76b0396",
     "proposals/hanson_wright_ablations/11-compute.md": "cad57079d5a41781f23655a85c487f83c952ee56eb644f6cfcf49e1e921575a5",
     "proposals/hanson_wright_ablations/12-meet.md": "fd811d337a3ef5c19161fd5ef30cb120906565c1de4c5a67fb597a8debb3dc5c",
-    "proposals/hanson_wright_ablations/13-optimize.md": "eea795855981f762d08c198ac29b12b1328a40e35f9f0726c366e20f7827cd83",
+    "proposals/hanson_wright_ablations/13-optimize.md": "7fb6fac7df89b1034bf43d222c057743d08cdaf1a0c069931e2132e2257ef2c7",
     "proposals/hanson_wright_ablations/14-finish.md": "5ba7836acd88755bbef8afbe3e34050bddd60ca1aa77d44e37c713afbba99e9d"
   }
 }

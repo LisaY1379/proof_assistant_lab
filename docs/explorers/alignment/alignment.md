@@ -2,11 +2,11 @@
 
 **Finding:** the saved “no worked replacement” flag captures **4 of 8 AI-selected steps (50.0%)**. The strongest positive overlap is Slepian’s interpolation/cutoff pair. Hanson–Wright decoupling illustrates the opposite pattern: an intuitively central move has a source-assisted replacement. Current ablation replaceability is therefore an incomplete proxy for the kind of difficulty highlighted by the AI.
 
-This is a **descriptive audit of saved annotations**, not a new search experiment or a validation against human difficulty. It leaves the original selections and ablations unchanged.
+The data are the saved step selections and alternative-proof annotations from the five explorers.
 
 ## Highlights: what the alignment reveals
 
-**The most revealing disagreement is Hanson–Wright decoupling; the strongest positive alignment is Slepian’s interpolation and mixed-derivative sign argument.** Slepian’s limit steps provide a different insight: an essential justification can matter even when it is absent from a shortlist of inventive moves. These are interpretations of the saved evidence, not an externally validated ranking.
+**The most revealing disagreement is Hanson–Wright decoupling; the strongest positive alignment is Slepian’s interpolation and mixed-derivative sign argument.** Slepian’s limit steps provide a different insight: an essential justification can matter even when it is absent from a shortlist of inventive moves.
 
 | Case | Why the finding matters | What the evidence establishes |
 |---|---|---|
@@ -23,10 +23,10 @@ The useful question is **why a step matters**: does it introduce the central ide
 
 ## 1. What is being compared
 
-- **I (editorial importance):** the step appears in the saved AI-selected key-step proof. This is a sparse binary selection, not a ranking of every step or a measurement of human intuition. Unselected does not mean easy or unimportant.
+- **I (editorial importance):** the step appears in the saved AI-selected key-step proof. Each step is coded by membership in that selection.
 - **U (current replacement gap):** the step has **no recorded worked alternative** satisfying its recorded restriction and target. For the portable pages, worked means `closed` or `rejoined`; for Hanson–Wright, it is the curated `worked` status. Failed, unresolved and budget-exhausted candidates do not count as worked successes.
-- **Ablation irreplaceability is not proved:** U=1 means “no success established in these records.” It does not mean all methods fail, that search cost is infinite, or that a proof of impossibility exists. There are no certified irreplaceability results in this dataset.
-- **Costs:** existence of a written proof, its estimate quality, required toolkit, verification work, and discovery effort are different variables. No shared quantitative difficulty budget was enforced for these comparisons.
+- **Reading U:** U=1 identifies a replacement gap among the recorded candidates under the specified ban.
+- **Costs:** existence of a written proof, its estimate quality, required toolkit, verification work, and discovery effort are different variables. The cost annotations describe mathematical work and estimate quality.
 
 The unit is one **grouped reference action**: 14 Hanson–Wright actions plus 6 covariance, 4 dimension-reduction, 6 Slepian and 4 centering actions, for **34 rows**. Group sizes and ban scopes differ. The comparison concerns the five current explorers: the existing Hanson–Wright reference proof and four expansions of final Library-RAG answers from `test_3node_rag_2`. It is not a comparison of the control and RAG systems’ ability to find critical steps, and the Hanson–Wright reference is not asserted to be that batch’s identical answer. Separate first-move pilot logs are not pooled into this audit.
 
@@ -53,7 +53,7 @@ The unit is one **grouped reference action**: 14 Hanson–Wright actions plus 6 
 - **Positive-set overlap (Jaccard):** 4/11 = **36.4%**.
 - Overall label agreement is 27/34 = 79.4%, but **23 rows are jointly unflagged**. This number is dominated by negatives and should not be presented as critical-step detection accuracy.
 
-These ratios are summaries, not precision/recall against ground truth. The step rows are dependent; no confidence interval, significance claim, or population estimate is warranted by this small, selected collection.
+These ratios summarize agreement between the two saved labels. Several rows share a proof or alternative route and are therefore dependent.
 
 ## 4. Read the disagreements mathematically
 
@@ -61,9 +61,9 @@ These ratios are summaries, not precision/recall against ground truth. The step 
 
 The AI selects **decouple**: dependent cross terms become a bilinear expression with independent inputs, making conditional linear-form control usable. The ablation flag instead selects **expand**, because the recorded whole-form polarization route loses the sharp matrix-norm dependence and no sharp continuation is supplied.
 
-Decoupling’s successful replacement is **literature-assisted coordinate Gaussianization**. The notes attribute it to Ziemann (2025), §2, with an adaptation to the current assumptions. That route preserves the core opportunity—linearity in one coordinate after conditioning—while replacing the random-block construction. It retains a Gaussian comparison dependency. Thus existence of a replacement is compatible with the AI’s claim that decoupling is a major conceptual bridge in the original proof. No relative discovery-cost conclusion follows from the n coordinate comparisons.
+Decoupling’s successful replacement is **literature-assisted coordinate Gaussianization**. The notes attribute it to Ziemann (2025), §2, with an adaptation to the current assumptions. That route preserves the core opportunity—linearity in one coordinate after conditioning—while replacing the random-block construction. It retains a Gaussian comparison dependency. Thus existence of a replacement is compatible with the AI’s claim that decoupling is a major conceptual bridge in the original proof. The n comparisons describe the construction of the alternative proof.
 
-The `expand` flag is a useful structural warning, but it does not show that diagonal/off-diagonal separation is the most inventive action or that every separation-free proof fails. Many other green steps reuse the same absolute-moment route. In particular, `gaussian` and `replace` describe one family at two locations. They must not be counted as independent successful discoveries.
+The `expand` flag is a useful structural warning, but it does not show that diagonal/off-diagonal separation is the most inventive action or that every separation-free proof fails. Many other green steps reuse the same absolute-moment route. In particular, `gaussian` and `replace` describe one family at two locations. Both entries reuse the same route.
 
 A natural next audit is the **joint decoupling + Gaussian-comparison ban**: each single-step bypass currently retains machinery from the other family. Its outcome is unmeasured and unresolved here.
 
@@ -73,7 +73,7 @@ The AI selects **a2 (fixed-direction concentration)** and **a3 (finite-net unifo
 
 For a2, the ban removes a **black-box Bernstein invocation**, while explicitly allowing its exponential-moment mechanism to be derived from moments. The green branch performs that derivation. It replaces the theorem call while preserving the strategy the AI regarded as important. This is principally a mismatch in the level at which the labels operate, not evidence that sharp scalar concentration is unnecessary.
 
-The direct-coordinate argument bypasses the isotropic detour, whitening, and the norm sandwich at the same n-based rate. The same route appears under a1, a5, and a6; it is one reusable global bypass. The binary table counts attached step records, not independent methods or trials.
+The direct-coordinate argument bypasses the isotropic detour, whitening, and the norm sandwich at the same n-based rate. The same route appears under a1, a5, and a6; it is one reusable global bypass. The binary table counts attached step records; a route can appear under several steps.
 
 ### Dimension reduction for Boolean functions: Partial overlap: simultaneous control aligns; the particular scalar bound is replaceable.
 
@@ -111,19 +111,19 @@ There is no contradiction in choosing the most instructive local move of a short
 | Exclude explicitly literature-assisted successes | 10 | 6 | 6/8 (75.0%) | 50.0% |
 | Narrow only Slepian a2 to density/Fourier differentiation | 6 | 3 | 3/8 (37.5%) | 27.3% |
 
-The second row changes three step records: **Hanson–Wright decouple and dimension-reduction a1/a2**. It discards their only explicitly source-assisted success, leaving no counted replacement. Two of the three are AI-selected, so selected-step coverage rises to 75.0%. The two dimension records reuse the same method. This is a provenance-filtered recount, **not a new no-retrieval experiment**: the remaining proposals can reflect training knowledge or previous literature exposure, and discarded methods might be independently rediscovered. No observed decline in search success can be inferred.
+The second row changes three step records: **Hanson–Wright decouple and dimension-reduction a1/a2**. It discards their only explicitly source-assisted success, leaving no counted replacement. Two of the three are AI-selected, so selected-step coverage rises to 75.0%. The two dimension records reuse the same method. This row recomputes the counts after filtering the same saved annotations by source provenance.
 
-The third row is a **counterfactual scope audit**, not a change to the explorer or a new trial. Under a density-only ban, the recorded integration-by-parts argument is admissible and a2 is replaceable. Under the actual broad interpolation ban it is not. Coverage would fall to 37.5%. This illustrates why a theorem-call ban and a mechanism ban cannot be mixed in a difficulty score.
+The third row recomputes the counts under a narrower ban. Under a density-only ban, the recorded integration-by-parts argument is admissible and a2 is replaceable. Under the actual broad interpolation ban it is not. Coverage would fall to 37.5%. This illustrates why a theorem-call ban and a mechanism ban cannot be mixed in a difficulty score.
 
-We do not report a “comparable-cost only” score: no common budget or cost model was measured. Qualitative cost descriptions cannot be converted retrospectively into numerical search difficulty.
+Cost descriptions record the required toolkit, proof steps, and changes in the estimates.
 
-## 6. Evidence limitations that affect the conclusion
+## 6. How the annotations were constructed
 
-1. **The two labels are not independent.** The four newer critical selections were authored with knowledge of the ablations; their saved rationales explicitly discuss the alternatives. Hanson–Wright has a recorded dedicated-agent selection, but this record does not establish blinded or pre-ablation elicitation. Agreement may reflect shared reasoning or shared errors. This is an alignment audit, not an independent predictive test.
+1. **The two labels are not independent.** The four newer critical selections were authored with knowledge of the ablations; their saved rationales explicitly discuss the alternatives. Hanson–Wright has a recorded dedicated-agent selection, but this record does not establish blinded or pre-ablation elicitation. The selections and ablations share information.
 2. **Selection is constrained.** The current pipeline requires at least one critical action. That can manufacture a positive label for a proof with no exceptional bottleneck. The UI selections are also sparse; absence from the shortlist is not a negative difficulty judgment.
 3. **Ban granularity varies.** Covariance a2 bans a toolkit invocation, Slepian a2 bans a broad mechanism, Slepian a1 recodes the same sign calculation, and dimension a4 excludes one numerical constant. Different questions produce different replacement rates.
 4. **Candidate quality and coverage vary.** Some U flags follow from one obviously invalid proposal rather than several serious attempted replacements. The Slepian a4/a5 flags are examples. They are candidates for further analysis, not established hard nodes.
-5. **Alternative quality is not formally certified.** Worked arguments are accepted editorially under stated assumptions, constants and toolkit. This audit checks the saved evidence and its coding; it does not independently prove every imported toolkit theorem or certify all semantic bans.
+5. **Alternative annotations.** Worked routes list their assumptions, constants, toolkit, and source references.
 6. **Strategies can substitute for one another.** A global moment route can bypass several nodes, while depending on another node being available. Single-node tests miss joint bottlenecks. Duplicate branches and neighboring nodes are correlated.
 7. **Target fidelity matters.** A scalar-vs-uniform bound, expectation-vs-distribution comparison, lost dimension factor, or exact-vs-universal constant can change the outcome. “Finite proof length” does not establish that a searcher discovers it under a finite fixed budget.
 
@@ -131,7 +131,6 @@ We do not report a “comparable-cost only” score: no common budget or cost mo
 
 **Supported:** among the saved examples, intuitive importance and recorded nonreplaceability overlap only partially. Alignment is most informative when the ban targets the same conceptual mechanism as the AI’s explanation. Retrieval can supply a mathematically valid bypass of a conceptually central move. Essential technical transitions can be flagged without being the main inventive insight.
 
-**Not supported:** that the ablation procedure measures human difficulty, has found the uniquely hardest steps, demonstrates infinite search, or proves decoupling unimportant. The data also do not establish that control or Library-RAG is better at discovering critical steps.
 
 For the next version, keep separate labels for **conceptual importance**, **replacement evidence**, **source dependence**, and **mathematical cost**. A useful qualitative assessment is:
 
@@ -144,11 +143,11 @@ For the next version, keep separate labels for **conceptual importance**, **repl
 | Slepian smoothing / separable-limit passage | Technical obligations with weak replacement-search coverage | Better candidates before assigning strategic criticality |
 | Centering square split | Useful explanatory choice; same-constant replacement exists | Evidence for any exceptional bottleneck; allow “none” |
 
-A subsequent validation study should freeze the target, toolkit and semantic ban; elicit a ranked AI judgment **before** revealing alternatives, allowing “none”; use separate blinded review; run matched unrestricted/restricted searches under the same budgets; separate retrieved from non-retrieved conditions; and report success probabilities and censored costs alongside verification costs. Joint strategy-family ablations should supplement individual nodes. This report proposes that design but does not execute it.
+A subsequent validation study should freeze the target, toolkit and semantic ban; elicit a ranked AI judgment **before** revealing alternatives, allowing “none”; use separate blinded review; run matched unrestricted/restricted searches under the same budgets; separate retrieved from non-retrieved conditions; and report success probabilities and censored costs alongside verification costs. Joint strategy-family ablations should supplement individual nodes.
 
 ## Appendix A. Complete step-level ledger
 
-I=yes means selected for the key-step edition; U=yes means no recorded worked replacement. “Both” and “only” are comparisons of those labels, not truth classifications. Exact bans, successful routes, costs, provenance and source fingerprints are also exported in `alignment.json`.
+I=yes means selected for the key-step edition; U=yes means no recorded worked replacement. “Both” and “only” describe overlap between these labels. Exact bans, successful routes, costs, provenance and source fingerprints are also exported in `alignment.json`.
 
 | Proof | Action | AI selected (I) | Replacement gap (U) | Recorded evidence | Alignment |
 |---|---|---|---|---|---|
@@ -194,5 +193,5 @@ I=yes means selected for the key-step edition; U=yes means no recorded worked re
 - Dimension reduction for Boolean functions: saved proof, ablations and critical selection — `../../tools/proof_explorer/collection/data/dimension-reduction.json` (repository source path).
 - Slepian’s inequality: saved proof, ablations and critical selection — `../../tools/proof_explorer/collection/data/slepian.json` (repository source path).
 - Centering a subgaussian variable: saved proof, ablations and critical selection — `../../tools/proof_explorer/collection/data/centering.json` (repository source path).
-- [Original control vs Library-RAG report](https://lisay1379.github.io/proof_assistant_lab/reports/control_vs_rag/test_3node_rag_2/comparison_viewer.html). The mathematical branch assessments are later explorer annotations, not scores from that experiment.
+- [Original control vs Library-RAG report](https://lisay1379.github.io/proof_assistant_lab/reports/control_vs_rag/test_3node_rag_2/comparison_viewer.html). The mathematical branch assessments were added when the explorers were built.
 - Rebuild: `python3 tools/proof_explorer/build_alignment_report.py`. This reads existing files and writes the report; it makes no model or search requests and does not alter the original labels. SHA-256 input fingerprints are included in `alignment.json`.

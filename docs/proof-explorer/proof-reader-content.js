@@ -7,14 +7,14 @@
   const K=node?require('./critical-step-selection.js'):root.HansonWrightCriticalSelection;
   const costs={
     sign:'Sign reversal reuses the same upper-tail argument. The replacement constructs all even moments and chooses a moment order; both recover the target norm scales.',
-    expand:'The available polarization bound is CK²‖A‖(n+p), too coarse compared with CK²(√p‖A‖F+p‖A‖). This is loss of estimate quality, not measured computational explosion.',
+    expand:'The available polarization bound is CK²‖A‖(n+p), too coarse compared with CK²(√p‖A‖F+p‖A‖). The resulting bound loses the required dependence on the matrix norms.',
     split:'Schwarz combines MGFs at 2λ, halving the common admissible domain and changing universal constants. The two norm scales are retained; D and S need not be independent.',
     bernstein:'The coefficient replacement requires even-power bookkeeping and a radius choice. It retains cancellation from centering and the two norm scales; a termwise triangle bound loses them.',
     exponential:'The replacement must establish bounds at all even orders, rather than just the variance. It trades quadratic MGFs for coefficient, selector, and vector-moment arguments.',
     linear:'Symmetrization and comparison of even coefficients replace MGF factorization. The sharp √p‖v‖₂ dependence is retained; crude norm inequalities can lose √n or √p.',
-    decouple:'The alternative performs n coordinate comparisons and still uses Gaussian MGF control, with ‖H‖≤2‖A‖. This is proof-construction work, not a count of search calls or a demonstrated cost increase.',
+    decouple:'The alternative performs n coordinate comparisons and still uses Gaussian MGF control, with ‖H‖≤2‖A‖. The construction compares one coordinate at a time.',
     gaussian:'The moment route replaces Gaussian bilinear MGFs with Gaussian projection and Lipschitz norm concentration. It retains the norm scales and still uses Gaussian tools.',
-    replace:'This is the same moment-route replacement as the preceding Gaussian-goal action, not a separate discovery. Norm-moment control and a moment-order choice replace the MGF comparison chain.',
+    replace:'This is the same moment-route replacement as the preceding Gaussian-goal action, reused at this step. Norm-moment control and a moment-order choice replace the MGF comparison chain.',
     rotate:'Gaussian Lipschitz concentration and a coordinate second-moment identity replace SVD. This changes the required toolkit while preserving the Frobenius and operator scales.',
     compute:'A recurrence and geometric majorant control the entire series without exact evaluation. The original bound and parameter domain are recovered, permitting a checkpoint rejoin.',
     meet:'The alternative assembles moments with Minkowski and closes a different checkpoint. It reuses the full moment route; it does not remove basic logical assembly.',

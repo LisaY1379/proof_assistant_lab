@@ -686,8 +686,8 @@
           "origin": "model_proposed",
           "source_ids": [],
           "rejoin_state": null,
-          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
-          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "adaptation": "Mathematical analysis written for this explorer.",
+          "assessment": "This route establishes the stated theorem under the restriction.",
           "id": "a1-alt1",
           "research_exposed": false,
           "fork_state": "s0",
@@ -698,7 +698,7 @@
         "status": "not_performed",
         "sources": [],
         "calls": [],
-        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "summary": "The alternatives are analyses written for this explorer.",
         "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
       },
       "status": "reviewed",
@@ -733,8 +733,8 @@
           "origin": "model_proposed",
           "source_ids": [],
           "rejoin_state": null,
-          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
-          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "adaptation": "Mathematical analysis written for this explorer.",
+          "assessment": "This route establishes the stated theorem under the restriction.",
           "id": "a2-alt1",
           "research_exposed": false,
           "fork_state": "s0",
@@ -745,7 +745,7 @@
         "status": "not_performed",
         "sources": [],
         "calls": [],
-        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "summary": "The alternatives are analyses written for this explorer.",
         "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
       },
       "status": "reviewed",
@@ -759,7 +759,7 @@
           "title": "Use convexity of the Orlicz function",
           "argument": "Let Φ(u)=exp(u²)−1, a convex even function. If EΦ(U/a)≤1 and EΦ(V/b)≤1, convexity gives EΦ((U+V)/(a+b))≤[a/(a+b)]EΦ(U/a)+[b/(a+b)]EΦ(V/b)≤1. This proves the needed triangle inequality at admissible scales, without splitting a square into 2U²+2V². For t>K the mean bound exp(μ²/t²)≤2 follows from Jensen as in the baseline, so both X/t and the constant −μ/t have Φ-moment ≤1. Take a=b=t in the convexity inequality. Then Eexp((X−μ)²/(4t²))≤2. Let t↓K to obtain constant 2. Convexity of Φ follows from Φ″(u)=(2+4u²)exp(u²)>0.",
           "outcome": "closed",
-          "cost": "Same constant 2, but exposes the general norm triangle mechanism. This is a representation change, not a claim of new discovery.",
+          "cost": "Same constant 2, but exposes the general norm triangle mechanism. This changes the representation of the same estimate.",
           "route": [
             {
               "title": "Convex Orlicz function",
@@ -780,8 +780,8 @@
           "origin": "model_proposed",
           "source_ids": [],
           "rejoin_state": null,
-          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
-          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "adaptation": "Mathematical analysis written for this explorer.",
+          "assessment": "This route establishes the stated theorem under the restriction.",
           "id": "a3-alt1",
           "research_exposed": false,
           "fork_state": "s0",
@@ -791,7 +791,7 @@
           "title": "Assume centering shrinks each sample",
           "argument": "Let X take 0 and 2 with equal probabilities, so EX=1 and X is bounded and hence subgaussian. On the event X=0, |X−EX|=1>|X|=0. Therefore the proposed pointwise domination |X−EX|≤|X| is false. It cannot certify the desired exponential-moment or norm bound, even though the centering theorem remains true.",
           "outcome": "failed",
-          "cost": "A two-point example disproves the intermediate inequality. No cost explosion occurs.",
+          "cost": "A two-point example disproves the intermediate inequality.",
           "route": [
             {
               "title": "Two-point variable",
@@ -807,8 +807,8 @@
           "origin": "model_proposed",
           "source_ids": [],
           "rejoin_state": null,
-          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
-          "assessment": "This candidate does not establish the stated theorem under the restriction. This says nothing about all possible replacements.",
+          "adaptation": "Mathematical analysis written for this explorer.",
+          "assessment": "This candidate leaves the stated target unresolved under the restriction.",
           "id": "a3-alt2",
           "research_exposed": false,
           "fork_state": "s0",
@@ -819,7 +819,7 @@
         "status": "not_performed",
         "sources": [],
         "calls": [],
-        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "summary": "The alternatives are analyses written for this explorer.",
         "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
       },
       "status": "reviewed",
@@ -849,8 +849,8 @@
           "origin": "model_proposed",
           "source_ids": [],
           "rejoin_state": null,
-          "adaptation": "Curated mathematical proposal written for this explorer; no retrieved alternative is attributed to it. Novelty or independent discovery is not claimed.",
-          "assessment": "This route establishes the stated theorem under the restriction; no search cost has been measured.",
+          "adaptation": "Mathematical analysis written for this explorer.",
+          "assessment": "This route establishes the stated theorem under the restriction.",
           "id": "a4-alt1",
           "research_exposed": false,
           "fork_state": "s0",
@@ -861,7 +861,7 @@
         "status": "not_performed",
         "sources": [],
         "calls": [],
-        "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+        "summary": "The alternatives are analyses written for this explorer.",
         "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
       },
       "status": "reviewed",
@@ -873,28 +873,28 @@
       "status": "not_performed",
       "sources": [],
       "calls": [],
-      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "summary": "The alternatives are analyses written for this explorer.",
       "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
     },
     "a2": {
       "status": "not_performed",
       "sources": [],
       "calls": [],
-      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "summary": "The alternatives are analyses written for this explorer.",
       "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
     },
     "a3": {
       "status": "not_performed",
       "sources": [],
       "calls": [],
-      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "summary": "The alternatives are analyses written for this explorer.",
       "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
     },
     "a4": {
       "status": "not_performed",
       "sources": [],
       "calls": [],
-      "summary": "No source-backed replacement is asserted for this step. These are curated mathematical analyses, not an exhaustive literature search.",
+      "summary": "The alternatives are analyses written for this explorer.",
       "verification": "Source provenance recorded by the author; mathematical applicability explained in each route."
     }
   },
@@ -960,8 +960,8 @@
     "note": "The original edition is the exact saved final Library-RAG answer. Expanded explanations, protocol annotations, and ablations were added for this collection; they were not produced by the original experiment. The existing Hanson–Wright explorer is a related reference proof, not necessarily this run’s exact answer."
   },
   "metadata": {
-    "origin": "Curated expansion of the saved Library-RAG proof. Alternatives are worked analyses, not logged discovery attempts.",
-    "authoring": "Local editorial reconstruction; no new external model-generation calls.",
+    "origin": "Expanded saved Library-RAG proof with alternative derivations.",
+    "authoring": "Local proof annotation.",
     "source_run": "test_3node_rag_2",
     "slug": "centering"
   }

@@ -222,7 +222,7 @@
   function inspectAblation() {
     const active=isAblation();$('ablation-controls').hidden=!active;
     document.querySelector('.reference-panels').classList.toggle('ablation-layout',active);
-    $('reference-note').textContent=active?'Click any original step to reveal its ablation map and full proof notes. Click that step again to return to the original graph. These are written arguments, not measured searches.':'The original proof. Choose Remove a step & branch to reveal an alternative without leaving the graph.';
+    $('reference-note').textContent=active?'Click any original step to reveal its ablation map and full proof notes. Click that step again to return to the original graph. Each branch includes its written argument.':'The original proof. Choose Remove a step & branch to reveal an alternative without leaving the graph.';
     $('state-instructions').textContent=active?'Click a result node to remove the step that produced it; click again to restore.':'Select a state or a labeled action.';
     $('state-legend-note').textContent=active?'Green-grey = worked · red-grey = insufficient / invalid':'Other valid orders merge into shared states';
     $('restore-action').disabled=!ablation;$('export-ablation').disabled=!ablation;$('find-alternatives').disabled=!ablation;$('rejoin-control').hidden=!ablation;
@@ -234,7 +234,7 @@
     if(!ablation)return;
     const a=ablation.alternatives.find(a=>a.id===selectedAlternative),content=$('alternative-detail');content.replaceChildren();
     $('alternative-title').textContent=a?`${a.name} · ${a.label}`:'Three possible endings after removing the action.';
-    if(a){content.append(item('Illustrative outcome',a.description,a.ending==='success'?'success':'failure'),item('Evidence a future evaluation would need',a.evidenceRequired),el('p','',`Difficulty: ${a.difficultyDisplay}. No measured cost or proof result is attached.`));}
+    if(a){content.append(item('Illustrative outcome',a.description,a.ending==='success'?'success':'failure'),item('Evidence a future evaluation would need',a.evidenceRequired),el('p','',`Difficulty: ${a.difficultyDisplay}. This branch is a proposal for evaluation.`));}
     else content.append(el('p','','Select a grey branch to inspect its ending. The success branch can rejoin a later reference state or reach the final goal via a separate route.'));
     content.append(el('p','preview-caveat','These are presentation placeholders, not generated methods or findings. B is a finite budget with no assigned value. A finite timeout is not evidence of infinite difficulty. Rejoin links indicate intended mathematical compatibility, not reuse of the removed action.'));
   }
@@ -531,7 +531,7 @@
     const delta=el('div','transition-delta');
     delta.append(item('Added facts',edge.addedFacts.map(id=>to.facts.find(f=>f.id===id).title).join('\n')||'None — this action records a goal reduction.'),item('Introduced goals',edge.introducedGoals.map(goalName).join('\n')||'None'),item('Discharged goals',edge.dischargedGoals.map(goalName).join('\n')||'None'));
     panel.append(delta,item('Mathematical work',action.math),item('Verification',action.check),item('Toolkit',action.tool));
-    const details=el('details');details.append(el('summary','','Move metadata & prerequisites'),el('p','',`Prerequisites: ${action.deps.join(', ')||'Starting assumptions only'}`),el('p','',`Proof nodes introduced: ${edge.addedProofNodes.join(', ')||'None; the endpoint closes.'}`),el('p','',`Observation: ${action.observation}`),el('p','','Search cost: not measured. This transition belongs to the selected worked proof; it is not a recorded discovery attempt.'));panel.append(details);
+    const details=el('details');details.append(el('summary','','Move metadata & prerequisites'),el('p','',`Prerequisites: ${action.deps.join(', ')||'Starting assumptions only'}`),el('p','',`Proof nodes introduced: ${edge.addedProofNodes.join(', ')||'None; the endpoint closes.'}`),el('p','',`Observation: ${action.observation}`));panel.append(details);
   }
   function renderGraphs() {
     $('fit-branches').hidden=!(worked||study);
@@ -544,7 +544,7 @@
     $('ablation-evidence').textContent='REMOVE A STEP · EXPLORE A BRANCH';
     $('export-ablation').textContent='Export preview';
     $('ablation-legend').hidden=true;
-    $('alternative-inspector').querySelector('.eyebrow').textContent='ILLUSTRATIVE BRANCH · NOT EVALUATED';
+    $('alternative-inspector').querySelector('.eyebrow').textContent='PROPOSED ALTERNATIVE';
     $('proof-legend-note').textContent=isAblation()?'Click a step to toggle its ablation':'The graph grows with each proof move';
     $('proof-instructions').textContent='Facts descend. Goals reduce upward.';
     const s=states.get(selected);inspectAblation();renderProof(isAblation()?states.get(G.finalState):s);renderGraph();inspect(s);

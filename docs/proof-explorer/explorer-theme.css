@@ -1,4 +1,5 @@
 /* Visual theme for the Hanson–Wright proof/state explorer only. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 :root {
   color-scheme: light;
   --paper: #fff;
@@ -16,9 +17,9 @@
   --observation: #916312;
   --observation-bg: #fff8e8;
   --body-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  --section-title-size: clamp(36px, 4vw, 58px);
-  --main-title-size: clamp(46px, 5.5vw, 78px);
-  --title-font: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+  --section-title-size: clamp(28px, 3vw, 42px);
+  --main-title-size: clamp(34px, 4vw, 56px);
+  --title-font: "Inter", Haettenschweiler, "Arial Narrow Bold", sans-serif;
   font-family: var(--body-font);
   background: #fff;
   color: var(--ink);
@@ -38,7 +39,8 @@ button.primary:hover:not(:disabled), .context-enter:hover { background: #452488;
 .brand-mark, .eyebrow { color: var(--accent); }
 .masthead nav { font-size: 11px; }
 .intro { padding-block: 38px; }
-h1 { font-family: var(--title-font); font-size: var(--main-title-size); font-weight: 400; line-height: 1.05; letter-spacing: .015em; text-transform: uppercase; color: var(--ink); }
+.intro h1 { font-size: var(--section-title-size); }
+h1 { font-family: var(--title-font); font-size: var(--main-title-size); font-weight: 850; line-height: 1.05; letter-spacing: .015em; text-transform: uppercase; color: var(--ink); }
 h2, .context-story h2, .reader-heading h2,
 .reference-reader-column .reader-heading h2 {
   font-family: var(--title-font); font-weight: 400; line-height: 1.15;
@@ -71,7 +73,7 @@ h2, .context-story h2, .reader-heading h2,
    Red/green ablation results and yellow literature markers retain their meaning. */
 .proof-equation, .context-equation, .formula, .reader-math, .reference-math { font-family: "Cambria Math", "STIX Two Math", Georgia, serif; }
 @media(max-width:600px) {
-  .intro h1 { font-size: 46px; }
+  .intro h1 { font-size: var(--section-title-size); }
   .context-guide>summary { font-size: 26px; }
   .context-story h2 { font-size: 29px; }
   .reference-reader-column .reader-heading h2 { font-size: 28px; }
@@ -153,9 +155,17 @@ details[open] > .entry-start-summary::after { content: "−"; }
 }
 
 @media (max-width: 600px) {
-  :root { --main-title-size: 46px; }
+  :root { --main-title-size: clamp(34px, 4vw, 56px); }
 }
 
 @media (max-width: 760px) {
-  :root { --section-title-size: 42px; }
+  :root { --section-title-size: 32px; }
 }
+
+/* Compact headings inside theorem explorers; overview headings stay unchanged. */
+.reference-reader-column .reader-heading h2,
+.reader-heading h2,
+#selected-title,
+#transition-title { font-size: 24px; }
+.reader-passage-heading h3,
+.reference-reader-column .reader-passage-heading h3 { font-size: 17px; }

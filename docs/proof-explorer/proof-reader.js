@@ -32,7 +32,7 @@
           paragraph(section,'Why this step was selected',C.selection.rationale);
           expansion(section,e.expansion);
           paragraph(section,'An alternative to this key step',C.selection.alternativeNote);
-          paragraph(section,'Cost and scope',e.cost+' Search cost has not been measured.');
+          paragraph(section,'Cost and scope',e.cost);
         }else{
           paragraph(section,'What we have; what we need',e.action.have+'\n'+e.action.need);
           paragraph(section,'Why this move helps',e.action.observation);
@@ -45,7 +45,7 @@
           if(e.ablation.source){
             const attribution=paragraph(alternatives,'Where this alternative came from',e.ablation.provenance);
             const citation=el('a','',e.ablation.source.title);citation.href=e.ablation.source.url;attribution.append(citation);
-            paragraph(alternatives,'What this success does—and does not—establish',e.ablation.interpretation);
+            paragraph(alternatives,'How the replacement works',e.ablation.interpretation);
           }
           const chain=el('ol','reader-route-steps');for(const step of e.ablation.steps){const li=el('li');li.append(el('strong','',step.title),el('p','',step.have));chain.append(li);}alternatives.append(chain);
           for(const extra of e.ablation.additional||[]){const d=el('details');d.append(el('summary','',extra.title));for(const step of extra.steps)paragraph(d,step.title,step.have);alternatives.append(d);}
@@ -54,7 +54,7 @@
           if(e.action.id!=='sign')alternatives.append(noteBlock('sign','Complete moment proof used by the shared route'));
           section.append(alternatives);
           paragraph(section,'Mathematical work and tradeoffs',e.cost);
-          const cost=el('p','reader-cost','Search cost: not measured. No claim of equal difficulty, optimality, or infinite search is made.');section.append(cost);
+
         }
         part.append(section);
       }
@@ -68,13 +68,13 @@
       if(active&&scroll&&$('reader-follow').checked){const a=active.getBoundingClientRect(),b=body.getBoundingClientRect();body.scrollTo({top:body.scrollTop+a.top-b.top-18,behavior:'instant'});}
     }
     function renderRoute(){
-      const intro=el('section','reader-route-intro');intro.append(el('h3','',route.title),el('p','',route.scope||'Read this alternative independently of the reference route.'),el('p','reader-cost',route.status==='unresolved'?'Incomplete alternative: the sharp target remains unresolved.':'Worked mathematical argument; search cost unmeasured.'));
+      const intro=el('section','reader-route-intro');intro.append(el('h3','',route.title),el('p','',route.scope||'Read this alternative independently of the reference route.'),el('p','reader-cost',route.status==='unresolved'?'Incomplete alternative: the sharp target remains unresolved.':'Worked alternative proof.'));
       if(route.restriction)intro.append(el('p','',route.restriction));body.append(intro);
       for(const [i,step] of route.steps.entries()){
         const part=el('article','reader-passage');part.dataset.events=route.action;
         part.append(el('h3','',`${i+1}. ${step.title}`),el('p','',step.have),el('p','reader-route-want',step.want));body.append(part);
       }
-      const full=noteBlock(route.action,'Full written argument, alternatives and qualifications');full.open=true;body.append(full,noteBlock('common','Shared calculations and boundary cases'));
+      const full=noteBlock(route.action,'Full written argument and alternatives');full.open=true;body.append(full,noteBlock('common','Shared calculations and boundary cases'));
       if(route.action!=='sign')body.append(noteBlock('sign','Complete absolute-moment proof where used'));
     }
     function render(){
@@ -82,9 +82,9 @@
       for(const tab of document.querySelectorAll('[data-reader-version]')){const active=tab.dataset.readerVersion===version;tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1;}
       $('reader-tabs').hidden=!!route;
       $('reader-return').hidden=!route;
-      $('reader-edition-note').textContent=route?'Alternative reading · the original proof is preserved. Return to compare the three original-proof editions.':version==='original'?'The complete written proof from the original explorer.':version==='detailed'?'The same argument, with motivations, derivations, alternative methods and mathematical tradeoffs at each step. Yellow marks an alternative obtained from online research; its source is linked in the alternative notes.':C.selection.selectionLabel+': '+C.selection.selectedActionIds.join(', ')+'. Editorial emphasis; search difficulty has not been measured.';
+      $('reader-edition-note').textContent=route?'Alternative reading · the original proof is preserved. Return to compare the three original-proof editions.':version==='original'?'The complete written proof from the original explorer.':version==='detailed'?'The same argument, with motivations, derivations, alternative methods and mathematical tradeoffs at each step. Yellow marks an alternative obtained from online research; its source is linked in the alternative notes.':C.selection.selectionLabel+': '+C.selection.selectedActionIds.join(', ')+'.';
       $('reader-selection').hidden=version!=='focused'||!!route;
-      $('reader-selection-text').textContent=C.selection.provenance+' '+C.selection.rationale+' '+C.selection.caveat;
+      $('reader-selection-text').textContent=C.selection.provenance+' '+C.selection.rationale;
       body.replaceChildren();articles=[];
       if(route)renderRoute();else C.build(version).forEach((p,i)=>{const part=article(p,i);articles.push(part);body.append(part);});
       highlight();

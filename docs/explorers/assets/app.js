@@ -93,9 +93,9 @@
     paragraph(box,'Origin and adaptation',alt.adaptation);
     if(alt.origin==='literature_assisted'){
       sourceLinks(box,studySources(study,alt));
-      box.append(el('p','small','This is a literature-assisted replacement, not independent discovery. Its existence does not establish equal discovery cost or make the removed strategy noncritical.'));
+      box.append(el('p','small','This replacement uses the linked literature source.'));
     }else if(alt.research_exposed){
-      box.append(el('p','small','The model saw retrieved literature but did not attribute this particular proposal to a source. Independent discovery is not established. Consulted sources:'));
+      box.append(el('p','small','The model consulted literature; this proposal has no individual source attribution. Consulted sources:'));
       sourceLinks(box,study.research.sources||[]);
     }
     const route=el('ol','reader-route-steps');for(const r of alt.route){const li=el('li');li.append(el('strong','',r.title),el('p','detail-text',r.have),el('p','small','Want: '+(r.want||'No remaining obligations claimed.')));route.append(li);}box.append(route);
@@ -170,7 +170,7 @@
   }
   function renderReader(){
     const body=$('reader-body');clear(body);
-    $('edition-note').textContent=version==='original'?(doc.experiment?'The exact saved Library-RAG proof. See the source record below for the control answer and changes.':'Your supplied proof, preserved verbatim.'):version==='detailed'?'Each step with its derivation, alternatives, sources, and qualitative costs. Yellow: literature-assisted replacement. Red: no successful replacement established in this study.':`Only selected critical steps are expanded. ${doc.critical.rationale} Editorial assessment; discovery difficulty is unmeasured.`;
+    $('edition-note').textContent=version==='original'?(doc.experiment?'The exact saved Library-RAG proof. See the source record below for the control answer and changes.':'Your supplied proof, preserved verbatim.'):version==='detailed'?'Each step with its derivation, alternatives, sources, and qualitative costs. Yellow: literature-assisted replacement. Red: no successful replacement established in this study.':`Only selected critical steps are expanded. ${doc.critical.rationale}`;
     body.setAttribute('aria-labelledby','tab-'+version);
     for(const tab of document.querySelectorAll('[data-version]')){const active=tab.dataset.version===version;tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1;}
     for(const part of proofSegments(doc)){
@@ -182,7 +182,7 @@
       const header=el('header');header.append(el('h3','',step.title),button('Show '+step.id,()=>{choose(step.id);focusGraph('state');focusGraph('proof');}));section.append(header);
       section.append(el('p','original-text',version==='focused'&&!critical?step.short_version:part.text));
       if(version==='detailed'||(version==='focused'&&critical)){
-        if(critical)section.append(el('span','reader-key-badge','Critical step · editorial selection'));
+        if(critical)section.append(el('span','reader-key-badge','Selected critical step'));
         if(version==='detailed'&&literature)section.append(el('span','reader-literature-badge','Alternative checked against online literature'));
         if(version==='detailed'&&noAlternative)section.append(el('span','reader-unresolved-badge','No valid alternative established'));
         paragraph(section,'Why this move helps',step.observation);paragraph(section,'Detailed derivation',step.explanation);paragraph(section,'Difficulty and tradeoffs',step.difficulty);
@@ -216,7 +216,7 @@
       if(doc.protocol.reference){detail.append(el('p','small','Recorded protocol fingerprint: '+doc.protocol.reference.sha256));paragraph(detail,'Protocol used for this decomposition',doc.protocol.reference.text);}
       body.append(detail);
     }else body.append(el('p','small','Legacy explorer: no structured protocol record. Generate a new explorer to apply the current protocol.'));
-    body.append(el('p','small',doc.experiment?'This collection was authored locally. It is a mathematical reconstruction, not a fresh search run.':`${job.requests?.length||0} recorded generation/research requests. This is workflow usage, not mathematical search difficulty.`));
+    body.append(el('p','small',doc.experiment?'Proofs and alternative routes are annotated from the saved experiment answers.':`${job.requests?.length||0} recorded generation/research requests. These counts describe generation and research requests.`));
     for(const step of doc.steps){const research=doc.ablations[step.id]?.research||doc.research_records?.[step.id];if(!research)continue;
       const detail=el('details');detail.append(el('summary','',step.title+' · literature search '+research.status));sourceLinks(detail,research.sources||[]);detail.append(el('p','detail-text',research.summary||''));if(research.verification)detail.append(el('p','small',research.verification));body.append(detail);
     }
@@ -224,7 +224,7 @@
   }
   function render(){if(!doc)return;
     $('workspace').hidden=false;$('document-title').textContent=doc.title;$('statement').textContent=doc.statement;
-    $('evidence').textContent=(doc.metadata?.origin||'Imported reconstruction.')+' Graph structure is checked; mathematics is not formally verified. '+(doc.closure?'The supplied proof claims closure.':'The reconstructed proof still has open goals.');
+    $('evidence').textContent=(doc.metadata?.origin||'Imported reconstruction.')+' '+(doc.closure?'The supplied proof reaches its conclusion.':'The reconstructed proof still has open goals.');
     const step=doc.steps.find(s=>s.id===removed);$('selection-status').textContent=step?`Removed: ${step.title}. Alternatives restart from the assumptions. Click this step again to restore.`:'Click a result node to remove its step and show alternative routes.';
     $('restore').disabled=!removed;const graph=views(doc,removed);draw('proof',graph.proof);draw('state',graph.state);renderInspector();renderReader();renderAudit();math($('statement'));
   }
