@@ -16,6 +16,8 @@
   --observation: #916312;
   --observation-bg: #fff8e8;
   --body-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --section-title-size: clamp(36px, 4vw, 58px);
+  --main-title-size: clamp(46px, 5.5vw, 78px);
   --title-font: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
   font-family: var(--body-font);
   background: #fff;
@@ -36,7 +38,7 @@ button.primary:hover:not(:disabled), .context-enter:hover { background: #452488;
 .brand-mark, .eyebrow { color: var(--accent); }
 .masthead nav { font-size: 11px; }
 .intro { padding-block: 38px; }
-h1 { font-family: var(--title-font); font-size: clamp(46px, 5.5vw, 78px); font-weight: 400; line-height: 1.05; letter-spacing: .015em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--title-font); font-size: var(--main-title-size); font-weight: 400; line-height: 1.05; letter-spacing: .015em; text-transform: uppercase; color: var(--ink); }
 h2, .context-story h2, .reader-heading h2,
 .reference-reader-column .reader-heading h2 {
   font-family: var(--title-font); font-weight: 400; line-height: 1.15;
@@ -100,3 +102,60 @@ h2, .context-story h2, .reader-heading h2,
 }
 /* The orientation subtitle remains ordinary body text. */
 .context-guide>summary .context-time { font-family: var(--body-font); font-weight: 400; }
+
+/* Context guides share the paper's section-heading hierarchy. */
+details.entry-guide,
+section.context-entry {
+  border: 0;
+  border-radius: 0;
+  background: #fff;
+  overflow: visible;
+}
+.entry-guide > summary.entry-start-summary,
+.context-guide > summary.entry-start-summary {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 0 48px 18px 0;
+  border-bottom: 3px solid #9045ff;
+  background: #fff;
+  list-style: none;
+  cursor: pointer;
+  text-align: left;
+}
+.entry-start-summary::-webkit-details-marker { display: none; }
+.entry-start-summary .entry-start-kicker {
+  font: 700 10px/1.5 var(--body-font);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.entry-start-summary .entry-start-title {
+  font: 400 32px/1.15 var(--title-font);
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+.entry-start-summary::after {
+  content: "+";
+  position: absolute;
+  bottom: 20px;
+  right: 0;
+  font: 400 30px/1 var(--body-font);
+  color: #9045ff;
+}
+details[open] > .entry-start-summary::after { content: "−"; }
+.context-guide > .context-content { padding-top: 24px; }
+@media (max-width: 760px) {
+  .entry-start-summary .entry-start-title { font-size: 30px; }
+}
+
+@media (max-width: 600px) {
+  :root { --main-title-size: 46px; }
+}
+
+@media (max-width: 760px) {
+  :root { --section-title-size: 42px; }
+}
