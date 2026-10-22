@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Why this step? · Proof Assistant Lab</title>
+  <link rel="stylesheet" href="proof-explorer/styles.css">
+  <link rel="stylesheet" href="proof-explorer/discussion.css">
+  <script>
+    window.MathJax = {
+      loader: {load: ['ui/safe']},
+      tex: {inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']], packages: ['base', 'ams', 'newcommand']},
+      options: {safeOptions: {allow: {URLs: 'none', classes: 'none', cssIDs: 'none', styles: 'none'}}},
+      svg: {fontCache: 'local'}, startup: {typeset: false}
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-svg.js"></script>
+  <script defer src="proof-explorer/discussion.js"></script>
+</head>
+<body>
+<main class="discussion-page">
+  <header class="masthead">
+    <a class="brand" href="index.html">∴ &nbsp; PROOF ASSISTANT LAB</a>
+    <nav aria-label="Site navigation"><a href="index.html">Proof explorer</a> &nbsp; · &nbsp; <a href="protocol.html">Our protocol</a></nav>
+  </header>
+  <section class="discussion-intro">
+    <div><span class="eyebrow">HANSON–WRIGHT · A CONVERSATION AT EACH STEP</span><h1>Why this step?</h1>
+    <p>A student proposes a route. A professor works through it.<br>The explanation grows from the questions between them.</p></div>
+    <aside class="provenance-note"><span class="eyebrow">RECONSTRUCTED STRATEGY</span><p>Recorded AI discussions, not an author’s private thinking or a formal search history. Mathematical assessments require review.</p></aside>
+  </section>
+
+  <section class="discussion-controls" aria-label="Choose a discussion">
+    <label class="step-field">Proof step<select id="step-select"></select></label>
+    <label>Student background<select id="audience"><option value="undergraduate">Senior undergraduate</option><option value="graduate">Beginning graduate</option></select></label>
+    <label>Round limit<select id="rounds"><option value="2">2 professor responses</option><option value="3">Up to 3 responses</option></select></label>
+    <button id="generate" class="primary" disabled>Start a discussion</button>
+    <button id="cancel" hidden>Stop after this response</button>
+  </section>
+  <p id="service-status" class="service-status" role="status">Loading discussions…</p>
+  <details class="background-note"><summary>What does this student know?</summary><p id="background-description"></p><p>The student first sees the current facts and target. The professor can then consult the chosen proof and supplied project notes. No external source retrieval or formal checker is connected in this version.</p></details>
+
+  <div class="discussion-workspace">
+    <section class="route-panel" aria-labelledby="routes-title">
+      <div class="section-top"><span class="eyebrow">EXPLANATORY SEARCH GRAPH</span><h2 id="routes-title">One state. Several possibilities.</h2></div>
+      <div class="state-card"><span class="eyebrow">WHAT WE HAVE</span><p id="state-facts"></p><span class="eyebrow">WHAT WE NEED</span><p id="state-goal"></p><details id="state-assumptions"><summary>Assumptions and notation</summary><p id="state-assumptions-text"></p></details></div>
+      <div class="route-fork" aria-hidden="true">↓ &nbsp; Compare possible next moves</div>
+      <div id="routes" class="route-list"></div>
+      <p class="graph-caption">Green marks the displayed proof and successful alternatives. Grey marks routes with obstacles or open obligations; it does not mean impossible. Outcomes are the professor’s assessments.</p>
+    </section>
+
+    <section class="conversation-panel" aria-labelledby="discussion-title">
+      <div class="section-top"><span class="eyebrow">FROM QUESTIONS TO AN EXPLANATION</span><h2 id="discussion-title">The discussion</h2>
+        <label class="recording-label">Recording<select id="recording-select"><option value="">No recording for this step</option></select></label>
+        <p id="run-meta" class="run-meta"></p>
+      </div>
+      <div class="discussion-tabs" role="tablist" aria-label="Discussion views">
+        <button id="tab-explanation" role="tab" aria-selected="true" aria-controls="view-explanation" tabindex="0">Detailed explanation</button>
+        <button id="tab-dialogue" role="tab" aria-selected="false" aria-controls="view-dialogue" tabindex="-1">Recorded dialogue</button>
+        <button id="tab-coverage" role="tab" aria-selected="false" aria-controls="view-coverage" tabindex="-1">Questions & sources</button>
+      </div>
+      <div id="view-explanation" class="discussion-view" role="tabpanel" aria-labelledby="tab-explanation"></div>
+      <div id="view-dialogue" class="discussion-view" role="tabpanel" aria-labelledby="tab-dialogue" hidden></div>
+      <div id="view-coverage" class="discussion-view" role="tabpanel" aria-labelledby="tab-coverage" hidden></div>
+      <div class="recording-actions"><button id="export" disabled>Download full recording</button><span id="run-status" role="status"></span></div>
+    </section>
+  </div>
+  <footer><div><h3>Explanation, with evidence</h3><p>Each summary section links to a professor response. Exact quote checks establish traceability, not mathematical correctness. Successful alternatives remain visible.</p></div><div><h3>Bounded discussion</h3><p>The student checks alternatives, obstacles, motivation, obligations, justification, and tradeoffs. Remaining questions are retained when the round limit is reached. Response time measures this discussion, not proof difficulty.</p></div></footer>
+</main>
+</body>
+</html>

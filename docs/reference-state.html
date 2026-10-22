@@ -3,37 +3,162 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Hanson–Wright · Proof & state graphs</title>
-  <link rel="stylesheet" href="proof-explorer/styles.css"><link rel="stylesheet" href="proof-explorer/reference-state.css"><link rel="stylesheet" href="proof-explorer/proof-reader.css?v=literature-1">
-  <script defer src="proof-explorer/proof.js"></script><script defer src="proof-explorer/moment-proof.js"></script><script defer src="proof-explorer/reference-state.js"></script><script defer src="proof-explorer/ablation-preview.js"></script><script defer src="proof-explorer/worked-ablation.js"></script><script defer src="proof-explorer/ablation-proofs.js"></script><script defer src="proof-explorer/ablation-notes.js"></script><script defer src="proof-explorer/written-proof.js"></script><script defer src="proof-explorer/critical-step-selection.js"></script><script defer src="proof-explorer/proof-reader-content.js"></script><script defer src="proof-explorer/proof-reader.js?v=literature-1"></script><script defer src="proof-explorer/reference-state-view.js"></script>
+  <link rel="stylesheet" href="proof-explorer/styles.css"><link rel="stylesheet" href="proof-explorer/reference-state.css?v=bottom-directions-1"><link rel="stylesheet" href="proof-explorer/proof-reader.css?v=literature-1">
+  <link rel="stylesheet" href="proof-explorer/explorer-theme.css?v=deep-purple-1">
+  <script defer src="proof-explorer/proof.js"></script><script defer src="proof-explorer/moment-proof.js"></script><script defer src="proof-explorer/reference-state.js"></script><script defer src="proof-explorer/ablation-preview.js"></script><script defer src="proof-explorer/worked-ablation.js"></script><script defer src="proof-explorer/ablation-proofs.js"></script><script defer src="proof-explorer/ablation-notes.js"></script><script defer src="proof-explorer/written-proof.js"></script><script defer src="proof-explorer/critical-step-selection.js"></script><script defer src="proof-explorer/proof-reader-content.js"></script><script defer src="proof-explorer/proof-reader.js?v=literature-1"></script><script defer src="proof-explorer/app.js?v=shared-graph-1"></script><script defer src="proof-explorer/reference-state-view.js?v=bottom-directions-1"></script>
 </head>
 <body><main>
-  <header class="masthead"><div class="brand"><span class="brand-mark" aria-hidden="true">∴</span> PROOF ASSISTANT LAB <span class="divider">/</span> PROOF & STATE GRAPHS</div><nav aria-label="Site navigation"><a href="explorers/index.html">Five-theorem collection</a> &nbsp; · &nbsp; <a href="explorers/alignment/index.html#highlights-what-the-alignment-reveals">Alignment report</a> &nbsp; · &nbsp; <a href="hanson-wright.html">Original explorer</a></nav></header>
-  <section class="intro"><div><div class="eyebrow">REMOVE A STEP. REVEAL ANOTHER ROUTE.</div><h1>Hanson–Wright</h1><p>What we have. What we want. The move between them.</p></div><div class="theorem"><span class="eyebrow">THE DESTINATION</span><div class="formula">ℙ(∣XᵀAX − 𝔼XᵀAX∣ ≥ t)<br>≤ 2 exp[−c min{t²/V, t/L}]</div><div class="notation">V = K⁴‖A‖<sub>F</sub>² · L = K²‖A‖ · Independent, centered subgaussian Xᵢ</div></div></section>
-  <section class="reference-controls" aria-label="State graph controls"><label>Show <select id="graph-mode"><option value="canonical">Proof order · 15 states</option><option value="ablation" selected>Remove a step & branch</option><option value="all">All valid orders · 41 states</option></select></label><div><button id="reset-state">Start</button><button id="replay-state" class="primary">▶ Play proof order</button><button id="end-state">Closure</button><button id="export-state">Export state graph</button></div></section>
+  <header class="masthead"><div class="brand"><span class="brand-mark" aria-hidden="true">∴</span> PROOF ASSISTANT LAB <span class="divider">/</span> PROOF & STATE GRAPHS</div><nav aria-label="Site navigation"><a href="papers/high-contrast/">Paper explorer</a> &nbsp; · &nbsp; <a href="explorers/index.html">Five-theorem collection</a> &nbsp; · &nbsp; <a href="explorers/alignment/index.html#highlights-what-the-alignment-reveals">Alignment report</a> &nbsp; · &nbsp; <a href="hanson-wright.html">Original explorer</a> &nbsp; · &nbsp; <a href="explore.html">Live exploration</a></nav></header>
+  <section class="intro"><div><div class="eyebrow">REMOVE A STEP. REVEAL ANOTHER ROUTE.</div><h1>Hanson–Wright</h1><p>How far can a random quadratic quantity stray from its average?</p></div><div class="theorem"><span class="eyebrow">THE DESTINATION</span><div class="formula">ℙ(∣XᵀAX − 𝔼XᵀAX∣ ≥ t)<br>≤ 2 exp[−c min{t²/V, t/L}]</div><div class="notation">V = K⁴‖A‖<sub>F</sub>² · L = K²‖A‖ · Independent, centered subgaussian Xᵢ</div></div></section>
+  <section class="context-entry" aria-label="Theorem context guide">
+    <div class="context-entry-bar"><span class="eyebrow">NEW TO THIS THEOREM? START HERE.</span><a class="context-skip" href="#proof-workspace">Go straight to the proof ↓</a></div>
+    <details id="theorem-context" class="context-guide" open>
+      <summary><span>Hanson–Wright, before the proof</span><span class="context-time">A two-minute orientation · expand or collapse</span></summary>
+      <div class="context-content">
+        <div class="context-overview">
+          <section class="context-story" aria-labelledby="context-question">
+            <span class="eyebrow">THE QUESTION</span><h2 id="context-question">Random inputs. A predictable total?</h2>
+            <p>Imagine independent sources of noise. You combine their values using squares and products, then ask: <strong>how likely is the result to be far from its average?</strong></p>
+            <p>Hanson–Wright gives an upper bound on that probability. It applies when individual inputs have sufficiently light tails, and it describes how the size and structure of the interaction matrix affect the bound.</p>
+            <div class="context-takeaway"><strong>The idea to keep:</strong> control of individual inputs can give control of a quadratic quantity, even though the products inside it may depend on one another.</div>
+          </section>
+          <section class="context-example" aria-labelledby="context-example-title">
+            <span class="eyebrow">A CONCRETE EXAMPLE</span><h3 id="context-example-title">Total noise energy</h3>
+            <p>Let X₁, …, Xₙ be independent, mean-zero noise values, each with variance 1 (so each squared value has average 1). If A is the identity matrix—ones on the diagonal and zeros elsewhere—the expression is simply:</p>
+            <div class="context-equation">XᵀAX = X₁² + ⋯ + Xₙ²</div>
+            <p>Its average is n. The theorem bounds the chance that this total differs from n by at least t, assuming the noise values are subgaussian.</p>
+            <p class="context-example-extension"><strong>Beyond squares:</strong> a general matrix also weights interactions such as X₁X₂. The products X₁X₂ and X₁X₃ share an input, so they need not be independent. This is the difficulty behind the decoupling step.</p>
+          </section>
+        </div>
+        <div class="context-topics">
+          <details class="context-topic" id="context-symbols">
+            <summary>01 · Read the statement: objects, symbols &amp; assumptions</summary>
+            <div class="context-topic-body">
+              <p class="context-reading">Read the inequality as: <strong>“The probability that the quadratic expression differs from its average by at least t is no larger than this exponentially decreasing bound.”</strong></p>
+              <dl class="context-glossary">
+                <div><dt>X and A · inputs and weights</dt><dd>X = (X₁, …, Xₙ) is a vector of real random inputs. A is a fixed real n × n matrix. It weights their squares and pairwise products; it need not be positive or symmetric.</dd></div>
+                <div><dt>XᵀAX · a quadratic form</dt><dd>The compact matrix notation means ∑ᵢ ∑ⱼ aᵢⱼXᵢXⱼ. The superscript T means transpose. Diagonal entries multiply squares Xᵢ²; off-diagonal entries multiply different coordinates XᵢXⱼ.</dd></div>
+                <div><dt>𝔼 and ℙ · average and probability</dt><dd>𝔼XᵀAX is the average over repeated draws of X. ℙ(…) is the probability of the event inside the parentheses. The absolute value includes deviations both above and below the average.</dd></div>
+                <div><dt>Independent and centered</dt><dd>The coordinates are jointly independent, and each has mean zero: 𝔼Xᵢ = 0. Zero correlation alone is not the independence assumption. The coordinates need not have identical distributions or variance 1.</dd></div>
+                <div><dt>Subgaussian and K · light tails</dt><dd>“Subgaussian” means large magnitudes become unlikely at least as fast as a Gaussian-type bound, up to a scale factor. Gaussian and bounded random variables are examples. Here K bounds every coordinate’s subgaussian norm; larger K allows a weaker concentration bound.</dd></div>
+                <div><dt>t and c · threshold and constant</dt><dd>You choose t ≥ 0, the deviation size of interest. The positive constant c is universal: it does not depend on n, A or t. This statement does not specify a numerical value for c, so it is not a calibrated probability calculator.</dd></div>
+                <div><dt>‖A‖<sub>F</sub> · all entries together</dt><dd>The Frobenius norm is √(∑ᵢⱼ aᵢⱼ²). It measures the total squared size of the matrix entries.</dd></div>
+                <div><dt>‖A‖ · the strongest direction</dt><dd>The operator norm is max<sub>‖v‖₂=1</sub> ‖Av‖₂. It measures the largest stretch of a unit vector. Here ‖v‖₂ = √(∑ᵢ vᵢ²) is ordinary Euclidean length.</dd></div>
+              </dl>
+              <details class="context-definition"><summary>What exactly is the subgaussian norm ‖Y‖ψ₂?</summary><p>One standard convention is ‖Y‖ψ₂ = inf{s &gt; 0 : 𝔼 exp(Y²/s²) ≤ 2}. It measures a scale for the tail of Y, rather than just its variance. Equivalent conventions change only universal constants. In this explorer, K = maxᵢ ‖Xᵢ‖ψ₂.</p></details>
+              <div class="context-takeaway"><strong>Scope:</strong> A is fixed, and the coordinates are independent, centered and subgaussian. The displayed result is not a general bound for arbitrary dependent or heavy-tailed inputs.</div>
+            </div>
+          </details>
+          <details class="context-topic">
+            <summary>02 · Why are there two norms and a minimum?</summary>
+            <div class="context-topic-body">
+              <p>The exponent uses two scales: V = K⁴‖A‖<sub>F</sub>² and L = K²‖A‖. The minimum chooses the smaller exponent, giving the weaker of the two exponential bounds.</p>
+              <div class="context-scales"><div><h3>Moderate deviations</h3><div class="context-equation">t²/V</div><p>For t ≤ V/L, this is the smaller term. The exponent is quadratic in the deviation, and the Frobenius norm controls its scale.</p></div><div><h3>Larger deviations</h3><div class="context-equation">t/L</div><p>For t ≥ V/L, this is the smaller term. The exponent grows linearly, and the operator norm controls its scale.</p></div></div>
+              <p>These regimes describe the <em>bound</em>; the theorem does not claim an exact probability distribution. When the right side exceeds 1, the probability bound is uninformative. The crossover assumes A ≠ 0 and K &gt; 0; if either is zero, the centered quadratic quantity is zero.</p>
+            </div>
+          </details>
+          <details class="context-topic">
+            <summary>03 · Where does this show up, and why is it useful?</summary>
+            <div class="context-topic-body">
+              <p><strong>Energy after a linear transformation.</strong> If a fixed matrix B transforms noise X, then its squared output length is ‖BX‖₂² = XᵀBᵀBX. Hanson–Wright applies with A = BᵀB. This turns a question about a random vector’s length into a quadratic-form bound.</p>
+              <p><strong>Random projections.</strong> Squared distance to a fixed subspace can also be written as a quadratic form, using the orthogonal projection onto its complement. The theorem controls fluctuations of this distance squared around its mean.</p>
+              <p>The useful feature is that the estimate retains both matrix norms. Treating every product separately with a crude bound can lose that structure and introduce unnecessary dependence on the number of coordinates.</p>
+              <p class="context-source">Further reading: Rudelson &amp; Vershynin, <a href="https://arxiv.org/abs/1306.2872" target="_blank" rel="noopener noreferrer">Hanson–Wright inequality and sub-gaussian concentration</a>, a modern proof with applications to random vectors and matrices.</p>
+            </div>
+          </details>
+          <details class="context-topic">
+            <summary>04 · Enter the proof: prerequisites &amp; a quick tour</summary>
+            <div class="context-topic-body">
+              <p>You can start with expectation, independence, matrix multiplication and Euclidean length. The more specialized tools are explained when they enter the written argument.</p>
+              <dl class="context-glossary">
+                <div><dt>Tail bound</dt><dd>An upper bound on how likely a large deviation is. The theorem’s conclusion is a two-sided tail bound.</dd></div>
+                <div><dt>Exponential moment / MGF</dt><dd>The expectation 𝔼 exp(λY). Exponentiation makes large positive values count heavily. Bounding this quantity lets Markov’s inequality turn it into a tail bound.</dd></div>
+                <div><dt>Decoupling</dt><dd>A comparison that introduces an independent copy X′, so one factor can be held fixed while the other remains random. It is an inequality, not a claim that the old and new expressions have the same distribution.</dd></div>
+                <div><dt>Gaussian replacement</dt><dd>A comparison of exponential moments with Gaussian inputs. Gaussian rotation properties then make the matrix calculation easier.</dd></div>
+              </dl>
+              <ol class="context-tour"><li><strong>Start with Original proof.</strong> On the left, Play thinking order reveals the argument. The passage on the right follows the current move when Follow animation is checked.</li><li><strong>Switch to State graph.</strong> Each state records what has been established and what remains to prove. Forward deductions and backward goals meet when a required bound has been established; completing the theorem also requires the remaining steps.</li><li><strong>Ask “why this move?”</strong> Fully explained adds motivations, alternatives and cost qualifications. Key-step proof expands the selected critical step.</li><li><strong>Try removing a step.</strong> Choose Remove a step &amp; branch under Explore, then click a step. Its alternative routes and notes appear; click it again to restore. These are worked explanations, not measured records of a search.</li></ol>
+            </div>
+          </details>
+        </div>
+        <div class="context-footer"><p>You do not need to memorize the notation. Return to this guide whenever a term gets in the way.</p><a class="context-enter" href="#proof-workspace">Explore the proof ↓</a></div>
+      </div>
+    </details>
+  </section>
+  <div class="context-return"><a href="#theorem-context">↑ Context &amp; quick tour</a><span>The argument, one move at a time</span></div>
+  <div id="proof-workspace" class="reference-workspace" tabindex="-1">
+
+    <div class="reference-graph-column">
+  <div class="reference-panels" data-graph-view="proof">
+    <div class="graph-switcher"><div class="graph-tabs" role="tablist" aria-label="Graph view">
+      <button id="graph-tab-proof" role="tab" data-graph-view="proof" aria-controls="proof-graph-panel" aria-selected="true">Proof graph</button>
+      <button id="graph-tab-state" role="tab" data-graph-view="state" aria-controls="state-graph-panel" aria-selected="false" tabindex="-1">State graph</button>
+    </div><label class="graph-mode-control">Explore <select id="graph-mode"><option value="canonical" selected>Follow proof order</option><option value="ablation">Remove a step & branch</option><option value="all">All valid orders · 41 states</option></select></label><div class="graph-zoom" aria-label="Graph zoom"><button id="graph-zoom-out" aria-label="Zoom out">−</button><button id="graph-fit">Reset view</button><button id="graph-zoom-in" aria-label="Zoom in">+</button></div></div>
+    <section id="proof-graph-panel" class="reference-panel" role="tabpanel" aria-labelledby="graph-tab-proof">
+<!-- Original explorer graph markup; app.js mounts the same renderer here. -->
+<div id="original-proof-explorer" class="explorer-column" data-original-proof-embedded hidden>
+    <section class="workspace" aria-label="Interactive proof map">
+      <div class="map-toolbar">
+        <div class="legend"><span><i class="goal-dot"></i>Goal checkpoints</span><span><i class="progress-dot"></i>Established facts</span><span><i class="observation-dot"></i>Observations</span><span><i class="inspiration-key"></i>Inspired by a goal</span></div>
+        <div class="view-controls"><button id="jump-start">↑ Givens</button><button id="jump-goal">↓ Endpoint</button><button id="zoom-out" aria-label="Zoom out">−</button><button id="fit">Reset view</button><button id="zoom-in" aria-label="Zoom in">+</button></div>
+      </div>
+      <div class="map-pan-hint">Observation arrows motivate moves; dotted links identify inspiring goals. Select a node for its reasoning.</div>
+      <div class="transport">
+        <div class="play-controls"><button id="restart" aria-label="Restart proof">↺</button><button id="undo" aria-label="Previous thinking step">←</button><button id="play" class="primary">▶ Play thinking order</button><select id="speed" aria-label="Playback speed"><option value="6500">Slow</option><option value="4300" selected>Normal</option><option value="2200">Fast</option></select></div>
+        <div class="step-counter" id="step-counter" aria-live="polite">0 / 15 moves</div>
+        <button id="clip">Watch final connection ↗</button>
+      </div>
+      <div class="history-control"><label for="timeline">Thinking history</label><input id="timeline" type="range" min="0" max="0" value="0" aria-label="Thinking history"><span id="history-position">Start</span></div>
+
+      <div id="viewport" class="viewport" aria-label="Proof graph. Use the zoom controls, scroll, or select a checkpoint.">
+        <div id="scaled-board"><div id="board">
+          <div class="lane-label goal-label">GOAL LAYER <span>↑ decompose the endpoint</span></div>
+          <div class="lane-label progress-label">PROGRESS LAYER <span>↓ derive from the givens</span></div>
+          <div class="lane-rule top-rule"></div><div class="lane-rule bottom-rule"></div>
+          <svg id="edges" viewBox="0 0 640 2030" aria-hidden="true"><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="context-stroke"/></marker></defs><g id="edge-paths"></g><g id="meeting-paths"></g></svg>
+          <div id="nodes"></div>
+          <div id="runner" class="runner" aria-hidden="true"><span></span></div>
+          <div id="goal-runner" class="runner goal-runner" aria-hidden="true"><span></span></div>
+          <div id="initial-gap"><span>A proof to discover</span><span>The assumptions and the goal are not connected yet.</span></div>
+          <div id="meet-badge" hidden>THE TWO LAYERS MEET <span>The bound we derived is the bound we needed.</span></div>
+        </div></div>
+      </div>
+    <section class="next-moves" aria-label="Choose a direction">
+      <div><span class="eyebrow">YOUR NEXT MOVE</span><p id="move-hint">Choose either direction, or follow the guided thinking order.</p></div>
+      <button id="backward" class="direction backward"><span>↑ Work backward</span><small id="backward-label"></small></button>
+      <button id="forward" class="direction forward"><span>Work forward ↓</span><small id="forward-label"></small></button>
+    </section>
+    </section>
+
+
+</div><header><div><span class="eyebrow">01 / MATHEMATICAL STRUCTURE</span><h2 id="proof-title">Proof graph</h2><p id="proof-instructions">Facts descend. Goals reduce upward.</p></div><div class="proof-buttons"><button id="fit-branches" hidden>Readable size</button><button id="proof-focus">Find current move</button></div></header><div class="reference-legend"><span class="fact-label">● Have</span><span class="goal-label-key">● Want</span><span class="observation-label">◆ Observation</span><span id="proof-legend-note">Faint = not yet introduced</span></div><div id="reference-proof-viewport" class="reference-viewport" tabindex="0" aria-label="Reference proof graph"><div id="reference-proof-scale"><div id="reference-proof-board"></div></div></div><div id="proof-status" class="reference-foot"></div></section>
+    <section id="state-graph-panel" class="reference-panel" role="tabpanel" aria-labelledby="graph-tab-state" hidden><header><div><span class="eyebrow">02 / HAVE → ACTION → WANT</span><h2 id="state-title">State graph</h2><p id="state-instructions">Click a result node to remove the step that produced it.</p></div><button id="state-focus">Find selected state</button></header><div class="reference-legend"><span class="fact-label">● Proof order</span><span id="state-legend-note">All 14 steps have written ablation notes</span></div><div id="reference-state-viewport" class="reference-viewport" tabindex="0" aria-label="Reference states and transitions"><div id="reference-state-scale"><div id="reference-state-board"></div></div></div><div id="state-status" class="reference-foot"></div></section>
+  <section class="reference-controls" aria-label="State graph controls"><div><button id="reset-state">Start</button><button id="previous-state" aria-label="Previous proof step">←</button><button id="replay-state" class="primary">▶ Play proof order</button><button id="next-state" aria-label="Next proof step">→</button><label class="playback-speed"><span class="sr-only">Playback speed</span><select id="playback-speed" aria-label="Playback speed"><option value="3000">Slow</option><option value="1800" selected>Normal</option><option value="900">Fast</option></select></label><button id="end-state">Closure</button><button id="export-state">Export state graph</button></div></section>
+  <div class="reference-timeline"><label for="reference-history">Proof order</label><input id="reference-history" type="range" min="0" max="14" value="0"><span id="reference-position" role="status"></span></div>
+  </div>
+
   <p id="reference-note" class="reference-note"></p>
   <section id="ablation-controls" class="ablation-controls" aria-label="Written ablation controls"><div><span id="ablation-evidence" class="eyebrow">REMOVE A STEP · EXPLORE A BRANCH</span><p id="ablation-status" role="status">Click a step to open its ablation; click it again to restore the original.</p></div><div class="ablation-buttons"><button id="find-alternatives" disabled>Find branches</button><button id="restore-action" disabled>Restore action</button><button id="export-ablation" disabled>Export preview</button></div><label id="rejoin-control" hidden>Success branch destination <select id="rejoin-target"></select></label><div id="ablation-legend" class="ablation-legend"><span class="success-key">✓ Rejoin / final goal within B</span><span class="failure-key">∞ Infinite search difficulty</span><span class="failure-key">× Diverged / failure</span></div></section>
-  <div class="reference-panels">
-    <section class="reference-panel" aria-labelledby="proof-title"><header><div><span class="eyebrow">01 / MATHEMATICAL STRUCTURE</span><h2 id="proof-title">Proof graph</h2><p id="proof-instructions">Facts descend. Goals reduce upward.</p></div><div class="proof-buttons"><button id="fit-branches" hidden>Readable size</button><button id="proof-focus">Find current move</button></div></header><div class="reference-legend"><span class="fact-label">● Have</span><span class="goal-label-key">● Want</span><span class="observation-label">◆ Observation</span><span id="proof-legend-note">Faint = not yet introduced</span></div><div id="reference-proof-viewport" class="reference-viewport" tabindex="0" aria-label="Reference proof graph"><div id="reference-proof-scale"><div id="reference-proof-board"></div></div></div><div id="proof-status" class="reference-foot"></div></section>
-    <section class="reference-panel" aria-labelledby="state-title"><header><div><span class="eyebrow">02 / HAVE → ACTION → WANT</span><h2 id="state-title">State graph</h2><p id="state-instructions">Click a result node to remove the step that produced it.</p></div><button id="state-focus">Find selected state</button></header><div class="reference-legend"><span class="fact-label">● Proof order</span><span id="state-legend-note">All 14 steps have written ablation notes</span></div><div id="reference-state-viewport" class="reference-viewport" tabindex="0" aria-label="Reference states and transitions"><div id="reference-state-scale"><div id="reference-state-board"></div></div></div><div id="state-status" class="reference-foot"></div></section>
-  </div>
-  <div class="reference-timeline"><label for="reference-history">Proof order</label><input id="reference-history" type="range" min="0" max="14" value="0"><span id="reference-position" role="status"></span></div>
+    </div>
+    <div class="reference-reader-column">
   <span id="reader-anchor" hidden></span>
   <section id="proof-reader" class="proof-reader" aria-labelledby="reader-title">
-    <header class="reader-heading"><div><span class="eyebrow">03 / READ THE ARGUMENT</span><h2 id="reader-title">Written proof</h2></div><button id="reader-expand">Expand reading view</button></header>
-    <details id="reader-disclosure" open><summary>Show written proof</summary>
+    <header class="reader-heading"><div><span class="eyebrow">THE SAME ARGUMENT · THREE EDITIONS</span><h2 id="reader-title">The written proof</h2></div><button id="reader-expand">Expand reading view</button></header>
+    <div id="reader-disclosure">
       <div id="reader-tabs" class="reader-tabs" role="tablist" aria-label="Written proof version">
         <button id="reader-tab-original" role="tab" data-reader-version="original" aria-controls="reader-body" aria-selected="true">Original proof</button>
         <button id="reader-tab-detailed" role="tab" data-reader-version="detailed" aria-controls="reader-body" aria-selected="false" tabindex="-1">Fully explained</button>
         <button id="reader-tab-focused" role="tab" data-reader-version="focused" aria-controls="reader-body" aria-selected="false" tabindex="-1">Key-step proof</button>
       </div>
-      <div class="reader-toolbar"><label><input type="checkbox" id="reader-follow" checked> Follow selected step</label><button id="reader-jump">Show selected step in graphs</button><button id="reader-return" hidden>← Return to original proof</button></div>
+      <div class="reader-toolbar"><label><input type="checkbox" id="reader-follow" checked> Follow animation</label><button id="reader-jump">Show selected step in graphs</button><button id="reader-return" hidden>← Return to original proof</button></div>
       <p id="reader-edition-note" class="reader-edition-note"></p>
       <details id="reader-selection" class="reader-selection" hidden><summary>Why was this step selected?</summary><p id="reader-selection-text"></p></details>
       <div id="reader-route-offer" class="reader-route-offer" hidden><span id="reader-route-label"></span><button id="reader-read-route">Read this route</button></div>
       <p id="reader-position" class="reader-position" role="status"></p>
       <div id="reader-body" class="reader-body" role="tabpanel" aria-labelledby="reader-tab-original" tabindex="0"></div>
-    </details>
+    </div>
   </section>
+    </div>
+  </div>
   <dialog id="reader-dialog" class="reader-dialog" aria-label="Expanded written proof"></dialog>
   <section id="alternative-inspector" class="alternative-inspector" hidden aria-labelledby="alternative-title"><span class="eyebrow">ILLUSTRATIVE BRANCH · NOT EVALUATED</span><h2 id="alternative-title"></h2><div id="alternative-detail"></div></section>
   <section class="state-inspector" aria-labelledby="selected-title"><div class="state-inspector-heading"><div><span id="selected-meta" class="eyebrow"></span><h2 id="selected-title"></h2></div><span id="closure-status" class="pill"></span></div><p id="state-context"></p><details><summary>Notation & scope</summary><p id="state-notation" class="reference-math"></p><p id="state-scope"></p></details><div class="have-want"><section><h3>Have <small>assumptions and established results</small></h3><div id="state-have"></div></section><section><h3>Want <small>open obligations and their reductions</small></h3><div id="state-want"></div></section></div><section class="available-section"><h3>Available next moves</h3><p>Each action uses the prerequisites encoded in the selected proof. Select one to inspect its resulting state.</p><div id="available-actions"></div></section></section>

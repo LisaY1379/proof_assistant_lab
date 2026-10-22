@@ -1,0 +1,606 @@
+{
+  "source": "source.pdf",
+  "originalSource": "https://github.com/openai/math/blob/main/preprints/The-symmetric-Mahler-conjecture-and-its-equality-cases-September-22-2026/paper.pdf",
+  "theorems": {
+    "A": {
+      "short": "SHARP LOWER BOUND",
+      "title": "A shape cannot shrink its polar for free.",
+      "meaning": "The body and its polar can trade volume, but their product has a universal floor.",
+      "scope": "n ≥ 1 · origin-symmetric convex bodies · fixed-origin polarity",
+      "formula": "|K| |K°| ≥ 4<sup>n</sup> / n!",
+      "statement": "For every integer n ≥ 1 and every origin-symmetric compact convex body K in ℝⁿ with nonempty interior, |K||K°| ≥ 4ⁿ/n!. This explorer covers the lower-bound part of Theorem 1.1.",
+      "page": 2,
+      "proofpage": 7,
+      "given": "K = −K ⊂ ℝⁿ, n ≥ 1; K compact, convex, with nonempty interior",
+      "goal": "P(K) ≥ 4ⁿ/n!",
+      "toolkit": [
+        "Polarity and volume continuity",
+        "Lemma 3.1: conformal lens",
+        "Lemma 4.1: holomorphic mass",
+        "Lemmas 5.1–5.2: feasibility and boundary ties",
+        "Proposition 6.1: simplex identity"
+      ],
+      "steps": [
+        {
+          "id": "reduce",
+          "title": "Reduce to finitely many symmetric slabs",
+          "direction": "backward",
+          "uses": [
+            "given"
+          ],
+          "fact": null,
+          "proof": "It suffices to establish the sharp inequality for full-dimensional symmetric polytopes A, and then pass to a Hausdorff limit. Write A = {X: |bᵢ·X| ≤ 1 for every i}, with spanning, nonzero rows and proportional duplicates removed. Its polar is conv{±bᵢ}.",
+          "observation": "The goal concerns every convex body, but finitely many supporting constraints allow us to enumerate independent row bases. Approximation connects that finite problem back to the original goal.",
+          "detail": "This is an AND reduction: prove the bound for slab polytopes, and justify passage to an arbitrary symmetric body. The continuity of polarity and volume requires an interior origin, preserved by the approximations.",
+          "move": "Strategic representation and goal decomposition; B-D for polarity, with approximation retained as a separate obligation.",
+          "verification": "The bipolar theorem identifies the displayed polar. A later step supplies the limiting argument; no arbitrary body has yet been proved to satisfy the bound.",
+          "source": [
+            12,
+            "§5; §6.1"
+          ],
+          "alternative": {
+            "title": "Try section induction or face flags",
+            "reason": "Part I reports attempts using section induction, face flags, and equal-measure cone partitions that did not yield the sharp constant. The summary does not establish that these methods are impossible.",
+            "cost": "No measured runtime or exhaustive failure certificate is supplied.",
+            "source": [
+              1,
+              "Released summary · Part I",
+              "trace"
+            ],
+            "status": "reported",
+            "provenance": "reported"
+          },
+          "critical": false,
+          "opens": [
+            [
+              "poly",
+              "Prove P(A) ≥ 4ⁿ/n! for slab polytopes"
+            ],
+            [
+              "limit",
+              "Pass the sharp bound to every symmetric K"
+            ]
+          ],
+          "closes": []
+        },
+        {
+          "id": "lens",
+          "title": "Choose a lens with a uniform boundary coordinate",
+          "direction": "forward",
+          "uses": [
+            "given"
+          ],
+          "fact": [
+            "lens",
+            "A conformal lens with uniform imaginary coordinate"
+          ],
+          "proof": "Lemma 3.1 constructs a conformal map F from the unit disk to a bounded convex lens. A uniform boundary angle maps to ελ(T) + iT, where T is uniform on [−1,1] and ε is an independent fair sign.",
+          "observation": "We need an exact probability-to-volume conversion, not merely a rough estimate. Uniformity of the imaginary coordinate supplies a constant density in the later real change of variables.",
+          "detail": "The map is F(z) = (8/π²) Σⱼ≥₀ (−1)ʲ z²ʲ⁺¹/(2j+1)². The width λ is even, concave, positive inside (−1,1), and zero at the endpoints. The paper establishes univalence, convexity, and the boundary law; those analytic proofs are cited toolkit dependencies here.",
+          "move": "Strategic auxiliary construction; invoke Lemma 3.1 after checking its domain and boundary law.",
+          "verification": "The two semicircles each have probability 1/2, and the imaginary coordinate moves at constant speed 2/π. Thus a fixed sign and height have measure dt/4.",
+          "source": [
+            7,
+            "Lemma 3.1, pp.7–8"
+          ],
+          "alternative": {
+            "title": "Use the disk without changing its boundary law",
+            "reason": "For a uniform angle θ on the circle, sin θ is not uniformly distributed on [−1,1]. Directly replacing the lens by a disk therefore loses this proof’s constant-density identity.",
+            "cost": "A different weighted identity or additional argument would be needed; this is not a proof that every disk-based approach fails.",
+            "source": [
+              8,
+              "Boundary-law calculation"
+            ],
+            "status": "insufficient",
+            "provenance": "editorial"
+          },
+          "critical": true,
+          "opens": [],
+          "closes": []
+        },
+        {
+          "id": "bases",
+          "title": "Turn row bases into feasibility probabilities",
+          "direction": "forward",
+          "uses": [
+            "given",
+            "lens"
+          ],
+          "fact": [
+            "feasible",
+            "Boundary samples, feasible bases, and Σₓ ⊆ A°"
+          ],
+          "proof": "For each independent n-row set I, sample boundary values and solve BᵢZ = (F(eⁱθᵢ))ᵢ∈I. Let Pᵢ be the probability that all remaining rows also lie in the closed lens. At a real X, define Lₓ by |bⱼ·Y| ≤ λ(bⱼ·X), and let Σₓ be the union of simplices from feasible signed bases.",
+          "observation": "A basis determines a candidate point, but the rest of the constraints decide whether it is globally feasible. Its signed rows also identify a simplex inside the polar.",
+          "detail": "Each feasible signed basis produces conv(0, εᵢbᵢ). The pair must satisfy every row constraint. Additional tight equalities need not be excluded pointwise; the paper removes their contribution on a null set when integrating.",
+          "move": "Strategic finite parametrization; B-D unfolds feasibility and the polar convex hull.",
+          "verification": "Independence makes Bᵢ invertible. Each signed row belongs to A°, so its convex hull with 0 lies in A°. Dependent row sets are not counted as bases.",
+          "source": [
+            12,
+            "§5, equation (22); §6, equations (25)–(26)"
+          ],
+          "alternative": {
+            "title": "Accept every independent basis without checking the other rows",
+            "reason": "Solving the active equations only verifies those rows. A candidate can violate an inactive constraint; counting it as feasible would alter both the probability and the simplex union.",
+            "cost": "Extra candidates cannot simply be credited toward the same identity.",
+            "source": [
+              15,
+              "Definitions preceding Proposition 6.1"
+            ],
+            "status": "insufficient",
+            "provenance": "editorial"
+          },
+          "critical": false,
+          "opens": [],
+          "closes": []
+        },
+        {
+          "id": "mass",
+          "title": "Obtain the analytic lower bound ΣᵢPᵢ ≥ 1",
+          "direction": "forward",
+          "uses": [
+            "lens",
+            "feasible"
+          ],
+          "fact": [
+            "mass",
+            "S = ΣᵢPᵢ ≥ 1"
+          ],
+          "proof": "Lemma 5.1 applies the holomorphic mass estimate of Lemma 4.1 to powers of the inverse lens map. A radial change of variables and boundary concentration give S := ΣᵢPᵢ ≥ 1.",
+          "observation": "The desired geometric lower bound needs a quantity that cannot vanish. The isolated holomorphic zero supplies a normalized mass bound, which survives as a boundary feasibility estimate.",
+          "detail": "Lemma 4.1 assumes an isolated zero, a nonvanishing homogeneous leading term of degree k, and compact sublevel sets. Its proof uses positivity of complex Hessians, Stokes’ theorem, and Cauchy–Binet. Lemma 5.1 checks the construction and passes to boundary samples. This explorer does not replace those analytic arguments by a simulation.",
+          "move": "Strategic toolkit selection; the direct implication is used only after the lemma’s hypotheses are checked in the cited proof.",
+          "verification": "The paper proves the precise normalization of the mass estimate and derives the sum bound in Lemma 5.1. This is a cited analytic dependency, not an inference from the numerical diagram.",
+          "source": [
+            10,
+            "Lemma 4.1; Lemma 5.1, pp.12–14"
+          ],
+          "alternative": {
+            "title": "Seek the sharp constant through entropy or tensorization",
+            "reason": "The released Part I summary says these routes were examined without obtaining the sharp constant before the boundary-law approach was pursued.",
+            "cost": "The account supplies a qualitative obstacle, not a measured cost comparison or a general impossibility result.",
+            "source": [
+              1,
+              "Released summary · Part I",
+              "trace"
+            ],
+            "status": "reported",
+            "provenance": "reported"
+          },
+          "critical": true,
+          "opens": [],
+          "closes": []
+        },
+        {
+          "id": "identity",
+          "title": "Convert the same sum into simplex volume",
+          "direction": "forward",
+          "uses": [
+            "feasible",
+            "lens"
+          ],
+          "fact": [
+            "identity",
+            "S = (n!/4ⁿ) ∫ₐ |Σₓ| dX ≤ (n!/4ⁿ)P(A)"
+          ],
+          "proof": "The uniform boundary law and tᵢ = BᵢX give Pᵢ = |det Bᵢ|·4⁻ⁿ times the integral of the number of feasible sign choices. Almost everywhere, the feasible simplices have disjoint interiors and volume |det Bᵢ|/n!. Summing gives S = (n!/4ⁿ)∫ₐ|Σₓ|dX.",
+          "observation": "The analytic bound is expressed in probabilities; the goal is expressed in volume. The determinant occurs in both the coordinate Jacobian and simplex volume, so the normalizations can match exactly.",
+          "detail": "Lemma 5.2 makes additional boundary ties negligible. Unique maximization of positive row combinations separates simplex interiors. Since Σₓ ⊆ A°, the integral is at most |A||A°|. Both the boundary-law density 4⁻ⁿ and the simplex factor 1/n! matter.",
+          "move": "Strategic bridge between representations, followed by change of variables and finite summation; cite Proposition 6.1 for the non-overlap argument.",
+          "verification": "The probability sum and the geometric integral use identical feasible pairs. Disjoint interiors are established almost everywhere rather than assumed at every X.",
+          "source": [
+            15,
+            "Proposition 6.1, equations (27)–(30)"
+          ],
+          "alternative": {
+            "title": "Add simplex volumes without establishing non-overlap",
+            "reason": "An arbitrary sum of simplex volumes may overcount their union and exceed the polar’s volume. The proof needs the almost-everywhere uniqueness argument before using containment.",
+            "cost": "The missing non-overlap justification cannot be replaced by a picture of a few examples.",
+            "source": [
+              16,
+              "Proof of Proposition 6.1"
+            ],
+            "status": "insufficient",
+            "provenance": "editorial"
+          },
+          "critical": true,
+          "opens": [],
+          "closes": []
+        },
+        {
+          "id": "combine",
+          "title": "Meet the lower and upper bounds",
+          "direction": "forward",
+          "uses": [
+            "mass",
+            "identity"
+          ],
+          "fact": [
+            "poly",
+            "P(A) ≥ 4ⁿ/n!; an explicit missing-volume bound"
+          ],
+          "proof": "Combine 1 ≤ S with S ≤ (n!/4ⁿ)|A||A°|. Rearranging yields the sharp bound for every slab polytope. The same identity bounds ∫ₐ(|A°|−|Σₓ|)dX by P(A)−4ⁿ/n!.",
+          "observation": "Forward reasoning has produced two bounds on exactly the same quantity S. Their meeting closes the finite-polytope goal and retains a deficit useful for the equality problem.",
+          "detail": "This step is algebraically short once the analytic and geometric bounds are available. The deficit is nonnegative by containment; it becomes small when the volume product approaches equality.",
+          "move": "B-C and B-L: combine inequalities under the positive normalization n!/4ⁿ.",
+          "verification": "No new geometric estimate is introduced here. The open limiting obligation remains.",
+          "source": [
+            15,
+            "Proposition 6.1, equations (27)–(28)"
+          ],
+          "alternative": {
+            "title": "Use the missing-volume identity instead",
+            "reason": "Rearranging the exact deficit identity together with S ≥ 1 gives the same lower bound.",
+            "cost": "This is a valid equivalent calculation, retaining the analytic estimate and simplex identity; it does not ablate their role.",
+            "source": [
+              16,
+              "Missing-volume identity"
+            ],
+            "status": "equivalent",
+            "provenance": "editorial"
+          },
+          "critical": false,
+          "opens": [],
+          "closes": [
+            "poly"
+          ]
+        },
+        {
+          "id": "limit",
+          "title": "Pass to an arbitrary symmetric convex body",
+          "direction": "forward",
+          "uses": [
+            "given",
+            "poly"
+          ],
+          "fact": [
+            "result",
+            "For every symmetric K, P(K) ≥ 4ⁿ/n!"
+          ],
+          "proof": "Approximate K by full-dimensional symmetric polytopes. Hausdorff convergence, with a uniform interior ball, gives convergence of the polar bodies and of both volumes. The polytope inequalities therefore pass to the limit.",
+          "observation": "The original goal includes curved and nonsmooth bodies, whereas the established estimate used finitely many rows. Continuity removes that restriction.",
+          "detail": "The origin remains an interior point, so polarity is continuous in this approximation. The numerical polygon demonstration on the front page illustrates approximation but does not establish the limiting theorem.",
+          "move": "Strategic approximation; invoke the stated continuity facts and pass a non-strict inequality to a limit.",
+          "verification": "Both factors converge to the desired volumes. The constant is independent of the approximation, so the sharp bound is preserved.",
+          "source": [
+            16,
+            "§6.1, Corollary 6.2, pp.16–17"
+          ],
+          "alternative": {
+            "title": "Stop after checking polygons on the screen",
+            "reason": "A finite collection of two-dimensional examples cannot establish a universal theorem in every dimension.",
+            "cost": "There is no failure of the conjecture here; the proposed verification is simply weaker than the goal.",
+            "source": [
+              16,
+              "Corollary 6.2"
+            ],
+            "status": "insufficient",
+            "provenance": "editorial"
+          },
+          "critical": false,
+          "opens": [],
+          "closes": [
+            "limit"
+          ]
+        }
+      ]
+    },
+    "B": {
+      "short": "EQUALITY CLASSIFICATION",
+      "title": "Which shapes attain the floor?",
+      "meaning": "Equality forces a recursive geometry, not just a particular numerical volume.",
+      "scope": "Both directions of equality · the lower bound is a declared dependency",
+      "formula": "P(K) = 4<sup>n</sup> / n!<br>⇔ K is a linear Hanner body",
+      "statement": "For an origin-symmetric convex body K in ℝⁿ, n ≥ 1, equality in the sharp volume-product bound holds exactly when K is an invertible linear image of a Hanner polytope. Hanner polytopes start with centered intervals and are built by Cartesian products and convex-hull joins in complementary subspaces.",
+      "page": 2,
+      "proofpage": 18,
+      "given": "K symmetric convex body; use P(K) ≥ 4ⁿ/n! from Theorem A; assume equality for the converse",
+      "goal": "Classify equality: exactly the linear Hanner bodies",
+      "toolkit": [
+        "The lower bound and deficit estimate from Theorem A",
+        "Lemmas 2.1–2.2: Hanner sums",
+        "Lemma 3.2: endpoint scaling",
+        "Proposition 7.1: common witness",
+        "Proposition 8.1: medians",
+        "Hansen–Lima classification (external theorem)"
+      ],
+      "steps": [
+        {
+          "id": "directions",
+          "title": "Separate attainment from rigidity",
+          "direction": "backward",
+          "uses": [
+            "given"
+          ],
+          "fact": null,
+          "proof": "To characterize equality, prove both directions: every linear Hanner body attains the bound, and every body attaining the bound is a linear Hanner body.",
+          "observation": "Examples show that the bound is sharp, but they cannot exclude other minimizers. The converse requires a rigidity argument.",
+          "detail": "The equality direction is conditional: assume P(K) = 4ⁿ/n! while proving rigidity. The general lower bound is already in the declared toolkit from the first explorer.",
+          "move": "Backward AND decomposition of an if-and-only-if statement.",
+          "verification": "Both implications must close before the equality classification is complete.",
+          "source": [
+            2,
+            "Theorem 1.1; proof overview, pp.3–4"
+          ],
+          "alternative": {
+            "title": "Treat the cube as the only equality example",
+            "reason": "Hanner bodies are generated by both products and convex-hull joins. Restricting the claim to cubes would omit other equality shapes in higher dimensions.",
+            "cost": "A correct attainment example alone cannot classify all minimizers.",
+            "source": [
+              6,
+              "Lemma 2.2"
+            ],
+            "status": "insufficient",
+            "provenance": "editorial"
+          },
+          "critical": false,
+          "opens": [
+            [
+              "attain",
+              "Every linear Hanner body attains equality"
+            ],
+            [
+              "rigid",
+              "Every equality body is linear Hanner"
+            ]
+          ],
+          "closes": []
+        },
+        {
+          "id": "hanner",
+          "title": "Propagate equality through Hanner sums",
+          "direction": "forward",
+          "uses": [
+            "given"
+          ],
+          "fact": [
+            "hanner",
+            "Linear Hanner bodies attain equality and are closed under polarity"
+          ],
+          "proof": "A centered interval has volume product 4. For bodies of dimensions k and ℓ, either the product or convex-hull join has volume product P(A)P(B)/binomial(k+ℓ,k). Induction gives 4ⁿ/n! for every Hanner body; linear invariance gives all invertible linear images.",
+          "observation": "The equality constant factors recursively in exactly the same way as the two norm-sum constructions. This makes the attaining class constructive.",
+          "detail": "Polarity exchanges ℓ¹ and ℓ∞ sums. Product volume follows from Fubini; the join volume has factor k!ℓ!/(k+ℓ)!. Cubes and cross-polytopes arise by consistently choosing one operation; mixed choices produce further Hanner bodies.",
+          "move": "B-C for the volume formulas and induction after choosing the recursive class.",
+          "verification": "Lemma 2.1 supplies the two polar and volume identities. Lemma 2.2 proves attainment and closure under polarity, including linear images.",
+          "source": [
+            6,
+            "Lemmas 2.1–2.2"
+          ],
+          "alternative": {
+            "title": "Change coordinates before building the recursion",
+            "reason": "For invertible T, (TK)° = T⁻ᵀK°. The determinant factors cancel, so moving linear changes before or after the final recognition preserves the volume product.",
+            "cost": "A valid invariance step; it does not replace the recursive construction or the converse.",
+            "source": [
+              5,
+              "§2, equation (3)"
+            ],
+            "status": "equivalent",
+            "provenance": "editorial"
+          },
+          "critical": false,
+          "opens": [],
+          "closes": [
+            "attain"
+          ]
+        },
+        {
+          "id": "lift",
+          "title": "Lift an equality body by one segment",
+          "direction": "forward",
+          "uses": [
+            "given",
+            "hanner"
+          ],
+          "fact": [
+            "lift",
+            "B = K ⊕₁ [−1,1], B° = Q × [−1,1], with equality in n+1 dimensions"
+          ],
+          "proof": "Assume K attains equality and put Q = K°. Form B = K ⊕₁[−1,1]. Its polar C = Q×[−1,1] has two horizontal faces. The norm-sum formula gives P(B) = 4P(K)/(n+1) = 4ⁿ⁺¹/(n+1)!.",
+          "observation": "A segment creates two signed faces and an apex. These provide the representation structure and the endpoint limit needed to extract rigidity.",
+          "detail": "The lifted dimension is d = n+1. Rows on the polar’s two faces have the form (b,+1) or (b,−1), which later split the representation into two aggregate directions.",
+          "move": "Strategic auxiliary construction, followed by the norm-sum formulas already established.",
+          "verification": "The equality constant is preserved in the new dimension; the fixed-origin polar identity holds by Lemma 2.1.",
+          "source": [
+            18,
+            "§7, equations (32) and (36)"
+          ],
+          "alternative": {
+            "title": "Use an equality argument without the lifted faces",
+            "reason": "The later proof compares the two signs of face coordinates near the apex of B. Omitting the lift removes those objects from this argument.",
+            "cost": "Another rigidity route may exist, but the subsequent two-sign calculation would need replacement.",
+            "source": [
+              18,
+              "Proposition 7.1 setup"
+            ],
+            "status": "insufficient",
+            "provenance": "editorial"
+          },
+          "critical": true,
+          "opens": [],
+          "closes": []
+        },
+        {
+          "id": "deficit",
+          "title": "Turn equality into vanishing missing volume",
+          "direction": "forward",
+          "uses": [
+            "lift"
+          ],
+          "fact": [
+            "deficit",
+            "Inner product approximations have integrated missing volume tending to zero"
+          ],
+          "proof": "Approximate the lifted polar C by symmetric product polytopes. The volume products converge to the sharp constant. Proposition 6.1 then forces their integrated missing simplex volume to tend to zero.",
+          "observation": "Equality in the global bound removes the room for unused polar volume on average. This is information about structure, not only a numerical identity.",
+          "detail": "The nonnegative deficit tends to zero through the approximations. This alone is an integrated statement; obtaining witnesses for every prescribed point and direction is a separate compactness argument.",
+          "move": "Strategic use of the retained deficit estimate; B-L applies its hypotheses to each approximation.",
+          "verification": "The product approximation, continuity of volumes and polarity, and the nonnegative deficit inequality are explicit ingredients in §7.1.",
+          "source": [
+            18,
+            "§7.1, pp.18–19"
+          ],
+          "alternative": {
+            "title": "Infer pointwise equality immediately from a small integral",
+            "reason": "Small integrated error does not by itself yield a chosen point’s feasible representation. A concentration or limiting issue must still be addressed.",
+            "cost": "The paper uses product neighborhoods and compactness; omitting them leaves the later universal witness claim unsupported.",
+            "source": [
+              19,
+              "§7.2"
+            ],
+            "status": "insufficient",
+            "provenance": "editorial"
+          },
+          "critical": false,
+          "opens": [],
+          "closes": []
+        },
+        {
+          "id": "witness",
+          "title": "Extract one witness that compares all representations",
+          "direction": "forward",
+          "uses": [
+            "deficit",
+            "lift"
+          ],
+          "fact": [
+            "witness",
+            "A minimum-mass representation with a common feasible witness"
+          ],
+          "proof": "Proposition 7.1 produces a representation ξ = Σᵢαᵢcᵢ with αᵢ ≥ 0 and total mass pC(ξ). A single vector Y is feasible for every h ∈ C and makes all selected rows tight. The same chosen representation has no greater lens cost than any competing positive representation.",
+          "observation": "A competitor-dependent witness would not give a uniform comparison. The proof needs one choice that works against every competitor at a fixed X and ξ.",
+          "detail": "The proof locates feasible simplices near each prescribed point and direction and passes to a compact limit, allowing degenerate representations. Concavity extends feasibility from vertices to the convex hull. Tightness plus feasibility gives the cost inequality.",
+          "move": "Strategic compactness and representation selection; cite Proposition 7.1 with all its quantifiers.",
+          "verification": "For every X in int B and nonzero ξ there exists a common choice, and that choice satisfies the comparison for all finite positive representations. The order of these quantifiers is essential.",
+          "source": [
+            18,
+            "Proposition 7.1; §§7.2–7.3"
+          ],
+          "alternative": {
+            "title": "Choose a different witness for each competitor",
+            "reason": "This weaker quantifier order need not provide the one cost-optimal representation needed in the endpoint comparison.",
+            "cost": "The missing uniformity is a logical gap in this route, not a measured explosion in search difficulty.",
+            "source": [
+              20,
+              "§7.3"
+            ],
+            "status": "insufficient",
+            "provenance": "editorial"
+          },
+          "critical": true,
+          "opens": [],
+          "closes": []
+        },
+        {
+          "id": "endpoint",
+          "title": "Move toward the apex and linearize the costs",
+          "direction": "forward",
+          "uses": [
+            "witness",
+            "lift"
+          ],
+          "fact": [
+            "endpoint",
+            "Endpoint cost comparisons give the required support-function inequality"
+          ],
+          "proof": "Take Xδ = (δu,1−δ), with u ∈ int K. Lemma 3.2 gives λ(1−δc)/λ(1−δ) → c uniformly on compact positive c-ranges. The signs of the face coordinates separate the representation costs, yielding a support-function comparison.",
+          "observation": "Near the apex, the nonlinear lens width has an asymptotically linear scaling law. The two faces of the lifted polar turn that law into constraints on aggregate directions.",
+          "detail": "The endpoint law is λ(1−η) = (2/π)η log(1/η) + O(η). Proposition 8.1 applies it to each support direction. It does not require a continuous choice of optimal representations across u or δ.",
+          "move": "Strategic asymptotic regime; apply Lemma 3.2 to the representations supplied by Proposition 7.1.",
+          "verification": "Xδ stays inside B because δpK(u)+1−δ < 1. The comparison controls the support functions needed for the next membership argument.",
+          "source": [
+            21,
+            "Proposition 8.1; Lemma 3.2, p.8"
+          ],
+          "alternative": {
+            "title": "Replace the endpoint law by continuity alone",
+            "reason": "Continuity only says λ approaches zero. It does not supply the ratio limit that converts the competing costs into linear expressions.",
+            "cost": "The sharp comparison requires additional asymptotic information.",
+            "source": [
+              8,
+              "Lemma 3.2"
+            ],
+            "status": "insufficient",
+            "provenance": "editorial"
+          },
+          "critical": true,
+          "opens": [],
+          "closes": []
+        },
+        {
+          "id": "median",
+          "title": "Recover metric medians and three-ball intersection",
+          "direction": "forward",
+          "uses": [
+            "endpoint"
+          ],
+          "fact": [
+            "median",
+            "The norm with unit ball Q has the three-ball intersection property"
+          ],
+          "proof": "Convex separation turns the support inequality into the required set membership, producing a metric median for every triple in (ℝⁿ,pQ). Lemma 8.2 then shows that three pairwise-intersecting closed balls have a common point.",
+          "observation": "The support comparison encodes the distance equalities of a median. This converts analytic equality information into a classical metric property with a known structural classification.",
+          "detail": "A metric median lies between each pair in the norm’s distance. If it is outside one of three pairwise-intersecting balls, move it toward that ball’s center by exactly the excess distance; the other two remain within their radii.",
+          "move": "Use convex separation for Proposition 8.1; B-C and triangle inequalities verify the median-to-balls implication.",
+          "verification": "The ball argument includes unequal and zero radii. The property is established for every triple, not just the example displayed in a diagram.",
+          "source": [
+            23,
+            "Proposition 8.1; Lemma 8.2"
+          ],
+          "alternative": {
+            "title": "Use Euclidean medians for every norm",
+            "reason": "For a non-collinear Euclidean triangle, no point lies on all three pairwise line segments. The median property is special and cannot be inferred from the ordinary Euclidean picture.",
+            "cost": "The norm must be the one with unit ball Q, and the property requires proof.",
+            "source": [
+              21,
+              "Definition preceding Proposition 8.1"
+            ],
+            "status": "insufficient",
+            "provenance": "editorial"
+          },
+          "critical": false,
+          "opens": [],
+          "closes": []
+        },
+        {
+          "id": "classify",
+          "title": "Apply Hansen–Lima and take polars",
+          "direction": "forward",
+          "uses": [
+            "median",
+            "hanner"
+          ],
+          "fact": [
+            "result",
+            "P(K) = 4ⁿ/n! iff K is a linear Hanner body"
+          ],
+          "proof": "The Hansen–Lima theorem classifies nonzero finite-dimensional real normed spaces with the three-ball intersection property as iterated ℓ¹ and ℓ∞ sums of the real line. Hence Q is linear Hanner. Polarity preserves this class, so K = Q° is linear Hanner. Together with attainment, this completes the equality classification.",
+          "observation": "The preceding work has produced exactly the hypothesis of a classical structural theorem. Polarity transfers its conclusion from Q back to the original K.",
+          "detail": "This final classification theorem is an external toolkit input cited by the paper, not a new result proved in this explorer. Finite dimension gives completeness. For Q = TH, the polar is T⁻ᵀH°, and H° is again Hanner.",
+          "move": "Strategic recognition of the applicable classification theorem; B-L applies it, and B-D/B-C transfer through polarity.",
+          "verification": "The real, finite-dimensional, nonzero hypotheses and arbitrary-radius closed-ball property match Theorem 8.3. Both directions opened at the start now close.",
+          "source": [
+            23,
+            "Theorem 8.3 and Proposition 8.4"
+          ],
+          "alternative": {
+            "title": "Follow the earlier facial classification route",
+            "reason": "Part II of the released summary reports an earlier facial route using Lima’s characterization, then describes choosing the median route and checking Hansen–Lima’s hypotheses. It does not certify the earlier route as a completed alternative proof.",
+            "cost": "Status remains unverified as an independent replacement. Part II starts from a supplied lower bound and is not one continuous trace of Part I.",
+            "source": [
+              3,
+              "Released summary · Part II",
+              "trace"
+            ],
+            "status": "reported",
+            "provenance": "reported"
+          },
+          "critical": false,
+          "opens": [],
+          "closes": [
+            "rigid"
+          ]
+        }
+      ]
+    }
+  }
+}

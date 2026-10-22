@@ -10,7 +10,11 @@
   let selected=G.initialState,transition=null,timer=null,statePositions=new Map(),stateWidth=520;
   let ablation=null,selectedAlternative=null,worked=null,branchSelection=null,proofOverview=false,study=null,studyNode=null;
   let reader=null;
+  let originalGraph=null,originalSelection='start',receivingOriginal=false;
+  let graphView='proof',previousProofNodes=new Set(),previousProofEdges=new Set();
+  const zoom={proof:1,state:1};
   const isAblation=()=>$('graph-mode').value==='ablation';
+  const useOriginalGraph=()=>!isAblation()&&!worked&&!study&&!ablation;
   const currentContext=()=>({P,G,states,edges,goalName,transition,choose,take});
   const nodeHeight=n=>n.height??(n.kind==='given'?P.layout.givenHeight:n.kind==='observation'?P.layout.observationHeight:P.layout.nodeHeight);
   function el(tag,cls,text) {const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;}
@@ -22,16 +26,23 @@
   function choose(id,edgeId=null,focus=false) {
     worked=null;branchSelection=null;ablation=null;selectedAlternative=null;study=null;studyNode=null;
     selected=id;transition=edgeId;
+    originalSelection=edges.get(edgeId)?.action||states.get(id).completed.at(-1)||'start';
     if(!canonical.has(id) && $('graph-mode').value!=='all')$('graph-mode').value='all';
     render();if(focus){focusState();focusProof();}
   }
   function chooseCanonical(index,focus=true) {choose(G.canonicalStates[index],index?G.canonicalTransitions[index-1]:null,focus);}
   function take(edge) {stop();choose(edge.to,edge.id,true);}
   function fit(kind,width,height) {
-    const viewport=$(`reference-${kind}-viewport`), scale=Math.min(1,Math.max(kind==='state'?.82:.65,(viewport.clientWidth-18)/width));
+    const scale=Math.min(1,Math.max(kind==='state'?.82:.65,(viewportWidth(kind)-18)/width));
+    sizeBoard(kind,width,height,scale);
+  }
+  function viewportWidth(kind){return $(`reference-${kind}-viewport`).clientWidth||document.querySelector('.reference-panels').clientWidth;}
+  function sizeBoard(kind,width,height,baseScale){
+    const scale=baseScale*zoom[kind];
     const board=$(`reference-${kind}-board`), wrapper=$(`reference-${kind}-scale`);
     board.style.width=width+'px';board.style.height=height+'px';board.style.transform=`scale(${scale})`;
     wrapper.style.width=width*scale+'px';wrapper.style.height=height*scale+'px';wrapper.dataset.scale=scale;
+    wrapper.dataset.baseScale=baseScale;
   }
   function focusAt(kind,x,y) {
     const v=$(`reference-${kind}-viewport`), scale=Number($(`reference-${kind}-scale`).dataset.scale);
@@ -45,7 +56,7 @@
       if(n)focusAt('proof',n.x+n.width/2,n.y+n.height/2);return;
     }
     const edge=edges.get(transition), s=states.get(selected);
-    const id=study?P.byId[study.action].focus:ablation?P.byId[ablation.removedTransition.action].focus:edge?P.byId[edge.action].focus:s.closed?'ultimate':s.frontierGoals.at(-1)||'ultimate';
+    const id=study?P.byId[study.action].focus:ablation?P.byId[ablation.removedTransition.action].focus:edge?P.byId[edge.action].focus:s.depth===0?'independence':s.closed?'ultimate':s.frontierGoals.at(-1)||'ultimate';
     const n=proofNodes.get(id);focusAt('proof',n.x+120,n.y+50);
   }
   function proofPoint(id,side) {
@@ -67,13 +78,20 @@
     const board=$('reference-proof-board');board.replaceChildren();
     const art=svg(P.layout.width,P.layout.height), visible=new Set(s.visibleProofNodes), achieved=P.achieved(s.completed), action=edges.get(transition)?.action;
     // Inspiration depends on a particular history; a merged state has no unique history.
-    for(const [a,b,type] of P.edges.filter(e=>e[2]!=='inspiration')) path(art,proofPath(a,b),`reference-line ${type} ${visible.has(a)&&visible.has(b)?'':'pending'}`);
+    const animate=$('graph-mode').value==='canonical'&&!study&&!worked,newEdges=new Set();
+    for(const [a,b,type] of P.edges.filter(e=>e[2]!=='inspiration')) {
+      const introduced=visible.has(a)&&visible.has(b),key=a+':'+b;
+      if(animate&&!introduced)continue;
+      const line=path(art,proofPath(a,b),`reference-line ${type} ${introduced?'':'pending'}`);
+      if(introduced){newEdges.add(key);if(animate&&!previousProofEdges.has(key)){line.classList.add('graph-draw');line.setAttribute('pathLength','1');}}
+    }
     for(const [a,b] of (P.meetings || [['computed','scalar-goal'],['bounded','mgf'],['tail','offtail'],['diagonal','ultimate'],['tail','ultimate']])) {
       if(visible.has(a)&&achieved.has(b))path(art,proofPath(a,b),'reference-line match');
     }
     board.append(art);
     for(const [text,x] of [['HAVE · established facts',24],['WANT · goal reductions',348]]){const label=el('div','proof-lane-title',text);label.style.left=x+'px';board.append(label);}
     for(const n of P.nodes) {
+      if(animate&&!visible.has(n.id))continue;
       const b=button('',()=>{
         stop();
         if(isAblation()&&(n.event!=='start'||n.id==='ultimate')) {ablateAction(n.id==='ultimate'?'finish':n.event);return;}
@@ -86,15 +104,17 @@
       b.style.left=n.x+'px';b.style.top=n.y+'px';b.style.height=nodeHeight(n)+'px';
       b.append(el('span','node-kind',n.kind==='observation'?'Observation':n.label),el('span','node-title',n.title),el('span','node-formula',n.formula));
       b.dataset.proofEvent=n.id==='ultimate'?'finish':n.event;b.dataset.proofNode=n.id;
+      if(animate&&!previousProofNodes.has(n.id))b.classList.add('graph-arrive');
       b.title='Inspect proof move: '+(P.byId[n.event]?.title||'Starting state');
       board.append(b);
     }
     fit('proof',P.layout.width,P.layout.height);
+    previousProofNodes=visible;previousProofEdges=newEdges;
     $('proof-status').textContent=ablation?`Before ${ablation.removedTransition.action} · removed move outlined · alternatives not evaluated`:s.closed?'Proof closed · all checkpoints discharged':`${s.visibleProofNodes.length} introduced nodes · ${s.closedGoals.length} goals discharged`;
   }
   function renderGraph() {
     if(isAblation()){renderAblationGraph();return;}
-    const all=$('graph-mode').value==='all', shown=G.states.filter(s=>all||canonical.has(s.id)), shownIds=new Set(shown.map(s=>s.id));
+    const all=$('graph-mode').value==='all', shown=G.states.filter(s=>all||(canonical.has(s.id)&&s.depth<=states.get(selected).depth)), shownIds=new Set(shown.map(s=>s.id));
     const levels=Array.from({length:P.events.length+1},(_,depth)=>shown.filter(s=>s.depth===depth));
     const maxWidth=Math.max(...levels.map(row=>row.length));stateWidth=Math.max(520,maxWidth*236+32);
     const rowGap=all?270:220, height=P.events.length*rowGap+160;
@@ -290,9 +310,7 @@
       b.append(el('span','node-kind',n.id==='ultimate'?'Shared theorem':n.label),el('span','node-title',n.title),el('span','node-formula',n.formula));
       b.title=`${alt?'Alternative':'Original'}: ${n.title}`;board.append(b);
     }
-    const viewport=$('reference-proof-viewport'),scale=proofOverview?Math.min(1,(viewport.clientWidth-18)/model.width):.85;
-    board.style.width=model.width+'px';board.style.height=model.height+'px';board.style.transform=`scale(${scale})`;
-    const wrapper=$('reference-proof-scale');wrapper.style.width=model.width*scale+'px';wrapper.style.height=model.height*scale+'px';wrapper.dataset.scale=scale;
+    sizeBoard('proof',model.width,model.height,proofOverview?Math.min(1,(viewportWidth('proof')-18)/model.width):.85);
     $('proof-status').textContent='One proof graph · shared assumptions and theorem · sign edge removed · alternative proof retained in full';
   }
   function renderWorkedStates() {
@@ -418,9 +436,7 @@
     const branchToggle=button('× '+study.action+' removed · click to restore',()=>ablateAction(study.action),'proof-removed-label');
     branchToggle.style.left=rows[0].x+'px';branchToggle.style.top=(rows[0].y-38)+'px';board.append(branchToggle);
     if(kind==='proof'){
-      const scale=proofOverview?Math.min(1,($('reference-proof-viewport').clientWidth-18)/width):.85;
-      board.style.width=width+'px';board.style.height=height+'px';board.style.transform=`scale(${scale})`;
-      const wrapper=$('reference-proof-scale');wrapper.style.width=width*scale+'px';wrapper.style.height=height*scale+'px';wrapper.dataset.scale=scale;
+      sizeBoard('proof',width,height,proofOverview?Math.min(1,(viewportWidth('proof')-18)/width):.85);
     }else fit(kind,width,height);
   }
   function renderStudy(){
@@ -520,6 +536,8 @@
   function renderGraphs() {
     $('fit-branches').hidden=!(worked||study);
     $('replay-state').disabled=!!(worked||study);
+    $('previous-state').disabled=!!(worked||study)||states.get(selected).depth===0;
+    $('next-state').disabled=!!(worked||study)||states.get(selected).closed;
     document.querySelector('.reference-timeline').hidden=!!(worked||study);
     if(study){renderStudy();return;}
     if(worked){renderWorked();return;}
@@ -527,9 +545,9 @@
     $('export-ablation').textContent='Export preview';
     $('ablation-legend').hidden=true;
     $('alternative-inspector').querySelector('.eyebrow').textContent='ILLUSTRATIVE BRANCH · NOT EVALUATED';
-    $('proof-legend-note').textContent='Faint = not yet introduced';
+    $('proof-legend-note').textContent=isAblation()?'Click a step to toggle its ablation':'The graph grows with each proof move';
     $('proof-instructions').textContent='Facts descend. Goals reduce upward.';
-    const s=states.get(selected);inspectAblation();renderProof(s);renderGraph();inspect(s);
+    const s=states.get(selected);inspectAblation();renderProof(isAblation()?states.get(G.finalState):s);renderGraph();inspect(s);
   }
   function readerContext(){
     if(study){
@@ -542,12 +560,14 @@
       return {action:study.action,branch};
     }
     if(worked)return {action:'sign',branch:{...window.HansonWrightAblationProofs.get('sign'),scope:'This complete absolute-moment argument starts from the same assumptions and reaches the same theorem. It does not inherit the original upper-tail checkpoints.'}};
-    return {action:edges.get(transition)?.action||states.get(selected).completed.at(-1)||'start'};
+    return {action:useOriginalGraph()?originalSelection:edges.get(transition)?.action||states.get(selected).completed.at(-1)||'start'};
   }
   function syncReader(){if(reader)reader.update(readerContext());}
   function focusReaderAction(action,reveal=false){
     stop();
+    originalGraph?.pause();
     const index=P.events.findIndex(e=>e.id===action),stateId=index<0?G.initialState:G.canonicalStates[index+1];
+    if(!worked&&!study&&!ablation)choose(stateId,index<0?null:G.canonicalTransitions[index]);
     for(const node of document.querySelectorAll('#reference-proof-board [data-proof-event]'))node.classList.toggle('reader-linked',node.dataset.proofEvent===action&&(node.dataset.route!=='moments'));
     for(const node of document.querySelectorAll('#reference-state-board [data-state]'))node.classList.toggle('reader-linked',node.dataset.state===stateId);
     const focusId=action==='start'?'independence':P.byId[action].focus;
@@ -557,23 +577,77 @@
     if(statePosition)focusAt('state',statePosition.x+105,statePosition.y+50);
     if(reveal)document.querySelector('.reference-panels').scrollIntoView({behavior:'smooth',block:'start'});
   }
-  function render(){renderGraphs();syncReader();}
+  function render(){
+    const original=useOriginalGraph(),showOriginal=original&&graphView==='proof';
+    if(original&&originalSelection!=='start'&&!states.get(selected).completed.includes(originalSelection))
+      originalSelection=edges.get(transition)?.action||states.get(selected).completed.at(-1)||'start';
+    document.querySelector('.reference-panels').dataset.originalActive=String(showOriginal);
+    $('original-proof-explorer').hidden=!original;
+    if(!showOriginal)originalGraph?.pause();
+    renderGraphs();
+    if(original&&originalGraph&&!receivingOriginal)originalGraph.setState(states.get(selected).completed,originalSelection);
+    syncReader();
+  }
+  function receiveOriginalState({completed,action}){
+    if(!originalGraph||!useOriginalGraph())return;
+    const target=G.states.find(s=>s.completed.length===completed.length&&completed.every(id=>s.completed.includes(id)));
+    if(!target)return;
+    stop();selected=target.id;originalSelection=action;
+    if(!canonical.has(target.id))$('graph-mode').value='all';
+    transition=G.transitions.find(e=>e.to===target.id&&e.action===completed.at(-1))?.id||null;
+    receivingOriginal=true;
+    try {render();} finally {receivingOriginal=false;}
+  }
+  function focusVisibleGraph(){
+    if(study){const row=studyNode||studyPositions[0];if(graphView==='state')focusAt('state',row.x+150,row.y+70);else {const n=proofNodes.get(P.byId[study.action].focus);focusAt('proof',854,Math.max(80,n.y)+35);}return;}
+    if(graphView==='proof')focusProof();else focusState();
+  }
+  function switchGraph(view){
+    graphView=view;
+    document.querySelector('.reference-panels').dataset.graphView=view;
+    for(const tab of document.querySelectorAll('[data-graph-view][role="tab"]')){
+      const active=tab.dataset.graphView===view;tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1;
+      $(tab.getAttribute('aria-controls')).hidden=!active;
+    }
+    render();focusVisibleGraph();
+  }
+  for(const tab of document.querySelectorAll('[data-graph-view][role="tab"]')){
+    tab.addEventListener('click',()=>switchGraph(tab.dataset.graphView));
+    tab.addEventListener('keydown',event=>{
+      if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+      event.preventDefault();const view=event.key==='Home'?'proof':event.key==='End'?'state':graphView==='proof'?'state':'proof';
+      $('graph-tab-'+view).focus();switchGraph(view);
+    });
+  }
+  function changeZoom(multiplier){
+    const v=$(`reference-${graphView}-viewport`),board=$(`reference-${graphView}-board`),wrapper=$(`reference-${graphView}-scale`);
+    const old=Number(wrapper.dataset.scale),x=(v.scrollLeft+v.clientWidth/2)/old,y=(v.scrollTop+v.clientHeight/2)/old;
+    zoom[graphView]=Math.min(2.5,Math.max(.35,zoom[graphView]*multiplier));
+    sizeBoard(graphView,parseFloat(board.style.width),parseFloat(board.style.height),Number(wrapper.dataset.baseScale));
+    const next=Number(wrapper.dataset.scale);v.scrollTo({left:x*next-v.clientWidth/2,top:y*next-v.clientHeight/2,behavior:'instant'});
+  }
+  $('graph-zoom-out').addEventListener('click',()=>changeZoom(1/1.2));
+  $('graph-zoom-in').addEventListener('click',()=>changeZoom(1.2));
+  $('graph-fit').addEventListener('click',()=>{zoom[graphView]=1;render();focusVisibleGraph();});
   $('graph-mode').addEventListener('change',()=>{stop();worked=null;branchSelection=null;ablation=null;selectedAlternative=null;study=null;studyNode=null;if($('graph-mode').value!=='all'&&!canonical.has(selected))chooseCanonical(states.get(selected).depth);else{render();focusState();}});
   $('restore-action').addEventListener('click',restoreAblation);
-  $('find-alternatives').addEventListener('click',()=>{if(study){const p=studyPositions[0];focusAt('state',p.x+150,p.y+70);return;}if(worked){selectBranch('moments',H.canonicalStates[1],H.canonicalTransitions[0],true);return;}if(!ablation)return;const p=window.HansonWrightAblation.layout(G,ablation).alternatives[0],v=$('reference-state-viewport'),scale=Number($('reference-state-scale').dataset.scale);v.scrollTo({top:Math.max(0,p.y*scale-20),left:Math.max(0,(p.x+p.width/2)*scale-v.clientWidth/2),behavior:'instant'});});
+  $('find-alternatives').addEventListener('click',()=>{if(graphView!=='state')switchGraph('state');if(study){const p=studyPositions[0];focusAt('state',p.x+150,p.y+70);return;}if(worked){selectBranch('moments',H.canonicalStates[1],H.canonicalTransitions[0],true);return;}if(!ablation)return;const p=window.HansonWrightAblation.layout(G,ablation).alternatives[0],v=$('reference-state-viewport'),scale=Number($('reference-state-scale').dataset.scale);v.scrollTo({top:Math.max(0,p.y*scale-20),left:Math.max(0,(p.x+p.width/2)*scale-v.clientWidth/2),behavior:'instant'});});
   $('rejoin-target').addEventListener('change',()=>{if(ablation){ablation=window.HansonWrightAblation.create(G,ablation.sourceState,$('rejoin-target').value);selectedAlternative='alternative-a';render();}});
   $('export-ablation').addEventListener('click',()=>{if(study){downloadGraph({...study,notes:window.HansonWrightAblationNotes[study.action],common:window.HansonWrightAblationNotes.common},'hanson-wright-'+study.action+'-ablation.json');return;}if(worked){downloadGraph(worked,'hanson-wright-worked-ablation.json');return;}if(!ablation)return;const url=URL.createObjectURL(new Blob([JSON.stringify(ablation,null,2)+'\n'],{type:'application/json'}));const a=el('a');a.href=url;a.download='hanson-wright-ablation-preview.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);});
   $('reference-history').addEventListener('input',()=>{stop();chooseCanonical(Number($('reference-history').value));});
-  $('reset-state').addEventListener('click',()=>{stop();chooseCanonical(0);});
+  $('reset-state').addEventListener('click',()=>{stop();$('graph-mode').value='canonical';chooseCanonical(0);for(const kind of ['proof','state'])$(`reference-${kind}-viewport`).scrollTo({top:0,left:0,behavior:'instant'});});
+  $('previous-state').addEventListener('click',()=>{stop();chooseCanonical(Math.max(0,states.get(selected).depth-1));});
+  $('next-state').addEventListener('click',()=>{stop();chooseCanonical(Math.min(P.events.length,states.get(selected).depth+1));});
   $('end-state').addEventListener('click',()=>{if(study){const last=studyPositions.filter(p=>p.route==='main').at(-1);selectStudyNode(last);focusAt('state',last.x+150,last.y+70);return;}if(worked){selectBranch('moments',H.finalState,H.canonicalTransitions.at(-1),true);return;}stop();chooseCanonical(P.events.length);});
   $('proof-focus').addEventListener('click',focusProof);$('state-focus').addEventListener('click',focusState);
-  $('replay-state').addEventListener('click',()=>{
-    if(timer){stop();return;}
+  function play(){
     $('graph-mode').value='canonical';
     let i=G.canonicalStates.indexOf(selected);if(i<0||i===P.events.length)i=0;
     chooseCanonical(i);$('replay-state').textContent='Ⅱ Pause';
-    timer=setInterval(()=>{chooseCanonical(++i);if(i===P.events.length)stop();},1800);
-  });
+    timer=setInterval(()=>{chooseCanonical(++i);if(i===P.events.length)stop();},Number($('playback-speed').value));
+  }
+  $('replay-state').addEventListener('click',()=>{if(timer)stop();else play();});
+  $('playback-speed').addEventListener('change',()=>{if(timer){stop();play();}});
   $('export-state').addEventListener('click',()=>{
     if(study){downloadGraph({...study,reference:G,notes:window.HansonWrightAblationNotes[study.action],common:window.HansonWrightAblationNotes.common},'hanson-wright-'+study.action+'-ablation.json');return;}
     if(worked){downloadGraph(worked,'hanson-wright-worked-ablation.json');return;}
@@ -581,8 +655,33 @@
     const a=el('a');a.href=url;a.download='hanson-wright-reference-state-graph.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
   });
   document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();});
-  let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{render();focusState();},150);});
+  let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{render();focusVisibleGraph();},150);});
   $('fit-branches').addEventListener('click',()=>{proofOverview=!proofOverview;render();if(!proofOverview)focusProof();});
   reader=window.HansonWrightProofReader.create({onSelect:focusReaderAction,noteBlock});
+  // Keep a generous canvas even when the controls wrap. The reader uses the
+  // same overall height, including the direction controls below the canvas.
+  const workspace=$('proof-workspace'),panels=document.querySelector('.reference-panels');
+  let alignmentFrame;
+  function alignPanelHeight(){
+    cancelAnimationFrame(alignmentFrame);
+    alignmentFrame=requestAnimationFrame(()=>{
+      if(window.matchMedia('(max-width:760px)').matches){workspace.style.removeProperty('--aligned-panel-height');return;}
+      const viewport=panels.dataset.originalActive==='true'?$('viewport'):$(`reference-${graphView}-viewport`);
+      if(!viewport.clientWidth)return;
+      const controlsHeight=viewport.getBoundingClientRect().top-panels.getBoundingClientRect().top;
+      const directionsHeight=panels.dataset.originalActive==='true'?panels.querySelector('.next-moves').getBoundingClientRect().height:0;
+      const height=Math.ceil(Math.max(Math.min(1500,Math.max(1200,window.innerHeight*1.5)),controlsHeight+900+directionsHeight+1));
+      const value=height+'px';
+      if(workspace.style.getPropertyValue('--aligned-panel-height')!==value)workspace.style.setProperty('--aligned-panel-height',value);
+    });
+  }
+  const panelResize=new ResizeObserver(alignPanelHeight);
+  for(const node of [panels,...panels.querySelectorAll('.graph-switcher,.reference-controls,.reference-timeline,.map-toolbar,.map-pan-hint,.transport,.history-control,.next-moves,.reference-panel>header,.reference-legend,.reference-foot')])panelResize.observe(node);
+  window.addEventListener('resize',alignPanelHeight);
+  originalGraph=window.HansonWrightExplorer.create({
+    root:$('original-proof-explorer'),embedded:true,
+    onSelect(action){if(!originalGraph||!useOriginalGraph())return;originalSelection=action;syncReader();},
+    onChange:receiveOriginalState
+  });
   render();
 })();

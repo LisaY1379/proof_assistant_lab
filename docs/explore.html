@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hanson–Wright · Live exploration</title>
+  <link rel="stylesheet" href="proof-explorer/styles.css"><link rel="stylesheet" href="proof-explorer/explore.css">
+  <script defer src="proof-explorer/search-view.js"></script><script defer src="proof-explorer/explore.js"></script>
+</head>
+<body>
+<main>
+  <header class="masthead">
+    <div class="brand"><span class="brand-mark" aria-hidden="true">∴</span> PROOF ASSISTANT LAB <span class="divider">/</span> LIVE EXPLORATION</div>
+    <nav aria-label="Site navigation"><a href="index.html">Original explorer</a> &nbsp; · &nbsp; <a href="reference-state.html">Reference states</a> &nbsp; · &nbsp; <a href="protocol.html">Our protocol</a></nav>
+  </header>
+  <section class="intro" aria-labelledby="title">
+    <div><div class="eyebrow">ONE OPEN PROBLEM · TWO COLLABORATORS</div><h1 id="title">Let’s prove Hanson–Wright.</h1><p>Follow the mathematics. Follow the search.</p></div>
+    <div class="theorem"><span class="eyebrow">WE WANT TO PROVE</span><div class="formula">ℙ(∣XᵀAX − 𝔼XᵀAX∣ ≥ t)<br>≤ 2 exp[−c min{t²/V, t/L}]</div><div class="notation">V = K⁴‖A‖<sub>F</sub>² &nbsp; · &nbsp; L = K²‖A‖<br>Independent, mean-zero Xᵢ; ‖Xᵢ‖<sub>ψ₂</sub> ≤ K. Real A; t ≥ 0.</div></div>
+  </section>
+  <section class="run-bar" aria-label="Exploration controls">
+    <div class="run-actions"><button class="primary" id="start" disabled>▶ Start proof</button><button id="stop" hidden>Stop after this turn</button><label for="budget">Turn budget</label><select id="budget"><option value="6">6 turns</option><option value="12" selected>12 turns</option><option value="24">24 turns</option></select></div>
+    <div class="run-status"><span class="status-dot" id="status-dot"></span><span id="status" role="status">Connecting to the local runner…</span></div>
+  </section>
+  <p class="run-note" id="run-note">At strategic choices, compare two methods through bounded trials. The reference proof is withheld.</p>
+  <div id="notice" class="notice" role="status" hidden></div>
+  <div class="dual-graphs">
+    <section class="graph-panel" aria-labelledby="proof-title">
+      <header class="graph-heading"><div><span class="eyebrow">01 / THE MATHEMATICS</span><h2 id="proof-title">Proof graph</h2><p>Forward facts meet backward goals.</p></div><button class="fit" data-graph="proof" aria-label="Fit proof graph">Fit view</button></header>
+      <div class="graph-legend"><span><i class="fact-key"></i>Have</span><span><i class="goal-key"></i>Want</span><span><i class="idea-key"></i>Observation</span><span><i class="grey-key"></i>Other branch</span></div>
+      <div class="graph-viewport" id="proof-viewport" tabindex="0" aria-label="Proof graph; select a node to inspect its mathematical work">
+        <div class="empty-graph" id="proof-empty"><span class="empty-symbol" aria-hidden="true">∴</span><h3>A proof to discover</h3><p>No steps yet.<br>The facts and goals will appear here.</p></div>
+        <div class="graph-scale" id="proof-scale"><div class="graph-board" id="proof-board"></div></div>
+      </div>
+      <div class="graph-foot" id="proof-foot">Waiting for the first move</div>
+    </section>
+    <section class="graph-panel" aria-labelledby="search-title">
+      <header class="graph-heading"><div><span class="eyebrow">02 / THE EXPLORATION</span><h2 id="search-title">Search graph</h2><p>Every attempt leaves a trace.</p></div><button class="fit" data-graph="search" aria-label="Fit search graph">Fit view</button></header>
+      <div class="graph-legend"><span><i class="fact-key"></i>Current route</span><span><i class="grey-key"></i>Earlier attempt</span><span class="legend-note">Select a state to open the conversation</span></div>
+      <div class="graph-viewport" id="search-viewport" tabindex="0" aria-label="Search graph; select a state to inspect the conversation">
+        <div class="empty-graph" id="search-empty"><span class="empty-symbol branch-symbol" aria-hidden="true">⑂</span><h3>A path to explore</h3><p>The student and professor are ready.<br>Start the proof to begin their conversation.</p></div>
+        <div class="graph-scale" id="search-scale"><div class="graph-board" id="search-board"></div></div>
+      </div>
+      <div class="graph-foot" id="search-foot">No attempts recorded</div>
+    </section>
+  </div>
+  <section class="playback" aria-label="Shared graph history">
+    <button id="replay" disabled aria-label="Replay recorded exploration">▶ Replay</button><label for="history">History</label><input id="history" type="range" min="0" max="0" value="0" disabled><span id="position">Not started</span><button id="latest" disabled>Follow latest</button><button id="download" disabled>Export recording</button>
+  </section>
+  <section id="method-comparison" class="method-comparison" hidden aria-labelledby="comparison-title">
+    <div class="comparison-heading"><div><span class="eyebrow">TRY · COMPARE · CONTINUE</span><h2 id="comparison-title">Methods at this decision</h2><p id="comparison-status"></p></div><label>Decision <select id="comparison-picker"></select></label></div>
+    <div id="candidate-cards" class="candidate-cards"></div><p id="selection-reason" class="selection-reason"></p>
+    <p class="comparison-note">“Direct”, “toolkit”, and “specialized” describe the agents’ rationale, not measured frequency. A bounded trial does not establish total cost or optimality.</p>
+  </section>
+  <section class="exploration-inspector" id="inspector" aria-labelledby="detail-title">
+    <div class="inspector-heading"><div><span class="eyebrow" id="detail-meta">STATE & CONVERSATION</span><h2 id="detail-title">Every node has a story.</h2></div><span class="verification" id="verification">Mathematical claims are not formally verified</span></div>
+    <p id="detail-placeholder">Select a node in either graph to see what was available, what was needed, and what they tried.</p>
+    <div id="detail-content" hidden>
+      <div id="selected-math" class="selected-math" hidden></div>
+      <div class="state-pair"><section><h3>Have <span>available facts</span></h3><ul id="have"></ul></section><section><h3>Want <span>open obligations</span></h3><ul id="want"></ul></section></div>
+      <div class="conversation-layout"><section><h3>The conversation at this state</h3><div id="conversation"></div></section><section class="move-detail"><h3>The decision</h3><dl id="decision"></dl><div id="branch-links"></div></section></div>
+      <details class="raw-record"><summary>Exact response & request</summary><pre id="raw"></pre></details>
+    </div>
+  </section>
+  <section class="saved-runs"><label for="recordings">Previous explorations</label><select id="recordings"><option value="">Choose a saved run…</option></select><label class="import-label">Import recording<input type="file" id="import" accept="application/json,.json"></label><button id="clear">Empty view</button></section>
+  <footer><div><h3>Built from the conversation</h3><p>Both graphs grow from recorded moves. Solid mathematical nodes contain agent-asserted results or obligations; dashed observations remain tentative. Gray branches preserve other attempts, including their reasons for stopping.</p></div><div><h3>When have meets want</h3><p>A connecting inference closes a local goal. When all obligations are discharged and the other role accepts the route, both graphs mark closure together. This is agreement between agents, not formal verification or a claim about the author’s discovery.</p></div></footer>
+  <noscript>This live explorer requires JavaScript.</noscript>
+</main>
+</body>
+</html>

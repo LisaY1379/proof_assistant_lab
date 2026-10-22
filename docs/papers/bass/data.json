@@ -1,0 +1,233 @@
+{
+  "title": "A New Product Growth for Model Consumer Durables",
+  "author": "Frank M. Bass",
+  "year": 1969,
+  "source": "https://www.jstor.org/stable/2628128",
+  "citation": "Management Science 15(5), pp.215–227 (January 1969)",
+  "products": [
+    {
+      "id": "refrigerators",
+      "name": "Electric refrigerators",
+      "regressionPeriod": "1920–1940",
+      "modelPeriod": "1926–1940",
+      "p": 0.0026167,
+      "q": 0.21566,
+      "m": 40.001,
+      "regressionR2": 0.903,
+      "modelR2": 0.762,
+      "peakPredicted": 20.1,
+      "peakActual": null,
+      "magnitudePredicted": 2.2,
+      "magnitudeActual": null,
+      "note": "Table 2 marks the comparison as interrupted by war. Its footnote reports a prewar peak in period 16 (1940), at 2.6 million units. Excluded from paired peak-error summaries."
+    },
+    {
+      "id": "freezers",
+      "name": "Home freezers",
+      "regressionPeriod": "1946–1961",
+      "modelPeriod": "1947–1961",
+      "p": 0.018119,
+      "q": 0.1711,
+      "m": 21.973,
+      "regressionR2": 0.742,
+      "modelR2": 0.473,
+      "peakPredicted": 11.6,
+      "peakActual": 13,
+      "magnitudePredicted": 1.2,
+      "magnitudeActual": 1.2,
+      "note": "Parameters and peak values are transcribed as printed. Rounded tabular parameters need not reproduce the tabulated peak exactly; this explorer does not silently replace either set."
+    },
+    {
+      "id": "bw-tv",
+      "name": "Black & white television",
+      "regressionPeriod": "1946–1961",
+      "modelPeriod": "1949–1961",
+      "p": 0.027877,
+      "q": 0.25105,
+      "m": 96.717,
+      "regressionR2": 0.576,
+      "modelR2": 0.077,
+      "peakPredicted": 7.8,
+      "peakActual": 7,
+      "magnitudePredicted": 7.5,
+      "magnitudeActual": 7.8,
+      "note": "Table 3 reports r² = 0.077. Bass attributes this to extreme deviations in two periods and argues that the trend is still described; that explanation is not an independent validation."
+    },
+    {
+      "id": "softeners",
+      "name": "Water softeners",
+      "regressionPeriod": "1949–1961",
+      "modelPeriod": "1950–1961",
+      "p": 0.017703,
+      "q": 0.29695,
+      "m": 5.793,
+      "regressionR2": 0.919,
+      "modelR2": 0.92,
+      "peakPredicted": 8.9,
+      "peakActual": 9,
+      "magnitudePredicted": 0.5,
+      "magnitudeActual": 0.5,
+      "note": "Values transcribed as printed; the different fit statistics use different formulations and sometimes different periods."
+    },
+    {
+      "id": "air-conditioners",
+      "name": "Room air conditioners",
+      "regressionPeriod": "1946–1961",
+      "modelPeriod": "1950–1961",
+      "p": 0.010399,
+      "q": 0.41861,
+      "m": 16.895,
+      "regressionR2": 0.911,
+      "modelR2": 0.9,
+      "peakPredicted": 8.6,
+      "peakActual": 7,
+      "magnitudePredicted": 1.8,
+      "magnitudeActual": 1.7,
+      "note": "Values transcribed as printed; the different fit statistics use different formulations and sometimes different periods."
+    },
+    {
+      "id": "dryers",
+      "name": "Clothes dryers",
+      "regressionPeriod": "1948–1961",
+      "modelPeriod": "1950–1961",
+      "p": 0.017206,
+      "q": 0.35688,
+      "m": 15.092,
+      "regressionR2": 0.896,
+      "modelR2": 0.858,
+      "peakPredicted": 8.1,
+      "peakActual": 7,
+      "magnitudePredicted": 1.5,
+      "magnitudeActual": 1.5,
+      "note": "Values transcribed as printed; the different fit statistics use different formulations and sometimes different periods."
+    },
+    {
+      "id": "lawnmowers",
+      "name": "Power lawnmowers",
+      "regressionPeriod": "1948–1961",
+      "modelPeriod": "1949–1961",
+      "p": 0.0091837,
+      "q": 0.3379,
+      "m": 44.751,
+      "regressionR2": 0.932,
+      "modelR2": 0.898,
+      "peakPredicted": 10.3,
+      "peakActual": 11,
+      "magnitudePredicted": 4.0,
+      "magnitudeActual": 4.2,
+      "note": "Values transcribed as printed; the different fit statistics use different formulations and sometimes different periods."
+    },
+    {
+      "id": "bed-coverings",
+      "name": "Electric bed coverings",
+      "regressionPeriod": "1949–1961",
+      "modelPeriod": "1950–1961",
+      "p": 0.005876,
+      "q": 0.24387,
+      "m": 76.589,
+      "regressionR2": 0.976,
+      "modelR2": 0.934,
+      "peakPredicted": 14.9,
+      "peakActual": 14,
+      "magnitudePredicted": 4.8,
+      "magnitudeActual": 4.5,
+      "note": "Values transcribed as printed; the different fit statistics use different formulations and sometimes different periods."
+    },
+    {
+      "id": "coffee-makers",
+      "name": "Automatic coffee makers",
+      "regressionPeriod": "1948–1961",
+      "modelPeriod": "1951–1961",
+      "p": 0.017135,
+      "q": 0.30145,
+      "m": 58.838,
+      "regressionR2": 0.883,
+      "modelR2": 0.69,
+      "peakPredicted": 9.0,
+      "peakActual": 10,
+      "magnitudePredicted": 4.8,
+      "magnitudeActual": 4.9,
+      "note": "Values transcribed as printed; the different fit statistics use different formulations and sometimes different periods."
+    },
+    {
+      "id": "irons",
+      "name": "Steam irons",
+      "regressionPeriod": "1949–1960",
+      "modelPeriod": "1950–1961",
+      "p": 0.028632,
+      "q": 0.32791,
+      "m": 55.696,
+      "regressionR2": 0.828,
+      "modelR2": 0.73,
+      "peakPredicted": 6.8,
+      "peakActual": 7,
+      "magnitudePredicted": 5.5,
+      "magnitudeActual": 5.9,
+      "note": "Values transcribed as printed; the different fit statistics use different formulations and sometimes different periods."
+    },
+    {
+      "id": "record-players",
+      "name": "Record players",
+      "regressionPeriod": "1952–1961",
+      "modelPeriod": "1953–1958",
+      "p": 0.024796,
+      "q": 0.6541,
+      "m": 21.937,
+      "regressionR2": 0.899,
+      "modelR2": 0.953,
+      "peakPredicted": 4.8,
+      "peakActual": 5,
+      "magnitudePredicted": 3.8,
+      "magnitudeActual": 3.7,
+      "note": "The source tables print “Recover players”; this interface uses the conventional product name “Record players.” The printed periods are retained."
+    }
+  ],
+  "colorTV": {
+    "observed": [
+      {
+        "year": 1963,
+        "sales": 0.7
+      },
+      {
+        "year": 1964,
+        "sales": 1.35
+      },
+      {
+        "year": 1965,
+        "sales": 2.5
+      }
+    ],
+    "forecast": [
+      {
+        "year": 1966,
+        "sales": 4.1
+      },
+      {
+        "year": 1967,
+        "sales": 5.8
+      },
+      {
+        "year": 1968,
+        "sales": 6.7
+      },
+      {
+        "year": 1969,
+        "sales": 6.3
+      },
+      {
+        "year": 1970,
+        "sales": 4.7
+      }
+    ],
+    "reportedParameters": {
+      "p": 0.018,
+      "q": 0.67,
+      "m": 37.4
+    },
+    "reportedUncorrected": {
+      "p": 0.0267,
+      "q": 0.96,
+      "m": 26.2
+    }
+  }
+}

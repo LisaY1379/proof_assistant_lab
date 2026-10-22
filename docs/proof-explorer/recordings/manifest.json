@@ -1,0 +1,12 @@
+{
+  "recordings": [
+    {
+      "id": "98ced35b6dff4415996f0229b20e862c",
+      "step_id": "decouple",
+      "audience": "undergraduate",
+      "created_at": "2026-10-11T20:00:20.078464+00:00",
+      "status": "complete",
+      "file": "recordings/98ced35b6dff4415996f0229b20e862c.json"
+    }
+  ]
+}

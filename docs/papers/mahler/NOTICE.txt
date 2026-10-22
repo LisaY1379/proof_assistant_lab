@@ -1,0 +1,19 @@
+Mahler paper explorer — source attribution
+
+Source manuscript:
+The symmetric Mahler conjecture and its equality cases
+OpenAI, September 22, 2026. Public source PDF, unmodified.
+https://github.com/openai/math/blob/main/preprints/The-symmetric-Mahler-conjecture-and-its-equality-cases-September-22-2026/paper.pdf
+
+Released reasoning summary, unmodified:
+https://github.com/openai/math/blob/main/reasoning_traces/symmetric-and-general-mahler-conjectures.pdf
+
+Repository formalization scope:
+https://github.com/openai/math/blob/main/lean/docs/087.md
+
+Repository and license:
+https://github.com/openai/math
+https://github.com/openai/math/blob/main/LICENSE
+The upstream Apache License 2.0 text is included in SOURCE-LICENSE.txt.
+
+The companion's prose, dependency data, numerical illustrations, and alternative checks are new editorial material. The layout and rendering adapt this project's high-contrast paper explorer. This companion is not an official OpenAI publication or an independent proof certification.

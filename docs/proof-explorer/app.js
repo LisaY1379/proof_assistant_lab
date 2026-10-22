@@ -1,6 +1,9 @@
-(() => {
+(function () {
   'use strict';
-  const P=window.HansonWright, W=window.HansonWrightWritten, $=id=>document.getElementById(id);
+  function create({root=document,embedded=false,onSelect=()=>{},onChange=()=>{}}={}) {
+  let applyingState=false;
+  const notifySelect=id=>{if(!applyingState)onSelect(id);};
+  const P=window.HansonWright, W=window.HansonWrightWritten, $=id=>root.querySelector(`#${id}`);
   const L=P.layout;
   const nodeById=Object.fromEntries(P.nodes.map(n=>[n.id,n]));
   const nodeEls=new Map(), edgeEls=new Map();
@@ -14,7 +17,7 @@
   const current=()=>cursor?P.byId[history[cursor-1]]:P.start;
   const svgNS='http://www.w3.org/2000/svg';
   const writtenEls=new Map();
-  W.passages.forEach((passage,index)=>{
+  if(!embedded)W.passages.forEach((passage,index)=>{
     const section=document.createElement('section');
     section.id='written-'+passage.id;
     section.className='proof-passage';
@@ -27,6 +30,7 @@
   });
   let writtenEvent='start';
   function syncWritten(eventId){
+    if(embedded){writtenEvent=eventId;notifySelect(eventId);return;}
     const passage=W.byEvent[eventId];
     if(!passage)return;
     writtenEvent=eventId;
@@ -85,6 +89,8 @@
   }
   function showDetails(e){
     selected=e.id;
+    if(embedded){syncWritten(e.id);return;}
+    if($('discuss-step'))$('discuss-step').href='discussion.html?step='+encodeURIComponent(e.id==='start'?'decouple':e.id);
     syncWritten(e.id);
     $('detail-type').textContent=e.direction==='start'?'STARTING POSITION':e.id==='finish'?'PROOF COMPLETE':e.direction==='backward'?'↑ BACKWARD · GOAL LAYER':'FORWARD ↓ PROGRESS LAYER';
     $('detail-category').textContent=e.category;
@@ -150,8 +156,10 @@
       if(last.observationNode)focus.y=(nodeById[last.observationNode].y+point(last.focus,'bottom').y)/2;
       panTo(focus);
     }
+    if(!applyingState)onChange({completed:[...active],action:selected});
   }
   function renderJourney(){
+    if(embedded)return;
     const list=$('journey-list');list.replaceChildren();
     if(!history.length){const s=document.createElement('span');s.className='empty-route';s.textContent='No moves yet.';list.append(s);return;}
     history.forEach((id,i)=>{
@@ -177,7 +185,7 @@
       if(done().includes('finish'))stop();else schedule();
     },Number($('speed').value));
   }
-  function showMap(){document.querySelector('.workspace').scrollIntoView({behavior:reduced.matches?'instant':'smooth',block:'start'});}
+  function showMap(){if(embedded)return;root.querySelector('.workspace').scrollIntoView({behavior:reduced.matches?'instant':'smooth',block:'start'});}
   function startPlayback(){
     if(playing){stop();return;}
     cancelClip();
@@ -239,23 +247,47 @@
     $('scaled-board').style.width=(L.width*zoom)+'px';$('scaled-board').style.height=(L.height*zoom)+'px';
     $('zoom-out').disabled=zoom<=.45;$('zoom-in').disabled=zoom>=1.65;
   }
-  function fit(){fitted=true;setZoom(Math.min(1.2,$('viewport').clientWidth/L.width));$('viewport').scrollLeft=0;$('viewport').scrollTop=0;}
+  function fit(){if(!$('viewport').clientWidth)return;fitted=true;setZoom(Math.min(1.2,$('viewport').clientWidth/L.width));$('viewport').scrollLeft=0;$('viewport').scrollTop=0;}
   $('fit').addEventListener('click',fit);
   $('jump-start').addEventListener('click',()=>panTo({x:L.width/2,y:0}));
   $('jump-goal').addEventListener('click',()=>panTo(point('ultimate')));
-  $('follow-proof').addEventListener('change',()=>syncWritten(writtenEvent));
+  if(!embedded)$('follow-proof').addEventListener('change',()=>syncWritten(writtenEvent));
   $('zoom-in').addEventListener('click',()=>{fitted=false;setZoom(zoom+.16);});
   $('zoom-out').addEventListener('click',()=>{fitted=false;setZoom(zoom-.16);});
-  new ResizeObserver(()=>{if(fitted)fit();}).observe($('viewport'));
+  new ResizeObserver(()=>{if(fitted){fit();if(cursor&&current().focus)panTo(point(current().focus));}}).observe($('viewport'));
   $('restart').addEventListener('click',()=>{stop();cancelClip();history=[];cursor=0;draw();fit();});
   $('undo').addEventListener('click',()=>{stop();cancelClip();if(cursor)cursor--;draw();});
   $('play').addEventListener('click',startPlayback);
   $('speed').addEventListener('change',()=>{if(playing){clearTimeout(timer);schedule();}});
   for(const d of ['forward','backward'])$(d).addEventListener('click',()=>{stop();showMap();apply($(d).dataset.next);});
   $('timeline').addEventListener('input',()=>{stop();cancelClip();cursor=Number($('timeline').value);draw();});
-  $('return-current').addEventListener('click',()=>{selectedNode=current().focus||null;showDetails(current());renderSelection();});
+  if(!embedded)$('return-current').addEventListener('click',()=>{selectedNode=current().focus||null;showDetails(current());renderSelection();});
   $('clip').addEventListener('click',()=>{stop();cancelClip();history=P.events.map(e=>e.id);cursor=history.length;draw();fit();showMap();meetingAnimation(true);});
   document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();});
   window.addEventListener('pagehide',()=>{stop();cancelClip();});
   draw();fit();
+  return {
+    pause(){stop();cancelClip();},
+    setState(completed,action=completed.at(-1)||'start'){
+      if(!Array.isArray(completed))throw new TypeError('Expected a proof history');
+      const prefix=[];
+      for(const id of completed){
+        if(!P.available(prefix).some(e=>e.id===id))throw new Error('Invalid proof history: '+id);
+        prefix.push(id);
+      }
+      if(action!=='start'&&!completed.includes(action))throw new Error('Selected action is not in the proof history');
+      const same=done().length===completed.length&&completed.every(id=>done().includes(id));
+      if(same&&selected===action)return;
+      applyingState=true;
+      try {
+        stop();cancelClip();
+        if(!same){history=[...completed];cursor=history.length;draw();}
+        const e=P.byId[action]||P.start;selectedNode=e.focus||null;showDetails(e);renderSelection();
+        if(e.focus)panTo(point(e.focus));else panTo({x:L.width/2,y:0});
+      } finally {applyingState=false;}
+    }
+  };
+  }
+  window.HansonWrightExplorer={create};
+  if(document.getElementById('board')&&!document.querySelector('[data-original-proof-embedded]'))create();
 })();

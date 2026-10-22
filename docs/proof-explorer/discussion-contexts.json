@@ -1,0 +1,595 @@
+[
+  {
+    "id": "sign",
+    "title": "One tail is enough to work on.",
+    "direction": "backward",
+    "state": {
+      "assumptions": "Independent coordinates, zero means, and scalar subgaussian control K. Also the fixed matrix A, its operator norm, and its Frobenius norm.",
+      "notation": "Q = XᵀAX − 𝔼XᵀAX\nV = K⁴‖A‖F²,   L = K²‖A‖\nq = min{t²/V, t/L}",
+      "scope": "For the displayed derivation assume t > 0 and V,L > 0. The zero cases are immediate. Definitions and calculation are basic; choosing a useful representation or theorem is strategic.",
+      "facts": "The theorem permits every real A, and both matrix norms are unchanged by a sign.",
+      "goal": "Control deviations both above and below the mean.",
+      "prerequisites": []
+    },
+    "chosen": {
+      "observation": "Replacing A by −A turns Q into −Q without changing V or L. The lower tail is another instance of the same upper-tail problem.",
+      "move": "Work backward from the two-sided endpoint. It suffices to obtain an upper-tail estimate for an arbitrary matrix, then apply it again to −A.",
+      "mathematics": "Q(−A) = −Q(A)\nℙ(∣Q∣ ≥ t) ≤ ℙ(Q ≥ t) + ℙ(−Q ≥ t)",
+      "justification": "The sign-reversal choice is strategic. Verifying the identity and the event union is basic. Numerical prefactors are adjusted at the end.",
+      "toolkit": "Union bound; homogeneity of operator and Frobenius norms."
+    },
+    "written": "It suffices to bound ℙ(Q ≥ t). Indeed, replacing A by −A replaces Q by −Q and preserves both matrix norms. The same upper-tail estimate therefore applies to the lower tail, and the two estimates can be combined by the union bound."
+  },
+  {
+    "id": "expand",
+    "title": "Read the quadratic form coordinate by coordinate.",
+    "direction": "forward",
+    "state": {
+      "assumptions": "Independent coordinates, zero means, and scalar subgaussian control K. Also the fixed matrix A, its operator norm, and its Frobenius norm.",
+      "notation": "Q = XᵀAX − 𝔼XᵀAX\nV = K⁴‖A‖F²,   L = K²‖A‖\nq = min{t²/V, t/L}",
+      "scope": "For the displayed derivation assume t > 0 and V,L > 0. The zero cases are immediate. Definitions and calculation are basic; choosing a useful representation or theorem is strategic.",
+      "facts": "XᵀAX = Σᵢ,ⱼ aᵢⱼXᵢXⱼ and 𝔼Xᵢ = 0.",
+      "goal": "Find usable structure in the centered quadratic form.",
+      "prerequisites": []
+    },
+    "chosen": {
+      "observation": "For i ≠ j, the given independence directly permits 𝔼(XᵢXⱼ) = 𝔼Xᵢ 𝔼Xⱼ = 0. This observation supports a basic inference, not a new strategic construction.",
+      "move": "Expand what is already given. Independence and zero means eliminate off-diagonal terms from the expectation.",
+      "mathematics": "Q = D + S\nD = Σᵢ aᵢᵢ(Xᵢ² − 𝔼Xᵢ²)\nS = Σᵢ≠ⱼ aᵢⱼXᵢXⱼ",
+      "justification": "The equality is direct expansion. Choosing to give D and S different proof methods is the next strategic decision.",
+      "toolkit": "Expectation factorization for independent variables; linearity of expectation."
+    },
+    "written": "By independence and the mean-zero assumption, 𝔼(XᵢXⱼ) = 0 for i ≠ j. Consequently, Q = ∑ᵢ aᵢᵢ(Xᵢ² − 𝔼Xᵢ²) + ∑ᵢ≠ⱼ aᵢⱼXᵢXⱼ =: D + S."
+  },
+  {
+    "id": "split",
+    "title": "Give the two kinds of terms different jobs.",
+    "direction": "backward",
+    "state": {
+      "assumptions": "Independent coordinates, zero means, and scalar subgaussian control K. Also the fixed matrix A, its operator norm, and its Frobenius norm.",
+      "notation": "Q = XᵀAX − 𝔼XᵀAX\nV = K⁴‖A‖F²,   L = K²‖A‖\nq = min{t²/V, t/L}",
+      "scope": "For the displayed derivation assume t > 0 and V,L > 0. The zero cases are immediate. Definitions and calculation are basic; choosing a useful representation or theorem is strategic.",
+      "facts": "The identity Q = D + S. Terms in D use separate coordinates; terms in S can share them.",
+      "goal": "A bound for ℙ(D + S ≥ t).",
+      "prerequisites": [
+        {
+          "id": "sign",
+          "statement": "Q(−A) = −Q(A)\nℙ(∣Q∣ ≥ t) ≤ ℙ(Q ≥ t) + ℙ(−Q ≥ t)"
+        },
+        {
+          "id": "expand",
+          "statement": "Q = D + S\nD = Σᵢ aᵢᵢ(Xᵢ² − 𝔼Xᵢ²)\nS = Σᵢ≠ⱼ aᵢⱼXᵢXⱼ"
+        }
+      ]
+    },
+    "chosen": {
+      "observation": "Only the diagonal sum preserves independence term by term. Separating it lets Bernstein handle the easy branch while we develop a different tool for the cross terms.",
+      "move": "The upper-tail goal branches. Bound D and S at threshold t/2. The diagonal branch is a side checkpoint; the main track follows the harder cross terms.",
+      "mathematics": "{D + S ≥ t} ⊂ {D ≥ t/2} ∪ {S ≥ t/2}\nℙ(Q ≥ t) ≤ ℙ(D ≥ t/2) + ℙ(S ≥ t/2)",
+      "justification": "This is a sufficient-condition reduction. D and S need not be independent. Choosing the split and thresholds is strategic; the event inclusion is basic logic.",
+      "toolkit": "Union bound; knowledge of the input conditions for Bernstein and decoupling."
+    },
+    "written": "We estimate the two sums separately. Since D + S ≥ t implies that D ≥ t/2 or S ≥ t/2, ℙ(Q ≥ t) ≤ ℙ(D ≥ t/2) + ℙ(S ≥ t/2). No independence between D and S is required for this reduction."
+  },
+  {
+    "id": "bernstein",
+    "title": "Close the diagonal branch with Bernstein.",
+    "direction": "forward",
+    "state": {
+      "assumptions": "Independent coordinates, zero means, and scalar subgaussian control K. Also the fixed matrix A, its operator norm, and its Frobenius norm.",
+      "notation": "Q = XᵀAX − 𝔼XᵀAX\nV = K⁴‖A‖F²,   L = K²‖A‖\nq = min{t²/V, t/L}",
+      "scope": "For the displayed derivation assume t > 0 and V,L > 0. The zero cases are immediate. Definitions and calculation are basic; choosing a useful representation or theorem is strategic.",
+      "facts": "Independent variables Xᵢ² − 𝔼Xᵢ², each with subexponential norm at most CK².",
+      "goal": "An exponential bound for the diagonal sum D.",
+      "prerequisites": [
+        {
+          "id": "expand",
+          "statement": "Q = D + S\nD = Σᵢ aᵢᵢ(Xᵢ² − 𝔼Xᵢ²)\nS = Σᵢ≠ⱼ aᵢⱼXᵢXⱼ"
+        }
+      ]
+    },
+    "chosen": {
+      "observation": "Bernstein accepts independent centered subexponential summands and produces exactly a minimum of quadratic and linear scales—the shape the endpoint asks for.",
+      "move": "The square of a subgaussian is subexponential. Centering preserves that control, and the diagonal summands are independent.",
+      "mathematics": "‖Xᵢ² − 𝔼Xᵢ²‖ψ₁ ≤ CK²\nΣᵢ aᵢᵢ² ≤ ‖A‖F²,   maxᵢ ∣aᵢᵢ∣ ≤ ‖A‖\nℙ(D ≥ t/2) ≤ exp[−c min{t²/V, t/L}]",
+      "justification": "Check independence, centering and subexponential sizes before applying Bernstein. If the diagonal is zero, D is zero and the positive-threshold bound is immediate.",
+      "toolkit": "Subgaussian-square and subexponential-centering bounds; Bernstein inequality."
+    },
+    "written": "The variables Xᵢ² − 𝔼Xᵢ² are independent, centered, and subexponential, with ‖Xᵢ² − 𝔼Xᵢ²‖ ψ₁ ≤ CK². Bernstein’s inequality, together with ∑ᵢ aᵢᵢ² ≤ ‖A‖ F ² and maxᵢ |aᵢᵢ| ≤ ‖A‖, yields ℙ(D ≥ t/2) ≤ exp[−c min{t²/V, t/L}]. If the diagonal of A is zero, this estimate holds directly because D = 0."
+  },
+  {
+    "id": "exponential",
+    "title": "Ask for an exponential moment instead of a tail.",
+    "direction": "backward",
+    "state": {
+      "assumptions": "Independent coordinates, zero means, and scalar subgaussian control K. Also the fixed matrix A, its operator norm, and its Frobenius norm.",
+      "notation": "Q = XᵀAX − 𝔼XᵀAX\nV = K⁴‖A‖F²,   L = K²‖A‖\nq = min{t²/V, t/L}",
+      "scope": "For the displayed derivation assume t > 0 and V,L > 0. The zero cases are immediate. Definitions and calculation are basic; choosing a useful representation or theorem is strategic.",
+      "facts": "The coordinates come with subgaussian exponential-moment bounds, but S itself has dependent summands.",
+      "goal": "ℙ(S ≥ t/2) ≤ exp[−c min{t²/V, t/L}].",
+      "prerequisites": [
+        {
+          "id": "sign",
+          "statement": "Q(−A) = −Q(A)\nℙ(∣Q∣ ≥ t) ≤ ℙ(Q ≥ t) + ℙ(−Q ≥ t)"
+        },
+        {
+          "id": "expand",
+          "statement": "Q = D + S\nD = Σᵢ aᵢᵢ(Xᵢ² − 𝔼Xᵢ²)\nS = Σᵢ≠ⱼ aᵢⱼXᵢXⱼ"
+        },
+        {
+          "id": "split",
+          "statement": "{D + S ≥ t} ⊂ {D ≥ t/2} ∪ {S ≥ t/2}\nℙ(Q ≥ t) ≤ ℙ(D ≥ t/2) + ℙ(S ≥ t/2)"
+        }
+      ]
+    },
+    "chosen": {
+      "observation": "Exponentiation turns a tail event into an expectation problem. A quadratic MGF bound gives the t²/V regime; a cutoff λ ≲ 1/L supplies the t/L regime.",
+      "move": "Choose a transform whose expectation the toolkit can control. An MGF bound over a restricted parameter range will be enough.",
+      "mathematics": "ℙ(S ≥ t/2) ≤ exp(−λt/2) 𝔼exp(λS)\nNew goal: 𝔼exp(λS) ≤ exp(CVλ²)\nfor 0 < λ ≤ c₀/L.",
+      "justification": "Apply Markov to the nonnegative variable exp(λS). This yields an upper bound, not equality between the tail and MGF. We will choose λ only after establishing its allowed range.",
+      "toolkit": "Exponential Markov / Chernoff method."
+    },
+    "written": "For the off-diagonal sum, fix λ &gt; 0. Applying Markov’s inequality to exp(λS), we obtain ℙ(S ≥ t/2) ≤ exp(−λt/2) 𝔼 exp(λS). We will prove that 𝔼 exp(λS) ≤ exp(CVλ²) for 0 &lt; λ ≤ c₀/L, and then choose λ in that range."
+  },
+  {
+    "id": "linear",
+    "title": "Prepare the linear-form bound.",
+    "direction": "forward",
+    "state": {
+      "assumptions": "Independent coordinates, zero means, and scalar subgaussian control K. Also the fixed matrix A, its operator norm, and its Frobenius norm.",
+      "notation": "Q = XᵀAX − 𝔼XᵀAX\nV = K⁴‖A‖F²,   L = K²‖A‖\nq = min{t²/V, t/L}",
+      "scope": "For the displayed derivation assume t > 0 and V,L > 0. The zero cases are immediate. Definitions and calculation are basic; choosing a useful representation or theorem is strategic.",
+      "facts": "Independent mean-zero Xᵢ with ‖Xᵢ‖ψ₂ ≤ K.",
+      "goal": "A reusable bound when the coefficients of a linear form become fixed.",
+      "prerequisites": []
+    },
+    "chosen": {
+      "observation": "For a fixed vector v, exponentiating a sum makes a product. Independence factors its expectation, and the scalar subgaussian MGF applies to every factor.",
+      "move": "The starting assumptions already control any fixed linear combination of the coordinates.",
+      "mathematics": "𝔼exp(λ〈X,v〉) = ∏ᵢ 𝔼exp(λvᵢXᵢ)\n≤ ∏ᵢ exp(CK²λ²vᵢ²)\n= exp(CK²λ²‖v‖₂²)",
+      "justification": "The scalar MGF bound is an available theorem. Factoring the expectation, substituting its inputs, and summing the exponent are its verification steps. The mean-zero condition matters here.",
+      "toolkit": "Mean-zero subgaussian MGF estimate; independence."
+    },
+    "written": "For every fixed vector v and every real η, independence and the mean-zero subgaussian MGF estimate imply 𝔼 exp(η⟨X,v⟩) = ∏ᵢ 𝔼 exp(ηvᵢXᵢ) ≤ ∏ᵢ exp(CK²η²vᵢ²) = exp(CK²η²‖v‖₂²)."
+  },
+  {
+    "id": "decouple",
+    "title": "Make one side possible to hold fixed.",
+    "direction": "forward",
+    "state": {
+      "assumptions": "Independent coordinates, zero means, and scalar subgaussian control K. Also the fixed matrix A, its operator norm, and its Frobenius norm.",
+      "notation": "Q = XᵀAX − 𝔼XᵀAX\nV = K⁴‖A‖F²,   L = K²‖A‖\nq = min{t²/V, t/L}",
+      "scope": "For the displayed derivation assume t > 0 and V,L > 0. The zero cases are immediate. Definitions and calculation are basic; choosing a useful representation or theorem is strategic.",
+      "facts": "S = Σᵢ≠ⱼaᵢⱼXᵢXⱼ. Shared coordinates block a direct independent-sum argument.",
+      "goal": "Use linear-form MGF control on the cross terms.",
+      "prerequisites": [
+        {
+          "id": "expand",
+          "statement": "Q = D + S\nD = Σᵢ aᵢᵢ(Xᵢ² − 𝔼Xᵢ²)\nS = Σᵢ≠ⱼ aᵢⱼXᵢXⱼ"
+        },
+        {
+          "id": "sign",
+          "statement": "Q(−A) = −Q(A)\nℙ(∣Q∣ ≥ t) ≤ ℙ(Q ≥ t) + ℙ(−Q ≥ t)"
+        },
+        {
+          "id": "split",
+          "statement": "{D + S ≥ t} ⊂ {D ≥ t/2} ∪ {S ≥ t/2}\nℙ(Q ≥ t) ≤ ℙ(D ≥ t/2) + ℙ(S ≥ t/2)"
+        },
+        {
+          "id": "exponential",
+          "statement": "ℙ(S ≥ t/2) ≤ exp(−λt/2) 𝔼exp(λS)\nNew goal: 𝔼exp(λS) ≤ exp(CVλ²)\nfor 0 < λ ≤ c₀/L."
+        }
+      ]
+    },
+    "chosen": {
+      "observation": "In XᵀAX, holding one copy of X fixed also freezes the other. In XᵀAX′, conditioning on X′ leaves a genuine random linear form in X.",
+      "move": "Introduce an independent copy X′. Decoupling bounds the off-diagonal exponential moment by a bilinear form involving two independent vectors.",
+      "mathematics": "𝔼exp(λS) ≤ 𝔼exp(4λXᵀAX′)\nConditional on X′: XᵀAX′ = 〈X, AX′〉.",
+      "justification": "This is a convex-function comparison, not equality in law. One construction randomly splits indices into disjoint groups: each off-diagonal pair survives with probability 1/4. Jensen and zero conditional means give the factor 4. The full A is allowed on the right by the off-diagonal version of the theorem.",
+      "toolkit": "Decoupling, Theorem 6.1.1 and Remark 6.1.2; Jensen inequality."
+    },
+    "written": "Let X′ be an independent copy of X. The off-diagonal decoupling inequality, applied to the convex function s ↦ exp(λs), gives 𝔼 exp(λS) ≤ 𝔼 exp(4λXᵀAX′). The version used here permits the full matrix A on the right. Conditional on X′, the bilinear form XᵀAX′ is the linear form ⟨X,AX′⟩ with fixed coefficients."
+  },
+  {
+    "id": "gaussian",
+    "title": "Recognize a Gaussian formula inside the bound.",
+    "direction": "backward",
+    "state": {
+      "assumptions": "Independent coordinates, zero means, and scalar subgaussian control K. Also the fixed matrix A, its operator norm, and its Frobenius norm.",
+      "notation": "Q = XᵀAX − 𝔼XᵀAX\nV = K⁴‖A‖F²,   L = K²‖A‖\nq = min{t²/V, t/L}",
+      "scope": "For the displayed derivation assume t > 0 and V,L > 0. The zero cases are immediate. Definitions and calculation are basic; choosing a useful representation or theorem is strategic.",
+      "facts": "After conditioning, v = AX′ is fixed, and a bound of the form exp(CK²λ²‖v‖²) is available.",
+      "goal": "An MGF estimate for XᵀAX′.",
+      "prerequisites": [
+        {
+          "id": "sign",
+          "statement": "Q(−A) = −Q(A)\nℙ(∣Q∣ ≥ t) ≤ ℙ(Q ≥ t) + ℙ(−Q ≥ t)"
+        },
+        {
+          "id": "expand",
+          "statement": "Q = D + S\nD = Σᵢ aᵢᵢ(Xᵢ² − 𝔼Xᵢ²)\nS = Σᵢ≠ⱼ aᵢⱼXᵢXⱼ"
+        },
+        {
+          "id": "split",
+          "statement": "{D + S ≥ t} ⊂ {D ≥ t/2} ∪ {S ≥ t/2}\nℙ(Q ≥ t) ≤ ℙ(D ≥ t/2) + ℙ(S ≥ t/2)"
+        },
+        {
+          "id": "exponential",
+          "statement": "ℙ(S ≥ t/2) ≤ exp(−λt/2) 𝔼exp(λS)\nNew goal: 𝔼exp(λS) ≤ exp(CVλ²)\nfor 0 < λ ≤ c₀/L."
+        },
+        {
+          "id": "decouple",
+          "statement": "𝔼exp(λS) ≤ 𝔼exp(4λXᵀAX′)\nConditional on X′: XᵀAX′ = 〈X, AX′〉."
+        }
+      ]
+    },
+    "chosen": {
+      "observation": "A Gaussian linear form has MGF exp(μ²‖v‖²/2). Choosing μ proportional to Kλ matches the entire expression, not just its general shape.",
+      "move": "The decoupled expression suggests conditioning. Its conditional subgaussian upper bound has the same form as an exact Gaussian MGF.",
+      "mathematics": "𝔼g exp(μ〈g,v〉) = exp(μ²‖v‖²/2)\nChoose μ = √(2C)Kλ.\nNew subgoal: bound 𝔼exp(θgᵀAg′), with θ = CK²λ.",
+      "justification": "This step proposes the replacement and a new sufficient goal. The forward replacement must still verify the comparison in both arguments.",
+      "toolkit": "Gaussian linear MGF; Gaussian replacement, Lemma 6.2.3."
+    },
+    "written": "Let g,g′ be independent standard Gaussian vectors, independent of X,X′. The Gaussian MGF identity is 𝔼 g exp(μ⟨g,v⟩) = exp(μ²‖v‖₂²/2). Choosing μ = √(2C)Kη matches the preceding subgaussian upper bound. Condition first on X′ and use v = AX′ to replace X by g. Average over X′, then condition on g and apply the same argument to X′. Absorbing the decoupling factor 4 into an absolute constant, we obtain 𝔼 exp(4λXᵀAX′) ≤ 𝔼 exp(C₁K²λgᵀAg′)."
+  },
+  {
+    "id": "replace",
+    "title": "Carry out the two Gaussian replacements.",
+    "direction": "forward",
+    "state": {
+      "assumptions": "Independent coordinates, zero means, and scalar subgaussian control K. Also the fixed matrix A, its operator norm, and its Frobenius norm.",
+      "notation": "Q = XᵀAX − 𝔼XᵀAX\nV = K⁴‖A‖F²,   L = K²‖A‖\nq = min{t²/V, t/L}",
+      "scope": "For the displayed derivation assume t > 0 and V,L > 0. The zero cases are immediate. Definitions and calculation are basic; choosing a useful representation or theorem is strategic.",
+      "facts": "The decoupled bilinear form and the fixed-coefficient subgaussian MGF bound.",
+      "goal": "Transfer the MGF problem to a distribution whose rotations we understand.",
+      "prerequisites": [
+        {
+          "id": "expand",
+          "statement": "Q = D + S\nD = Σᵢ aᵢᵢ(Xᵢ² − 𝔼Xᵢ²)\nS = Σᵢ≠ⱼ aᵢⱼXᵢXⱼ"
+        },
+        {
+          "id": "sign",
+          "statement": "Q(−A) = −Q(A)\nℙ(∣Q∣ ≥ t) ≤ ℙ(Q ≥ t) + ℙ(−Q ≥ t)"
+        },
+        {
+          "id": "split",
+          "statement": "{D + S ≥ t} ⊂ {D ≥ t/2} ∪ {S ≥ t/2}\nℙ(Q ≥ t) ≤ ℙ(D ≥ t/2) + ℙ(S ≥ t/2)"
+        },
+        {
+          "id": "exponential",
+          "statement": "ℙ(S ≥ t/2) ≤ exp(−λt/2) 𝔼exp(λS)\nNew goal: 𝔼exp(λS) ≤ exp(CVλ²)\nfor 0 < λ ≤ c₀/L."
+        },
+        {
+          "id": "decouple",
+          "statement": "𝔼exp(λS) ≤ 𝔼exp(4λXᵀAX′)\nConditional on X′: XᵀAX′ = 〈X, AX′〉."
+        },
+        {
+          "id": "linear",
+          "statement": "𝔼exp(λ〈X,v〉) = ∏ᵢ 𝔼exp(λvᵢXᵢ)\n≤ ∏ᵢ exp(CK²λ²vᵢ²)\n= exp(CK²λ²‖v‖₂²)"
+        }
+      ]
+    },
+    "chosen": {
+      "observation": "Each replacement becomes a one-vector linear-form calculation when the other vector is fixed. Two such comparisons produce a parameter of order K²λ.",
+      "move": "Condition on X′ and use the prepared linear bound to replace X by g at cost CK. Then condition on g and replace X′ by an independent g′ at another cost CK.",
+      "mathematics": "𝔼exp(4λXᵀAX′)\n≤ 𝔼exp(CK²λ gᵀAg′),\ng,g′ independent standard Gaussian vectors.",
+      "justification": "Iterated expectation lifts each conditional comparison. Constants absorb the factor 4 from decoupling. No coordinate-wise equality in distribution between X and g is claimed.",
+      "toolkit": "Subgaussian linear MGF; Gaussian MGF; iterated expectation."
+    },
+    "written": "Let g,g′ be independent standard Gaussian vectors, independent of X,X′. The Gaussian MGF identity is 𝔼 g exp(μ⟨g,v⟩) = exp(μ²‖v‖₂²/2). Choosing μ = √(2C)Kη matches the preceding subgaussian upper bound. Condition first on X′ and use v = AX′ to replace X by g. Average over X′, then condition on g and apply the same argument to X′. Absorbing the decoupling factor 4 into an absolute constant, we obtain 𝔼 exp(4λXᵀAX′) ≤ 𝔼 exp(C₁K²λgᵀAg′)."
+  },
+  {
+    "id": "rotate",
+    "title": "Rotate until the matrix exposes independent products.",
+    "direction": "backward",
+    "state": {
+      "assumptions": "Independent coordinates, zero means, and scalar subgaussian control K. Also the fixed matrix A, its operator norm, and its Frobenius norm.",
+      "notation": "Q = XᵀAX − 𝔼XᵀAX\nV = K⁴‖A‖F²,   L = K²‖A‖\nq = min{t²/V, t/L}",
+      "scope": "For the displayed derivation assume t > 0 and V,L > 0. The zero cases are immediate. Definitions and calculation are basic; choosing a useful representation or theorem is strategic.",
+      "facts": "Independent standard Gaussian vectors and a fixed matrix A.",
+      "goal": "A Gaussian MGF controlled by ‖A‖F and ‖A‖.",
+      "prerequisites": [
+        {
+          "id": "sign",
+          "statement": "Q(−A) = −Q(A)\nℙ(∣Q∣ ≥ t) ≤ ℙ(Q ≥ t) + ℙ(−Q ≥ t)"
+        },
+        {
+          "id": "expand",
+          "statement": "Q = D + S\nD = Σᵢ aᵢᵢ(Xᵢ² − 𝔼Xᵢ²)\nS = Σᵢ≠ⱼ aᵢⱼXᵢXⱼ"
+        },
+        {
+          "id": "split",
+          "statement": "{D + S ≥ t} ⊂ {D ≥ t/2} ∪ {S ≥ t/2}\nℙ(Q ≥ t) ≤ ℙ(D ≥ t/2) + ℙ(S ≥ t/2)"
+        },
+        {
+          "id": "exponential",
+          "statement": "ℙ(S ≥ t/2) ≤ exp(−λt/2) 𝔼exp(λS)\nNew goal: 𝔼exp(λS) ≤ exp(CVλ²)\nfor 0 < λ ≤ c₀/L."
+        },
+        {
+          "id": "decouple",
+          "statement": "𝔼exp(λS) ≤ 𝔼exp(4λXᵀAX′)\nConditional on X′: XᵀAX′ = 〈X, AX′〉."
+        },
+        {
+          "id": "gaussian",
+          "statement": "𝔼g exp(μ〈g,v〉) = exp(μ²‖v‖²/2)\nChoose μ = √(2C)Kλ.\nNew subgoal: bound 𝔼exp(θgᵀAg′), with θ = CK²λ."
+        },
+        {
+          "id": "linear",
+          "statement": "𝔼exp(λ〈X,v〉) = ∏ᵢ 𝔼exp(λvᵢXᵢ)\n≤ ∏ᵢ exp(CK²λ²vᵢ²)\n= exp(CK²λ²‖v‖₂²)"
+        },
+        {
+          "id": "replace",
+          "statement": "𝔼exp(4λXᵀAX′)\n≤ 𝔼exp(CK²λ gᵀAg′),\ng,g′ independent standard Gaussian vectors."
+        }
+      ]
+    },
+    "chosen": {
+      "observation": "An arbitrary rotation could destroy independence for the original X. Gaussian rotation preserves independent standard coordinates. The resulting singular values give both target norms.",
+      "move": "Choose the singular value decomposition A = U diag(sᵢ)Vᵀ. The Gaussian subgoal becomes a product of scalar MGFs.",
+      "mathematics": "gᵀAg′ ≡in law Σᵢ sᵢgᵢgᵢ′\n𝔼exp(θgᵀAg′) = ∏ᵢ 𝔼exp(θsᵢgᵢgᵢ′)\nΣᵢsᵢ² = ‖A‖F²,   maxᵢsᵢ = ‖A‖.",
+      "justification": "SVD is valid for a nonsymmetric real A too: use Uᵀg and Vᵀg′. Their independent standard Gaussian laws are preserved. This is why replacement precedes rotation.",
+      "toolkit": "SVD; Gaussian rotation invariance; independence; singular-value norm identities."
+    },
+    "written": "Write A = U diag(sᵢ)Rᵀ. By Gaussian rotation invariance, Uᵀg and Rᵀg′ remain independent standard Gaussian vectors. Therefore gᵀAg′ has the same distribution as ∑ᵢ sᵢgᵢgᵢ′, and independence of the pairs gives 𝔼 exp(θgᵀAg′) = ∏ᵢ 𝔼 exp(θsᵢgᵢgᵢ′)."
+  },
+  {
+    "id": "compute",
+    "title": "Compute the scalar MGF and its domain.",
+    "direction": "forward",
+    "state": {
+      "assumptions": "Independent coordinates, zero means, and scalar subgaussian control K. Also the fixed matrix A, its operator norm, and its Frobenius norm.",
+      "notation": "Q = XᵀAX − 𝔼XᵀAX\nV = K⁴‖A‖F²,   L = K²‖A‖\nq = min{t²/V, t/L}",
+      "scope": "For the displayed derivation assume t > 0 and V,L > 0. The zero cases are immediate. Definitions and calculation are basic; choosing a useful representation or theorem is strategic.",
+      "facts": "Independent pairs (gᵢ,gᵢ′) and the representation Σᵢsᵢgᵢgᵢ′.",
+      "goal": "The product bound anticipated by the goal layer.",
+      "prerequisites": [
+        {
+          "id": "sign",
+          "statement": "Q(−A) = −Q(A)\nℙ(∣Q∣ ≥ t) ≤ ℙ(Q ≥ t) + ℙ(−Q ≥ t)"
+        },
+        {
+          "id": "expand",
+          "statement": "Q = D + S\nD = Σᵢ aᵢᵢ(Xᵢ² − 𝔼Xᵢ²)\nS = Σᵢ≠ⱼ aᵢⱼXᵢXⱼ"
+        },
+        {
+          "id": "split",
+          "statement": "{D + S ≥ t} ⊂ {D ≥ t/2} ∪ {S ≥ t/2}\nℙ(Q ≥ t) ≤ ℙ(D ≥ t/2) + ℙ(S ≥ t/2)"
+        },
+        {
+          "id": "exponential",
+          "statement": "ℙ(S ≥ t/2) ≤ exp(−λt/2) 𝔼exp(λS)\nNew goal: 𝔼exp(λS) ≤ exp(CVλ²)\nfor 0 < λ ≤ c₀/L."
+        },
+        {
+          "id": "decouple",
+          "statement": "𝔼exp(λS) ≤ 𝔼exp(4λXᵀAX′)\nConditional on X′: XᵀAX′ = 〈X, AX′〉."
+        },
+        {
+          "id": "gaussian",
+          "statement": "𝔼g exp(μ〈g,v〉) = exp(μ²‖v‖²/2)\nChoose μ = √(2C)Kλ.\nNew subgoal: bound 𝔼exp(θgᵀAg′), with θ = CK²λ."
+        },
+        {
+          "id": "linear",
+          "statement": "𝔼exp(λ〈X,v〉) = ∏ᵢ 𝔼exp(λvᵢXᵢ)\n≤ ∏ᵢ exp(CK²λ²vᵢ²)\n= exp(CK²λ²‖v‖₂²)"
+        },
+        {
+          "id": "replace",
+          "statement": "𝔼exp(4λXᵀAX′)\n≤ 𝔼exp(CK²λ gᵀAg′),\ng,g′ independent standard Gaussian vectors."
+        },
+        {
+          "id": "rotate",
+          "statement": "gᵀAg′ ≡in law Σᵢ sᵢgᵢgᵢ′\n𝔼exp(θgᵀAg′) = ∏ᵢ 𝔼exp(θsᵢgᵢgᵢ′)\nΣᵢsᵢ² = ‖A‖F²,   maxᵢsᵢ = ‖A‖."
+        }
+      ]
+    },
+    "chosen": {
+      "observation": "The exponent is linear in gᵢ′ when gᵢ is fixed. Its conditional MGF becomes exp(u²gᵢ²/2), whose expectation is explicit.",
+      "move": "The scalar target now has a direct calculation. Conditioning once reduces it to the MGF of a squared Gaussian.",
+      "mathematics": "𝔼exp(ugg′) = (1 − u²)⁻¹ᐟ²\n≤ exp(u²)  when u² ≤ 1/2.\n𝔼exp(θgᵀAg′) ≤ exp(θ²‖A‖F²)\nfor ∣θ∣ ≤ 1/(√2 ‖A‖).",
+      "justification": "The bound uses −½log(1−u²) ≤ u² on [0,1/2]. The largest singular value controls the admissible θ; the sum of squares controls the exponent. Both are necessary.",
+      "toolkit": "Gaussian linear and square MGFs; the elementary logarithm bound."
+    },
+    "written": "For independent scalar standard Gaussians g₁,g₁′, conditioning on g₁ and then using the MGF of g₁² gives 𝔼 exp(ug₁g₁′) = 𝔼 exp(u²g₁²/2) = (1 − u²) −1/2 ≤ exp(u²), &nbsp; u² ≤ 1/2. Here the inequality follows from −½ log(1−z) ≤ z for 0 ≤ z ≤ 1/2. Substituting u = θsᵢ in each factor, and using ∑ᵢsᵢ² = ‖A‖ F ² and maxᵢsᵢ = ‖A‖, yields 𝔼 exp(θgᵀAg′) ≤ exp(θ²‖A‖ F ²), |θ| ≤ 1/(√2 ‖A‖)."
+  },
+  {
+    "id": "meet",
+    "title": "The derived MGF meets the requested MGF.",
+    "direction": "forward",
+    "state": {
+      "assumptions": "Independent coordinates, zero means, and scalar subgaussian control K. Also the fixed matrix A, its operator norm, and its Frobenius norm.",
+      "notation": "Q = XᵀAX − 𝔼XᵀAX\nV = K⁴‖A‖F²,   L = K²‖A‖\nq = min{t²/V, t/L}",
+      "scope": "For the displayed derivation assume t > 0 and V,L > 0. The zero cases are immediate. Definitions and calculation are basic; choosing a useful representation or theorem is strategic.",
+      "facts": "Decoupling, Gaussian replacement, and the computed Gaussian-product MGF.",
+      "goal": "𝔼exp(λS) ≤ exp(CVλ²) for λ at most c₀/L.",
+      "prerequisites": [
+        {
+          "id": "sign",
+          "statement": "Q(−A) = −Q(A)\nℙ(∣Q∣ ≥ t) ≤ ℙ(Q ≥ t) + ℙ(−Q ≥ t)"
+        },
+        {
+          "id": "expand",
+          "statement": "Q = D + S\nD = Σᵢ aᵢᵢ(Xᵢ² − 𝔼Xᵢ²)\nS = Σᵢ≠ⱼ aᵢⱼXᵢXⱼ"
+        },
+        {
+          "id": "split",
+          "statement": "{D + S ≥ t} ⊂ {D ≥ t/2} ∪ {S ≥ t/2}\nℙ(Q ≥ t) ≤ ℙ(D ≥ t/2) + ℙ(S ≥ t/2)"
+        },
+        {
+          "id": "exponential",
+          "statement": "ℙ(S ≥ t/2) ≤ exp(−λt/2) 𝔼exp(λS)\nNew goal: 𝔼exp(λS) ≤ exp(CVλ²)\nfor 0 < λ ≤ c₀/L."
+        },
+        {
+          "id": "decouple",
+          "statement": "𝔼exp(λS) ≤ 𝔼exp(4λXᵀAX′)\nConditional on X′: XᵀAX′ = 〈X, AX′〉."
+        },
+        {
+          "id": "gaussian",
+          "statement": "𝔼g exp(μ〈g,v〉) = exp(μ²‖v‖²/2)\nChoose μ = √(2C)Kλ.\nNew subgoal: bound 𝔼exp(θgᵀAg′), with θ = CK²λ."
+        },
+        {
+          "id": "linear",
+          "statement": "𝔼exp(λ〈X,v〉) = ∏ᵢ 𝔼exp(λvᵢXᵢ)\n≤ ∏ᵢ exp(CK²λ²vᵢ²)\n= exp(CK²λ²‖v‖₂²)"
+        },
+        {
+          "id": "replace",
+          "statement": "𝔼exp(4λXᵀAX′)\n≤ 𝔼exp(CK²λ gᵀAg′),\ng,g′ independent standard Gaussian vectors."
+        },
+        {
+          "id": "rotate",
+          "statement": "gᵀAg′ ≡in law Σᵢ sᵢgᵢgᵢ′\n𝔼exp(θgᵀAg′) = ∏ᵢ 𝔼exp(θsᵢgᵢgᵢ′)\nΣᵢsᵢ² = ‖A‖F²,   maxᵢsᵢ = ‖A‖."
+        },
+        {
+          "id": "compute",
+          "statement": "𝔼exp(ugg′) = (1 − u²)⁻¹ᐟ²\n≤ exp(u²)  when u² ≤ 1/2.\n𝔼exp(θgᵀAg′) ≤ exp(θ²‖A‖F²)\nfor ∣θ∣ ≤ 1/(√2 ‖A‖)."
+        }
+      ]
+    },
+    "chosen": {
+      "observation": "The forward chain has produced exactly the kind of bound requested by the backward Chernoff goal—including the parameter restriction. This checkpoint can now be discharged.",
+      "move": "Substitute θ = CK²λ into the Gaussian estimate, and chain it with the two forward comparisons. This is the main connection between the two layers.",
+      "mathematics": "𝔼 exp(λS) ≤ 𝔼 exp(4λXᵀAX′)\n≤ 𝔼 exp(CK²λgᵀAg′)\n≤ exp(CK⁴λ²‖A‖F²) = exp(CVλ²),\nfor ∣λ∣ ≤ c₀/(K²‖A‖) = c₀/L.",
+      "justification": "The constant c₀ includes all rescalings. A domain restriction on θ must be converted into a domain restriction on λ; it cannot be dropped.",
+      "toolkit": "The three established estimates; substitution and inequality transitivity."
+    },
+    "written": "Combining decoupling, replacement, and the Gaussian estimate with θ = C₁K²λ proves 𝔼 exp(λS) ≤ exp(CK⁴λ²‖A‖ F ²) = exp(CVλ²), &nbsp; |λ| ≤ c₀/L. The absolute constant c₀ accounts for the parameter rescaling. This is the exponential-moment estimate required above."
+  },
+  {
+    "id": "optimize",
+    "title": "Balance the exponent, respecting the cutoff.",
+    "direction": "forward",
+    "state": {
+      "assumptions": "Independent coordinates, zero means, and scalar subgaussian control K. Also the fixed matrix A, its operator norm, and its Frobenius norm.",
+      "notation": "Q = XᵀAX − 𝔼XᵀAX\nV = K⁴‖A‖F²,   L = K²‖A‖\nq = min{t²/V, t/L}",
+      "scope": "For the displayed derivation assume t > 0 and V,L > 0. The zero cases are immediate. Definitions and calculation are basic; choosing a useful representation or theorem is strategic.",
+      "facts": "ℙ(S ≥ t/2) ≤ exp(−λt/2 + CVλ²), for 0 < λ ≤ c₀/L.",
+      "goal": "Turn the exponential-moment estimate into the desired tail.",
+      "prerequisites": [
+        {
+          "id": "sign",
+          "statement": "Q(−A) = −Q(A)\nℙ(∣Q∣ ≥ t) ≤ ℙ(Q ≥ t) + ℙ(−Q ≥ t)"
+        },
+        {
+          "id": "expand",
+          "statement": "Q = D + S\nD = Σᵢ aᵢᵢ(Xᵢ² − 𝔼Xᵢ²)\nS = Σᵢ≠ⱼ aᵢⱼXᵢXⱼ"
+        },
+        {
+          "id": "split",
+          "statement": "{D + S ≥ t} ⊂ {D ≥ t/2} ∪ {S ≥ t/2}\nℙ(Q ≥ t) ≤ ℙ(D ≥ t/2) + ℙ(S ≥ t/2)"
+        },
+        {
+          "id": "exponential",
+          "statement": "ℙ(S ≥ t/2) ≤ exp(−λt/2) 𝔼exp(λS)\nNew goal: 𝔼exp(λS) ≤ exp(CVλ²)\nfor 0 < λ ≤ c₀/L."
+        },
+        {
+          "id": "decouple",
+          "statement": "𝔼exp(λS) ≤ 𝔼exp(4λXᵀAX′)\nConditional on X′: XᵀAX′ = 〈X, AX′〉."
+        },
+        {
+          "id": "gaussian",
+          "statement": "𝔼g exp(μ〈g,v〉) = exp(μ²‖v‖²/2)\nChoose μ = √(2C)Kλ.\nNew subgoal: bound 𝔼exp(θgᵀAg′), with θ = CK²λ."
+        },
+        {
+          "id": "linear",
+          "statement": "𝔼exp(λ〈X,v〉) = ∏ᵢ 𝔼exp(λvᵢXᵢ)\n≤ ∏ᵢ exp(CK²λ²vᵢ²)\n= exp(CK²λ²‖v‖₂²)"
+        },
+        {
+          "id": "replace",
+          "statement": "𝔼exp(4λXᵀAX′)\n≤ 𝔼exp(CK²λ gᵀAg′),\ng,g′ independent standard Gaussian vectors."
+        },
+        {
+          "id": "rotate",
+          "statement": "gᵀAg′ ≡in law Σᵢ sᵢgᵢgᵢ′\n𝔼exp(θgᵀAg′) = ∏ᵢ 𝔼exp(θsᵢgᵢgᵢ′)\nΣᵢsᵢ² = ‖A‖F²,   maxᵢsᵢ = ‖A‖."
+        },
+        {
+          "id": "compute",
+          "statement": "𝔼exp(ugg′) = (1 − u²)⁻¹ᐟ²\n≤ exp(u²)  when u² ≤ 1/2.\n𝔼exp(θgᵀAg′) ≤ exp(θ²‖A‖F²)\nfor ∣θ∣ ≤ 1/(√2 ‖A‖)."
+        },
+        {
+          "id": "meet",
+          "statement": "𝔼 exp(λS) ≤ 𝔼 exp(4λXᵀAX′)\n≤ 𝔼 exp(CK²λgᵀAg′)\n≤ exp(CK⁴λ²‖A‖F²) = exp(CVλ²),\nfor ∣λ∣ ≤ c₀/(K²‖A‖) = c₀/L."
+        }
+      ]
+    },
+    "chosen": {
+      "observation": "The positive quadratic term must stay smaller than the negative linear term. Increasing λ helps only until balancing or the MGF cutoff stops us.",
+      "move": "Choose the smaller of the unconstrained balancing scale and an allowed MGF scale. Two different reasons for stopping λ produce the two tail regimes.",
+      "mathematics": "λ = min{t/(4CV), c₀/(2L)}\nCVλ² ≤ λt/4\nℙ(S ≥ t/2) ≤ exp(−λt/4)\n≤ exp[−c min{t²/V, t/L}].",
+      "justification": "If t/(4CV) is smaller, the exponent is quadratic in t. If the cutoff is smaller, it is linear in t. This explicitly discharges the off-diagonal tail goal.",
+      "toolkit": "Chernoff estimate already established; elementary parameter comparison."
+    },
+    "written": "The exponential Markov bound now becomes ℙ(S ≥ t/2) ≤ exp(−λt/2 + CVλ²). Choose λ = min{t/(4CV), c₀/(2L)}. This choice is admissible and satisfies CVλ² ≤ λt/4. It follows that ℙ(S ≥ t/2) ≤ exp(−λt/4) ≤ exp[−c min{t²/V, t/L}]."
+  },
+  {
+    "id": "finish",
+    "title": "Both branches reach the original endpoint.",
+    "direction": "forward",
+    "state": {
+      "assumptions": "Independent coordinates, zero means, and scalar subgaussian control K. Also the fixed matrix A, its operator norm, and its Frobenius norm.",
+      "notation": "Q = XᵀAX − 𝔼XᵀAX\nV = K⁴‖A‖F²,   L = K²‖A‖\nq = min{t²/V, t/L}",
+      "scope": "For the displayed derivation assume t > 0 and V,L > 0. The zero cases are immediate. Definitions and calculation are basic; choosing a useful representation or theorem is strategic.",
+      "facts": "Both upper-tail branches, the sign-reversal reduction, and unchanged matrix norms under A ↦ −A.",
+      "goal": "The original two-sided bound, with prefactor 2.",
+      "prerequisites": [
+        {
+          "id": "sign",
+          "statement": "Q(−A) = −Q(A)\nℙ(∣Q∣ ≥ t) ≤ ℙ(Q ≥ t) + ℙ(−Q ≥ t)"
+        },
+        {
+          "id": "expand",
+          "statement": "Q = D + S\nD = Σᵢ aᵢᵢ(Xᵢ² − 𝔼Xᵢ²)\nS = Σᵢ≠ⱼ aᵢⱼXᵢXⱼ"
+        },
+        {
+          "id": "split",
+          "statement": "{D + S ≥ t} ⊂ {D ≥ t/2} ∪ {S ≥ t/2}\nℙ(Q ≥ t) ≤ ℙ(D ≥ t/2) + ℙ(S ≥ t/2)"
+        },
+        {
+          "id": "exponential",
+          "statement": "ℙ(S ≥ t/2) ≤ exp(−λt/2) 𝔼exp(λS)\nNew goal: 𝔼exp(λS) ≤ exp(CVλ²)\nfor 0 < λ ≤ c₀/L."
+        },
+        {
+          "id": "decouple",
+          "statement": "𝔼exp(λS) ≤ 𝔼exp(4λXᵀAX′)\nConditional on X′: XᵀAX′ = 〈X, AX′〉."
+        },
+        {
+          "id": "gaussian",
+          "statement": "𝔼g exp(μ〈g,v〉) = exp(μ²‖v‖²/2)\nChoose μ = √(2C)Kλ.\nNew subgoal: bound 𝔼exp(θgᵀAg′), with θ = CK²λ."
+        },
+        {
+          "id": "linear",
+          "statement": "𝔼exp(λ〈X,v〉) = ∏ᵢ 𝔼exp(λvᵢXᵢ)\n≤ ∏ᵢ exp(CK²λ²vᵢ²)\n= exp(CK²λ²‖v‖₂²)"
+        },
+        {
+          "id": "replace",
+          "statement": "𝔼exp(4λXᵀAX′)\n≤ 𝔼exp(CK²λ gᵀAg′),\ng,g′ independent standard Gaussian vectors."
+        },
+        {
+          "id": "rotate",
+          "statement": "gᵀAg′ ≡in law Σᵢ sᵢgᵢgᵢ′\n𝔼exp(θgᵀAg′) = ∏ᵢ 𝔼exp(θsᵢgᵢgᵢ′)\nΣᵢsᵢ² = ‖A‖F²,   maxᵢsᵢ = ‖A‖."
+        },
+        {
+          "id": "compute",
+          "statement": "𝔼exp(ugg′) = (1 − u²)⁻¹ᐟ²\n≤ exp(u²)  when u² ≤ 1/2.\n𝔼exp(θgᵀAg′) ≤ exp(θ²‖A‖F²)\nfor ∣θ∣ ≤ 1/(√2 ‖A‖)."
+        },
+        {
+          "id": "meet",
+          "statement": "𝔼 exp(λS) ≤ 𝔼 exp(4λXᵀAX′)\n≤ 𝔼 exp(CK²λgᵀAg′)\n≤ exp(CK⁴λ²‖A‖F²) = exp(CVλ²),\nfor ∣λ∣ ≤ c₀/(K²‖A‖) = c₀/L."
+        },
+        {
+          "id": "optimize",
+          "statement": "λ = min{t/(4CV), c₀/(2L)}\nCVλ² ≤ λt/4\nℙ(S ≥ t/2) ≤ exp(−λt/4)\n≤ exp[−c min{t²/V, t/L}]."
+        },
+        {
+          "id": "bernstein",
+          "statement": "‖Xᵢ² − 𝔼Xᵢ²‖ψ₁ ≤ CK²\nΣᵢ aᵢᵢ² ≤ ‖A‖F²,   maxᵢ ∣aᵢᵢ∣ ≤ ‖A‖\nℙ(D ≥ t/2) ≤ exp[−c min{t²/V, t/L}]"
+        }
+      ]
+    },
+    "chosen": {
+      "observation": "The only remaining mismatch is the prefactor: splitting terms and signs gives 4 instead of 2. Combining with the universal bound ℙ ≤ 1 absorbs it into a smaller exponent constant.",
+      "move": "Combine the diagonal and off-diagonal tails. Apply the same result to −A and use the union bound. Every goal checkpoint is now supported.",
+      "mathematics": "ℙ(∣Q∣ ≥ t) ≤ min{1, 4 exp(−cq)}\n≤ 2 exp(−cq/2),   q = min{t²/V, t/L}.\nRename c/2 as c.",
+      "justification": "For q ≤ 2log(2)/c the last expression is at least 1; for larger q the comparison with 4exp(−cq) holds. The theorem follows for all t; degenerate cases were handled at the start.",
+      "toolkit": "Union bound; the diagonal and off-diagonal bounds; elementary inequalities."
+    },
+    "written": "Combining the bounds for D and S gives the upper-tail estimate for Q. Apply the same argument to −A and add the two tail probabilities. With q = min{t²/V,t/L}, this gives ℙ(|Q| ≥ t) ≤ min{1, 4 exp(−cq)} ≤ 2 exp(−cq/2). Indeed, when q ≤ 2 log(2)/c the last expression is at least 1; otherwise it bounds 4 exp(−cq). Renaming c/2 as c establishes the stated inequality. □"
+  }
+]

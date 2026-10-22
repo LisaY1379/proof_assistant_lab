@@ -1,0 +1,12 @@
+id,name,regressionPeriod,modelPeriod,p,q,m,regressionR2,modelR2,peakPredicted,peakActual,magnitudePredicted,magnitudeActual,units,source
+refrigerators,Electric refrigerators,1920–1940,1926–1940,0.0026167,0.21566,40.001,0.903,0.762,20.1,,2.2,,"m and magnitudes: million units; time: years/periods; p,q: per year","Bass (1969), Tables I–3, pp.218,221,222"
+freezers,Home freezers,1946–1961,1947–1961,0.018119,0.1711,21.973,0.742,0.473,11.6,13,1.2,1.2,"m and magnitudes: million units; time: years/periods; p,q: per year","Bass (1969), Tables I–3, pp.218,221,222"
+bw-tv,Black & white television,1946–1961,1949–1961,0.027877,0.25105,96.717,0.576,0.077,7.8,7,7.5,7.8,"m and magnitudes: million units; time: years/periods; p,q: per year","Bass (1969), Tables I–3, pp.218,221,222"
+softeners,Water softeners,1949–1961,1950–1961,0.017703,0.29695,5.793,0.919,0.92,8.9,9,0.5,0.5,"m and magnitudes: million units; time: years/periods; p,q: per year","Bass (1969), Tables I–3, pp.218,221,222"
+air-conditioners,Room air conditioners,1946–1961,1950–1961,0.010399,0.41861,16.895,0.911,0.9,8.6,7,1.8,1.7,"m and magnitudes: million units; time: years/periods; p,q: per year","Bass (1969), Tables I–3, pp.218,221,222"
+dryers,Clothes dryers,1948–1961,1950–1961,0.017206,0.35688,15.092,0.896,0.858,8.1,7,1.5,1.5,"m and magnitudes: million units; time: years/periods; p,q: per year","Bass (1969), Tables I–3, pp.218,221,222"
+lawnmowers,Power lawnmowers,1948–1961,1949–1961,0.0091837,0.3379,44.751,0.932,0.898,10.3,11,4.0,4.2,"m and magnitudes: million units; time: years/periods; p,q: per year","Bass (1969), Tables I–3, pp.218,221,222"
+bed-coverings,Electric bed coverings,1949–1961,1950–1961,0.005876,0.24387,76.589,0.976,0.934,14.9,14,4.8,4.5,"m and magnitudes: million units; time: years/periods; p,q: per year","Bass (1969), Tables I–3, pp.218,221,222"
+coffee-makers,Automatic coffee makers,1948–1961,1951–1961,0.017135,0.30145,58.838,0.883,0.69,9.0,10,4.8,4.9,"m and magnitudes: million units; time: years/periods; p,q: per year","Bass (1969), Tables I–3, pp.218,221,222"
+irons,Steam irons,1949–1960,1950–1961,0.028632,0.32791,55.696,0.828,0.73,6.8,7,5.5,5.9,"m and magnitudes: million units; time: years/periods; p,q: per year","Bass (1969), Tables I–3, pp.218,221,222"
+record-players,Record players,1952–1961,1953–1958,0.024796,0.6541,21.937,0.899,0.953,4.8,5,3.8,3.7,"m and magnitudes: million units; time: years/periods; p,q: per year","Bass (1969), Tables I–3, pp.218,221,222"
