@@ -3,19 +3,21 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Proof Assistant Lab · Create an explorer</title>
-<link rel="stylesheet" href="/explorer/base.css"><link rel="stylesheet" href="/explorer/reader.css"><link rel="stylesheet" href="/explorer/styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/explorer/base.css"><link rel="stylesheet" href="/explorer/reader.css"><link rel="stylesheet" href="/explorer/styles.css?v=purple-generator-1">
 <script>window.MathJax={loader:{load:['ui/safe']},tex:{inlineMath:[['\\(','\\)'],['$','$']],displayMath:[['\\[','\\]'],['$$','$$']]},options:{safeOptions:{allow:{URLs:'safe',classes:'none',cssIDs:'none',styles:'none'}}},startup:{typeset:false}};</script>
 <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 <script defer src="/explorer/app.js"></script>
 </head>
-<body><main>
-<header class="masthead"><div class="brand"><span class="brand-mark">∴</span> PROOF ASSISTANT LAB <span class="divider">/</span> CREATE AN EXPLORER</div><a href="/">AI conversation</a></header>
-<section class="intro"><div><div class="eyebrow">ONE PROOF. TWO MAPS. THREE WAYS TO READ.</div><h1>Explore the argument.</h1><p>Turn a proof into connected facts, goals, and alternative routes.</p></div><p class="prototype-note">Built from the Hanson–Wright prototype. The same interface, with your mathematics.</p></section>
-<details id="composer" class="composer" open><summary>Enter a proof or open a saved explorer</summary>
+<body class="generator-app"><main>
+<header class="masthead"><div class="brand"><span class="brand-mark">∴</span> PROOF ASSISTANT LAB</div><a href="http://127.0.0.1:8882/home.html" target="_blank" rel="noopener">Explore the demo ↗</a></header>
+<section class="intro"><div><h1>Explore the argument.</h1></div></section>
+<details id="composer" class="composer" open><summary><span>Enter a proof or open a saved explorer</span></summary>
 <form id="generate-form"><label for="proof-input">Theorem and proof</label><textarea id="proof-input" required maxlength="40000" rows="8" placeholder="Paste the theorem, its assumptions, and the proof you want to explore. Plain text or LaTeX is welcome."></textarea>
 <div class="settings"><label>Model <input id="model-input" value="gpt-5.6-sol" maxlength="100"></label><label>Maximum proof steps <select id="step-limit"><option>4</option><option selected>8</option><option>12</option><option>16</option></select></label><label class="search-choice"><input id="online-search" type="checkbox" checked> Search the literature for alternatives</label></div>
 <p class="small">Generation uses your configured API account. Literature search sends the theorem and selected mathematical steps to the search service. Each retrieved alternative keeps its sources. Typically two requests per step, plus decomposition and critical-step selection; one format-correction request is allowed per stage when needed.</p>
-<div class="buttons"><button id="generate" class="primary" type="submit">Generate explorer</button><button id="example" type="button">Open example · no AI calls</button><label class="file-button">Open saved explorer <input id="import-file" type="file" accept=".json,application/json"></label></div>
+<div class="buttons"><button id="generate" class="primary" type="submit">Generate explorer <span aria-hidden="true">↗</span></button><button id="example" type="button">Open example · no AI calls</button><label class="file-button">Open saved explorer <input id="import-file" type="file" accept=".json,application/json"></label></div>
 </form></details>
 <section class="generation-status" aria-label="Generation status"><p id="status" role="status" aria-live="polite">Ready for a proof.</p><button id="stop" hidden>Stop after this request</button><button id="resume" hidden>Continue unfinished work</button></section>
 <section id="workspace" hidden>
@@ -34,4 +36,4 @@
 <dialog class="reader-dialog" id="reader-modal" aria-label="Expanded written proof"></dialog>
 <details class="audit"><summary>Generation record and source history</summary><div id="audit-body"></div></details>
 </section>
-</main></body></html>
+</main><footer class="generator-footer"><span>PROOF ASSISTANT LAB / EXPLORER STUDIO</span><span>Facts. Goals. The ideas that connect them.</span></footer></body></html>

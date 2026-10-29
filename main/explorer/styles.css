@@ -31,3 +31,110 @@ main>.intro .prototype-note{margin:12px 0 0}
 @media(max-width:800px){.collection-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.collection-card,.collection-card:nth-last-child(-n+2){grid-column:auto}.collection-card:last-child{grid-column:1/-1}}
 @media(max-width:500px){.collection-grid{grid-template-columns:1fr}}
 [hidden]{display:none!important}
+
+/* Generator theme: the same palette and type scale as the paper companions.
+   Scoped so static theorem collections sharing this stylesheet keep their layout. */
+html:has(body.generator-app){color-scheme:light;background:#fff}
+body.generator-app{
+  --paper:#fff;--panel:#fff;--bg:#f8f6fc;--ink:#111827;--muted:#596273;
+  --line:#e3dfeb;--accent:#5830ad;--accent-ink:#fff;
+  --progress:#5830ad;--progress-bg:#f2edfb;
+  --goal:#827491;--goal-bg:#f5f2f8;
+  --observation:#916312;--observation-bg:#fff8e8;
+  --body-font:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  --title-font:"Inter",Arial,sans-serif;
+  --main-title-size:clamp(34px,4vw,56px);
+  background:#fff;color:var(--ink);font:15px/1.65 var(--body-font);
+  -webkit-font-smoothing:antialiased;color-scheme:light;
+}
+.generator-app main{max-width:1600px;padding:0 38px}
+.generator-app button,.generator-app input,.generator-app select,.generator-app textarea{font-family:var(--body-font);accent-color:var(--accent)}
+.generator-app a{color:var(--accent)}
+.generator-app button,.generator-app .file-button{border-radius:7px;transition:background .15s,border-color .15s}
+.generator-app button:hover:not(:disabled),.generator-app .file-button:hover{background:var(--progress-bg);border-color:#cbbbe4;box-shadow:none}
+.generator-app button.primary{background:var(--accent);border-color:var(--accent);color:#fff;filter:none}
+.generator-app button.primary:hover:not(:disabled){background:#452488;border-color:#452488;filter:none}
+.generator-app :is(button,a,input,select,textarea,summary):focus-visible{outline:3px solid #9463d6;outline-offset:3px}
+.generator-app .masthead{min-height:82px;border-bottom:2px solid var(--accent);gap:24px}
+.generator-app .brand{color:var(--accent);font-size:11px;letter-spacing:1.4px;gap:12px}
+.generator-app .brand-mark{color:var(--accent)}
+.generator-app .divider{color:#a597b9}
+.generator-app .masthead>a{font-size:12px;text-decoration:none;white-space:nowrap;padding:9px 0}
+.generator-app .masthead>a:hover{text-decoration:underline}
+.generator-app .eyebrow{color:var(--accent);font:700 10px/1.6 var(--body-font);letter-spacing:.15em}
+.generator-app main>.intro{padding-block:58px 36px}
+.generator-app h1{font:850 var(--main-title-size)/1.08 var(--title-font);text-transform:uppercase;letter-spacing:.015em;color:var(--ink);margin:20px 0}
+.generator-app .intro>div>p{font-size:19px;line-height:1.6;color:#353b4a}
+.generator-app .intro .prototype-note{font-size:13px;margin-top:12px;color:var(--muted)}
+.generator-app h2{font:600 26px/1.2 var(--title-font);letter-spacing:-.025em;color:var(--ink)}
+.generator-app .composer{padding:26px 30px 30px;border-radius:12px;background:#fff;border-color:var(--line);box-shadow:0 8px 32px #30204b05}
+.generator-app .composer>summary{position:relative;display:flex;flex-direction:column;gap:9px;list-style:none;padding:0 32px 20px 0;border-bottom:2px solid #9045ff;font:600 22px/1.35 var(--title-font);letter-spacing:-.02em}
+.generator-app .composer>summary::-webkit-details-marker{display:none}
+.generator-app .composer>summary::after{content:'+';position:absolute;right:0;bottom:21px;color:#9045ff;font:400 27px/1 var(--body-font)}
+.generator-app .composer[open]>summary::after{content:'−'}
+.generator-app .composer form{margin-top:24px}
+.generator-app label[for=proof-input]{font-size:13px;font-weight:600;color:#40354f}
+.generator-app .composer textarea{background:#fcfbfe;border:1px solid #dcd3e7;border-radius:9px;min-height:220px;font:15px/1.8 var(--body-font);padding:18px;margin:10px 0 22px}
+.generator-app .composer textarea::placeholder{color:#8a8197}
+.generator-app .settings{display:grid;grid-template-columns:minmax(150px,1fr) minmax(170px,1fr) minmax(200px,1.25fr);gap:20px;padding:20px;background:#f8f6fb;border:1px solid #ebe5f2;border-radius:9px;align-items:end}
+.generator-app .settings label{flex-direction:column;align-items:flex-start;gap:8px;font-size:12px;font-weight:600;color:#655575}
+.generator-app .settings input:not([type=checkbox]),.generator-app .settings select{width:100%;max-width:none;min-width:0;background:#fff;padding:10px 12px;font-size:13px;color:var(--ink);border-radius:6px}
+.generator-app .settings .search-choice{flex-direction:row;align-items:center;align-self:center;line-height:1.6;color:#42384f;font-weight:500}
+.generator-app .search-choice input{flex:none;width:16px;height:16px;margin:0}
+.generator-app .composer .small{font-size:11px;line-height:1.8;margin:16px 0 22px;max-width:100ch}
+.generator-app .composer .buttons{gap:10px;align-items:stretch}
+.generator-app .composer .buttons>button,.generator-app .file-button{font-size:13px;padding:12px 17px;display:inline-flex;align-items:center;justify-content:center;gap:18px;min-height:46px}
+.generator-app .file-button{position:relative;font-weight:500;background:#fff;color:var(--ink);overflow:hidden}
+.generator-app .file-button input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;margin:0;max-width:none}
+.generator-app .file-button:focus-within{outline:3px solid #9463d6;outline-offset:3px}
+.generator-app .generation-status{background:#faf8fd;border:1px solid #e8e0f1;border-radius:9px;min-height:52px;padding:13px 18px;font-size:12px;color:#655477}
+.generator-app .generation-status p{min-width:0;overflow-wrap:anywhere;flex:1}
+.generator-app .generation-status p::before{content:'';display:inline-block;width:7px;height:7px;background:#8d60c7;border-radius:50%;margin-right:10px;vertical-align:middle}
+.generator-app .document-heading{border-top:1px solid var(--line);padding-top:32px;margin-top:45px}
+.generator-app .document-heading h1{font-size:clamp(28px,3vw,40px);margin:12px 0}
+.generator-app .graph-panel,.generator-app .proof-reader{border-radius:10px;background:#fff}
+.generator-app .graph-panel header{padding:24px;background:#fff;min-height:160px}
+.generator-app .graph-panel h2{margin:8px 0 12px;font-size:26px}
+.generator-app .graph-viewport{background-color:#fefeff;background-image:radial-gradient(#dcd4e7 .7px,transparent .7px)}
+.generator-app .gcard{border-radius:8px;font-family:var(--body-font)}
+.generator-app .gcard.state,.generator-app .gcard.action{border-top:3px solid var(--accent)}
+.generator-app .gcard.selected{outline-color:var(--accent)}
+.generator-app .gcard.branch.success{background:#e6efea;border-color:#8ea99b}
+.generator-app .gcard.branch.failure{background:#f0e7e8;border-color:#b39499}
+.generator-app .inspector{border-radius:10px;padding:26px;background:#fff}
+.generator-app .inspector h2{font-size:24px}
+.generator-app .reader-heading{background:#fff;padding:24px}
+.generator-app .reader-heading h2{font:600 26px/1.2 var(--title-font);letter-spacing:-.025em;margin:8px 0 0}
+.generator-app .reader-tabs{background:#fcfaff}
+.generator-app .reader-tabs [aria-selected=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.generator-app .reader-tabs [aria-selected=true]:hover{background:#452488;color:#fff}
+.generator-app .reader-passage h3{font:600 20px/1.4 var(--body-font);letter-spacing:-.025em}
+.generator-app .original-text,.generator-app .reader-body .gap,.generator-app .reader-original{font:15px/1.85 var(--body-font)}
+.generator-app .reader-math,.generator-app .proof-equation{font-family:"Cambria Math",Georgia,serif}
+.generator-app .reader-dialog{background:#fff;border:1px solid var(--line);border-radius:12px;color:var(--ink)}
+.generator-app .reader-dialog::backdrop{background:#24183366}
+.generator-app .audit{background:#faf8fd;border-radius:9px;font-size:13px}
+.generator-app .generator-footer{width:calc(100% - 76px);max-width:1524px;margin:64px auto 0;padding:23px 0 30px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:20px;color:#8a8098;font-size:10px;letter-spacing:.08em}
+@media(max-width:800px){
+  .generator-app main{padding:0 20px}
+  .generator-app .masthead{min-height:75px;gap:12px}
+  .generator-app .brand{font-size:10px;gap:8px;letter-spacing:.08em;flex-wrap:wrap}
+  .generator-app main>.intro{padding-block:36px 28px}
+  .generator-app .intro>div>p{font-size:17px}
+  .generator-app .composer{padding:20px}
+  .generator-app .composer>summary{font-size:19px}
+  .generator-app .settings{grid-template-columns:1fr 1fr;gap:16px;padding:16px}
+  .generator-app .settings .search-choice{grid-column:1/-1}
+  .generator-app .generation-status{flex-wrap:wrap}
+  .generator-app .generator-footer{width:auto;margin:40px 20px 0;flex-direction:column;gap:6px}
+}
+@media(max-width:480px){
+  .generator-app main{padding:0 16px}
+  .generator-app .settings{grid-template-columns:1fr}
+  .generator-app .composer .buttons{flex-direction:column}
+  .generator-app .composer .buttons>button,.generator-app .file-button{width:100%;justify-content:center}
+  .generator-app .brand{max-width:220px}
+  .generator-app .masthead>a{font-size:11px}
+  .generator-app .reader-heading{align-items:flex-start;flex-direction:column}
+}
+@media(prefers-reduced-motion:reduce){.generator-app button,.generator-app .file-button{transition:none}}
