@@ -93,35 +93,3 @@ body.paper-home #overview{height:auto;display:block}
 /* Reading and graph panels use a quieter hierarchy on detail pages. */
 #theorem-view h2, #detail-view h2 { font-size: 24px; }
 #theorem-view h3, #detail-view h3 { font-size: 16px; }
-
-/* The high-contrast entry follows the physical question into the formal results. */
-#entry-context .intro-story{padding:32px;display:grid;gap:32px}
-#entry-context .intro-story section+section{border-top:1px solid var(--line);padding-top:30px}
-#entry-context .intro-story h2{font:650 24px/1.3 var(--body-font);text-transform:none;letter-spacing:-.02em;max-width:760px}
-#entry-context .intro-story p{max-width:900px;font-size:15px}
-#entry-context .intro-story .eyebrow{font-size:10px;margin-bottom:10px}
-#entry-context .intro-scenario{display:grid;grid-template-columns:1.2fr 1fr;gap:36px;align-items:center}
-#entry-context .intro-material{margin:0;background:#fcfaff;border:1px solid var(--line);border-radius:6px;padding:20px}
-#entry-context .intro-material svg{display:block;width:100%;height:auto}
-#entry-context .intro-material figcaption{font-size:12px;color:var(--muted);line-height:1.6;margin-top:12px}
-#entry-context .intro-equations,#entry-context .intro-comparison{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:20px 0}
-#entry-context .intro-equations>div,#entry-context .intro-comparison>div{padding:20px;background:#f8f5fc;border-left:3px solid var(--accent)}
-#entry-context .intro-equations span,#entry-context .intro-comparison span{font-size:12px;color:var(--accent);font-weight:600}
-#entry-context .equation{font-size:24px;margin:10px 0 0}
-#entry-context .intro-comparison p{font-size:13px;margin:10px 0 0}
-#entry-context .intro-story .caption{font-size:12px}
-#entry-context .intro-notation{border:1px solid var(--line);border-radius:5px;margin-top:22px}
-#entry-context .intro-notation summary{cursor:pointer;padding:14px 18px;font-weight:600;font-size:14px}
-#entry-context .intro-notation>div{padding:4px 18px 18px}
-#entry-context .intro-next{display:flex;gap:24px;flex-wrap:wrap;margin-top:22px;font-size:13px}
-@media(max-width:760px){#entry-context .intro-story{padding:24px 20px;gap:26px}#entry-context .intro-scenario,#entry-context .intro-equations,#entry-context .intro-comparison{grid-template-columns:1fr}#entry-context .intro-story h2{font-size:22px}#entry-context .intro-material{padding:14px}}
-
-/* Compact introduction disclosure heading. */
-#entry-context > .entry-start-summary .entry-start-title {
-  font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
-  font-weight: 700;
-  font-size: 24px;
-  line-height: 1.3;
-  letter-spacing: normal;
-  text-transform: none;
-}

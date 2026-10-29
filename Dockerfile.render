@@ -3,11 +3,8 @@ WORKDIR /app
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 COPY main/agent_server.py main/explorer_server.py main/explorer_service.py main/explorer_pipeline.py main/explorer_protocol.py ./main/
-COPY main/paper_assistant.py ./main/
 COPY main/explorer ./main/explorer/
 COPY tools/proof_explorer/styles.css tools/proof_explorer/proof-reader.css tools/proof_explorer/protocol-reference.html tools/proof_explorer/protocol.html ./tools/proof_explorer/
-COPY tools/proof_explorer/papers/high-contrast/index.html tools/proof_explorer/papers/high-contrast/paper-data.json ./tools/proof_explorer/papers/high-contrast/
-COPY docs ./docs/
 ENV HOST=0.0.0.0 PORT=10000 PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
 EXPOSE 10000
 CMD ["python", "main/explorer_server.py"]

@@ -8,7 +8,6 @@
 !main/explorer_service.py
 !main/explorer_pipeline.py
 !main/explorer_protocol.py
-!main/paper_assistant.py
 !main/explorer/
 !main/explorer/index.html
 !main/explorer/app.js
@@ -20,13 +19,3 @@
 !tools/proof_explorer/proof-reader.css
 !tools/proof_explorer/protocol-reference.html
 !tools/proof_explorer/protocol.html
-!tools/proof_explorer/papers/
-!tools/proof_explorer/papers/high-contrast/
-!tools/proof_explorer/papers/high-contrast/index.html
-!tools/proof_explorer/papers/high-contrast/paper-data.json
-!docs/
-!docs/**
-**/.env
-**/.env.*
-**/__pycache__
-**/.DS_Store

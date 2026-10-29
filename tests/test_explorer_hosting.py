@@ -22,13 +22,10 @@ class HostedExplorerTests(unittest.TestCase):
         cls.temp = tempfile.TemporaryDirectory()
         cls.root = Path(cls.temp.name)
         files = ['main/'+f for f in ['agent_server.py', 'explorer_server.py',
-                 'explorer_service.py', 'explorer_pipeline.py', 'explorer_protocol.py', 'paper_assistant.py']]
+                 'explorer_service.py', 'explorer_pipeline.py', 'explorer_protocol.py']]
         files += ['main/explorer/'+f for f in ['index.html', 'app.js', 'styles.css', 'example.json']]
         files += ['tools/proof_explorer/'+f for f in ['styles.css', 'proof-reader.css',
                   'protocol-reference.html', 'protocol.html']]
-        files += ['tools/proof_explorer/papers/high-contrast/'+f for f in ['index.html','paper-data.json']]
-        files += ['docs/home.html']
-        files += ['docs/papers/high-contrast/'+f for f in ['index.html','dictionary.js','dictionary-data.js','dictionary.css','annotation-format.js','assistant.js','assistant.css']]
         for name in files:
             dest = cls.root/name
             dest.parent.mkdir(parents=True, exist_ok=True)
@@ -86,28 +83,10 @@ class HostedExplorerTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertIn('id="generate-form"', page)
         self.assertIn('Temporary hosting storage', page)
-        self.assertIn('Explore the demo', page)
-        self.assertIn('/demo/home.html', page)
-        self.assertNotIn('http://127.0.0.1:8882', page)
+        self.assertIn('Five-theorem explorers', page)
         for path in ['/explorer/app.js', '/explorer/styles.css', '/explorer/base.css', '/explorer/reader.css']:
             self.assertEqual(self.request(path, authenticated=True)[0], 200)
         self.assertEqual(self.request('/api/chat', authenticated=True, payload={})[0], 404)
-
-    def test_demo_and_annotations_require_authentication(self):
-        for path in ['/demo/home.html','/demo/papers/high-contrast/','/api/paper-assistant/status']:
-            self.assertEqual(self.request(path)[0],401)
-            self.assertEqual(self.request(path,authenticated=True)[0],200)
-        self.assertEqual(self.request('/api/paper-assistant',payload={})[0],401)
-        self.assertEqual(self.request('/api/paper-assistant',authenticated=True,payload={})[0],400)
-        for path in ['/demo/../main/agent_server.py','/demo/%2e%2e/.env','/demo/.env']:
-            self.assertEqual(self.request(path,authenticated=True)[0],404)
-        for asset in ['dictionary.js','dictionary-data.js','dictionary.css','annotation-format.js','assistant.js']:
-            self.assertEqual(self.request('/demo/papers/high-contrast/'+asset,authenticated=True)[0],200)
-        req=urllib.request.Request(self.url+'/api/paper-assistant',data=b'{}',headers={
-            'Origin':'https://elsewhere.example',
-            'Authorization':'Basic '+base64.b64encode(b'test:test-only-password').decode()})
-        with self.assertRaises(urllib.error.HTTPError) as error:urllib.request.urlopen(req)
-        self.assertEqual(error.exception.code,403)
 
     def test_import_and_read_saved_explorer_without_api_key(self):
         document = json.loads((self.root/'main/explorer/example.json').read_text())
