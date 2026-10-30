@@ -1,0 +1,14 @@
+const {test}=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');
+const base=path.join(__dirname,'../tools/proof_explorer/papers/eth');
+const data=require(path.join(base,'paper-data.json')),model=require(path.join(base,'paper-model.js')),ex=require(path.join(base,'examples.js'));
+for(const t of Object.values(data.theorems)){
+ test(t.label+': every move uses established premises and only the last closes the proof',()=>{
+ assert.equal(model.validate(t),true);for(let i=0;i<=t.steps.length;i++){const s=model.stateAt(t,i);assert.equal(s.closed,i===t.steps.length);assert.equal(s.facts[0].text,t.given);assert.equal(s.facts.length,1+t.steps.slice(0,i).filter(s=>s.fact).length);if(!s.closed)assert.ok(s.wants.length);for(const g of s.goals.filter(g=>g.closedBy))assert.ok(s.facts.some(f=>f.id===g.closedBy));}
+ });
+ test(t.label+': ablation removes selected action and its downstream conclusions',()=>{for(let i=1;i<=t.steps.length;i++){const s=model.branchAt(t,i),before=model.stateAt(t,i-1);assert.deepEqual(s.facts,before.facts);assert.equal(s.closed,false);assert.equal(s.branch.removed,t.steps[i-1].id);assert.ok(!s.actions.includes(s.branch.removed));}});
+ test(t.label+': provenance and alternatives are complete',()=>{for(const s of t.steps){assert.ok(s.source[0]>=1&&s.source[0]<=67);assert.ok(s.source[1]&&s.observation&&s.move&&s.verification);assert.ok(['budget','insufficient','equivalent'].includes(s.alternative.status));assert.ok(s.alternative.provenance&&s.alternative.cost&&s.alternative.source);}});
+}
+test('Toy SAT counts equal the sum of disjoint summary fibers',()=>{const values=Array.from({length:16},(_,i)=>ex.bits(i));assert.equal(values.filter(ex.satisfies).length,8);assert.equal(ex.fibers().reduce((s,r)=>s+r.total,0),8);for(const r of ex.fibers())assert.equal(values.filter(x=>x[1]===r.y[0]&&x[2]===r.y[1]&&ex.satisfies(x)).length,r.total);assert.equal(ex.satisfies([1,0,0,1]),false);});
+test('Later facts cannot be used in an earlier move',()=>{const t=structuredClone(data.theorems.A);t.steps[1].uses.push('result');assert.throws(()=>model.stateAt(t,2),/Unavailable premise/);});
+test('New explorer contains no AI endpoints or high-contrast assumptions',()=>{for(const f of ['index.html','paper.js','paper-model.js','paper-data.json','examples.js']){const s=fs.readFileSync(path.join(base,f),'utf8');assert.ok(!s.includes('/api/'),f);assert.ok(!/P1–P3|Θm|arxiv.org\/pdf\/2609/.test(s),f);}const js=fs.readFileSync(path.join(base,'paper.js'),'utf8');assert.ok(js.includes("$('#timeline').max=theorem().steps.length"));});
+test('Interpolation bound is explicitly distinguished from the headline',()=>{assert.ok(data.theorems.B.statement.includes('Proposition 6.4'));assert.ok(data.theorems.B.statement.includes('sharper'));assert.ok(data.theorems.A.statement.includes('algebra'));});

@@ -1,0 +1,936 @@
+{
+  "title": "The Exponential Time Hypothesis is False",
+  "authors": "OpenAI",
+  "version": "Revised 25 October 2026 · 67-page preprint",
+  "source": "paper.pdf",
+  "source_url": "https://github.com/openai/math/blob/main/preprints/The-Exponential-Time-Hypothesis-is-False-October-25-2026/paper.pdf",
+  "page_count": 67,
+  "theorems": {
+    "A": {
+      "id": "A",
+      "label": "Proposition 3.4",
+      "short": "The counting engine",
+      "title": "Share information. Separate the sum.",
+      "page": 25,
+      "proofpage": 21,
+      "formula": "\\(Z=H(0)\\)\\[2Qr\\,C_q(2D+1)^{2\\tau n}2^{2n/r}\\]",
+      "meaning": "Compute an exact global sum by fixing small shared summaries, counting locally, and recovering the original value by interpolation.",
+      "scope": "Given a design satisfying Definition 3.1 · arithmetic and storage bound over a commutative Q-algebra",
+      "given": "Polynomial factors of total incidence-input degree ≤d; supplied Definition 3.1 design; commutative Q-algebra A",
+      "goal": "Exact Z with the vector budget of Proposition 3.4 and polynomial stored elements",
+      "statement": "Under Definition 3.1 and the degree bound (3.2), the common routine computes Z using at most 2Qr C_q (2D+1)^{2τn}2^{2n/r} Boolean vectors, at most |F| factor evaluations per vector, and polynomial additional algebra operations and stored elements. Here q=⌊dR/Q⌋, J=q+1 and C_q=Σ_{j≤min(q,n)}2ʲ binom(n,j). Factor evaluation costs and coefficient sizes are accounted for separately in the application.",
+      "steps": [
+        {
+          "id": "A1",
+          "title": "Ask for a recoverable polynomial",
+          "direction": "backward",
+          "uses": [
+            "given"
+          ],
+          "fact": null,
+          "opens": [
+            [
+              "recover",
+              "Recover the exact target Z"
+            ],
+            [
+              "cost",
+              "Bound all enumeration and storage costs"
+            ],
+            [
+              "assemble",
+              "Combine the exactness and resource guarantees"
+            ]
+          ],
+          "closes": [],
+          "observation": "We want one difficult sum. If it sits inside a low-degree polynomial, enough easier evaluations can determine it.",
+          "move": "S-R: replace the counting goal by polynomial recovery plus an explicit cost audit.",
+          "verification": "B-L: it is sufficient to recover H(0)=Z exactly and establish the resource bounds; neither subgoal is yet proved.",
+          "proof": "Let Z be the sum over Boolean assignments of the product of polynomial factors. Seek a polynomial H with H(0)=Z and degree at most dR.",
+          "detail": "The toolkit is Definition 3.1: partitions, measurements and replacement forms are supplied. Their existence is a separate construction in Section 4, linked from the paper map.",
+          "source": [
+            21,
+            "§3.1–3.2"
+          ],
+          "alternative": {
+            "title": "Evaluate the original sum directly",
+            "status": "budget",
+            "reason": "Enumerating every assignment is exact, but does not use the supplied design.",
+            "cost": "2ⁿ assignments; correctness survives but the intended speedup is lost.",
+            "source": [
+              21,
+              "Equation (3.1)"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": false
+        },
+        {
+          "id": "A2",
+          "title": "Restore the original inputs at zero",
+          "direction": "forward",
+          "uses": [
+            "given"
+          ],
+          "fact": [
+            "family",
+            "H(0)=Z and deg H ≤ dR"
+          ],
+          "opens": [],
+          "closes": [],
+          "observation": "Each occurrence may be deformed differently, provided every input returns to its original coordinate at zero.",
+          "move": "S-C: define H(T) using the supplied rows P_{f,v}(T).",
+          "verification": "B-C: substitute P_{f,v}(0)=δ_v. A product of total incidence-input degree d has T-degree at most dR.",
+          "proof": "Define \\(H(T)=\\sum_{x\\in\\{0,1\\}^n}\\prod_f\\Phi_f((\\langle P_{f,v}(T),x\\rangle)_{v\\in I_f})\\). Then \\(H(0)=Z\\) and \\(\\deg H\\le dR\\).",
+          "detail": "At nonzero T the replacement values may be rational, rather than Boolean. They are evaluations of polynomial factors, not new satisfying assignments.",
+          "source": [
+            21,
+            "Equation (3.3)"
+          ],
+          "alternative": {
+            "title": "Choose unrelated forms at every point",
+            "status": "budget",
+            "reason": "Ordinary interpolation can fit arbitrary pointwise choices but typically costs degree Q rather than R≪Q.",
+            "cost": "Larger degree requires more Taylor coefficients; the gain in the runtime bound can disappear.",
+            "source": [
+              26,
+              "§4 introduction"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": true
+        },
+        {
+          "id": "A3",
+          "title": "Replace external variables by shared summaries",
+          "direction": "forward",
+          "uses": [
+            "given"
+          ],
+          "fact": [
+            "local",
+            "Every factor depends only on its group and the summary tuple"
+          ],
+          "opens": [],
+          "closes": [],
+          "observation": "A group need not know every bit elsewhere if all external effects are captured by a small shared measurement.",
+          "move": "S-I: interpret the kernel condition as invariance on measurement fibers.",
+          "verification": "B-L: equal measurements imply that the difference lies in ker C; Definition 3.1(4) makes the replacement form unchanged.",
+          "proof": "For each interpolation point \\(t\\), put \\(y_g=C_{t,g}x_g\\). If two assignments in another group have the same \\(y_g\\), every replacement form of the factor takes the same value. Thus fixing all summaries localizes each factor to its assigned group.",
+          "detail": "All factors use the same measurement matrices. Charging for a separate summary for each factor would miss the central saving.",
+          "source": [
+            22,
+            "Definition 3.1; §3.3"
+          ],
+          "alternative": {
+            "title": "Split variables and ignore crossing clauses",
+            "status": "insufficient",
+            "reason": "The original factors can connect different groups. Multiplying independent group counts then loses constraints.",
+            "cost": "Wrong count unless separation has actually been proved.",
+            "source": [
+              8,
+              "§2.2"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": true
+        },
+        {
+          "id": "A4",
+          "title": "Bound the number of summary values",
+          "direction": "forward",
+          "uses": [
+            "given"
+          ],
+          "fact": [
+            "range",
+            "At most (2D+1)ᶜ summary tuples; c ≤ 2τn"
+          ],
+          "opens": [],
+          "closes": [],
+          "observation": "Few measurements are useful only if each measurement has few possible values.",
+          "move": "B-C: use the integer row ℓ₁ bound to bound every Boolean measurement.",
+          "verification": "Each Boolean x_g has coordinates 0 or 1, so |(C_gx_g)_j|≤D. There are 2D+1 integer choices per row.",
+          "proof": "With \\(c=\\sum_g c_g\\le2\\tau n\\), enumerate \\(\\mathbf y\\in\\prod_g\\{-D,\\ldots,D\\}^{c_g}\\), at most \\((2D+1)^c\\) tuples.",
+          "detail": "Rank alone is insufficient: the single row (1,2,4,…,2ⁿ⁻¹) distinguishes all 2ⁿ Boolean assignments. The coefficient bound prevents this hidden exponential range.",
+          "source": [
+            22,
+            "Definition 3.1; Lemma 3.2"
+          ],
+          "alternative": {
+            "title": "Control rank but not coefficient sizes",
+            "status": "insufficient",
+            "reason": "A rank-one measurement can still encode every Boolean assignment through binary place values.",
+            "cost": "One row can have 2ⁿ possible outputs, so row count alone does not give the promised budget.",
+            "source": [
+              22,
+              "Paragraph preceding §3.3"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": true
+        },
+        {
+          "id": "A5",
+          "title": "Factor each measurement fiber exactly",
+          "direction": "forward",
+          "uses": [
+            "local",
+            "range"
+          ],
+          "fact": [
+            "fiber",
+            "Exact sum of products of local fiber counts, with fixed-bit restrictions"
+          ],
+          "opens": [],
+          "closes": [],
+          "observation": "Once the shared information is fixed, assignments in disjoint groups can be combined independently.",
+          "move": "B-L/B-C: partition assignments by their unique summary tuple and distribute products over local sums.",
+          "verification": "Choose representatives in each nonempty fiber. Kernel invariance permits replacing other groups by those representatives. Empty fibers contribute zero.",
+          "proof": "For \\(X_{g,E}(y_g)=\\{u\\in\\{0,1\\}^{S_g}:C_gu=y_g,\\ u_i=1\\ (i\\in E\\cap S_g)\\}\\), sum the localized factor product in each group. Then \\(Z_E=\\sum_{\\mathbf y}\\prod_g\\Sigma_g(\\mathbf y)\\).",
+          "detail": "Every global assignment has exactly one summary tuple. This establishes exactness, including when factors have signed or polynomial values. No independence assumption about random variables is involved.",
+          "source": [
+            23,
+            "Lemma 3.2, proof; (3.4)"
+          ],
+          "alternative": {
+            "title": "Store every fiber as a lookup table",
+            "status": "budget",
+            "reason": "The same identity remains exact, but retaining all local assignments or all summary entries can consume exponential space.",
+            "cost": "Sequential scans preserve polynomial workspace; a complete table need not.",
+            "source": [
+              23,
+              "Lemma 3.2, two-pass algorithm"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": false
+        },
+        {
+          "id": "A6",
+          "title": "Ask for Taylor data, not only values",
+          "direction": "backward",
+          "uses": [
+            "family"
+          ],
+          "fact": [
+            "jets",
+            "Q jets of order J−1 uniquely determine H"
+          ],
+          "opens": [],
+          "closes": [],
+          "observation": "Q point values need not determine a polynomial of degree dR. Derivatives supply the missing information at the same easy points.",
+          "move": "S-G: choose q=⌊dR/Q⌋ and J=q+1; target H(t+z) modulo zᴶ at every t.",
+          "verification": "The difference of two candidates with matching jets is divisible by ∏_{t=1}^Q(T−t)ᴶ, whose degree QJ exceeds dR.",
+          "proof": "Put \\(q=\\lfloor dR/Q\\rfloor\\), \\(J=q+1\\). Knowing \\([z^j]H(t+z)\\) for all \\(t\\in[Q]\\) and \\(0\\le j<J\\) uniquely determines H by rational Hermite interpolation.",
+          "detail": "This is a backward move: it specifies sufficient data, not already computed derivatives. Rational scalars act on the commutative Q-algebra in the proposition.",
+          "source": [
+            24,
+            "§3.4; (3.5)–(3.6)"
+          ],
+          "alternative": {
+            "title": "Use H(1),…,H(Q) alone",
+            "status": "insufficient",
+            "reason": "Values alone do not generally determine H when dR≥Q. A multiple of ∏(T−t) is invisible at all supplied points.",
+            "cost": "Uniqueness fails without sufficient values or higher-order coefficients.",
+            "source": [
+              24,
+              "§3.4"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": true
+        },
+        {
+          "id": "A7",
+          "title": "Separate the perturbation from the summed bits",
+          "direction": "forward",
+          "uses": [
+            "family",
+            "local",
+            "jets"
+          ],
+          "fact": [
+            "shift",
+            "The jth Taylor coefficient has perturbation degree at most j"
+          ],
+          "opens": [],
+          "closes": [],
+          "observation": "The design is guaranteed at t, not t+z. Expanding naively could reconnect all the groups.",
+          "move": "S-C: introduce independent formal variables X for ΔP(z), keeping the original Boolean x in the base forms.",
+          "verification": "ΔP(z)=P(t+z)−P(t) is divisible by z. Each occurrence of a formal X contributes at least one z.",
+          "proof": "Use inputs \\(\\langle P_{f,v}(t),x\\rangle+\\langle\\Delta P_{f,v}(z),X\\rangle\\) to define \\(G_x(X,z)\\). Then \\(\\sum_xG_x(x,z)=H(t+z)\\) and \\(\\deg_X[z^j]G_x\\le j\\).",
+          "detail": "Fixing X makes the correction independent of x, restoring the group separation. Modulo zᴶ, only interactions involving at most q formal variables need recovery.",
+          "source": [
+            24,
+            "Equations (3.7)–(3.9)"
+          ],
+          "alternative": {
+            "title": "Reuse the same design directly at t+z",
+            "status": "insufficient",
+            "reason": "The kernel condition was proved at the selected t. It gives no guarantee for the shifted forms.",
+            "cost": "Unjustified locality would invalidate the factorized sum.",
+            "source": [
+              24,
+              "§3.4"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": true
+        },
+        {
+          "id": "A8",
+          "title": "Recover the diagonal by subset inversion",
+          "direction": "forward",
+          "uses": [
+            "shift"
+          ],
+          "fact": [
+            "inversion",
+            "Diagonal substitution X=x is a sum of fixed substitutions"
+          ],
+          "opens": [],
+          "closes": [],
+          "observation": "A low-degree Boolean polynomial is determined by its values on small indicator sets.",
+          "move": "S-I: multilinearize on the Boolean cube and apply Möbius inversion on subsets.",
+          "verification": "The coefficient on ∏_{i∈E}X_i equals Σ_{U⊆E}(−1)^{|E|−|U|}p_x(1_U). At X=x, its monomial restricts the sum to x_i=1 on E.",
+          "proof": "Lemma 3.3 gives \\(\\sum_xp_x(x)=\\sum_{|E|\\le q}\\sum_{U\\subseteq E}(-1)^{|E|-|U|}\\sum_{x:x_i=1\\ (i\\in E)}p_x(1_U)\\). Apply it to each Taylor coefficient.",
+          "detail": "This recovers the coupling X=x using fixed substitutions. The multivariate polynomial is used to justify the identity; the algorithm does not store its full expansion.",
+          "source": [
+            24,
+            "Lemma 3.3; (3.10)"
+          ],
+          "alternative": {
+            "title": "Expand every multivariate coefficient",
+            "status": "budget",
+            "reason": "Explicit expansion can compute the same answer but introduces a large coefficient table and defeats the storage plan.",
+            "cost": "The routine instead enumerates subset pairs and stores truncated univariate polynomials.",
+            "source": [
+              25,
+              "Equation (3.13) and following paragraph"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": true
+        },
+        {
+          "id": "A9",
+          "title": "Compute every jet with the fiber algorithm",
+          "direction": "forward",
+          "uses": [
+            "fiber",
+            "inversion",
+            "jets"
+          ],
+          "fact": [
+            "data",
+            "All QJ Taylor coefficients are available exactly"
+          ],
+          "opens": [],
+          "closes": [],
+          "observation": "Each fixed formal substitution leaves only local bit restrictions, so the same counting identity can be reused.",
+          "move": "B-L: apply Lemma 3.2 in the ring A[z]/(zᴶ) for every pair U⊆E.",
+          "verification": "Each correction is now constant in x, and fixed bits are local within each group. Ring distributivity is sufficient for the fiber argument.",
+          "proof": "For each \\(t\\) and \\((E,U)\\), evaluate the restricted sum of \\(G_x(\\mathbf{1}_U,z)\\) modulo \\(z^J\\). Add it with sign \\((-1)^{|E|-|U|}\\). This yields all coefficients of \\(H(t+z)\\) below degree \\(J\\).",
+          "detail": "There are C_q=Σ_{s≤min(q,n)}2ˢ binom(n,s) subset pairs. Per pair, at most 2r(2D+1)^{2τn}2^{2n/r} Boolean vectors are examined.",
+          "source": [
+            25,
+            "Equations (3.12)–(3.14)"
+          ],
+          "alternative": {
+            "title": "Enumerate all E⊆[n] regardless of degree",
+            "status": "budget",
+            "reason": "The identity still works, but the truncation already proves all larger supports unnecessary.",
+            "cost": "The pair count becomes 3ⁿ instead of C_q.",
+            "source": [
+              25,
+              "Equation (3.14)"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": false
+        },
+        {
+          "id": "A10",
+          "title": "Interpolate and recover the target",
+          "direction": "forward",
+          "uses": [
+            "data",
+            "jets",
+            "family"
+          ],
+          "fact": [
+            "exact",
+            "Hermite interpolation recovers Z=H(0)"
+          ],
+          "opens": [],
+          "closes": [
+            "recover"
+          ],
+          "observation": "The required data have now been computed; the uniqueness argument can become a recovery algorithm.",
+          "move": "B-L: solve the rational Hermite system and take its value at zero.",
+          "verification": "The inverse Hermite matrix uses rational scalars, so it acts coefficientwise on elements of A.",
+          "proof": "Recover H from its Q jets using rational Hermite interpolation. Since the replacements restore every original coordinate at zero, the value H(0) equals the desired Z.",
+          "detail": "Unlike numerical curve fitting, this calculation is exact. Bounds on integer numerators and denominators are additionally needed when translating the routine into bit complexity.",
+          "source": [
+            24,
+            "§3.4; Proposition 3.4"
+          ],
+          "alternative": {
+            "title": "Fit the polynomial in floating point",
+            "status": "insufficient",
+            "reason": "Small numerical errors do not by themselves certify the exact integer count after cancellations.",
+            "cost": "A separate precision and rounding proof would be required.",
+            "source": [
+              47,
+              "Appendix B, exact arithmetic"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": false
+        },
+        {
+          "id": "A11",
+          "title": "Charge every loop and retain only current work",
+          "direction": "forward",
+          "uses": [
+            "range",
+            "fiber",
+            "data"
+          ],
+          "fact": [
+            "resources",
+            "The stated vector budget and polynomial stored elements suffice"
+          ],
+          "opens": [],
+          "closes": [
+            "cost"
+          ],
+          "observation": "A fast local calculation is not enough: summary enumeration and Taylor recovery must also be paid for.",
+          "move": "B-C: multiply the point, subset, summary and group costs; stream the loops.",
+          "verification": "Q points × C_q pairs × 2r(2D+1)^{2τn}2^{2n/r} vectors. Only current indices, accumulators and QJ coefficients are retained.",
+          "proof": "The vector budget is \\(2QrC_q(2D+1)^{2\\tau n}2^{2n/r}\\). For \\(d=O(n)\\), the exponent apart from polynomial factors is \\(O(n[(R/Q)\\log(2Q/R)+\\tau\\log(2D+1)+1/r])\\).",
+          "detail": "Proposition 3.4 bounds arithmetic operations and stored algebra elements. Polynomial bit complexity for the application is established separately in Proposition 5.3 and Appendix B.",
+          "source": [
+            25,
+            "Proposition 3.4; (3.16), p.26"
+          ],
+          "alternative": {
+            "title": "Optimize group size alone",
+            "status": "insufficient",
+            "reason": "Making groups small can increase the number or range of shared summaries; Taylor work can also dominate.",
+            "cost": "All three exponent terms must tend to zero together.",
+            "source": [
+              26,
+              "Equation (3.16)"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": true
+        },
+        {
+          "id": "A12",
+          "title": "Meet the exactness and resource goals",
+          "direction": "forward",
+          "uses": [
+            "exact",
+            "resources"
+          ],
+          "fact": [
+            "result",
+            "Common counting routine established under Definition 3.1"
+          ],
+          "opens": [],
+          "closes": [
+            "assemble"
+          ],
+          "observation": "The exact output and the resource bound have both been justified under the same design assumptions.",
+          "move": "B-L: combine the two discharged obligations to conclude Proposition 3.4.",
+          "verification": "No unproved design existence or bit-size statement is included in this conclusion. Those are separate toolkit results for the application.",
+          "proof": "Together, exact recovery and the enumeration/storage audit prove Proposition 3.4. The paper next constructs suitable low-degree designs and applies the routine to sparse polynomial equations.",
+          "detail": "This is the meeting point of forward facts and backward goals. It completes the conditional counting engine, not yet the SAT theorem.",
+          "source": [
+            25,
+            "Proposition 3.4"
+          ],
+          "alternative": {
+            "title": "Claim subexponential SAT time at this point",
+            "status": "insufficient",
+            "reason": "The design parameters, factor degree, coefficient sizes and SAT reduction still need proofs.",
+            "cost": "Missing dependencies, rather than a measured infinite search cost.",
+            "source": [
+              26,
+              "End of §3.5"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": false
+        }
+      ]
+    },
+    "B": {
+      "id": "B",
+      "label": "Proposition 6.4",
+      "short": "The SAT consequence",
+      "title": "Count every solution. Shrink the exponent.",
+      "page": 43,
+      "proofpage": 39,
+      "formula": "\\[\\#F\\text{ in }(n+m)^{O_k(1)}2^{O_k(\\rho(n))}\\]\\[\\rho(n)=\\frac{n(\\log\\log n)^2}{\\sqrt{\\log n}}=o(n)\\]",
+      "meaning": "Reduce fixed-width SAT counting to sparse polynomial systems without adding new variables, and keep every layer within a subexponential budget.",
+      "scope": "Fixed k ≥ 2 · deterministic exact count · polynomial bit space · interpolation bound",
+      "given": "A k-CNF F on n declared variables with m clauses; fixed k≥2; Theorem 2.2 as a proved common-zero-counting toolkit",
+      "goal": "Count every solution exactly, with the subexponential time bound and polynomial bit space",
+      "statement": "For every fixed k≥2, the interpolation algorithm counts satisfying assignments of a k-CNF on n≥20 declared variables and m clauses in (n+m)^{O_k(1)}2^{O_k(ρ(n))} bit operations and (n+m)^{O_k(1)} bits of space, where ρ(n)=n(log log n)²/√log n. This is Proposition 6.4, rather than the sharper tensor-contraction bound of Theorem 1.1.",
+      "steps": [
+        {
+          "id": "B1",
+          "title": "Separate exactness from speed",
+          "direction": "backward",
+          "uses": [
+            "given"
+          ],
+          "fact": null,
+          "opens": [
+            [
+              "exact",
+              "Count all satisfying assignments exactly"
+            ],
+            [
+              "time",
+              "Keep the time exponent within the stated sublinear bound"
+            ],
+            [
+              "space",
+              "Use polynomial bit space"
+            ],
+            [
+              "assemble",
+              "Combine the exactness and resource guarantees"
+            ]
+          ],
+          "closes": [],
+          "observation": "Counting helps decide SAT only if it is exact, and the ETH consequence depends on the full cost including preprocessing.",
+          "move": "S-R: reduce Proposition 6.4 to correctness, time and space obligations.",
+          "verification": "B-L: these conjuncts are precisely the claims of the proposition. k is fixed while n grows.",
+          "proof": "For fixed \\(k\\ge2\\), define \\(\\rho(n)=n(\\log\\log n)^2/\\sqrt{\\log n}\\). We seek exact #F in \\((n+m)^{O_k(1)}2^{O_k(\\rho(n))}\\) bit operations and polynomial space.",
+          "detail": "This is the interpolation route of Proposition 6.4. Appendix D proves the sharper exponent in Theorem 1.1 using an additional tensor-contraction argument.",
+          "source": [
+            43,
+            "Proposition 6.4; Theorem 1.1, p.2"
+          ],
+          "alternative": {
+            "title": "Quote the sharper exponent for this proof",
+            "status": "insufficient",
+            "reason": "The rational interpolation proof includes an extra log log n factor relative to the general-input headline bound.",
+            "cost": "Appendix D is an additional dependency, not a free improvement.",
+            "source": [
+              53,
+              "Appendix D introduction"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": false
+        },
+        {
+          "id": "B2",
+          "title": "Normalize without losing declared variables",
+          "direction": "forward",
+          "uses": [
+            "given"
+          ],
+          "fact": [
+            "normal",
+            "Normalized formula with the same count on n declared bits"
+          ],
+          "opens": [],
+          "closes": [],
+          "observation": "Unused variables still double the number of assignments; a counting reduction must preserve them.",
+          "move": "B-C: remove redundant syntax and handle empty or contradictory formulas directly.",
+          "verification": "Tautologies, duplicate clauses and a clause containing a smaller clause do not change the satisfying set. Retain all declared variables.",
+          "proof": "Delete repeated literals, tautologies, duplicate clauses and subsumed clauses. An empty clause gives zero; no clauses gives 2ⁿ. The finitely many small input sizes can be checked exhaustively.",
+          "detail": "The polynomial preprocessing cost is measured in the original n and m. This is why the final statement retains an input-size polynomial factor.",
+          "source": [
+            43,
+            "Proposition 6.4, proof"
+          ],
+          "alternative": {
+            "title": "Delete unused variables without a correction",
+            "status": "insufficient",
+            "reason": "Each free declared variable contributes a factor of two to #F.",
+            "cost": "The decision answer survives, but the exact count changes.",
+            "source": [
+              43,
+              "Proposition 6.4, normalization"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": false
+        },
+        {
+          "id": "B3",
+          "title": "Partition solutions into sparse leaves",
+          "direction": "forward",
+          "uses": [
+            "normal"
+          ],
+          "fact": [
+            "leaves",
+            "Disjoint sparse formulas on the original n variables"
+          ],
+          "opens": [],
+          "closes": [],
+          "observation": "A dense formula is difficult to compress directly. Sparse cases help only if their counts can be added without overlap.",
+          "move": "S-G: apply disjoint sparsification, Lemma 6.3, with σ=1/s.",
+          "verification": "Each satisfying assignment belongs to exactly one leaf. The tree has poly_k(n,s)2^{n/s} nodes and occurrence bound B=O_k((s log s)^{k−1}).",
+          "proof": "Choose \\(s=\\lfloor\\sqrt{\\lambda}/\\nu^2\\rfloor\\), where \\(\\lambda=\\lceil\\log_2n\\rceil\\), \\(\\nu=\\lceil\\log_2\\lambda\\rceil\\). For \\(s\\ge2\\), use \\(\\sigma=1/s\\); otherwise use exhaustive search. Lemma 6.3 partitions the satisfying set into sparse leaves.",
+          "detail": "The tree uses the same original variables. Appendix A makes the branching cases disjoint, which is stronger than merely covering the satisfying assignments.",
+          "source": [
+            43,
+            "Lemma 6.3; Appendix A, pp.44–47"
+          ],
+          "alternative": {
+            "title": "Use overlapping sparse covers and add their counts",
+            "status": "insufficient",
+            "reason": "A cover suffices for decision, but an assignment in two leaves would be counted twice.",
+            "cost": "Requires disjointness or a separate overlap correction.",
+            "source": [
+              44,
+              "Appendix A opening"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": true
+        },
+        {
+          "id": "B4",
+          "title": "Encode violations as sparse parity equations",
+          "direction": "forward",
+          "uses": [
+            "leaves"
+          ],
+          "fact": [
+            "violations",
+            "N(A)=#G+D(A) for every candidate parity matrix"
+          ],
+          "opens": [],
+          "closes": [],
+          "observation": "Every genuine solution has zero violated clauses, so it passes any parity test of the violation vector.",
+          "move": "S-C: encode clause violations v_e over F₂ and let rows of A test their parity.",
+          "verification": "deg v_e≤k and each v_e has at most 2ᵏ monomials. Satisfying assignments have v=0; other accepted assignments contribute D(A).",
+          "proof": "For a leaf G, form \\(v(x)=(v_e(x))_e\\) and equations \\(Av(x)=0\\) over \\(\\mathbb F_2\\). Their common-zero count is \\(N(A)=\\#G+D(A)\\), with \\(D(A)\\) the remaining false positives.",
+          "detail": "The crucial difference is between a true satisfying assignment and a nonsolution that merely passes the current tests. The constant #G is identical across candidate next rows.",
+          "source": [
+            39,
+            "§6; Equation (6.1), p.40"
+          ],
+          "alternative": {
+            "title": "Keep one equation per original clause",
+            "status": "budget",
+            "reason": "This is exact, but there may be Bn equations with growing polylogarithmic B.",
+            "cost": "The common-zero counter assumes at most cn equations for fixed c, so this shortcut does not meet its input promise.",
+            "source": [
+              39,
+              "§6 introduction"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": false
+        },
+        {
+          "id": "B5",
+          "title": "Make every surviving error spread widely",
+          "direction": "forward",
+          "uses": [
+            "violations"
+          ],
+          "fact": [
+            "initial",
+            "A⁽⁰⁾ has ≤3n rows; every nonzero survivor violates ≥m/P clauses"
+          ],
+          "opens": [],
+          "closes": [],
+          "observation": "A short test is unlikely to detect an assignment that violates just one of many clauses.",
+          "move": "S-L: apply the sparse initial-check construction of Lemma 6.1.",
+          "verification": "A⁽⁰⁾z=0 and z≠0 imply |supp z|≥m/P. Rows have at most D₀ nonzero entries; construction is deterministic.",
+          "proof": "For μ=⌊log₂m⌋+1 set P=20000B²μ² and D₀=320000B²μ³. Lemma 6.1 builds at most 3n sparse tests such that every nonsatisfying survivor has a violation support of size at least m/P.",
+          "detail": "Toolkit detail: the proof builds a small-bias bipartite expander and imposes local code checks on incident edges. Local distance plus expansion forces a nonzero accepted edge word to have large support (pp.40–42).",
+          "source": [
+            40,
+            "Lemma 6.1, proof pp.40–42"
+          ],
+          "alternative": {
+            "title": "Start immediately with short random parity tests",
+            "status": "insufficient",
+            "reason": "A singleton violation is hit with probability only about P/m, rather than a uniform constant.",
+            "cost": "The later 3/4 contraction guarantee would be unsupported.",
+            "source": [
+              40,
+              "§6.1 opening"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": true
+        },
+        {
+          "id": "B6",
+          "title": "Show that a short test rejects a constant fraction",
+          "direction": "forward",
+          "uses": [
+            "initial"
+          ],
+          "fact": [
+            "average",
+            "Average false-positive count after a test is ≤(3/4)D(A)"
+          ],
+          "opens": [],
+          "closes": [],
+          "observation": "Once every error affects many clauses, a short random sample has a reliable chance of seeing it.",
+          "move": "B-C: sample P clause indices and independent binary coefficients; analyze one false positive.",
+          "verification": "The no-hit probability is ≤(1−1/P)^P≤e⁻¹<1/2. Given a hit, one independent coefficient makes the test parity uniform, so rejection probability exceeds 1/4.",
+          "proof": "Enumerate lists \\(\\gamma\\in([m]\\times\\{0,1\\})^P\\). For every nonsatisfying survivor, a uniform list rejects it with probability at least 1/4; therefore \\(\\mathbb E_\\gamma D(A;h_\\gamma)\\le\\tfrac34D(A)\\).",
+          "detail": "Randomness establishes an average bound. The final algorithm will choose a row deterministically; repeated clause indices are allowed, and their coefficients are combined modulo two.",
+          "source": [
+            42,
+            "Lemma 6.2, proof"
+          ],
+          "alternative": {
+            "title": "Set every sampled coefficient to one",
+            "status": "insufficient",
+            "reason": "Hitting a violation need not make the parity random: an even number of hits can cancel.",
+            "cost": "The independent coefficient bit is what supplies the one-half conditional rejection probability.",
+            "source": [
+              42,
+              "Lemma 6.2, random coefficients"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": false
+        },
+        {
+          "id": "B7",
+          "title": "Choose the best row by exact common-zero counts",
+          "direction": "forward",
+          "uses": [
+            "average",
+            "violations"
+          ],
+          "fact": [
+            "greedy",
+            "A deterministic row leaves at most (3/4)D(A) false positives"
+          ],
+          "opens": [],
+          "closes": [],
+          "observation": "We cannot inspect D(A) directly because #G is unknown, but every candidate count contains the same unknown offset.",
+          "move": "S-I/S-L: count each candidate system using Theorem 2.2 and minimize N(A;hγ).",
+          "verification": "N(A;hγ)=#G+D(A;hγ). Thus minimizing the known common-zero count also minimizes the unknown error count; a minimum is no larger than the average.",
+          "proof": "For every list γ, invoke Theorem 2.2 on the candidate equations. Choose a candidate with minimum N, breaking ties by enumeration order. This achieves the contraction deterministically.",
+          "detail": "This is not circular: Theorem 2.2 counts arbitrary supplied sparse polynomial systems, including imperfect tests, and is proved independently in Sections 3–5. Each candidate has at most 6n equations of fixed degree and polylogarithmic monomial count.",
+          "source": [
+            42,
+            "Lemma 6.2; §6.3 on p.43"
+          ],
+          "alternative": {
+            "title": "Choose a random row and declare exactness",
+            "status": "insufficient",
+            "reason": "The average contraction does not certify that one particular sequence eliminated every false positive.",
+            "cost": "Would need a separate success and verification analysis; it does not prove this deterministic theorem.",
+            "source": [
+              42,
+              "Lemma 6.2"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": true
+        },
+        {
+          "id": "B8",
+          "title": "Drive an integer error count below one",
+          "direction": "forward",
+          "uses": [
+            "greedy"
+          ],
+          "fact": [
+            "leafcount",
+            "After 3n rounds the final common-zero count equals #G"
+          ],
+          "opens": [],
+          "closes": [],
+          "observation": "The number of remaining false positives is a nonnegative integer, so a bound strictly below one forces it to be zero.",
+          "move": "B-C: iterate the contraction for exactly 3n rounds.",
+          "verification": "D₀≤2ⁿ and D_final≤(3/4)^{3n}2ⁿ=(27/32)ⁿ<1. Genuine solutions were never removed.",
+          "proof": "After \\(3n\\) rounds, \\(D(A)\\le(27/32)^n<1\\), hence \\(D(A)=0\\). One final call to the common-zero counter returns exactly \\(\\#G\\).",
+          "detail": "The algorithm runs a predetermined number of rounds. It never needs to know #G or detect when D has reached zero.",
+          "source": [
+            42,
+            "Lemma 6.2, final paragraphs"
+          ],
+          "alternative": {
+            "title": "Stop as soon as the count looks stable",
+            "status": "insufficient",
+            "reason": "One row may leave the count unchanged even when false positives remain.",
+            "cost": "A numerical stopping heuristic cannot replace the proven contraction budget.",
+            "source": [
+              42,
+              "Lemma 6.2"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": false
+        },
+        {
+          "id": "B9",
+          "title": "Sum the disjoint leaf counts",
+          "direction": "forward",
+          "uses": [
+            "leaves",
+            "leafcount"
+          ],
+          "fact": [
+            "exact",
+            "The accumulated count equals #F"
+          ],
+          "opens": [],
+          "closes": [
+            "exact"
+          ],
+          "observation": "Every satisfying assignment was assigned to exactly one leaf, and each leaf is now counted exactly.",
+          "move": "B-L: sum the leaf counts using the disjoint partition.",
+          "verification": "The leaf sets are pairwise disjoint and their union is the satisfying set of F. All counts lie between 0 and 2ⁿ.",
+          "proof": "Traverse the sparsification tree and add the exact count of each leaf. Disjointness proves that the accumulated value is #F, with no multiplicity correction.",
+          "detail": "This closes the correctness obligation, but the runtime and memory obligations remain open.",
+          "source": [
+            44,
+            "Proposition 6.4, proof"
+          ],
+          "alternative": {
+            "title": "Apply variable-copying to obtain bounded occurrence",
+            "status": "budget",
+            "reason": "Section 2.8 describes a counting-preserving alternative using variable copies and cyclic implications, but the number of variables grows.",
+            "cost": "It establishes a weaker subexponential route; the original-variable method avoids this blow-up in Proposition 6.4.",
+            "source": [
+              19,
+              "§2.8, pp.19–20"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": false
+        },
+        {
+          "id": "B10",
+          "title": "Keep both exponential costs sublinear",
+          "direction": "forward",
+          "uses": [
+            "leaves",
+            "leafcount"
+          ],
+          "fact": [
+            "time",
+            "The total running time satisfies Proposition 6.4"
+          ],
+          "opens": [],
+          "closes": [
+            "time"
+          ],
+          "observation": "Sparser leaves cost more branches. The sparsification parameter must balance both expenses.",
+          "move": "B-C: bound the number of leaves, candidate counts and the cost of every counter call.",
+          "verification": "n/s=O(ρ(n)); B is polylogarithmic. Candidate enumeration exp((log n)^{O_k(1)}) is absorbed by 2^{O_k(ρ(n))}. Multiplying leaf and solver bounds adds their exponents.",
+          "proof": "There are \\(\\operatorname{poly}_k(n,s)2^{n/s}\\) tree nodes. Each leaf requires \\(\\exp((\\log n)^{O_k(1)})\\) counter calls, each costing \\(2^{O_k(\\rho(n))}\\). Since \\(n/s=O(\\rho(n))\\), the total has the claimed bound.",
+          "detail": "Theorem 2.2 relies on low-degree forms (§4), a linear-degree parity product (§5.2), a small high-incidence branching set (§5.5), and exact-arithmetic bounds (Appendix B). Those costs are included in its bound.",
+          "source": [
+            43,
+            "§6.3–6.4, pp.43–44"
+          ],
+          "alternative": {
+            "title": "Fix σ at a positive constant",
+            "status": "budget",
+            "reason": "The sparsification tree may then have 2^{σn} leaves. A subexponential solver per leaf does not remove this linear exponent.",
+            "cost": "Let σ tend to zero while keeping the leaf occurrence bound polylogarithmic.",
+            "source": [
+              43,
+              "§6.4"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": true
+        },
+        {
+          "id": "B11",
+          "title": "Stream the computation in polynomial space",
+          "direction": "forward",
+          "uses": [
+            "leaves",
+            "time"
+          ],
+          "fact": [
+            "space",
+            "Polynomial bit workspace suffices"
+          ],
+          "opens": [],
+          "closes": [
+            "space"
+          ],
+          "observation": "Many subproblems can be processed without retaining all their solutions or computation histories.",
+          "move": "B-L: traverse the tree depth first and process candidates, counter calls and leaves sequentially.",
+          "verification": "The current path has polynomial depth and polynomially encoded formulas. The counter has polynomial working space, and the accumulated answer uses at most n+1 bits.",
+          "proof": "Retain only the current tree path, one leaf, the current and best candidate rows, and the count accumulator. Proposition 5.3 and Appendix B bound the bit sizes used by each counter.",
+          "detail": "Polynomial space is not obtained by ignoring large numbers: denominator and coefficient sizes must be bounded explicitly.",
+          "source": [
+            44,
+            "Proposition 6.4; Appendix B"
+          ],
+          "alternative": {
+            "title": "Cache every candidate and leaf result",
+            "status": "budget",
+            "reason": "Caching preserves the answer but may retain exponentially many objects.",
+            "cost": "The time-space guarantee relies on sequential evaluation.",
+            "source": [
+              44,
+              "Proposition 6.4, space paragraph"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": false
+        },
+        {
+          "id": "B12",
+          "title": "Close the count theorem and infer the ETH consequence",
+          "direction": "forward",
+          "uses": [
+            "exact",
+            "time",
+            "space"
+          ],
+          "fact": [
+            "result",
+            "Exact subexponential fixed-width SAT counting; decision by #F>0"
+          ],
+          "opens": [],
+          "closes": [
+            "assemble"
+          ],
+          "observation": "Deciding whether any solution exists is immediate once the exact count is known.",
+          "move": "B-L/B-C: combine the three obligations, then test #F>0 for fixed k=3.",
+          "verification": "ρ(n)/n=(log log n)²/√log n→0. For fixed width, duplicate-clause normalization leaves polynomially many distinct clauses. The running time therefore has sublinear exponent in n, up to input reading.",
+          "proof": "The exact count, time and space bounds prove Proposition 6.4. For k=3, testing whether #F is positive gives the paper’s deterministic subexponential SAT algorithm and its stated refutation of ETH.",
+          "detail": "Subexponential is not polynomial. General polynomial-size reductions can increase the variable count too much to transfer this bound, so this conclusion does not establish P=NP or a subexponential algorithm for every NP problem.",
+          "source": [
+            2,
+            "Theorem 1.1 discussion; Proposition 6.4, pp.43–44"
+          ],
+          "alternative": {
+            "title": "Conclude that every NP problem is now polynomial-time",
+            "status": "insufficient",
+            "reason": "The bound is subexponential, not polynomial; general reductions can also enlarge n.",
+            "cost": "Neither P=NP nor practical performance follows from this asymptotic statement.",
+            "source": [
+              2,
+              "Paragraph following Corollary 1.2"
+            ],
+            "provenance": "Explorer comparison based on the cited argument; no model search or timed trial."
+          },
+          "critical": false
+        }
+      ]
+    }
+  }
+}
