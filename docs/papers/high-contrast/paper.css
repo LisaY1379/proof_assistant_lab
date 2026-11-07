@@ -142,3 +142,14 @@ body.paper-home #overview{height:auto;display:block}
 #entry-context .strategy-links{display:flex;flex-wrap:wrap;gap:12px 24px}
 #entry-context .strategy-links a{font-size:13px}
 @media(max-width:760px){#entry-context .intro-strategies{margin:0 20px 24px}#entry-context .strategy-cards{grid-template-columns:1fr}#entry-context .strategy-cards li{padding:18px}}
+
+/* Source-linked definitions, shared by the full explorer and introduction template. */
+#entry-context .strategy-cards .strategy-source{font-size:12px;color:var(--muted);margin-top:12px}
+#entry-context .definition-cards{display:grid;gap:16px;margin-top:24px}
+#entry-context .definition-cards article{min-width:0;padding:24px;background:#faf8fd;border:1px solid var(--line);border-radius:6px}
+#entry-context .definition-cards h3{font:700 18px/1.4 var(--body-font);text-transform:none;letter-spacing:normal}
+.formal-math{max-width:100%;overflow-x:auto;overflow-y:hidden;padding:4px 0;font-size:16px}
+.formal-math mjx-container{min-width:0}
+.source-ref{font-size:12px}
+#proof-strategies,#key-definitions,#entry-context,#assumptions{scroll-margin-top:85px}
+@media(max-width:760px){#entry-context .definition-cards article{padding:18px}.formal-math{font-size:14px}}

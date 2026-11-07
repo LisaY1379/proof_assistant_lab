@@ -1,0 +1,6 @@
+/* Template-specific layout; inherited paper styles preserve the explorer design. */
+.paper-nav{flex-wrap:wrap}
+.paper-nav .dictionary-trigger{margin-left:auto}
+.entry-actions{flex-wrap:wrap}
+#entry-context .intro-story>section{min-width:0}
+@media(max-width:760px){.paper-nav>a{font-size:11px;padding:6px}.paper-nav .dictionary-trigger{font-size:11px;padding:6px}.card-top{flex-wrap:wrap}#proof-strategies,#key-definitions,#entry-context,#assumptions{scroll-margin-top:120px}}

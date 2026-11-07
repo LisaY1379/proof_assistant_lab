@@ -42,7 +42,7 @@
   const aliases=entries.flatMap(e=>e.aliases).sort((a,b)=>b.length-a.length);
   const pattern=new RegExp('(?<![\\p{L}\\p{N}_])('+aliases.map(escape).join('|')+')(?![\\p{L}\\p{N}_])','giu');
   function markTerms(){
-    const walker=document.createTreeWalker(document.querySelector('main'),NodeFilter.SHOW_TEXT,{acceptNode(n){return n.parentElement.closest('.dictionary-term,.paper-annotation,script,style,button,a,svg,mjx-container,textarea,input,label,summary,[role="button"],.equation,.annotation-equation,h1,h2,h3,h4')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT;}});
+    const walker=document.createTreeWalker(document.querySelector('main'),NodeFilter.SHOW_TEXT,{acceptNode(n){return n.parentElement.closest('.dictionary-term,.paper-annotation,script,style,button,a,svg,mjx-container,textarea,input,label,summary,[role="button"],.equation,.annotation-equation,.formal-math,h1,h2,h3,h4')?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT;}});
     const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);
     for(const n of nodes){const text=n.textContent;pattern.lastIndex=0;const matches=[...text.matchAll(pattern)];if(!matches.length)continue;const fragment=document.createDocumentFragment();let start=0;
       for(const match of matches){fragment.append(document.createTextNode(text.slice(start,match.index)));const term=el('span',match[0],'dictionary-term');term.tabIndex=0;term.setAttribute('role','button');term.setAttribute('aria-label','Define '+match[0]);term.setAttribute('aria-haspopup','dialog');term.dataset.dictionary=lookup(match[0]).id;fragment.append(term);start=match.index+match[0].length;}
