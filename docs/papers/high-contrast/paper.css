@@ -125,3 +125,20 @@ body.paper-home #overview{height:auto;display:block}
   letter-spacing: normal;
   text-transform: none;
 }
+
+/* An intuitive roadmap inside the expandable introduction. */
+#entry-context .intro-strategies{margin:0 32px 32px;padding-top:28px;border-top:1px solid var(--line)}
+#entry-context .intro-story .intro-strategies{margin:0}
+#entry-context .intro-strategies h2{font:700 24px/1.3 Helvetica,Arial,sans-serif;text-transform:none;letter-spacing:-.02em;margin:12px 0 18px}
+#entry-context .intro-strategies p{font-size:15px;line-height:1.75;max-width:960px}
+#entry-context .intro-strategies .eyebrow{font-size:10px}
+#entry-context .strategy-cards{list-style:none;counter-reset:strategy;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;padding:0;margin:24px 0}
+#entry-context .strategy-cards li{counter-increment:strategy;padding:22px;background:#faf8fd;border:1px solid var(--line);border-radius:6px;min-width:0}
+#entry-context .strategy-cards li::before{content:"0" counter(strategy);display:block;color:var(--accent);font-size:12px;font-weight:700;letter-spacing:.08em;margin-bottom:12px}
+#entry-context .strategy-cards h3{font:700 17px/1.35 Helvetica,Arial,sans-serif;text-transform:none;letter-spacing:normal;margin:0 0 12px}
+#entry-context .strategy-cards p{font-size:14px;margin:0}
+#entry-context .strategy-cards li:last-child{grid-column:1/-1}
+#entry-context .strategy-takeaway{padding:16px 20px;border-left:3px solid var(--accent);background:#f3eef9}
+#entry-context .strategy-links{display:flex;flex-wrap:wrap;gap:12px 24px}
+#entry-context .strategy-links a{font-size:13px}
+@media(max-width:760px){#entry-context .intro-strategies{margin:0 20px 24px}#entry-context .strategy-cards{grid-template-columns:1fr}#entry-context .strategy-cards li{padding:18px}}
