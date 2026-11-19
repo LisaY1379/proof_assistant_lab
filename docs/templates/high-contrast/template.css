@@ -3,4 +3,11 @@
 .paper-nav .dictionary-trigger{margin-left:auto}
 .entry-actions{flex-wrap:wrap}
 #entry-context .intro-story>section{min-width:0}
-@media(max-width:760px){.paper-nav>a{font-size:11px;padding:6px}.paper-nav .dictionary-trigger{font-size:11px;padding:6px}.card-top{flex-wrap:wrap}#proof-strategies,#key-definitions,#entry-context,#assumptions{scroll-margin-top:120px}}
+@media(max-width:760px){.paper-nav>a{font-size:11px;padding:6px}.paper-nav .dictionary-trigger{font-size:11px;padding:6px}.card-top{flex-wrap:wrap}#proof-strategies,#entry-context,#assumptions{scroll-margin-top:120px}}
+
+.intro-strategies .strategy-cards { grid-template-columns: minmax(0, 1fr); }
+.strategy-formal { border-inline-start: 2px solid var(--line); margin-top: 1.2rem; padding-inline-start: 1rem; }
+.strategy-formal h4 { margin: 0 0 .6rem; font-size: 1rem; }
+.strategy-formal p + p, .strategy-formal a + p { margin-top: .75rem; }
+.strategy-formal .source-ref { display: inline-block; margin-block: .35rem; }
+.strategy-formal mjx-container[display="true"] { text-align: left !important; }
