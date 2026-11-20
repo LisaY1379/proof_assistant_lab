@@ -11,10 +11,10 @@ from urllib.parse import urlparse, unquote
 
 try:
     from . import agent_server as server
-    from . import paper_assistant
+    from . import paper_assistant, bubble_service
 except ImportError:
     import agent_server as server
-    import paper_assistant
+    import paper_assistant, bubble_service
 
 DEMO_ROOT = server.PROJECT_ROOT / 'docs'
 ANNOTATION_BUSY = threading.Lock()
@@ -24,6 +24,8 @@ STATIC_TYPES = {'.html', '.css', '.js', '.json', '.svg', '.png', '.jpg', '.jpeg'
 class Handler(server.Handler):
     def do_GET(self):
         path = urlparse(self.path).path
+        if path == '/bubble/status':
+            return bubble_service.handle(self,path)
         if path == '/healthz':
             self.send_json({'ok': True})
             return
@@ -63,6 +65,8 @@ class Handler(server.Handler):
 
     def do_POST(self):
         path = urlparse(self.path).path
+        if path in bubble_service.ROUTES:
+            return bubble_service.handle(self,path)
         if path == '/api/paper-assistant':
             if not server.require_basic_auth(self):
                 return

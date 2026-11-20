@@ -30,3 +30,6 @@
 **/.env.*
 **/__pycache__
 **/.DS_Store
+
+!main/bubble_service.py
+!main/bubble-invites.txt
