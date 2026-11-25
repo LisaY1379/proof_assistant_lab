@@ -24,6 +24,29 @@ STATIC_TYPES = {'.html', '.css', '.js', '.json', '.svg', '.png', '.jpg', '.jpeg'
 class Handler(server.Handler):
     def do_GET(self):
         path = urlparse(self.path).path
+        if path == '/bubble':
+            self.send_response(302)
+            self.send_header('Location', '/bubble/')
+            self.end_headers()
+            return
+        web_root = Path(__file__).resolve().parent / 'bubble-web'
+        assets = {'index.html', 'panel.js', 'service.js', 'style.css', 'icons/bubble-128.png',
+                  'vendor/katex.min.js', 'vendor/pdf.min.mjs', 'vendor/pdf.worker.min.mjs',
+                  'vendor/KATEX-LICENSE', 'vendor/PDFJS-LICENSE'}
+        asset = path.removeprefix('/bubble/') or 'index.html'
+        if path.startswith('/bubble/') and asset in assets:
+            body = (web_root / asset).read_bytes()
+            self.send_response(200)
+            mime = 'text/javascript' if asset.endswith(('.js', '.mjs')) else mimetypes.guess_type(asset)[0]
+            self.send_header('Content-Type', mime or 'text/plain')
+            self.send_header('Content-Length', str(len(body)))
+            self.send_header('X-Content-Type-Options', 'nosniff')
+            self.send_header('Referrer-Policy', 'no-referrer')
+            self.send_header('Cache-Control', 'no-cache')
+            self.send_header('Content-Security-Policy', "default-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'none'; img-src 'self' data:; media-src 'self' blob:; style-src 'self' 'unsafe-inline'")
+            self.end_headers()
+            self.wfile.write(body)
+            return
         if path == '/bubble/status':
             return bubble_service.handle(self,path)
         if path == '/healthz':

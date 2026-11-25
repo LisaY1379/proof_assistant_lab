@@ -1,0 +1,9 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bubble · Reading assistant</title><link rel="icon" href="icons/bubble-128.png"><link rel="stylesheet" href="style.css"></head><body>
+<header><h1><img src="icons/bubble-128.png" alt="">Bubble</h1><button id="fresh">New chat</button><button id="settings">Connection</button></header>
+<form id="connect" hidden><label for="invite">Enter your Bubble invite to start</label><input type="password" id="invite" required autocomplete="off"><button>Connect</button></form>
+<section id="empty"><h2>What are you reading?</h2><p>Drop a paper here, paste a passage, or ask about a figure.</p></section>
+<main id="thread" aria-label="Conversation"></main>
+<footer><div id="excerpt" hidden><label for="quote">Passage</label><textarea id="quote" maxlength="90000"></textarea><button id="attachQuote">Attach passage</button><button id="cancelQuote">Cancel</button></div><div id="attachments"></div>
+<div class="tools"><label class="button">Add file<input id="file" type="file" accept=".pdf,.txt,.md,image/jpeg,image/png" multiple></label><button id="passage">Paste passage</button><button id="capture">Capture screen</button><button id="find">Identify paper</button><button id="guide" hidden>Create reading guide</button></div>
+<form id="ask"><textarea id="question" rows="2" aria-label="Question" placeholder="Ask about your reading…"></textarea><button id="send">Send</button></form><small id="status" role="status"></small></footer>
+<script src="vendor/katex.min.js"></script><script type="module" src="panel.js"></script></body></html>

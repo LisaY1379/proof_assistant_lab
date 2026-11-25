@@ -33,3 +33,6 @@
 
 !main/bubble_service.py
 !main/bubble-invites.txt
+
+!main/bubble-web/
+!main/bubble-web/**
